@@ -1,8 +1,4 @@
 import React, { Component, PropTypes }  from 'react';
-import FloatingActionButton from 'material-ui/lib/floating-action-button';
-import TextField from 'material-ui/lib/text-field';
-import RaisedButton from 'material-ui/lib/raised-button';
-import FlatButton from 'material-ui/lib/flat-button';
 
 export default class Header extends Component{
     //icons fa fa-plus , fa fa-chevron-left
