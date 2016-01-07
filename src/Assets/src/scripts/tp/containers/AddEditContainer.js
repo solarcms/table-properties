@@ -113,42 +113,39 @@ class AddEditContainer extends Component {
         const { setup, formControls, formData, focusIndex } = this.props;
 
         return (
-            <div className="card">
+            <div className="">
                 <Header pageName={setup.page_name} icon="fa fa-chevron-left" link="#/" type="addEdit"
 
                        />
-                <div>
-                    <div className="row p-h-lg" >
-                        <div className="col-md-12 col-lg-12 col-sm-12">
-                            <div className="form-horizontal solar-form" >
+                <div className="p-y-sm">
+                    <div className="row white m-x-sm" >
+                            <div className="form-horizontal solar-form p-a-md" >
 
                                 <Form formControls={formControls} formData={formData} ref="fromRefs" focusIndex={focusIndex}
-
                                       changeHandler={this.changeValues.bind(this)}
                                 />
 
                                 <div>
                                     {this.props.params.id
-                                        ? <button type="button" className="btn btn-success p-h-lg" onClick={this.updateForm.bind(this)}>
+                                        ? <button type="button" className="btn btn-fw btn-success p-h-lg" onClick={this.updateForm.bind(this)}>
                                                 <i className="fa fa-check"></i>
 
                                             </button>
                                         :
-                                            <button type="button" className="btn btn-success p-h-lg" onClick={this.saveForm.bind(this)}>
+                                            <button type="button" className="btn btn-fw btn-success p-h-lg" onClick={this.saveForm.bind(this)}>
                                                 <i className="fa fa-check"></i>
 
                                             </button>
                                     }
 
                                     &nbsp;
-                                    <a href="#/" className="btn btn-danger p-h-lg">
+                                    <a href="#/" className="btn btn-fw danger p-h-lg">
                                         <i className="fa fa-times"></i>
                                     </a>
 
 
                                 </div>
                             </div>
-                        </div>
                     </div>
                 </div>
 

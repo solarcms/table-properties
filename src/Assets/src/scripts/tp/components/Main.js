@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 
 export default ( props ) => {
     return (
-        <div>
+        <div className="solar-grid">
             { props.children }
         </div>
     )

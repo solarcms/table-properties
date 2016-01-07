@@ -1,7 +1,7 @@
 @extends('XTheme::_layouts.master')
 
 @section('style')
-    @if(!Config::get('tm_config.tm_debug'))
+    @if(Config::get('tm_config.tm_debug'))
         <link rel="stylesheet" href="http://localhost:3000/css/tp.css" type="text/css"/>
     @else
         <link rel="stylesheet" href="{{ URL::asset('shared/table-properties/css/tp.css') }}" type="text/css"/>
@@ -33,7 +33,7 @@
 
 
 @section('script')
-    @if(!Config::get('tm_config.tm_debug'))
+    @if(Config::get('tm_config.tm_debug'))
         <script src="http://localhost:3000/js/dependencies.js"></script>
         <script src="http://localhost:3000/js/tp.js"></script>
     @else

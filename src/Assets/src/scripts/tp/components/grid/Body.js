@@ -5,22 +5,26 @@ import Form from '../form/page_add_edit/Form'
 
 export default class Body extends Component {
     setRowEdit(editID, focusIndex) {
-        if(this.props.formType == 'inline')
+        if (this.props.formType == 'inline')
             this.props.setRowEdit(editID, focusIndex)
     }
+
     handleDeleteItem(id) {
 
-        if (!confirm('Delete this record?'))
-        { return; }
+        if (!confirm('Delete this record?')) {
+            return;
+        }
         else
             this.props.handleDeleteItem(id)
 
 
     }
+
     changeValues(e) {
 
         this.props.inlineChangeValues(e)
     }
+
     saveInlineForm(id) {
 
         this.props.saveInlineForm(id)
@@ -32,23 +36,23 @@ export default class Body extends Component {
 
         const gridHeader = bodyHeader.map((grid, index) => {
 
-            return <th key={index} tooltip={grid.title}>{grid.title}</th>
+            return <th key={index} tooltip={grid.title} className="sorting">{grid.title}</th>
         })
 
 
         const gridData = bodyData.map((data, index) =>
-            <tr key={data.id} >
-                <td style={{width: '30px'}} onClick={this.setRowEdit.bind(this, data.id, 0)}>
+            <tr key={data.id}>
+                <td style={{width: '30px', textAlign: 'center'}} onClick={this.setRowEdit.bind(this, data.id, 0)}>
                     {index + 1}
                 </td>
                 {Object.keys(data).map((columnKey, columnIndex) => {
                     let cellformControl = [];
 
-                    if(formControls.length >=1)
-                    formControls.map((formControl)=>{
-                        if(formControl.column == columnKey)
-                            cellformControl.push(formControl)
-                    })
+                    if (formControls.length >= 1)
+                        formControls.map((formControl)=> {
+                            if (formControl.column == columnKey)
+                                cellformControl.push(formControl)
+                        })
 
                     if (columnKey !== 'id')
                         return <td key={columnKey} onClick={this.setRowEdit.bind(this, data.id, columnIndex)}>
@@ -60,7 +64,7 @@ export default class Body extends Component {
                                       focusIndex={focusIndex}
                                       gridIndex={columnIndex}
 
-                                changeHandler={this.changeValues.bind(this)}
+                                      changeHandler={this.changeValues.bind(this)}
                                 />
                                 :
                                 <span>
@@ -70,40 +74,41 @@ export default class Body extends Component {
 
                         </td>
                 })}
-                <td style={{width: '95px'}} >
+                <td style={{width: '87px', padding: '3px'}}>
                     {formType == 'inline' ?
                         formType == 'inline' && editID == data.id
-                        ? <span>
-                                <button className="btn btn-sm btn-success" onClick={this.saveInlineForm.bind(this, data.id)}>
+                            ? <span>
+                                <a className="btn btn-sm btn-success"
+                                        onClick={this.saveInlineForm.bind(this, data.id)}>
                                     <i className="fa fa-check"></i>
-                                </button>
-                                &nbsp;
-                                &nbsp;
-                                <button className="btn btn-sm btn-danger" onClick={this.setRowEdit.bind(this, 0, 0)}>
-                                    <i className="fa fa-times"></i>
-                                </button>
+                                </a>
+                            &nbsp;
+
+                            <a className="btn btn-sm btn-danger" onClick={this.setRowEdit.bind(this, 0, 0)}>
+                                <i className="fa fa-times"></i>
+                            </a>
                             </span>
-                    :
-                        <span>
-                                <button className="btn btn-sm" onClick={this.setRowEdit.bind(this, data.id, 0)}>
+                            :
+                            <span>
+                                <a className="btn btn-sm" onClick={this.setRowEdit.bind(this, data.id, 0)}>
                                     <i className="fa fa-pencil"></i>
-                                </button>
-                            &nbsp;
-                            &nbsp;
-                            <button className="btn btn-sm" onClick={this.handleDeleteItem.bind(this, data.id)}>
-                                <i className="fa fa-trash"></i>
-                            </button>
+                                </a>
+                                &nbsp;
+
+                                <a className="btn btn-sm" onClick={this.handleDeleteItem.bind(this, data.id)}>
+                                    <i className="fa fa-trash"></i>
+                                </a>
                         </span>
 
-                    :  <span>
+                        : <span>
                                 <a className="btn btn-sm" href={`#edit/${data.id}`}>
                                     <i className="fa fa-pencil"></i>
                                 </a>
                         &nbsp;
-                        &nbsp;
-                        <button className="btn btn-sm" onClick={this.handleDeleteItem.bind(this, data.id)}>
+
+                        <a className="btn btn-sm" onClick={this.handleDeleteItem.bind(this, data.id)}>
                             <i className="fa fa-trash"></i>
-                        </button>
+                        </a>
                         </span>
 
 
@@ -113,78 +118,70 @@ export default class Body extends Component {
             </tr>
         )
         const inlineAddForm = <tr  >
-                <td style={{width: '30px'}}>
+            <td style={{width: '30px'}}>
 
-                </td>
-                {formControls.map((column, columnIndex) => {
-                    let cellFormControl = [];
-                    cellFormControl.push(column)
-                    if (column.column !== 'id')
-                        return <td key={columnIndex} >
+            </td>
+            {formControls.map((column, columnIndex) => {
+                let cellFormControl = [];
+                cellFormControl.push(column)
+                if (column.column !== 'id')
+                    return <td key={columnIndex}>
 
-                                <Form formControls={cellFormControl}
-                                      formData={formData}
-                                      formType={formType}
-                                      formValue={column.value}
-                                      focusIndex={focusIndex}
-                                      gridIndex={columnIndex}
+                        <Form formControls={cellFormControl}
+                              formData={formData}
+                              formType={formType}
+                              formValue={column.value}
+                              focusIndex={focusIndex}
+                              gridIndex={columnIndex}
 
-                                      changeHandler={this.changeValues.bind(this)}
-                                />
+                              changeHandler={this.changeValues.bind(this)}
+                        />
 
 
-                        </td>
-                })}
-                <td style={{width: '90px'}} >
+                    </td>
+            })}
+            <td style={{width: '87px', padding: '3px'}}>
 
                             <span>
-                                <button className="btn btn-sm btn-success" onClick={this.saveInlineForm.bind(this)}>
+                                <a className="btn btn-sm btn-success" onClick={this.saveInlineForm.bind(this)}>
                                     <i className="fa fa-check"></i>
-                                </button>
-                            &nbsp;
-                            &nbsp;
-                            <button className="btn btn-sm btn-danger" onClick={removeInlineForm}>
-                                <i className="fa fa-times"></i>
-                            </button>
+                                </a>
+                                &nbsp;
+
+                                <a className="btn btn-sm btn-danger" onClick={removeInlineForm}>
+                                    <i className="fa fa-times"></i>
+                                </a>
                             </span>
 
 
+            </td>
+        </tr>
+        return (<div className="p-a-sm ">
+                    <div className="white with-3d-shadow">
+                        <table className="table table-bordered table-striped table-hover"
+                               selectable={table.selectable}
+                               multiSelectable={table.multiSelectable}
+                               onRowSelection={this._onRowSelection}>
+                            <thead
+                                enableSelectAll={table.enableSelectAll}
+                                displaySelectAll={table.displaySelectAll}
+                                displayRowCheckbox={table.displayRowCheckbox}
+                                adjustForCheckbox={false}
+                            >
+                            <tr>
+                                <th  style={{width: '25px'}}><b>№</b></th>
+                                {gridHeader}
+                                <th style={{textAlign: 'center'}} ><i className="fa fa-ellipsis-h"></i></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            { showInlineForm === true ? inlineAddForm : null}
+                            { gridData }
 
-
-                </td>
-            </tr>
-        return (
-
-                <div >
-                    <div className="col-md-12 col-lg-12 col-sm-12">
-                        <div>
-                            <table className="table table-bordered table-striped solar-grid"
-                                   selectable={table.selectable}
-                                   multiSelectable={table.multiSelectable}
-                                   onRowSelection={this._onRowSelection}>
-                                <thead
-                                    enableSelectAll={table.enableSelectAll}
-                                    displaySelectAll={table.displaySelectAll}
-                                    displayRowCheckbox={table.displayRowCheckbox}
-                                    adjustForCheckbox={false}
-                                >
-                                <tr>
-                                    <th tooltip='Number - Дугаар' style={{width: '25px'}}><b>№</b></th>
-                                    {gridHeader}
-                                    <th tooltip='Засах, Устгах - Edit, Delete'><i className="fa fa-ellipsis-h"></i></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                { showInlineForm === true ? inlineAddForm : null}
-                                { gridData }
-
-                                </tbody>
-                            </table>
-                        </div>
+                            </tbody>
+                        </table>
                     </div>
-                </div>
-
-        )
+                </div>)
     }
 }
 Body.defaultProps = {

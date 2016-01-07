@@ -54,11 +54,11 @@ class TablePropertiesController extends Controller {
 
         $tp = new Tp();
         $tp->table = 'acticle_category';
-        $tp->page_name = 'Мэдээ бүлэг';
+        $tp->page_name = 'Бүлэг';
         $tp->identity_name = 'id';
         $tp->grid_columns = ['active', 'name', 'id'];
         $tp->grid_default_order_by = 'id DESC';
-        $tp->formType = 'inline';
+        $tp->formType = 'page';
 
         $tp->form_input_control = [
             ['column'=>'active', 'title'=>'Идвэхтэй', 'type'=>'--checkbox', 'value'=>0, 'validate'=> ''],

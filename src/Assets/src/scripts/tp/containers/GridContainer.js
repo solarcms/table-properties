@@ -91,7 +91,6 @@ class GridContainer extends Component {
         const FD = this.props.formControls;
 
 
-        console.log(FD)
         let foundError = false;
 
         FD.map((fromColumn, index) => {
@@ -197,6 +196,7 @@ class GridContainer extends Component {
                 pageLimit={pageLimit}
                 handler={this.hangePageLimitChange.bind(this)}
                 handlerPage={this.handlePageChange.bind(this)}
+                paginationMarg="m-r-sm m-l-sm m-t-sm"
             />
             :
             null
@@ -209,13 +209,14 @@ class GridContainer extends Component {
                 pageLimit={pageLimit}
                 handler={this.hangePageLimitChange.bind(this)}
                 handlerPage={this.handlePageChange.bind(this)}
+                paginationMarg="m-r-sm m-l-sm m-b-sm"
             />
             :
             null
 
 
         return (
-            <div className="card">
+            <div >
                 <Header pageName={setup.page_name} icon="fa fa-plus"
                         link="#/add"
                         type="list"
@@ -223,7 +224,7 @@ class GridContainer extends Component {
                         addInlineForm={this.addInlineForm.bind(this)}
                         ref="search"
                         handlerSearch={this.handleSearch.bind(this)}
-                        handlerReload={this.handleSearch.bind(this, this.props.currentPage, this.props.pageLimit, this.props.searchValue)}
+                        handlerReload={this.callPageDatas.bind(this, this.props.currentPage, this.props.pageLimit, this.props.searchValue)}
                 />
 
                 {topPagination}

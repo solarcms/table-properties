@@ -1,75 +1,85 @@
 import React, { Component, PropTypes }  from 'react';
 
-export default class Header extends Component{
-    //icons fa fa-plus , fa fa-chevron-left
-    // uls #/add, #/
-//<FloatingActionButton className="blue pull-right" href={this.props.link} linkButton={true}>
-//<i className={this.props.icon}></i>
-//</FloatingActionButton>
+export default class Header extends Component {
+
     render() {
         const addButton = this.props.formType == 'inline'
             ?
-                <button className="btn" onClick={this.props.addInlineForm}><i className="fa fa-plus"></i></button>
+            <a href="javascript:void(0)" className="nav-link" onClick={this.props.addInlineForm}>
+                <i className="fa fa-plus"></i> Нэмэх
+            </a>
             :
-                <a href={this.props.link} className="btn"><i className="fa fa-plus"></i></a>
+            <a href={this.props.link} className="nav-link">
+                <i className="fa fa-plus"></i> Нэмэх
+            </a>
 
-        const actionControl = this.props.type == 'list' ?
-            <div >
-                <div className="btn-group pull-right" role="group" aria-label="actions">
-                    <div className="btn-group" role="group">
-                        <div className="dropdown ">
-                            <a className="btn  dropdown-toggle" id="dropdownMenu2"
-                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i className="fa fa-upload"></i>
-                                &nbsp;
-                                <span className="caret"></span>
-                            </a>
-                            <ul className="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                <li><a href=""><i className="fa fa-file-pdf-o"></i> PDF</a></li>
-                                <li><a href=""><i className="fa fa-file-excel-o"></i> Excel</a></li>
-                                <li><a href=""><i className="fa fa-print"></i> Print</a></li>
-
-                            </ul>
-                        </div>
-                    </div>
-                    <a  className="btn" onClick={this.props.handlerReload}><i className="fa fa-refresh"></i></a>
-                    {addButton}
-                    <div className="btn-group columns-right" role="group">
-                        <div className="dropdown ">
-                            <a className="btn  dropdown-toggle" id="dropdownMenu"
-                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i className="fa fa-bars"></i>
-                                &nbsp;
-                                <span className="caret"></span>
-                            </a>
-                            <ul className="dropdown-menu" >
-                                <li><a href="">Тохиргоо нэмэх</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div className="pull-right search">
-                    <a className="btn" onClick={this.props.handlerSearch}>
-                        <i className="fa fa-search"></i>
+        let actionControls = this.props.type == 'list' ?
+            <ul className="nav navbar-nav pull-right">
+                <li className="nav-item dropdown">
+                    <a className="nav-link p-l b-l" href="" data-toggle="dropdown">
+                        <i className="fa fa-upload"></i>
                     </a>
-                </div>
-                <div className="pull-right search">
-                    <input className="form-control" type="text" ref="searchWord" placeholder="Хайх түхүүр үг" style={{display: 'inline-block'}}/>
-                </div>
+                    <div className="dropdown-menu dropdown-menu-scale pull-right text-color"
+                         role="menu">
+                        <a className="dropdown-item" href=""><i className="fa fa-file-pdf-o"></i> PDF</a>
+                        <a className="dropdown-item" href=""><i className="fa fa-file-excel-o"></i> Excel</a>
+                        <a className="dropdown-item" href=""><i className="fa fa-print"></i> Print</a>
+                    </div>
+                </li>
+                <li className="nav-item">
+                    <a className="nav-link" onClick={this.props.handlerReload}>
+                        <i className="fa fa-refresh"></i>
+                    </a>
+                </li>
 
+                <li className="nav-item dropdown">
+                    <a className="nav-link p-l b-l" href="" data-toggle="dropdown">
+                        <i className="icon-options-vertical icon"></i>
+                    </a>
+                    <div className="dropdown-menu dropdown-menu-scale pull-right text-color"
+                         role="menu">
+                        <a className="dropdown-item" href="">Тохиргоо</a>
+                    </div>
+                </li>
+            </ul>
+            :
+            null
+        let searchBar = this.props.type == 'list'
+            ?
+            <div className="collapse navbar-toggleable-sm" id="navbar-3">
+                <form
+                    className="navbar-form form-inline pull-right pull-none-sm navbar-item v-m ng-pristine ng-valid ng-scope"
+                    role="search">
+                    <div className="form-group l-h m-a-0">
+                        <div className="input-group input-group-sm">
+                            <input type="text" className="form-control p-x b-a rounded" ref="searchWord"
+                                   placeholder="Хайх"/>
+
+                            <span className="input-group-btn">
+                                <button type="button" className="btn white b-a rounded no-b-l no-shadow"
+                                        onClick={this.props.handlerSearch}>
+                                    <i className="fa fa-search"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                </form>
+                <ul className="nav navbar-nav">
+                    <li className="nav-item dropdown">
+                        {addButton}
+                    </li>
+                </ul>
             </div>
-        :
-        null
-
+            :
+            null
         return (
-            <div className="p-h-lg">
-                <div className="row "  style={{padding: '10px 0'}}>
-                    <div className="col-md-4">
-                        <h3 className="" style={{margin: '0'}}> {this.props.pageName} </h3>
-                    </div>
-                    <div className="col-md-8">
-                        { actionControl }
-                    </div>
+            <div className="white box-shadow-z0 b-b">
+                <div className="navbar">
+
+                    <div className="navbar-item pull-left h5 p-l" id="pageTitle">{this.props.pageName}</div>
+
+                    {actionControls}
+                    {searchBar}
                 </div>
             </div>
 

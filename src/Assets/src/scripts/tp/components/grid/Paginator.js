@@ -7,31 +7,30 @@ export default class Paginator extends Component {
 
 
     render() {
-        const { totalItems, totalPages, pageLimits, handler, currentPage, pageLimit, handlerPage } = this.props;
+        const { totalItems, totalPages, pageLimits, handler, currentPage, pageLimit, handlerPage, paginationMarg } = this.props;
 
         return (
-            <div className="p-h-lg">
+            <div className={`p-a-sm white  with-3d-shadow ${paginationMarg}`}>
                 <div className="row">
-                    <div className="col-md-12" >
+                    <div className="col-md-12 solar-pagination" >
                         <div className="pull-left ">
                             <div style={{display: 'inline-block'}}>
-                                <b>{currentPage}</b>
                                 Нийт: <b>{totalItems}</b>.
                                 Нийт хуудас: <b> {totalPages}</b>.
                             </div>
                             <div style={{display: 'inline-block', marginLeft:'10px'}}>
                                 <ComboBox
-                                    comboClass="form-control pull-right"
+                                    comboClass="form-control pull-right form-control-sm"
                                     changeHandler={ handler }
                                     selected={pageLimit}
                                     datas={pageLimits}
                                     label="Хуудсанд харагдах тоо"
-                                    style={{width:'70px', height: '30px', padding:'5px', marginTop: '-7px'}}
+                                    style={{width:'80px'}}
                                 />
                             </div>
                         </div>
 
-                        <div className="pull-right">
+                        <div className="pull-right" style={{height: '32px'}}>
                             <Pagination
                                 activePage={currentPage}
                                 totalItemsCount={totalItems}
