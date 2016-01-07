@@ -1,0 +1,35 @@
+.solar-form{
+  max-width: 600px;
+}
+.pagination{
+  margin: 0;
+}
+.table>tbody>tr>td, .table>thead>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th {
+  padding: 5px 5px;
+
+}
+.solar-grid{
+  .checkbox-inline input[type=checkbox], .checkbox input[type=checkbox], .radio-inline input[type=radio], .radio input[type=radio] {
+    margin-left:0px;
+
+  }
+  input[type=text] {
+
+    max-width: 300px;
+  }
+}
+
+.form-control, output {
+  color: #000;
+}
+.pull-right .dropdown-menu {
+  right: 0;
+  left: auto;
+}
+.pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover {
+  background-color: #000;
+  border-color: #000;
+}
+.pagination>li>a, .pagination>li>span, .pagination>li>a:hover, .pagination>li>span {
+  color: #000;
+}

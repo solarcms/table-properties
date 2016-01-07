@@ -1,0 +1,14 @@
+{
+    "name": "Table Properties",
+    "description": "",
+    "type": "library",
+    "license": "Apache",
+    "authors": [
+        {
+            "name": "Munkh-Altai",
+            "email": "s4_hero@yahoo.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {}
+}
