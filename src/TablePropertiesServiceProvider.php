@@ -28,7 +28,7 @@ class TablePropertiesServiceProvider extends ServiceProvider
         // For publishing assets
         $this->publishes([
             __DIR__ . DIRECTORY_SEPARATOR . 'Assets'. DIRECTORY_SEPARATOR . 'dist' => public_path('shared/table-properties'),
-        ], 'shared');
+        ], 'tp');
     }
 
     /**

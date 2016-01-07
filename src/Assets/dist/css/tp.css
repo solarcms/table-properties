@@ -6,3 +6,178 @@
  */
 .solar-form {
   max-width: 600px; }
+
+.pagination {
+  margin: 0; }
+
+.table > tbody > tr > td, .table > thead > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th {
+  padding: 5px 5px; }
+
+.solar-grid .checkbox-inline input[type=checkbox], .solar-grid .checkbox input[type=checkbox], .solar-grid .radio-inline input[type=radio], .solar-grid .radio input[type=radio] {
+  margin-left: 0px; }
+
+.solar-grid input[type=text] {
+  max-width: 300px; }
+
+.form-control, output {
+  color: #000; }
+
+.pull-right .dropdown-menu {
+  right: 0;
+  left: auto; }
+
+.pagination > .active > a, .pagination > .active > a:focus, .pagination > .active > a:hover, .pagination > .active > span, .pagination > .active > span:focus, .pagination > .active > span:hover {
+  background-color: #000;
+  border-color: #000; }
+
+.pagination > li > a, .pagination > li > span, .pagination > li > a:hover, .pagination > li > span {
+  color: #000; }
+
+.combo-grid {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 13px;
+  zoom: 1;
+  *display: inline;
+  width: 100%;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; }
+  .combo-grid a.dropdown-toggle {
+    border-radius: 0;
+    line-height: 28px;
+    box-shadow: none;
+    background: #ffffff;
+    position: relative;
+    display: block;
+    overflow: hidden;
+    padding: 0 0 0 8px;
+    border: 1px solid #aaa;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    color: #888;
+    width: 220px;
+    box-sizing: border-box;
+    height: 30px; }
+  .combo-grid .small {
+    width: 104px !important; }
+  .combo-grid .medium {
+    width: 164px !important; }
+  .combo-grid .large {
+    width: 300px !important; }
+  .combo-grid .xlarge {
+    width: 380px !important; }
+  .combo-grid .realLarge {
+    width: 100% !important; }
+  .combo-grid select {
+    display: none !important; }
+  .combo-grid a.dropdown-toggle.disabled,
+  .combo-grid a.dropdown-toggle.disabled:hover {
+    cursor: not-allowed;
+    color: #aaa;
+    background: #eee; }
+  .combo-grid a.dropdown-toggle:hover, .combo-grid a.dropdown-toggle {
+    color: #333; }
+  .combo-grid .open > a.dropdown-toggle {
+    border-bottom: 0;
+    line-height: 29px; }
+  .combo-grid a.dropdown-toggle > span {
+    display: block;
+    overflow: hidden;
+    margin-right: 26px;
+    text-overflow: ellipsis;
+    white-space: nowrap; }
+  .combo-grid a.dropdown-toggle > b {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: block;
+    width: 18px;
+    height: 100%; }
+  .combo-grid a.dropdown-toggle > b:before {
+    content: "\F0D7";
+    display: inline-block;
+    font-family: FontAwesome;
+    font-size: 12px;
+    position: relative;
+    top: -1px;
+    left: 1px; }
+  .combo-grid .open > a.dropdown-toggle > b:before {
+    content: "\F0D8"; }
+  .combo-grid .dropdown-menu {
+    margin-top: 0;
+    border-color: #aaa;
+    border-top: 0;
+    padding-bottom: 0;
+    width: auto;
+    min-width: 100%;
+    box-sizing: border-box;
+    border-radius: 0; }
+  .combo-grid .dropdown-menu > .combo-grid-search {
+    position: relative;
+    z-index: 1010;
+    margin: 0;
+    padding: 0 4px;
+    white-space: nowrap; }
+  .combo-grid .combo-grid > .dropdown-menu > .combo-grid-search > input {
+    width: 100%;
+    height: 30px;
+    margin: 0;
+    box-sizing: border-box;
+    padding: 4px 20px 4px 5px;
+    border-radius: 0; }
+  .combo-grid .dropdown-menu > .combo-grid-search:after {
+    content: "\F002";
+    display: inline-block;
+    color: #888;
+    font-family: FontAwesome;
+    font-size: 14px;
+    position: absolute;
+    top: 4px;
+    right: 10px; }
+  .combo-grid .dropdown-menu > ul {
+    border-color: #aaa;
+    border-top: 0;
+    margin: 4px 0;
+    padding: 0;
+    list-style: none;
+    background-color: #fff;
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 240px;
+    padding-right: 14px; }
+  .combo-grid .dropdown-menu > ul > li > a {
+    font-size: 13px;
+    margin-bottom: 1px;
+    margin-top: 1px;
+    display: block;
+    padding: 3px 8px;
+    clear: both;
+    font-weight: normal;
+    line-height: 20px;
+    color: #333;
+    cursor: pointer;
+    width: 100%; }
+  .combo-grid .dropdown-menu > ul > li > a:hover,
+  .combo-grid .dropdown-menu > ul > li > a:focus {
+    color: #fff;
+    text-decoration: none;
+    background-repeat: repeat-x; }
+  .combo-grid .dropdown-menu > ul > li > a:hover {
+    background: #4f99c6; }
+  .combo-grid .dropdown-menu > ul > li > a:focus {
+    background: #2283c5; }
+  .combo-grid .dropdown-menu > ul > li.empty-result > em {
+    text-align: center;
+    padding: 4px 8px;
+    display: block; }
+  .combo-grid .dropdown-menu > .combo-grid-action > button {
+    border-radius: 0;
+    background-image: none; }
+
+.control-group.error .combo-grid > a.dropdown-toggle {
+  border-color: #f09784;
+  color: #d68273; }
