@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"date":"2016-01-07T07:00:21.521Z","yyyy":2016,"yy":"16","M":1,"MM":"01","MMM":"Jan","MMMM":"January","w":5,"ww":"05","www":"Thu","wwww":"Thursday","d":7,"dd":"07","H":15,"HH":"15","h":3,"hh":"03","a":"PM","m":0,"mm":"00","s":21,"ss":"21","sss":521,"ssss":"521","timezone":-480}
+=======
+{"date":"2016-01-07T07:35:24.284Z","yyyy":2016,"yy":"16","M":1,"MM":"01","MMM":"Jan","MMMM":"January","w":5,"ww":"05","www":"Thu","wwww":"Thursday","d":7,"dd":"07","H":15,"HH":"15","h":3,"hh":"03","a":"PM","m":35,"mm":"35","s":24,"ss":"24","sss":284,"ssss":"284","timezone":-480}
+>>>>>>> 4e8be84e85bdaa18871e8b8ae6311468c3d90ed2

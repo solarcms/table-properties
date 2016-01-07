@@ -1,6 +1,5 @@
 import React, { Component, PropTypes }  from 'react';
-import FloatingActionButton from 'material-ui/lib/floating-action-button';
-import SelectField from 'material-ui/lib/select-field';
+
 import Pagination from "./pagination/Pagination";
 import ComboBox from "../form/elements/ComboBox";
 

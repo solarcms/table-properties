@@ -1,20 +1,15 @@
-import Jquery from 'jquery';
-
-/*
- * Jquer ajax request with token
- * */
-
+import $ from 'jquery'
 export function postResuest(url, data) {
-    return Jquery.ajax({
+    return $.ajax({
         url: url,
         type: 'POST',
-        headers: {'X-CSRF-TOKEN': Jquery('meta[name="csrf-token"]').attr('content')},
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         data:data
     })
 }
 
 export function getResuest(url) {
-    return Jquery.ajax({
+    return $.ajax({
         url: url,
         type: 'GET'
     })

@@ -1,5 +1,5 @@
 {
-  "name": "MGLK",
+  "name": "SolarTableProperties",
   "version": "1.0.0",
   "description": "React Redux",
   "main": "server.js",
@@ -15,13 +15,14 @@
     "react",
     "webpack"
   ],
-  "author": "Tseegii Tselmeg <n0m4dz>",
+  "author": "Munkh-Altai <altaihero>",
   "license": "MIT",
   "bugs": {
     "url": ""
   },
   "homepage": "",
   "devDependencies": {
+    "autoprefixer-loader": "^3.1.0",
     "babel-core": "^5.8.25",
     "babel-eslint": "^4.1.3",
     "babel-loader": "^5.3.2",
@@ -33,21 +34,7 @@
     "redux-devtools": "^2.1.5",
     "style-loader": "^0.13.0",
     "webpack": "^1.12.2",
-    "webpack-dev-server": "^1.12.1"
-  },
-  "dependencies": {
-    "autoprefixer-loader": "^3.1.0",
-    "bootstrap-sass": "^3.3.5",
-    "classnames": "^2.2.1",
-    "copy-webpack-plugin": "^0.3.3",
-    "file-loader": "^0.8.5",
-    "history": "^1.13.1",
-    "immutable": "^3.7.5",
-    "jquery": "^2.1.4",
-    "lodash": "^3.10.1",
-    "material-ui": "^0.14.0-rc1",
-    "node-waves": "^0.7.4",
-    "paginator": "0.0.2",
+    "webpack-dev-server": "^1.12.1",
     "react": "^0.14.6",
     "react-addons-linked-state-mixin": "^0.14.3",
     "react-addons-update": "^0.14.3",
@@ -57,14 +44,23 @@
     "react-router": "^1.0.0",
     "react-tap-event-plugin": "^0.2.1",
     "redux": "^3.0.4",
-    "redux-2way-binding": "0.0.8",
-    "redux-form": "^3.1.7",
     "redux-immutable": "^1.3.10",
     "redux-logger": "^2.1.4",
     "redux-router": "^1.0.0-beta3",
     "redux-thunk": "^1.0.0",
+    "copy-webpack-plugin": "^0.3.3",
+    "file-loader": "^0.8.5",
+    "classnames": "^2.2.1",
+    "history": "^1.13.1",
+    "immutable": "^3.7.5",
+    "lodash": "^3.10.1",
     "sass-loader": "^3.1.2",
+    "node-waves": "^0.7.4",
     "timestamp-webpack-plugin": "^0.2.3",
-    "uglify-js": "^2.6.1"
+    "uglify-js": "^2.6.1",
+    "paginator": "0.0.2"
+  },
+  "dependencies": {
+    "jquery": "^2.1.4"
   }
 }
