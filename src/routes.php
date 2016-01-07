@@ -2,7 +2,7 @@
 
 
 Route::group([
-    'namespace' => 'Solarcms\TableProperties\Controllers',
+    'namespace' => 'Solarcms\Core\TableProperties\Controllers',
     'prefix' =>'solar/tp',
     'as' => 'Solar.TableProperties::'], function() {
 

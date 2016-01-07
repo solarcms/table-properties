@@ -1,12 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: n0m4dz
- * Date: 11/10/15
- * Time: 4:26 PM
- */
 
-namespace Solarcms\TableProperties;
+namespace Solarcms\Core\TableProperties;
 
 class TableProperties{
 

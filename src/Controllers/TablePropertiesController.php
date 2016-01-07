@@ -1,12 +1,12 @@
 <?php
 
-namespace Solarcms\TableProperties\Controllers;
+namespace Solarcms\Core\TableProperties\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Solarcms\TableProperties\TableProperties;
 use Request;
-use Solarcms\TableProperties\Tp\Tp;
+use Solarcms\Core\TableProperties\Tp\Tp;
 class TablePropertiesController extends Controller {
 
     public function __construct(){

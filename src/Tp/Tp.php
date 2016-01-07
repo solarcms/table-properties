@@ -1,6 +1,6 @@
 <?php
 
-namespace Solarcms\TableProperties\Tp;
+namespace Solarcms\Core\TableProperties\Tp;
 
 
 use Solarcms\TableProperties\TableProperties;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Solarcms\TableProperties;
+namespace Solarcms\Core\TableProperties;
 
 use Illuminate\Support\ServiceProvider as ServiceProvider;
 
