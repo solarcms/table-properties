@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 
 import { getList, setupPage, deleteItem, save, update, edit } from '../api/';
 import Header from '../components/grid/Header'
-import ListBody from '../components/grid/Body'
+import Body from '../components/grid/Body'
 import Pagination from '../components/grid/Paginator'
 import validation from "../components/form/validation/"
 
@@ -228,7 +228,7 @@ class GridContainer extends Component {
 
                 {topPagination}
 
-                <ListBody
+                <Body
                     bodyData={listData}
                     bodyHeader={gridHeader}
                     setRowEdit={this.setRowEdit.bind(this)}

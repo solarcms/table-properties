@@ -70,7 +70,7 @@ export default class Body extends Component {
 
                         </td>
                 })}
-                <td style={{width: '90px'}} >
+                <td style={{width: '95px'}} >
                     {formType == 'inline' ?
                         formType == 'inline' && editID == data.id
                         ? <span>
@@ -124,7 +124,7 @@ export default class Body extends Component {
 
                                 <Form formControls={cellFormControl}
                                       formData={formData}
-                                      hideLabel="true"
+                                      formType={formType}
                                       formValue={column.value}
                                       focusIndex={focusIndex}
                                       gridIndex={columnIndex}
