@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react'
-
+import $ from 'jquery'
+import {modal} from 'bootstrap'
 import * as DataActions from '../actions/'
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -9,6 +10,7 @@ import Header from '../components/grid/Header'
 import Body from '../components/grid/Body'
 import Pagination from '../components/grid/Paginator'
 import validation from "../components/form/validation/"
+import Window from "../components/form/window/"
 
 
 class GridContainer extends Component {
@@ -78,6 +80,8 @@ class GridContainer extends Component {
                     })
                 else
                     alert('please try agian')
+
+
             });
 
 
@@ -86,10 +90,9 @@ class GridContainer extends Component {
     removeInlineForm(){
         this.props.actions.setInlineFrom(false);
     }
-    saveInlineForm(id){
+    saveForm(id){
 
         const FD = this.props.formControls;
-
 
         let foundError = false;
 
@@ -103,14 +106,19 @@ class GridContainer extends Component {
 
         })
         if(foundError === false)
-            if(isNaN(id) === false){
+            if(isNaN(id) === false && id != 0){
 
                 update(FD, id).done((data)=>{
 
                     if(data == 'success' || 'none'){
                         this.props.actions.clearFromValidation();
                         this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
-                        this.setRowEdit(0, 0);
+
+                        if(this.props.formType == 'inline')
+                            this.setRowEdit(0, 0);
+                        else if(this.props.formType == 'window')
+                            this.hideModal();
+
                     }
 
                 }).fail(()=>{
@@ -122,8 +130,13 @@ class GridContainer extends Component {
 
                     if(data == 'success'){
                         this.props.actions.clearFromValidation();
-                        this.removeInlineForm();
                         this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
+
+                        if(this.props.formType == 'inline')
+                            this.removeInlineForm();
+                        else if(this.props.formType == 'window')
+                            this.hideModal();
+
                     }
 
                 }).fail(()=>{
@@ -132,7 +145,7 @@ class GridContainer extends Component {
             }
 
     }
-    inlineChangeValues(e){
+    ChangeValues(e){
 
         const index = e.target.name.replace("solar-input", "");
         let value = null
@@ -168,10 +181,34 @@ class GridContainer extends Component {
 
 
     }
+
     /*
      * Grid Inline from ending
      * */
+    /*
+    * Window form
+    * */
+    callWindowEdit(id){
+        this.props.actions.setRowEdit(id, 0)
+        edit(id).then((data)=> {
+            if(data.length >= 1)
+                this.props.formControls.map((formControl, index)=>{
+                    this.props.actions.chagenValue(index, data[0][formControl.column])
+                })
+            else
+                alert('please try agian')
+        });
 
+
+        $('#windowForm').modal({'backdrop': false}, 'show');
+    }
+    showModal(){
+        $('#windowForm').modal({'backdrop': false}, 'show');
+    }
+    hideModal(){
+        $('#windowForm').modal('hide');
+        this.props.actions.clearFromValidation();
+    }
     /*
     * Component life circyle
     * */
@@ -224,6 +261,7 @@ class GridContainer extends Component {
                         addInlineForm={this.addInlineForm.bind(this)}
                         ref="search"
                         handlerSearch={this.handleSearch.bind(this)}
+                        showModal={this.showModal.bind(this)}
                         handlerReload={this.callPageDatas.bind(this, this.props.currentPage, this.props.pageLimit, this.props.searchValue)}
                 />
 
@@ -241,10 +279,21 @@ class GridContainer extends Component {
                     formControls={formControls}
                     focusIndex={focusIndex}
                     handleDeleteItem={this.handleDeleteItem.bind(this)}
-                    inlineChangeValues={this.inlineChangeValues.bind(this)}
-                    saveInlineForm={this.saveInlineForm.bind(this)}
+                    inlineChangeValues={this.ChangeValues.bind(this)}
+                    callWindowEdit={this.callWindowEdit.bind(this)}
+                    saveInlineForm={this.saveForm.bind(this)}
                 />
                 {BottomPagination}
+
+
+                <Window
+                    formControls={formControls}
+                    formData={formData}
+                    pageName={setup.page_name}
+                    changeHandler={this.ChangeValues.bind(this)}
+                    saveForm={this.saveForm.bind(this, editID)}
+                    hideModal={this.hideModal.bind(this)}
+                />
             </div>
 
         )

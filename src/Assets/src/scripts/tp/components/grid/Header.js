@@ -3,15 +3,14 @@ import React, { Component, PropTypes }  from 'react';
 export default class Header extends Component {
 
     render() {
-        const addButton = this.props.formType == 'inline'
-            ?
-            <a href="javascript:void(0)" className="nav-link" onClick={this.props.addInlineForm}>
-                <i className="fa fa-plus"></i> Нэмэх
-            </a>
-            :
-            <a href={this.props.link} className="nav-link">
-                <i className="fa fa-plus"></i> Нэмэх
-            </a>
+        let addButton = "";
+
+        if(this.props.formType == 'inline')
+            addButton = <a href="javascript:void(0)" className="nav-link" onClick={this.props.addInlineForm}><i className="fa fa-plus"></i> Нэмэх</a>
+        else if(this.props.formType == 'window')
+            addButton = <a className="nav-link" href="javascript:void(0)" onClick={this.props.showModal}><i className="fa fa-plus"></i> Нэмэх</a>
+        else
+            addButton = <a href={this.props.link} className="nav-link"><i className="fa fa-plus"></i> Нэмэх</a>
 
         let actionControls = this.props.type == 'list' ?
             <ul className="nav navbar-nav pull-right">

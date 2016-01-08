@@ -118,7 +118,7 @@ class TablePropertiesController extends Controller {
             ['column'=>'flag', 'title'=>'Туг', 'type'=>'--text', 'value'=>null, 'validate'=>'required|max:7'],
 
         ];
-        $tp->formType = 'page';
+        $tp->formType = 'window';
         return $tp->run($action);
 
 
