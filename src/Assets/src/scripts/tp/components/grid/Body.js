@@ -41,8 +41,8 @@ export default class Body extends Component {
 
         $("#tp-table-wrapper").css('width', $("#tp-table-wrapper").parent().width() - 105 - leftTableWidth);
         $("#tp-table-wrapper0").css('width', $("#tp-table-wrapper").width());
-        $(".wrapper1").css('width', $(".wrapper1").parent().width() - 105 - leftTableWidth);
-        $(".wrapper1").css('margin-left', leftTableWidth);
+        $(".virtual_scroll").css('width', $(".virtual_scroll").parent().width() - 105 - leftTableWidth);
+        $(".virtual_scroll").css('margin-left', leftTableWidth);
 
 
         $("#tp-table-left0").css("width", (leftTableWidth+2));
@@ -103,11 +103,13 @@ export default class Body extends Component {
     }
 
     componentDidMount() {
-        $(".wrapper1").scroll(function () {
+
+
+        $(".virtual_scroll").scroll(function () {
             $("#tp-table-wrapper")
-                .scrollLeft($(".wrapper1").scrollLeft());
+                .scrollLeft($(".virtual_scroll").scrollLeft());
             $("#tp-table-wrapper0")
-                .scrollLeft($(".wrapper1").scrollLeft());
+                .scrollLeft($(".virtual_scroll").scrollLeft());
         });
 
         document.querySelector("#table_header").parentElement.addEventListener("scroll", function () {
@@ -458,8 +460,8 @@ export default class Body extends Component {
 
 
             </div>
-            <div className="wrapper1">
-                <div className="div1">
+            <div className="virtual_scroll">
+                <div className="virtual_table">
                 </div>
             </div>
         </div>)

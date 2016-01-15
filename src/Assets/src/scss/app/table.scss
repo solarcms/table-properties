@@ -55,7 +55,7 @@
   }
 }
 
-.wrapper1{
+.virtual_scroll{
   width: -moz-calc(100% - 96px);
   width: -webkit-calc(100% - 96px);
   width: calc(100% - 82px);
@@ -64,7 +64,7 @@
   bottom: 0;
   height: 15px;
   margin-left: 39px;
-  .div1 {
+  .virtual_table {
     min-width: 800px!important;
     height: 15px;
   }
