@@ -3,15 +3,14 @@ import Form from "../form/page_add_edit/Form"
 import $ from "jquery"
 
 
-
 export default class Body extends Component {
 
-    fixRowHeigth(){
+    fixRowHeigth() {
         let aRowHeights = [];
         // Loop through the tables
-        $("#gridBody").find("table").each(function(indx, table) {
+        $("#gridBody").find("table").each(function (indx, table) {
             // Loop through the rows of current table
-            $(table).find("tr").css("height", "").each(function(i, tr) {
+            $(table).find("tr").css("height", "").each(function (i, tr) {
                 // If there is already a row height defined
                 if (aRowHeights[i])
                 // Replace value with height of current row if current row is higher.
@@ -22,9 +21,9 @@ export default class Body extends Component {
             });
         });
         // Loop through the tables in this "gridBody separately again
-        $("#gridBody").find("table").each(function(i, table) {
+        $("#gridBody").find("table").each(function (i, table) {
             // Set the height of each row to the stored greatest height.
-            $(table).find("tr").each(function(i, tr) {
+            $(table).find("tr").each(function (i, tr) {
                 $(tr).css("height", aRowHeights[i]);
             });
         });
@@ -35,36 +34,36 @@ export default class Body extends Component {
 
         $("#tp-table-left").css("width", leftTableWidth)
 
-        $("#tp-table-wrapper").css('width', $("#tp-table-wrapper").parent().width()-98-leftTableWidth);
-        $("#tp-table-wrapper0").css('width', $("#tp-table-wrapper0").parent().width()-98-leftTableWidth);
-        $(".wrapper1").css('width', $(".wrapper1").parent().width()-98-leftTableWidth);
+        $("#tp-table-wrapper").css('width', $("#tp-table-wrapper").parent().width() - 98 - leftTableWidth);
+        $("#tp-table-wrapper0").css('width', $("#tp-table-wrapper0").parent().width() - 98 - leftTableWidth);
+        $(".wrapper1").css('width', $(".wrapper1").parent().width() - 98 - leftTableWidth);
         $(".wrapper1").css('margin-left', leftTableWidth);
 
 
         $("#tp-table-left0").css("width", leftTableWidth);
         $("#tp-table-left0 > thead > tr").empty();
-        $("#tp-table-left > thead > tr").find("th").each(function(indx, td) {
+        $("#tp-table-left > thead > tr").find("th").each(function (indx, td) {
 
-            var copy = "<th style='width: "+$(td).width()+"px; height: "+$(td).height()+"px' class='sorting'>"+$(td).html()+"</th>";
+            var copy = "<th style='width: " + $(td).width() + "px; height: " + $(td).height() + "px' class='sorting'>" + $(td).html() + "</th>";
             $("#tp-table-left0 > thead > tr").append(copy);
 
         });
 
         $("#tp-table0").css("width", $("#tp-table0").width());
         $("#tp-table0 > thead > tr").empty();
-        $("#tp-table > thead > tr").find("th").each(function(indx, td) {
+        $("#tp-table > thead > tr").find("th").each(function (indx, td) {
 
 
-            var copy = "<th style='width: "+$(td).width()+"px; height: "+$(td).height()+"px' class='sorting'>"+$(td).html()+"</th>";
+            var copy = "<th style='width: " + $(td).width() + "px; height: " + $(td).height() + "px' class='sorting'>" + $(td).html() + "</th>";
             $("#tp-table0 > thead > tr").append(copy);
 
         });
 
         $("#tp-table-rigth0").css("width", $("#tp-table-rigth").width());
         $("#tp-table-rigth0 > thead > tr").empty();
-        $("#tp-table-rigth > thead > tr").find("th").each(function(indx, td) {
+        $("#tp-table-rigth > thead > tr").find("th").each(function (indx, td) {
 
-            var copy = "<th style='width: "+$(td).width()+"px; height: "+$(td).height()+"px' >"+$(td).html()+"</th>";
+            var copy = "<th style='width: " + $(td).width() + "px; height: " + $(td).height() + "px' >" + $(td).html() + "</th>";
             $("#tp-table-rigth0 > thead > tr").append(copy);
 
         });
@@ -103,8 +102,8 @@ export default class Body extends Component {
                 .scrollLeft($(".wrapper1").scrollLeft());
         });
 
-        document.querySelector("#table_header").parentElement.addEventListener("scroll", function(){
-            document.querySelector("#table_header").style.transform = "translateY("+this.scrollTop+"px)";
+        document.querySelector("#table_header").parentElement.addEventListener("scroll", function () {
+            document.querySelector("#table_header").style.transform = "translateY(" + this.scrollTop + "px)";
         });
 
     }
@@ -126,13 +125,15 @@ export default class Body extends Component {
         this.fixRowHeigth()
 
     }
-    fixedHeader(){
+
+    fixedHeader() {
         $("#tp-table").thfloat();
         $("#tp-table-left").thfloat();
         $("#tp-table-rigth").thfloat();
     }
-    componentWillUpdate(nextProps){
-        if(nextProps.bodyData.length >= 1) {
+
+    componentWillUpdate(nextProps) {
+        if (nextProps.bodyData.length >= 1) {
             //this.fixedHeader();
         }
     }
@@ -144,7 +145,7 @@ export default class Body extends Component {
 
         const gridHeader = bodyHeader.map((grid, index) => {
 
-            if(grid.fixed && grid.fixed === true){
+            if (grid.fixed && grid.fixed === true) {
 
             } else {
                 return <th key={index} tooltip={grid.title} className="sorting">{grid.title}</th>
@@ -155,14 +156,14 @@ export default class Body extends Component {
 
         const gridHeaderLeft = bodyHeader.map((grid, index) => {
 
-            if(grid.fixed && grid.fixed === true){
+            if (grid.fixed && grid.fixed === true) {
                 return <th key={index} tooltip={grid.title} className="sorting">{grid.title} </th>
             }
 
 
         })
 
-        const gridFixedLeft = bodyData.map((data, index) =>{
+        const gridFixedLeft = bodyData.map((data, index) => {
             let fixedColumns = bodyHeader.map((grid, columnIndex) => {
 
                 let cellformControl = [];
@@ -174,7 +175,7 @@ export default class Body extends Component {
                             cellformControl.push(formControl)
                     })
 
-                if(grid.fixed && grid.fixed === true){
+                if (grid.fixed && grid.fixed === true) {
 
                     return <td key={columnIndex} onClick={this.setRowEdit.bind(this, data.id, columnIndex)}>
                         {formType == 'inline' && editID == data.id ?
@@ -199,11 +200,11 @@ export default class Body extends Component {
 
             })
             return <tr key={data.id}>
-                        <td onClick={this.setRowEdit.bind(this, data.id, 0)}>
-                            {index + 1}
-                        </td>
-                        {fixedColumns}
-                    </tr>
+                <td onClick={this.setRowEdit.bind(this, data.id, 0)}>
+                    {index + 1}
+                </td>
+                {fixedColumns}
+            </tr>
         })
 
         const gridFixedRight = bodyData.map((data, index) =>
@@ -271,7 +272,7 @@ export default class Body extends Component {
                                 cellformControl.push(formControl)
                         })
 
-                    if(grid.fixed && grid.fixed === true){
+                    if (grid.fixed && grid.fixed === true) {
 
                     } else {
                         return <td key={columnIndex} onClick={this.setRowEdit.bind(this, data.id, columnIndex)}>
@@ -295,7 +296,7 @@ export default class Body extends Component {
                     }
 
 
-            })}
+                })}
 
             </tr>
         )
@@ -359,7 +360,6 @@ export default class Body extends Component {
                         <table id="tp-table0" className="table table-striped table-hover " width="100%">
                             <thead>
                             <tr className="solar-grid-header">
-
 
 
                             </tr>

@@ -14,4 +14,3 @@ export const SET_ERROR = 'SET_ERROR';
 export const CLEAR_FORM_VALIDATION = 'CLEAR_FORM_VALIDATION';
 export const SET_EDIT_ROW = 'SET_EDIT_ROW';
 export const SET_INLINE_FORM = 'SET_INLINE_FORM';
-export const SET_GRID_SIZE = 'SET_GRID_SIZE';

@@ -81,13 +81,6 @@ export function clearFromValidation() {
     }
 }
 
-export function setActionSize(width, height) {
-    return {
-        type: types.SET_GRID_SIZE,
-        width: width,
-        height: height
-    }
-}
 
 /////
 export function getSetupData() {

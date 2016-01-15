@@ -222,24 +222,13 @@ class GridContainer extends Component {
     * Component life circyle
     * */
     componentWillMount() {
-       window.removeEventListener('resize', this.handleResize);
+
     }
     componentDidMount() {
         this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
 
-       window.addEventListener('resize', this.handleResize.bind(this));
-        this.props.actions.setActionSize($('#gridBody').width()-16, $('#gridBody').height())
-
-
-
-
     }
-    handleResize(e) {
 
-
-
-        this.props.actions.setActionSize($('#gridBody').width()-16, $('#gridBody').height())
-    }
     render() {
 
         const { setup, listData, gridHeader, totalPages, pageLimit, totalItems,
@@ -307,8 +296,6 @@ class GridContainer extends Component {
                     inlineChangeValues={this.ChangeValues.bind(this)}
                     callWindowEdit={this.callWindowEdit.bind(this)}
                     saveInlineForm={this.saveForm.bind(this)}
-                    gridWidth={gridWidth}
-                    gridHeight={gridHeight}
 
                 />
                 {BottomPagination}
@@ -365,8 +352,7 @@ function mapStateToProps(state) {
         currentPage: TpStore.get('currentPage'),
         pageLimit: TpStore.get('pageLimit'),
         searchValue: TpStore.get('searchValue'),
-        gridWidth:TpStore.getIn(['grid', 'width']),
-        gridHeight:TpStore.getIn(['grid', 'height']),
+
     }
 }
 

@@ -13,10 +13,6 @@ const initialState = {
     editID:0,
     focusIndex:0,
     showInlineForm: false,
-    grid:{
-        width: 1000,
-        height:600
-    }
 };
 
 export default createReducer(initialState, {
@@ -80,14 +76,6 @@ export default createReducer(initialState, {
 
        state = state.set('editID', editID);
        state = state.set('focusIndex', focusIndex);
-
-       return state;
-    },
-    [types.SET_GRID_SIZE](state, { width, height }) {
-
-       state = state.setIn(['grid', 'width'], width);
-       state = state.setIn(['grid', 'height'], height);
-
 
        return state;
     },
