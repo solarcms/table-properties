@@ -33,7 +33,7 @@ class Tp
     public $grid_output_control = [];  // for grid(). define outputs like --email to make a clickable mailto or --document to make a link. *info on usage below*
     public $grid_multi_delete = false;      // display checkboxes on grid to allow for multiple record delete
     public $grid_show_search_box = false;   // display search field at the top - grid_sql must be altered to accomodate search
-    public $grid_limit = 10;               // pagination limit number of records per page
+    public $pageLimit = 50;               // pagination limit number of records per page
     public $grid_show_images = false;       // option to show images inside the grid, otherwise a link is displayed for --image type
     public $pagination_position = 'bottom'; // both, top, bottom
 
@@ -147,7 +147,7 @@ class Tp
                 $FormData[$formControl['column']] = $data;
 
               //  print_r($data);
-                //->take($this->grid_limit)->get()
+                //->take($this->pageLimit)->get()
 
             }
         }
@@ -265,29 +265,30 @@ class Tp
         $table_info_columns = DB::select( DB::raw("SHOW COLUMNS FROM $this->table"));
 
         // this will skip identity_name and created_at, updated_at columns
-        foreach($table_info_columns as $column_pre){
-
-            $col_name = $column_pre->Field;
-            $col_type = $column_pre->Type;
-
-
-            if($col_name == 'created_at')
-                $this->created_at = true;
-
-            if($col_name == 'updated_at')
-                $this->updated_at = true;
-
-            if($col_name != $this->identity_name && $col_name != 'created_at' && $col_name != 'updated_at')
-                $columns[] = ['name'=>$col_name, 'type'=>$col_type];
-        }
-        $fields =  $this->create_grid_from_fields($columns);
+//        foreach($table_info_columns as $column_pre){
+//
+//            $col_name = $column_pre->Field;
+//            $col_type = $column_pre->Type;
+//
+//
+//            if($col_name == 'created_at')
+//                $this->created_at = true;
+//
+//            if($col_name == 'updated_at')
+//                $this->updated_at = true;
+//
+//            if($col_name != $this->identity_name && $col_name != 'created_at' && $col_name != 'updated_at')
+//                $columns[] = ['name'=>$col_name, 'type'=>$col_type];
+//        }
+//        $fields =  $this->create_grid_from_fields($columns);
 
         return [
-            'form_input_control'=>$fields['form_input_control'],
-            'grid_output_control'=>$fields['grid_output_control'],
+            'form_input_control'=>$this->form_input_control,
+            'grid_output_control'=>$this->grid_output_control,
             'page_name'=>$this->page_name,
             'pagination_position'=>$this->pagination_position,
             'formType'=>$this->formType,
+            'pageLimit'=>$this->pageLimit,
         ];
 
     }

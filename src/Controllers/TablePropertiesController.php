@@ -44,6 +44,8 @@ class TablePropertiesController extends Controller {
             case "acticle_category":          return $this->acticle_category($action);        break;
             case "article":          return $this->article($action);        break;
             case "locales":          return $this->locales($action);        break;
+            case "category":          return $this->category($action);        break;
+            case "product_detail":          return $this->product_detail($action);        break;
             default:              return $this->acticle_category($action);
         }
 
@@ -58,13 +60,16 @@ class TablePropertiesController extends Controller {
         $tp->identity_name = 'id';
         $tp->grid_columns = ['active', 'name', 'id'];
         $tp->grid_default_order_by = 'id DESC';
-        $tp->formType = 'page';
+        $tp->formType = 'inline';
+
+        $tp->grid_output_control = [
+            ['column'=>'active', 'title'=>'Идвэхтэй', 'type'=>'--checkbox', 'fixed'=>false],
+            ['column'=>'name', 'title'=>'Нэр', 'type'=>'--text'],
+        ];
 
         $tp->form_input_control = [
             ['column'=>'active', 'title'=>'Идвэхтэй', 'type'=>'--checkbox', 'value'=>0, 'validate'=> ''],
             ['column'=>'name', 'title'=>'Нэр', 'type'=>'--text', 'value'=>null, 'validate'=>'required|max:7'],
-
-
         ];
         return $tp->run($action);
 
@@ -111,6 +116,12 @@ class TablePropertiesController extends Controller {
         $tp->identity_name = 'id';
         $tp->grid_default_order_by = 'id DESC';
         $tp->grid_columns = ['code', 'language', 'flag', 'id'];
+
+        $tp->grid_output_control = [
+            ['column'=>'code', 'title'=>'Улсын код', 'type'=>'--text'],
+            ['column'=>'language', 'title'=>'Хэл', 'type'=>'--text'],
+            ['column'=>'flag', 'title'=>'Туг', 'type'=>'--text'],
+        ];
         $tp->form_input_control = [
 
             ['column'=>'code', 'title'=>'Улсын код', 'type'=>'--text', 'value'=>null, 'validate'=>'required|max:7'],
@@ -118,7 +129,55 @@ class TablePropertiesController extends Controller {
             ['column'=>'flag', 'title'=>'Туг', 'type'=>'--text', 'value'=>null, 'validate'=>'required|max:7'],
 
         ];
-        $tp->formType = 'window';
+        $tp->formType = 'page';
+        return $tp->run($action);
+
+
+    }
+
+    public function category ($action){
+
+        $tp = new Tp();
+        $tp->table = 'category';
+        $tp->page_name = 'Бүлэг';
+        $tp->identity_name = 'id';
+        $tp->grid_default_order_by = 'id DESC';
+        $tp->grid_columns = ['category_name', 'id'];
+        $tp->grid_output_control = [
+            ['column'=>'category_name', 'title'=>'Нэр', 'type'=>'--text']
+        ];
+        $tp->form_input_control = [
+            ['column'=>'category_name', 'title'=>'Нэр', 'type'=>'--text', 'value'=>null, 'validate'=>'required']
+        ];
+        $tp->formType = 'page';
+        return $tp->run($action);
+
+
+    }
+
+    public function product_detail ($action){
+
+        $tp = new Tp();
+        $tp->table = 'product_detail';
+        $tp->page_name = 'Бараа';
+        $tp->identity_name = 'id';
+        $tp->grid_default_order_by = 'id DESC';
+        $tp->grid_columns = ['title', 'description', 'price', 'images', 'size', 'colors', 'id'];
+        $tp->grid_output_control = [
+            ['column'=>'title', 'title'=>'Нэр', 'type'=>'--text', 'fixed'=>true],
+            ['column'=>'price', 'title'=>'Үнэ', 'type'=>'--text'],
+            ['column'=>'size', 'title'=>'Хэмжээ', 'type'=>'--text'],
+            ['column'=>'colors', 'title'=>'Өнгө', 'type'=>'--text'],
+        ];
+        $tp->form_input_control = [
+            ['column'=>'title', 'title'=>'Нэр', 'type'=>'--text', 'value'=>null, 'validate'=>'required'],
+            ['column'=>'description', 'title'=>'Тайлбар', 'type'=>'--text', 'value'=>null, 'validate'=>'required'],
+            ['column'=>'price', 'title'=>'Үнэ', 'type'=>'--text', 'value'=>null, 'validate'=>'required'],
+            ['column'=>'size', 'title'=>'Хэмжээ', 'type'=>'--text', 'value'=>null, 'validate'=>'required'],
+            ['column'=>'colors', 'title'=>'Өнгө', 'type'=>'--text', 'value'=>null, 'validate'=>'required'],
+            ['column'=>'images', 'title'=>'Зураг', 'type'=>'--text', 'value'=>null, 'validate'=>'required']
+        ];
+        $tp->formType = 'page';
         return $tp->run($action);
 
 

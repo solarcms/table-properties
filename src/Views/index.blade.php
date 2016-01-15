@@ -20,8 +20,7 @@
                 </div>
 
                 <div class="col-sm-9 col-md-10 map-outer-wrapper">
-
-                    <div id="root"></div>
+                    <div id="solar-tp"></div>
                 </div>
             </div>
         </div>

@@ -1,0 +1,89 @@
+.table > thead > tr > th {
+  padding: 12px;
+  height: 47px;
+}
+
+.table {
+  margin-bottom: 0;
+
+  .checkbox-inline input[type=checkbox], .checkbox input[type=checkbox], .radio-inline input[type=radio], .radio input[type=radio] {
+    margin-left: 0px;
+  }
+
+}
+
+#tp-table-left0, #tp-table-left{
+  min-width: 39px!important;
+  text-align: center;
+  display: inline-block;
+  vertical-align: top;
+  border-right: 2px solid #ccc ;
+  tr{
+    td{
+      padding: 5px;
+      text-align: center;
+      height: 40px;
+    }
+  }
+}
+#tp-table-wrapper0, #tp-table-wrapper{
+  width: -moz-calc(100% - 96px);
+  width: -webkit-calc(100% - 96px);
+  width: calc(100% - 82px);
+  overflow-x: hidden;
+  display: inline-block;
+  vertical-align: top;
+  #tp-table{
+
+    min-width: 800px!important;
+    tr{
+      td{
+        padding: 5px;
+
+        height: 40px;
+      }
+    }
+  }
+}
+
+.wrapper1{
+  width: -moz-calc(100% - 96px);
+  width: -webkit-calc(100% - 96px);
+  width: calc(100% - 82px);
+  overflow-x: scroll;
+  overflow-y:hidden;
+  bottom: 0;
+  margin-left: 39px;
+  .div1 {
+    min-width: 800px!important;
+    height: 1px;
+  }
+;}
+
+#tp-table-rigth0, #tp-table-rigth{
+  width: 82px;
+  text-align: center;
+  display: inline-block;
+  vertical-align: top;
+  th{
+    text-align: center;
+  }
+  tr{
+    td{
+      padding: 3px;
+      text-align: center;
+      height: 40px;
+
+    }
+  }
+}
+
+#table_header{
+  top: 0;
+  border-bottom: 2px solid #ccc;
+  background: #fff;
+  width: 100%;
+  position: absolute;
+  //display: none;
+
+}

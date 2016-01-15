@@ -1,19 +1,31 @@
-import React, { Component, PropTypes } from 'react'
-import $ from 'jquery'
-import {modal} from 'bootstrap'
-import * as DataActions from '../actions/'
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+import React, { Component, PropTypes } from "react"
+import $ from "jquery"
 
-import { getList, setupPage, deleteItem, save, update, edit } from '../api/';
-import Header from '../components/grid/Header'
-import Body from '../components/grid/Body'
-import Pagination from '../components/grid/Paginator'
+
+//import {modal} from 'bootstrap'
+import * as DataActions from "../actions/"
+import { bindActionCreators } from "redux"
+import { connect } from "react-redux"
+
+import { getList, setupPage, deleteItem, save, update, edit } from "../api/"
+import Header from "../components/grid/Header"
+import Body from "../components/grid/Body"
+import Pagination from "../components/grid/Paginator"
 import validation from "../components/form/validation/"
 import Window from "../components/form/window/"
 
-
 class GridContainer extends Component {
+    //export
+    exportPDF(){
+        $('#tp-table').tableExport({type:'csv'});
+    }
+    exportEXCEL(){
+        //$('#tp-table').tableExport({type:'pdf'});
+        //$('#tp-table').tableExport({type:'json'});
+        $('#tp-table').tableExport({type:'xls'});
+        //$('#tp-table').tableExport({type:'sql'});
+    }
+    //export
     /*
      * Grid main actions starting
      * */
@@ -32,7 +44,7 @@ class GridContainer extends Component {
     }
     handlePageChange(pageNumber) {
         this.props.actions.setCurrentPage(pageNumber)
-        console.log(pageNumber)
+
         this.callPageDatas(pageNumber, this.props.pageLimit, this.props.searchValue)
     }
     handleSearch() {
@@ -51,8 +63,6 @@ class GridContainer extends Component {
     /*
      * Grid main actions starting
      * */
-
-    /* ------------------------------------------ */
 
     /*
     * Grid Inline from starting
@@ -150,8 +160,6 @@ class GridContainer extends Component {
         const index = e.target.name.replace("solar-input", "");
         let value = null
 
-
-
         if(e.target.type == 'checkbox'){
             if(e.target.checked === true)
                 value = 1;
@@ -185,6 +193,7 @@ class GridContainer extends Component {
     /*
      * Grid Inline from ending
      * */
+
     /*
     * Window form
     * */
@@ -213,18 +222,31 @@ class GridContainer extends Component {
     * Component life circyle
     * */
     componentWillMount() {
-       this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
+       window.removeEventListener('resize', this.handleResize);
     }
     componentDidMount() {
-    }
+        this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
 
+       window.addEventListener('resize', this.handleResize.bind(this));
+        this.props.actions.setActionSize($('#gridBody').width()-16, $('#gridBody').height())
+
+
+
+
+    }
+    handleResize(e) {
+
+
+
+        this.props.actions.setActionSize($('#gridBody').width()-16, $('#gridBody').height())
+    }
     render() {
 
         const { setup, listData, gridHeader, totalPages, pageLimit, totalItems,
             currentPage, paginationPosition, formData, editID, formType, formControls,
-            focusIndex, showInlineForm } = this.props;
+            focusIndex, showInlineForm, gridWidth, gridHeight } = this.props;
 
-
+        const gridId = paginationPosition == 'both' ? 'gridBodyBoth' : 'gridBody'
         const topPagination = paginationPosition == 'top' || paginationPosition == 'both' ?
             <Pagination
                 totalItems={totalItems}
@@ -246,7 +268,7 @@ class GridContainer extends Component {
                 pageLimit={pageLimit}
                 handler={this.hangePageLimitChange.bind(this)}
                 handlerPage={this.handlePageChange.bind(this)}
-                paginationMarg="m-r-sm m-l-sm m-b-sm"
+                paginationMarg="m-r-sm m-l-sm m-b-sm paginationBottom"
             />
             :
             null
@@ -263,11 +285,14 @@ class GridContainer extends Component {
                         handlerSearch={this.handleSearch.bind(this)}
                         showModal={this.showModal.bind(this)}
                         handlerReload={this.callPageDatas.bind(this, this.props.currentPage, this.props.pageLimit, this.props.searchValue)}
+                        exportPDF={this.exportPDF.bind(this)}
+                        exportEXCEL={this.exportEXCEL.bind(this)}
                 />
 
                 {topPagination}
 
                 <Body
+                    gridId={gridId}
                     bodyData={listData}
                     bodyHeader={gridHeader}
                     setRowEdit={this.setRowEdit.bind(this)}
@@ -282,6 +307,9 @@ class GridContainer extends Component {
                     inlineChangeValues={this.ChangeValues.bind(this)}
                     callWindowEdit={this.callWindowEdit.bind(this)}
                     saveInlineForm={this.saveForm.bind(this)}
+                    gridWidth={gridWidth}
+                    gridHeight={gridHeight}
+
                 />
                 {BottomPagination}
 
@@ -307,7 +335,9 @@ GridContainer.defaultProps = {
     currentPage: 1,
     pageLimit: 10,
     searchValue: '',
-    listData:[]
+    listData:[],
+    //listData:{},
+
 }
 GridContainer.propTypes = {
     //setup: PropTypes.object.isRequired,
@@ -327,6 +357,7 @@ function mapStateToProps(state) {
         formControls: TpStore.get('setup').toJS().form_input_control,
         paginationPosition: TpStore.get('setup').toJS().pagination_position,
         formType: TpStore.get('setup').toJS().formType,
+        //listData: TpStore.getIn(['listData', 'data']),
         listData: TpStore.get('listData').toJS().data,
         gridHeader: TpStore.get('setup').toJS().grid_output_control,
         totalItems: TpStore.get('listData').toJS().total,
@@ -334,6 +365,8 @@ function mapStateToProps(state) {
         currentPage: TpStore.get('currentPage'),
         pageLimit: TpStore.get('pageLimit'),
         searchValue: TpStore.get('searchValue'),
+        gridWidth:TpStore.getIn(['grid', 'width']),
+        gridHeight:TpStore.getIn(['grid', 'height']),
     }
 }
 

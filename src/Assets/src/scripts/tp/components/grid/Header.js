@@ -20,8 +20,8 @@ export default class Header extends Component {
                     </a>
                     <div className="dropdown-menu dropdown-menu-scale pull-right text-color"
                          role="menu">
-                        <a className="dropdown-item" href=""><i className="fa fa-file-pdf-o"></i> PDF</a>
-                        <a className="dropdown-item" href=""><i className="fa fa-file-excel-o"></i> Excel</a>
+                        <a className="dropdown-item" onClick={this.props.exportPDF}><i className="fa fa-file-pdf-o"></i> PDF</a>
+                        <a className="dropdown-item" onClick={this.props.exportEXCEL}><i className="fa fa-file-excel-o"></i> Excel</a>
                         <a className="dropdown-item" href=""><i className="fa fa-print"></i> Print</a>
                     </div>
                 </li>
@@ -72,16 +72,17 @@ export default class Header extends Component {
             :
             null
         return (
-            <div className="white box-shadow-z0 b-b">
-                <div className="navbar">
+            <div className="">
+                <div className="white box-shadow-z0 b-b">
+                    <div className="navbar">
 
-                    <div className="navbar-item pull-left h5 p-l" id="pageTitle">{this.props.pageName}</div>
+                        <div className="navbar-item pull-left h5 p-l" id="pageTitle">{this.props.pageName}</div>
 
-                    {actionControls}
-                    {searchBar}
+                        {actionControls}
+                        {searchBar}
+                    </div>
                 </div>
             </div>
-
         )
     }
 }
