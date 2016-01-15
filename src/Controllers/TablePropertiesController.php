@@ -63,7 +63,7 @@ class TablePropertiesController extends Controller {
         $tp->formType = 'inline';
 
         $tp->grid_output_control = [
-            ['column'=>'active', 'title'=>'Идвэхтэй', 'type'=>'--checkbox', 'fixed'=>false],
+            ['column'=>'active', 'title'=>'Идвэхтэй', 'type'=>'--checkbox', 'fixed'=>true],
             ['column'=>'name', 'title'=>'Нэр', 'type'=>'--text'],
         ];
 

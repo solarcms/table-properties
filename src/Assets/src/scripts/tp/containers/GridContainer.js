@@ -261,7 +261,27 @@ class GridContainer extends Component {
             />
             :
             null
+        const gridBody = listData.length >= 1 ?
+            <Body
+                gridId={gridId}
+                bodyData={listData}
+                bodyHeader={gridHeader}
+                setRowEdit={this.setRowEdit.bind(this)}
+                formType={formType}
+                editID={editID}
+                showInlineForm={showInlineForm}
+                removeInlineForm={this.removeInlineForm.bind(this)}
+                formData={formData}
+                formControls={formControls}
+                focusIndex={focusIndex}
+                handleDeleteItem={this.handleDeleteItem.bind(this)}
+                inlineChangeValues={this.ChangeValues.bind(this)}
+                callWindowEdit={this.callWindowEdit.bind(this)}
+                saveInlineForm={this.saveForm.bind(this)}
 
+            />
+            :
+            null
 
         return (
             <div >
@@ -280,24 +300,8 @@ class GridContainer extends Component {
 
                 {topPagination}
 
-                <Body
-                    gridId={gridId}
-                    bodyData={listData}
-                    bodyHeader={gridHeader}
-                    setRowEdit={this.setRowEdit.bind(this)}
-                    formType={formType}
-                    editID={editID}
-                    showInlineForm={showInlineForm}
-                    removeInlineForm={this.removeInlineForm.bind(this)}
-                    formData={formData}
-                    formControls={formControls}
-                    focusIndex={focusIndex}
-                    handleDeleteItem={this.handleDeleteItem.bind(this)}
-                    inlineChangeValues={this.ChangeValues.bind(this)}
-                    callWindowEdit={this.callWindowEdit.bind(this)}
-                    saveInlineForm={this.saveForm.bind(this)}
+                {gridBody}
 
-                />
                 {BottomPagination}
 
 

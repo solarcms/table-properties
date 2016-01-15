@@ -22,7 +22,7 @@ export default class Body extends Component {
                 // Else set it to the height of the current row
                     aRowHeights[i] = $(tr).height();
 
-                console.log(aRowHeights[i]);
+
             });
         });
         // Loop through the tables in this "gridBody separately again
@@ -114,6 +114,8 @@ export default class Body extends Component {
             document.querySelector("#table_header").style.transform = "translateY(" + this.scrollTop + "px)";
         });
 
+        this.fixRowHeigth()
+
     }
 
     componentWillMount() {
@@ -129,7 +131,6 @@ export default class Body extends Component {
     }
 
     componentDidUpdate() {
-
         this.fixRowHeigth()
 
     }
