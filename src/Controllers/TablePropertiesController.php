@@ -83,7 +83,13 @@ class TablePropertiesController extends Controller {
         $tp->identity_name = 'id';
         $tp->grid_columns = ['active', 'name', 'category_id', 'id'];
         $tp->grid_default_order_by = 'id DESC';
-        $tp->formType = 'inline';
+        $tp->formType = 'page';
+
+        $tp->grid_output_control = [
+            ['column'=>'active', 'title'=>'Идвэхтэй', 'type'=>'--checkbox', 'fixed'=>true],
+            ['column'=>'name', 'title'=>'Нэр', 'type'=>'--text'],
+            ['column'=>'category_id', 'title'=>'Бүлэг', 'type'=>'--text'],
+        ];
 
         $tp->form_input_control = [
             ['column'=>'active', 'title'=>'Идвэхтэй', 'type'=>'--checkbox', 'value'=>0, 'validate'=> ''],

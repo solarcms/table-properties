@@ -12,7 +12,7 @@
 
 
     <div class="app-body" id="view">
-        <div class="app-body-inner">
+        <div class="app-body-inner" style="overflow: hidden">
 
             <div class="row-col row-col-xs b-b">
                 <div class="col-sm-3 col-md-2 white b-r">

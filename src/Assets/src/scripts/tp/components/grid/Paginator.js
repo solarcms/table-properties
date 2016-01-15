@@ -18,7 +18,7 @@ export default class Paginator extends Component {
                                 Нийт: <b>{totalItems}</b>.
                                 Нийт хуудас: <b> {totalPages}</b>.
                             </div>
-                            <div style={{display: 'inline-block', marginLeft:'10px'}}>
+                            <div style={{display: 'inline-block', marginLeft:'10px'}} className="hidden-md-down">
                                 <ComboBox
                                     comboClass="form-control pull-right form-control-sm"
                                     changeHandler={ handler }

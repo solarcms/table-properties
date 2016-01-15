@@ -3,10 +3,12 @@ import Form from "../form/page_add_edit/Form"
 import $ from "jquery"
 
 
+
+
 export default class Body extends Component {
 
     fixRowHeigth() {
-        console.log('resizing')
+
         let aRowHeights = [];
         // Loop through the tables
         $("#gridBody").find("table").each(function (indx, table) {
@@ -19,6 +21,8 @@ export default class Body extends Component {
                 else
                 // Else set it to the height of the current row
                     aRowHeights[i] = $(tr).height();
+
+                console.log(aRowHeights[i]);
             });
         });
         // Loop through the tables in this "gridBody separately again
@@ -33,15 +37,15 @@ export default class Body extends Component {
 
         /////////////// fixed table header
 
-        $("#tp-table-left").css("width", leftTableWidth)
+        $("#tp-table-left").css("width", (leftTableWidth+2))
 
-        $("#tp-table-wrapper").css('width', $("#tp-table-wrapper").parent().width() - 110 - leftTableWidth);
+        $("#tp-table-wrapper").css('width', $("#tp-table-wrapper").parent().width() - 105 - leftTableWidth);
         $("#tp-table-wrapper0").css('width', $("#tp-table-wrapper").width());
-        $(".wrapper1").css('width', $(".wrapper1").parent().width() - 110 - leftTableWidth);
+        $(".wrapper1").css('width', $(".wrapper1").parent().width() - 105 - leftTableWidth);
         $(".wrapper1").css('margin-left', leftTableWidth);
 
 
-        $("#tp-table-left0").css("width", leftTableWidth);
+        $("#tp-table-left0").css("width", (leftTableWidth+2));
         $("#tp-table-left0 > thead > tr").empty();
         $("#tp-table-left > thead > tr").find("th").each(function (indx, td) {
 
@@ -50,7 +54,7 @@ export default class Body extends Component {
 
         });
 
-        $("#tp-table0").css("width", $("#tp-table0").width());
+        $("#tp-table0").css("width", $("#tp-table").width());
         $("#tp-table0 > thead > tr").empty();
         $("#tp-table > thead > tr").find("th").each(function (indx, td) {
 
@@ -60,14 +64,17 @@ export default class Body extends Component {
 
         });
 
-        $("#tp-table-rigth0").css("width", $("#tp-table-rigth").width());
+        $("#tp-table-rigth0").css("width", 87);
         $("#tp-table-rigth0 > thead > tr").empty();
         $("#tp-table-rigth > thead > tr").find("th").each(function (indx, td) {
 
-            var copy = "<th style='width: 82px; height: " + $(td).height() + "px' >" + $(td).html() + "</th>";
+            var copy = "<th style='width: 87px; height: " + $(td).height() + "px' >" + $(td).html() + "</th>";
             $("#tp-table-rigth0 > thead > tr").append(copy);
 
         });
+
+
+
     }
 
     setRowEdit(editID, focusIndex) {
@@ -110,14 +117,11 @@ export default class Body extends Component {
     }
 
     componentWillMount() {
-
         window.addEventListener('resize', this.fixRowHeigth);
     }
     componentWillUnmount() {
         window.removeEventListener('resize', this.fixRowHeigth);
     }
-
-
 
     saveInlineForm(id) {
 
@@ -130,17 +134,6 @@ export default class Body extends Component {
 
     }
 
-    fixedHeader() {
-        $("#tp-table").thfloat();
-        $("#tp-table-left").thfloat();
-        $("#tp-table-rigth").thfloat();
-    }
-
-    componentWillUpdate(nextProps) {
-        if (nextProps.bodyData.length >= 1) {
-            //this.fixedHeader();
-        }
-    }
 
     render() {
         const { bodyData, bodyHeader, table, formType, editID, formData, formControls, focusIndex,
@@ -151,20 +144,15 @@ export default class Body extends Component {
 
             if (grid.fixed && grid.fixed === true) {
 
-            } else {
+            } else
                 return <th key={index} tooltip={grid.title} className="sorting">{grid.title}</th>
-            }
-
 
         })
 
         const gridHeaderLeft = bodyHeader.map((grid, index) => {
 
-            if (grid.fixed && grid.fixed === true) {
+            if (grid.fixed && grid.fixed === true)
                 return <th key={index} tooltip={grid.title} className="sorting">{grid.title} </th>
-            }
-
-
         })
 
         const gridFixedLeft = bodyData.map((data, index) => {
@@ -306,9 +294,77 @@ export default class Body extends Component {
         )
 
         const inlineAddFormLeft = <tr>
-            <td >
+            <th></th>
+            {bodyHeader.map((grid, columnIndex) => {
+                let cellformControl = [];
 
-            </td>
+
+                if (formControls.length >= 1)
+                    formControls.map((formControl)=> {
+                        if (formControl.column == grid.column)
+                            cellformControl.push(formControl)
+                    })
+
+                if (grid.fixed && grid.fixed === true) {
+
+
+                    return <td key={columnIndex} >
+
+                        <Form formControls={cellformControl}
+                              formData={formData}
+                              formType={formType}
+                              formValue={formControls[columnIndex].value}
+                              focusIndex={focusIndex}
+                              gridIndex={columnIndex}
+
+                              changeHandler={this.changeValues.bind(this)}
+                        />
+
+
+                    </td>
+                }
+
+
+            })}
+        </tr>
+
+
+        const inlineAddForm = <tr  >
+
+            {bodyHeader.map((grid, columnIndex) => {
+                let cellformControl = [];
+
+
+                if (formControls.length >= 1)
+                    formControls.map((formControl)=> {
+                        if (formControl.column == grid.column)
+                            cellformControl.push(formControl)
+                    })
+
+                if (grid.fixed && grid.fixed === true) {
+
+                } else {
+
+                    if(formControls[columnIndex])
+                    return <td key={columnIndex} >
+
+                            <Form formControls={cellformControl}
+                                  formData={formData}
+                                  formType={formType}
+                                  formValue={formControls[columnIndex].value}
+                                  focusIndex={focusIndex}
+                                  gridIndex={columnIndex}
+
+                                  changeHandler={this.changeValues.bind(this)}
+                            />
+
+
+                    </td>
+                }
+
+
+            })}
+
         </tr>
         const inlineAddFormRight = <tr  >
             <td style={{width: '87px', padding: '3px'}}>
@@ -325,35 +381,12 @@ export default class Body extends Component {
                             </span>
             </td>
         </tr>
-
-        const inlineAddForm = <tr  >
-
-            {formControls.map((column, columnIndex) => {
-                let cellFormControl = [];
-                cellFormControl.push(column)
-                if (column.column !== 'id')
-                    return <td key={columnIndex}>
-
-                        <Form formControls={cellFormControl}
-                              formData={formData}
-                              formType={formType}
-                              formValue={column.value}
-                              focusIndex={focusIndex}
-                              gridIndex={columnIndex}
-
-                              changeHandler={this.changeValues.bind(this)}
-                        />
-
-                        <span >test test</span>
-                    </td>
-            })}
-        </tr>
         return (<div className="m-a-sm white with-3d-shadow">
 
             <div id="gridBody">
 
                 <div id="table_header">
-                    <table id="tp-table-left0" className="table table-striped table-hover ">
+                    <table id="tp-table-left0" className="table table-striped table-bordered table-hover ">
                         <thead>
                         <tr>
                         </tr>
@@ -361,7 +394,7 @@ export default class Body extends Component {
 
                     </table>
                     <div id="tp-table-wrapper0">
-                        <table id="tp-table0" className="table table-striped table-hover " width="100%">
+                        <table id="tp-table0" className="table table-striped table-bordered table-hover " width="100%">
                             <thead>
                             <tr className="solar-grid-header">
 
@@ -371,7 +404,7 @@ export default class Body extends Component {
 
                         </table>
                     </div>
-                    <table id="tp-table-rigth0" className="table table-striped table-hover ">
+                    <table id="tp-table-rigth0" className="table table-striped table-bordered table-hover ">
                         <thead>
                         <tr>
                             <th className="solar-grid-actions"><i className="fa fa-ellipsis-h"></i></th>
@@ -380,7 +413,7 @@ export default class Body extends Component {
                     </table>
                 </div>
 
-                <table id="tp-table-left" className="table table-striped table-hover ">
+                <table id="tp-table-left" className="table table-striped table-bordered table-hover ">
                     <thead>
                     <tr>
                         <th className="solar-grid-index sorting"><b>№</b></th>
@@ -394,7 +427,7 @@ export default class Body extends Component {
                     </tbody>
                 </table>
                 <div id="tp-table-wrapper">
-                    <table id="tp-table" className="table table-striped table-hover " width="100%">
+                    <table id="tp-table" className="table table-striped table-bordered table-hover " width="100%">
                         <thead>
                         <tr className="solar-grid-header">
 
@@ -409,7 +442,7 @@ export default class Body extends Component {
                         </tbody>
                     </table>
                 </div>
-                <table id="tp-table-rigth" className="table table-striped table-hover ">
+                <table id="tp-table-rigth" className="table table-striped table-bordered table-hover ">
                     <thead>
                     <tr>
                         <th className="solar-grid-actions"><i className="fa fa-ellipsis-h"></i></th>

@@ -62,6 +62,7 @@
   },
   "dependencies": {
     "bootstrap": "^3.3.6",
+    "colresizable": "^1.5.2",
     "jquery": "^2.1.4",
     "jquery-ui": "^1.10.5"
   }

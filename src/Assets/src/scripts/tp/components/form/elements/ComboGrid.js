@@ -14,7 +14,7 @@ export default class ComboGrid extends Component {
                 <div className="dropdown-menu">
 
                     <div >
-                        <Body bodyData={listData} bodyHeader={gridHeader}/>
+                        <Body bodyData={listData} bodyHeader={gridHeader} />
                     </div>
                     <div className="combo-grid-action">
 

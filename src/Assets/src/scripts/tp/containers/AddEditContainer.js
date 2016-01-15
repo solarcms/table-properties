@@ -71,6 +71,8 @@ class AddEditContainer extends Component {
         const index = e.target.name.replace("solar-input", "");
         const value = e.target.value;
 
+
+
         const FD = this.props.formControls;
 
         e.target.type == 'checkbox' ?

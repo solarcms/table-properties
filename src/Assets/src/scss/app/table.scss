@@ -1,6 +1,7 @@
 .table > thead > tr > th {
   padding: 12px;
   height: 47px;
+
 }
 
 .table {
@@ -18,11 +19,15 @@
   display: inline-block;
   vertical-align: top;
   border-right: 2px solid #ccc ;
+  th{
+    border-right:none!important;
+  }
   tr{
     td{
       padding: 5px;
       text-align: center;
       height: 40px;
+
     }
   }
 }
@@ -41,6 +46,10 @@
         padding: 5px;
 
         height: 40px;
+
+
+
+
       }
     }
   }
@@ -53,34 +62,37 @@
   overflow-x: scroll;
   overflow-y:hidden;
   bottom: 0;
+  height: 15px;
   margin-left: 39px;
   .div1 {
     min-width: 800px!important;
-    height: 1px;
+    height: 15px;
   }
 ;}
 
 #tp-table-rigth0, #tp-table-rigth{
-  width: 82px;
+  width: 87px;
   text-align: center;
   display: inline-block;
   vertical-align: top;
+  border-left: 2px solid #ccc ;
   th{
     text-align: center;
+
   }
   tr{
     td{
       padding: 3px;
       text-align: center;
       height: 40px;
-
+      width: 87px!important;
     }
   }
 }
 
 #table_header{
   top: 0;
-  border-bottom: 2px solid #ccc;
+  table{background: #fff}
   background: #fff;
   width: 100%;
   position: absolute;
