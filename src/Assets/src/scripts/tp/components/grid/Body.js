@@ -6,6 +6,7 @@ import $ from "jquery"
 export default class Body extends Component {
 
     fixRowHeigth() {
+        console.log('resizing')
         let aRowHeights = [];
         // Loop through the tables
         $("#gridBody").find("table").each(function (indx, table) {
@@ -34,9 +35,9 @@ export default class Body extends Component {
 
         $("#tp-table-left").css("width", leftTableWidth)
 
-        $("#tp-table-wrapper").css('width', $("#tp-table-wrapper").parent().width() - 98 - leftTableWidth);
-        $("#tp-table-wrapper0").css('width', $("#tp-table-wrapper0").parent().width() - 98 - leftTableWidth);
-        $(".wrapper1").css('width', $(".wrapper1").parent().width() - 98 - leftTableWidth);
+        $("#tp-table-wrapper").css('width', $("#tp-table-wrapper").parent().width() - 110 - leftTableWidth);
+        $("#tp-table-wrapper0").css('width', $("#tp-table-wrapper").width());
+        $(".wrapper1").css('width', $(".wrapper1").parent().width() - 110 - leftTableWidth);
         $(".wrapper1").css('margin-left', leftTableWidth);
 
 
@@ -63,7 +64,7 @@ export default class Body extends Component {
         $("#tp-table-rigth0 > thead > tr").empty();
         $("#tp-table-rigth > thead > tr").find("th").each(function (indx, td) {
 
-            var copy = "<th style='width: " + $(td).width() + "px; height: " + $(td).height() + "px' >" + $(td).html() + "</th>";
+            var copy = "<th style='width: 82px; height: " + $(td).height() + "px' >" + $(td).html() + "</th>";
             $("#tp-table-rigth0 > thead > tr").append(copy);
 
         });
@@ -110,9 +111,12 @@ export default class Body extends Component {
 
     componentWillMount() {
 
-        window.removeEventListener('resize', this.fixRowHeigth);
-        //window.removeEventListener('resize', this.fixedHeader());
+        window.addEventListener('resize', this.fixRowHeigth);
     }
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.fixRowHeigth);
+    }
+
 
 
     saveInlineForm(id) {
