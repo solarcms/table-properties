@@ -13,7 +13,7 @@
 
 }
 
-#tp-table-left0, #tp-table-left{
+.tp-table-left0, .tp-table-left{
   min-width: 39px!important;
   text-align: center;
   display: inline-block;
@@ -31,14 +31,14 @@
     }
   }
 }
-#tp-table-wrapper0, #tp-table-wrapper{
+.tp-table-wrapper0, .tp-table-wrapper{
   width: -moz-calc(100% - 96px);
   width: -webkit-calc(100% - 96px);
   width: calc(100% - 82px);
   overflow-x: hidden;
   display: inline-block;
   vertical-align: top;
-  #tp-table{
+  .tp-table{
 
     min-width: 800px!important;
     tr{
@@ -70,7 +70,7 @@
   }
 ;}
 
-#tp-table-rigth0, #tp-table-rigth{
+.tp-table-rigth0, .tp-table-rigth{
   width: 87px;
   text-align: center;
   display: inline-block;
@@ -90,7 +90,7 @@
   }
 }
 
-#table_header{
+.table_header{
   top: 0;
   table{background: #fff}
   background: #fff;

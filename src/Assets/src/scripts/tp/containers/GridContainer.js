@@ -235,7 +235,7 @@ class GridContainer extends Component {
             currentPage, paginationPosition, formData, editID, formType, formControls,
             focusIndex, showInlineForm, gridWidth, gridHeight } = this.props;
 
-        const gridId = paginationPosition == 'both' ? 'gridBodyBoth' : 'gridBody'
+        const gridId = 'grid_table'
         const topPagination = paginationPosition == 'top' || paginationPosition == 'both' ?
             <Pagination
                 totalItems={totalItems}

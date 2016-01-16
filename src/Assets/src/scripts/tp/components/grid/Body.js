@@ -8,7 +8,7 @@ import $ from "jquery"
 export default class Body extends Component {
 
     fixRowHeigth() {
-
+        const { gridId } = this.props
         let aRowHeights = [];
         // Loop through the tables
         $("#gridBody").find("table").each(function (indx, table) {
@@ -33,46 +33,55 @@ export default class Body extends Component {
             });
         });
 
-        let leftTableWidth = $("#tp-table-left > thead").width();
+        let leftTableWidth = $("#"+gridId+"-left > thead").width();
+
+
 
         /////////////// fixed table header
 
-        $("#tp-table-left").css("width", (leftTableWidth+2))
+        $("#"+gridId+"-left").css("width", (leftTableWidth+2))
 
-        $("#tp-table-wrapper").css('width', $("#tp-table-wrapper").parent().width() - 105 - leftTableWidth);
-        $("#tp-table-wrapper0").css('width', $("#tp-table-wrapper").width());
+        $("#"+gridId+"-wrapper").css('width', $("#"+gridId+"-wrapper").parent().width() - 105 - leftTableWidth);
+        $("#"+gridId+"-wrapper0").css('width', $("#"+gridId+"-wrapper").width());
         $(".virtual_scroll").css('width', $(".virtual_scroll").parent().width() - 105 - leftTableWidth);
         $(".virtual_scroll").css('margin-left', leftTableWidth);
 
 
-        $("#tp-table-left0").css("width", (leftTableWidth+2));
-        $("#tp-table-left0 > thead > tr").empty();
-        $("#tp-table-left > thead > tr").find("th").each(function (indx, td) {
+        $("#"+gridId+"-left0").css("width", (leftTableWidth+2));
+        $("#"+gridId+"-left0 > thead > tr").empty();
+        $("#"+gridId+"-left > thead > tr").find("th").each(function (indx, td) {
 
             var copy = "<th style='width: " + $(td).width() + "px; height: " + $(td).height() + "px' class='sorting'>" + $(td).html() + "</th>";
-            $("#tp-table-left0 > thead > tr").append(copy);
+            $("#"+gridId+"-left0 > thead > tr").append(copy);
 
         });
 
-        $("#tp-table0").css("width", $("#tp-table").width());
-        $("#tp-table0 > thead > tr").empty();
-        $("#tp-table > thead > tr").find("th").each(function (indx, td) {
+        $("#"+gridId+"0").css("width", $("#"+gridId+"").width());
+        $("#"+gridId+"0 > thead > tr").empty();
+        $("#"+gridId+" > thead > tr").find("th").each(function (indx, td) {
 
 
             var copy = "<th style='width: " + $(td).width() + "px; height: " + $(td).height() + "px' class='sorting'>" + $(td).html() + "</th>";
-            $("#tp-table0 > thead > tr").append(copy);
+            $("#"+gridId+"0 > thead > tr").append(copy);
 
         });
 
-        $("#tp-table-rigth0").css("width", 87);
-        $("#tp-table-rigth0 > thead > tr").empty();
-        $("#tp-table-rigth > thead > tr").find("th").each(function (indx, td) {
+        $("#"+gridId+"-rigth0").css("width", 87);
+        $("#"+gridId+"-rigth0 > thead > tr").empty();
+        $("#"+gridId+"-rigth > thead > tr").find("th").each(function (indx, td) {
 
             var copy = "<th style='width: 87px; height: " + $(td).height() + "px' >" + $(td).html() + "</th>";
-            $("#tp-table-rigth0 > thead > tr").append(copy);
+            $("#"+gridId+"-rigth0 > thead > tr").append(copy);
 
         });
 
+    }
+    resizeHandler(){
+
+        setTimeout(
+            () => { this.fixRowHeigth() },
+            100
+        );
 
 
     }
@@ -104,16 +113,17 @@ export default class Body extends Component {
 
     componentDidMount() {
 
+        const {gridId } = this.props
 
         $(".virtual_scroll").scroll(function () {
-            $("#tp-table-wrapper")
+            $("#"+gridId+"-wrapper")
                 .scrollLeft($(".virtual_scroll").scrollLeft());
-            $("#tp-table-wrapper0")
+            $("#"+gridId+"-wrapper0")
                 .scrollLeft($(".virtual_scroll").scrollLeft());
         });
 
-        document.querySelector("#table_header").parentElement.addEventListener("scroll", function () {
-            document.querySelector("#table_header").style.transform = "translateY(" + this.scrollTop + "px)";
+        document.querySelector("#"+gridId+"-header").parentElement.addEventListener("scroll", function () {
+            document.querySelector("#"+gridId+"-header").style.transform = "translateY(" + this.scrollTop + "px)";
         });
 
         this.fixRowHeigth()
@@ -121,10 +131,10 @@ export default class Body extends Component {
     }
 
     componentWillMount() {
-        window.addEventListener('resize', this.fixRowHeigth);
+        window.addEventListener('resize', this.resizeHandler.bind(this));
     }
     componentWillUnmount() {
-        window.removeEventListener('resize', this.fixRowHeigth);
+        window.removeEventListener('resize', this.resizeHandler);
     }
 
     saveInlineForm(id) {
@@ -139,8 +149,8 @@ export default class Body extends Component {
 
 
     render() {
-        const { bodyData, bodyHeader, table, formType, editID, formData, formControls, focusIndex,
-            handleDeleteItem, saveInlineForm, showInlineForm, removeInlineForm} = this.props;
+        const { bodyData, bodyHeader, formType, editID, formData, formControls, focusIndex,
+            handleDeleteItem, saveInlineForm, showInlineForm, removeInlineForm, gridId} = this.props;
 
 
         const gridHeader = bodyHeader.map((grid, index) => {
@@ -388,16 +398,16 @@ export default class Body extends Component {
 
             <div id="gridBody">
 
-                <div id="table_header">
-                    <table id="tp-table-left0" className="table table-striped table-bordered table-hover ">
+                <div id={`${gridId}-header`} className="table_header">
+                    <table id={`${gridId}-left0`} className="table table-striped table-bordered table-hover tp-table-left0">
                         <thead>
                         <tr>
                         </tr>
                         </thead>
 
                     </table>
-                    <div id="tp-table-wrapper0">
-                        <table id="tp-table0" className="table table-striped table-bordered table-hover " width="100%">
+                    <div id={`${gridId}-wrapper0`} className="tp-table-wrapper0">
+                        <table id={`${gridId}0`} className="table table-striped table-bordered table-hover tp-table0" width="100%">
                             <thead>
                             <tr className="solar-grid-header">
 
@@ -407,7 +417,7 @@ export default class Body extends Component {
 
                         </table>
                     </div>
-                    <table id="tp-table-rigth0" className="table table-striped table-bordered table-hover ">
+                    <table id={`${gridId}-rigth0`} className="table table-striped table-bordered table-hover tp-table-rigth0">
                         <thead>
                         <tr>
                             <th className="solar-grid-actions"><i className="fa fa-ellipsis-h"></i></th>
@@ -416,7 +426,7 @@ export default class Body extends Component {
                     </table>
                 </div>
 
-                <table id="tp-table-left" className="table table-striped table-bordered table-hover ">
+                <table id={`${gridId}-left`} className="table table-striped table-bordered table-hover tp-table-left">
                     <thead>
                     <tr>
                         <th className="solar-grid-index sorting"><b>№</b></th>
@@ -429,8 +439,8 @@ export default class Body extends Component {
 
                     </tbody>
                 </table>
-                <div id="tp-table-wrapper">
-                    <table id="tp-table" className="table table-striped table-bordered table-hover " width="100%">
+                <div id={`${gridId}-wrapper`} className="tp-table-wrapper">
+                    <table id={`${gridId}`} className="table table-striped table-bordered table-hover tp-table" width="100%">
                         <thead>
                         <tr className="solar-grid-header">
 
@@ -445,7 +455,7 @@ export default class Body extends Component {
                         </tbody>
                     </table>
                 </div>
-                <table id="tp-table-rigth" className="table table-striped table-bordered table-hover ">
+                <table id={`${gridId}-rigth`} className="table table-striped table-bordered table-hover tp-table-rigth">
                     <thead>
                     <tr>
                         <th className="solar-grid-actions"><i className="fa fa-ellipsis-h"></i></th>
@@ -468,22 +478,10 @@ export default class Body extends Component {
     }
 }
 Body.defaultProps = {
-    table: {
-        fixedHeader: false,
-        stripedRows: true,
-        showRowHover: true,
-        selectable: true,
-        multiSelectable: false,
-        enableSelectAll: false,
-        deselectOnClickaway: true,
-        displayRowCheckbox: false,
-        displaySelectAll: false
-    },
     formControls: []
 };
 
 Body.propTypes = {
-    table: PropTypes.object.isRequired,
     bodyHeader: PropTypes.array.isRequired,
     bodyData: PropTypes.array.isRequired,
 };
