@@ -2,84 +2,16 @@ import React, { Component, PropTypes }  from "react"
 import Form from "../form/page_add_edit/Form"
 import $ from "jquery"
 
-
+import {fixRowHeigth} from './fixed/HeaderColumn'
 
 
 export default class Body extends Component {
 
-    fixRowHeigth() {
-        const { gridId } = this.props
-        let aRowHeights = [];
-        // Loop through the tables
-        $("#gridBody").find("table").each(function (indx, table) {
-            // Loop through the rows of current table
-            $(table).find("tr").css("height", "").each(function (i, tr) {
-                // If there is already a row height defined
-                if (aRowHeights[i])
-                // Replace value with height of current row if current row is higher.
-                    aRowHeights[i] = Math.max(aRowHeights[i], $(tr).height());
-                else
-                // Else set it to the height of the current row
-                    aRowHeights[i] = $(tr).height();
 
-
-            });
-        });
-        // Loop through the tables in this "gridBody separately again
-        $("#gridBody").find("table").each(function (i, table) {
-            // Set the height of each row to the stored greatest height.
-            $(table).find("tr").each(function (i, tr) {
-                $(tr).css("height", aRowHeights[i]);
-            });
-        });
-
-        let leftTableWidth = $("#"+gridId+"-left > thead").width();
-
-
-
-        /////////////// fixed table header
-
-        $("#"+gridId+"-left").css("width", (leftTableWidth+2))
-
-        $("#"+gridId+"-wrapper").css('width', $("#"+gridId+"-wrapper").parent().width() - 105 - leftTableWidth);
-        $("#"+gridId+"-wrapper0").css('width', $("#"+gridId+"-wrapper").width());
-        $(".virtual_scroll").css('width', $(".virtual_scroll").parent().width() - 105 - leftTableWidth);
-        $(".virtual_scroll").css('margin-left', leftTableWidth);
-
-
-        $("#"+gridId+"-left0").css("width", (leftTableWidth+2));
-        $("#"+gridId+"-left0 > thead > tr").empty();
-        $("#"+gridId+"-left > thead > tr").find("th").each(function (indx, td) {
-
-            var copy = "<th style='width: " + $(td).width() + "px; height: " + $(td).height() + "px' class='sorting'>" + $(td).html() + "</th>";
-            $("#"+gridId+"-left0 > thead > tr").append(copy);
-
-        });
-
-        $("#"+gridId+"0").css("width", $("#"+gridId+"").width());
-        $("#"+gridId+"0 > thead > tr").empty();
-        $("#"+gridId+" > thead > tr").find("th").each(function (indx, td) {
-
-
-            var copy = "<th style='width: " + $(td).width() + "px; height: " + $(td).height() + "px' class='sorting'>" + $(td).html() + "</th>";
-            $("#"+gridId+"0 > thead > tr").append(copy);
-
-        });
-
-        $("#"+gridId+"-rigth0").css("width", 87);
-        $("#"+gridId+"-rigth0 > thead > tr").empty();
-        $("#"+gridId+"-rigth > thead > tr").find("th").each(function (indx, td) {
-
-            var copy = "<th style='width: 87px; height: " + $(td).height() + "px' >" + $(td).html() + "</th>";
-            $("#"+gridId+"-rigth0 > thead > tr").append(copy);
-
-        });
-
-    }
     resizeHandler(){
 
         setTimeout(
-            () => { this.fixRowHeigth() },
+            () => { fixRowHeigth(this.props.gridId) },
             100
         );
 
@@ -126,7 +58,9 @@ export default class Body extends Component {
             document.querySelector("#"+gridId+"-header").style.transform = "translateY(" + this.scrollTop + "px)";
         });
 
-        this.fixRowHeigth()
+        fixRowHeigth(this.props.gridId)
+
+
 
     }
 
@@ -143,8 +77,12 @@ export default class Body extends Component {
     }
 
     componentDidUpdate() {
-        this.fixRowHeigth()
+        fixRowHeigth(this.props.gridId)
 
+    }
+
+    selectRow(row){
+        this.props.selectRow(row)
     }
 
 
@@ -152,6 +90,11 @@ export default class Body extends Component {
         const { bodyData, bodyHeader, formType, editID, formData, formControls, focusIndex,
             handleDeleteItem, saveInlineForm, showInlineForm, removeInlineForm, gridId} = this.props;
 
+        let comboGridSelection = false;
+
+        if (gridId.indexOf("combo-grid-") !=-1) {
+            comboGridSelection = true;
+        }
 
         const gridHeader = bodyHeader.map((grid, index) => {
 
@@ -187,6 +130,7 @@ export default class Body extends Component {
                             <Form formControls={cellformControl}
                                   formData={formData}
                                   formType={formType}
+                                  gridId={gridId}
                                   formValue={data[grid.column]}
                                   focusIndex={focusIndex}
                                   gridIndex={columnIndex}
@@ -204,10 +148,13 @@ export default class Body extends Component {
 
 
             })
+            const rowClickAction =  comboGridSelection === true ? this.selectRow.bind(this, data) : this.setRowEdit.bind(this, data.id, 0)
             return <tr key={data.id}>
-                <td onClick={this.setRowEdit.bind(this, data.id, 0)}>
-                    {index + 1}
-                </td>
+
+                    <td onClick={rowClickAction}>
+                        {index + 1}
+                    </td>
+
                 {fixedColumns}
             </tr>
         })
@@ -280,11 +227,13 @@ export default class Body extends Component {
                     if (grid.fixed && grid.fixed === true) {
 
                     } else {
-                        return <td key={columnIndex} onClick={this.setRowEdit.bind(this, data.id, columnIndex)}>
+                        const rowClickAction =  comboGridSelection === true ? this.selectRow.bind(this, data) : this.setRowEdit.bind(this, data.id, columnIndex)
+                        return <td key={columnIndex} onClick={rowClickAction}>
                             {formType == 'inline' && editID == data.id ?
                                 <Form formControls={cellformControl}
                                       formData={formData}
                                       formType={formType}
+                                      gridId={gridId}
                                       formValue={data[grid.column]}
                                       focusIndex={focusIndex}
                                       gridIndex={columnIndex}
@@ -326,6 +275,7 @@ export default class Body extends Component {
                         <Form formControls={cellformControl}
                               formData={formData}
                               formType={formType}
+                              gridId={gridId}
                               formValue={formControls[columnIndex].value}
                               focusIndex={focusIndex}
                               gridIndex={columnIndex}
@@ -364,6 +314,7 @@ export default class Body extends Component {
                             <Form formControls={cellformControl}
                                   formData={formData}
                                   formType={formType}
+                                  gridId={gridId}
                                   formValue={formControls[columnIndex].value}
                                   focusIndex={focusIndex}
                                   gridIndex={columnIndex}

@@ -9,9 +9,15 @@ export default class Form extends Component {
         e.target.setSelectionRange(index, index);
 
     }
+    comboGridSelected(value, text, column){
+
+        this.props.changeHandler(null, 'combo-grid', value, text, column)
+
+
+    }
 
     render() {
-        const { formControls, changeHandler, formData, formType, formValue, focusIndex, gridIndex  } = this.props;
+        const { formControls, changeHandler, formData, formType, formValue, focusIndex, gridIndex, gridId  } = this.props;
 
 
 
@@ -46,12 +52,14 @@ export default class Form extends Component {
                             <input
                                 autoFocus={focus}
                                 className="form-control"
-                                name={`solar-input${index}`}
+                                name={`${gridId}-solar-input${index}`}
                                 defaultValue={mainValue}
                                 placeholder={field.title}
                                 onFocus={this.moveCursorToEnd.bind(this)}
                                 onChange={changeHandler}
                                 type="text"/>
+
+
                                 <span className="help-block">
 
                                     {field.error}
@@ -62,7 +70,7 @@ export default class Form extends Component {
                             <input
                                 autoFocus={focus}
                                 className="form-control"
-                                name={`solar-input${index}`}
+                                name={`${gridId}-solar-input${index}`}
                                 value={mainValue}
                                 placeholder={field.title}
                                 onFocus={this.moveCursorToEnd.bind(this)}
@@ -77,29 +85,64 @@ export default class Form extends Component {
 
             if (field.type == '--textarea')
 
-                return <div key={field.column} className={`form-group ${fieldClass}`}>
-                    {formType == 'inline' ? '' : <label className="control-label">{field.title}</label>}
+                return <div key={field.column}>
+                {formType == 'inline' ? <div className={`form-group ${fieldClass}`}>
                     <textarea
+                        autoFocus={focus}
                         className="form-control"
-                        name={`solar-input${index}`}
+                        name={`${gridId}-solar-input${index}`}
+                        defaultValue={mainValue}
                         placeholder={field.title}
+                        onFocus={this.moveCursorToEnd.bind(this)}
                         onChange={changeHandler}
-                    >
-                        {mainValue}
-                    </textarea>
-                    <span className="help-block">
-                        {field.error}
-                    </span>
+                        type="text"/>
 
 
+                                <span className="help-block">
+
+                                    {field.error}
+                                </span>
                 </div>
+                    : <div key={field.column} className={`form-group ${fieldClass}`}>
+                    <label className="control-label">{field.title}</label>
+                    <textarea
+                        autoFocus={focus}
+                        className="form-control"
+                        name={`${gridId}-solar-input${index}`}
+                        value={mainValue}
+                        placeholder={field.title}
+                        onFocus={this.moveCursorToEnd.bind(this)}
+                        onChange={changeHandler}
+                        type="text"/>
+                            <span className="help-block">
+
+                                {field.error}
+                            </span>
+                </div>}
+            </div>
             else if (field.type == '--combogrid') {
 
                 return <div key={field.column} className={`form-group ${fieldClass}`}>
                     {formType == 'inline' ? '' : <label className="control-label">{field.title}</label>}
 
                     {formData[field.column] ?
-                        <Combogrid listData={formData[field.column].data} gridHeader={field.options.columns}/>
+
+                            <Combogrid listData={formData[field.column].data.data}
+                                       gridHeader={field.options.grid_output_control}
+                                       valueField={field.options.valueField}
+                                       textField={field.options.textField}
+                                       formControls={formData[field.column].form_input_control}
+                                       text={formData[field.column].text}
+
+                                       column={field.column}
+                                       totalPages={formData[field.column].data.last_page}
+                                       totalItems={formData[field.column].data.total}
+                                       pageName={field.title}
+                                       comboGridSelected={this.comboGridSelected.bind(this)}
+
+                            />
+
+
                         :
                         null}
                     <span className="help-block">
@@ -115,7 +158,7 @@ export default class Form extends Component {
                         {formType == 'inline' ?
                             <input type="checkbox"
 
-                                   name={`solar-input${index}`}
+                                   name={`${gridId}-solar-input${index}`}
 
                                    defaultChecked={mainValue}
                                    onChange={changeHandler}
@@ -124,7 +167,7 @@ export default class Form extends Component {
                             <label>
                                 <input type="checkbox"
 
-                                       name={`solar-input${index}`}
+                                       name={`${gridId}-solar-input${index}`}
 
                                        defaultChecked={mainValue}
                                        onChange={changeHandler}

@@ -25,6 +25,9 @@ class GridContainer extends Component {
         $('#tp-table').tableExport({type:'xls'});
         //$('#tp-table').tableExport({type:'sql'});
     }
+    selectRow(row){
+        return false;
+    }
     //export
     /*
      * Grid main actions starting
@@ -157,7 +160,9 @@ class GridContainer extends Component {
     }
     ChangeValues(e){
 
-        const index = e.target.name.replace("solar-input", "");
+        const index = e.target.name.replace("grid_table-solar-input", "");
+
+
         let value = null
 
         if(e.target.type == 'checkbox'){
@@ -226,7 +231,6 @@ class GridContainer extends Component {
     }
     componentDidMount() {
         this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
-
     }
 
     render() {
@@ -234,6 +238,8 @@ class GridContainer extends Component {
         const { setup, listData, gridHeader, totalPages, pageLimit, totalItems,
             currentPage, paginationPosition, formData, editID, formType, formControls,
             focusIndex, showInlineForm, gridWidth, gridHeight } = this.props;
+
+
 
         const gridId = 'grid_table'
         const topPagination = paginationPosition == 'top' || paginationPosition == 'both' ?
@@ -268,6 +274,7 @@ class GridContainer extends Component {
                 bodyHeader={gridHeader}
                 setRowEdit={this.setRowEdit.bind(this)}
                 formType={formType}
+                selectRow={this.selectRow.bind(this)}
                 editID={editID}
                 showInlineForm={showInlineForm}
                 removeInlineForm={this.removeInlineForm.bind(this)}

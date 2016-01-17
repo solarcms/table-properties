@@ -12,10 +12,10 @@ export default class Header extends Component {
         else
             addButton = <a href={this.props.link} className="nav-link"><i className="fa fa-plus"></i> Нэмэх</a>
 
-        let actionControls = this.props.type == 'list' ?
+        let actionControls = this.props.type == 'list'?
             <ul className="nav navbar-nav pull-right">
                 <li className="nav-item dropdown">
-                    <a className="nav-link p-l b-l" href="" data-toggle="dropdown">
+                    <a className="nav-link p-l b-l" href="javascript:void(0)" data-toggle="dropdown">
                         <i className="fa fa-upload"></i>
                     </a>
                     <div className="dropdown-menu dropdown-menu-scale pull-right text-color"
@@ -43,10 +43,10 @@ export default class Header extends Component {
             </ul>
             :
             null
-        let searchBar = this.props.type == 'list'
+        let searchBar = this.props.type == 'list' || this.props.type == 'comboGrid'
             ?
             <div className="collapse navbar-toggleable-sm" id="navbar-3">
-                <form
+                <div
                     className="navbar-form form-inline pull-right pull-none-sm navbar-item v-m ng-pristine ng-valid ng-scope"
                     role="search">
                     <div className="form-group l-h m-a-0">
@@ -62,7 +62,7 @@ export default class Header extends Component {
                             </span>
                         </div>
                     </div>
-                </form>
+                </div>
                 <ul className="nav navbar-nav">
                     <li className="nav-item dropdown">
                         {addButton}

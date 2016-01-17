@@ -81,14 +81,14 @@ class TablePropertiesController extends Controller {
         $tp->table = 'article';
         $tp->page_name = 'Мэдээ';
         $tp->identity_name = 'id';
-        $tp->grid_columns = ['active', 'name', 'category_id', 'id'];
+        $tp->grid_columns = ['article.active', 'article.name', 'acticle_category.name as category_id_name', 'article.id'];
         $tp->grid_default_order_by = 'id DESC';
         $tp->formType = 'page';
 
         $tp->grid_output_control = [
             ['column'=>'active', 'title'=>'Идвэхтэй', 'type'=>'--checkbox', 'fixed'=>true],
             ['column'=>'name', 'title'=>'Нэр', 'type'=>'--text'],
-            ['column'=>'category_id', 'title'=>'Бүлэг', 'type'=>'--text'],
+            ['column'=>'category_id_name', 'title'=>'Бүлэг', 'type'=>'--text'],
         ];
 
         $tp->form_input_control = [
@@ -97,13 +97,18 @@ class TablePropertiesController extends Controller {
             ['column'=>'category_id', 'title'=>'Бүлэг', 'type'=>'--combogrid', 'value'=>null, 'validate'=>'required', 'options'=>[
                 'valueField'=> 'id',
                 'textField'=> 'name',
-                'columns'=>[
+                'grid_output_control'=>[
                     ['column'=>'active', 'title'=>'Идвэхтэй', 'type'=>'--checkbox'],
                     ['column'=>'name', 'title'=>'Нэр', 'type'=>'--text'],
                 ],
+                'form_input_control' => [
+                    ['column'=>'active', 'title'=>'Идвэхтэй', 'type'=>'--checkbox', 'value'=>0, 'validate'=> '', 'error'=>null],
+                    ['column'=>'name', 'title'=>'Нэр', 'type'=>'--text', 'value'=>null, 'validate'=>'required|max:7', 'error'=>null],
+                ],
                 'table'=>'acticle_category',
-                'selectFields'=>['id', 'active', 'name'],
-                'defaultOrder'=>'id DESC'
+                'identity_name'=>'id',
+                'grid_columns'=>['id', 'active', 'name'],
+                'grid_default_order_by'=>'id DESC'
             ]],
             ['column'=>'intro', 'title'=>'Оршил', 'type'=>'--textarea', 'value'=>null, 'validate'=>'required'],
             ['column'=>'body', 'title'=>'Агуулага', 'type'=>'--textarea', 'value'=>null, 'validate'=>'required'],

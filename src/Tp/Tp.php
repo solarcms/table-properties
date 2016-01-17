@@ -96,17 +96,25 @@ class Tp
             case "edit":          return $this->edit();        break;
             case "insert":        return $this->insert();      break;
             case "update":        return $this->update();      break;
+
             case "update_grid":   return $this->update_grid(); break;
             case "delete":        return $this->delete();      break;
+
             case "index":         return $this->index();       break;
             case "setup":         return $this->setup();       break;
             case "grid_list":     return $this->gridList();    break;
             case "get_form_datas":     return $this->get_form_datas();    break;
+            // combo gird
+            case "grid_combo_list":     return $this->gridComboGrid();    break;
+            case "insert-combo-grid":        return $this->insertComboGrid();      break;
+            case "edit-combo-grid":          return $this->editComboGrid();        break;
+            case "update-combo-grid":        return $this->updateComboGrid();      break;
+            case "delete-combo-grid":        return $this->deleteComboGrid();      break;
+
             default:              return $this->index();
         }
 
     }
-
 
     public function gridList(){
 
@@ -114,6 +122,16 @@ class Tp
         $searchValue = Request::input('searchValue');
 
         $table_datas = DB::table($this->table)->select($this->grid_columns);
+
+        foreach($this->form_input_control as $formControl){
+            if($formControl['type'] == '--combogrid'){
+
+                $options = $formControl['options'];
+
+                $table_datas->leftjoin($options['table'], "$this->table." . $formControl['column'], '=', $options['table']. "." .$options['valueField']);
+
+            }
+        }
 
         if($searchValue != '') {
             $loop = 0;
@@ -141,10 +159,12 @@ class Tp
             if($formControl['type'] == '--combogrid'){
 
                 $options = $formControl['options'];
-                $order = explode(" ", $options['defaultOrder']);
-                $data = DB::table($options['table'])->select($options['selectFields'])->orderBy($order[0], $order[1])->paginate(10);
-                $data->setPath('/');
-                $FormData[$formControl['column']] = $data;
+                $order = explode(" ", $options['grid_default_order_by']);
+                $data = DB::table($options['table'])->select($options['grid_columns'])->orderBy($order[0], $order[1])->paginate(20);
+
+                $data = $data->toArray();
+
+                $FormData[$formControl['column']] = ['data'=>$data, 'form_input_control'=>$options['form_input_control'], 'text'=>null];
 
               //  print_r($data);
                 //->take($this->pageLimit)->get()
@@ -152,24 +172,46 @@ class Tp
             }
         }
 
-        foreach($FormData as $key => $value){
-            $FormData[$key] = $value->toArray();
-        }
+
         return $FormData;
 
     }
+
+
     public function edit(){
         $id = Request::input('id');
 
         /// saijruulah
 
-        $table_datas = DB::table($this->table)->where('id', '=', $id)->select($this->grid_columns)->get();
+        $table_datas = DB::table($this->table)->where($this->table.".id", '=', $id);
+
+        $table_datas->select($this->grid_columns);
+
+
+        $options = null;
+        foreach($this->form_input_control as $formControl){
+
+            $table_datas->addSelect("$this->table." . $formControl['column']);
+
+            if($formControl['type'] == '--combogrid'){
+
+                $options = $formControl['options'];
 
 
 
-        return  $table_datas;
+                $table_datas->leftjoin($options['table'], "$this->table." . $formControl['column'], '=', $options['table']. "." .$options['valueField']);
+
+            }
+        }
+
+
+
+
+
+        return  $table_datas->get();
 
     }
+
 
     public function insert(){
         $formData = Request::input('data');
@@ -236,6 +278,7 @@ class Tp
         }
         return $response;
     }
+
 
     public function update_grid(){
         return 'update_grid';
@@ -366,6 +409,177 @@ class Tp
     }
 
 
+/* combo grid*/
+    public function gridComboGrid(){
 
+        $column = Request::input('column');
+        $searchValue = Request::input('searchValue');
+
+        foreach($this->form_input_control as $formControl){
+            if($formControl['type'] == '--combogrid' && $formControl['column'] == $column){
+
+                $options = $formControl['options'];
+                $order = explode(" ", $options['grid_default_order_by']);
+                $table_datas = DB::table($options['table'])->select($options['grid_columns'])->orderBy($order[0], $order[1]);
+
+                if($searchValue != '') {
+                    $loop = 0;
+                    foreach($options['grid_columns'] as $sw){
+                        if($loop == 0)
+                            $table_datas->where($sw, 'LIKE', "%$searchValue%");
+                        else
+                            $table_datas->orwhere($sw, 'LIKE', "%$searchValue%");
+                        $loop++;
+                    }
+                }
+
+
+            }
+        }
+
+        return  $table_datas->paginate(20);
+
+    }
+    public function editComboGrid(){
+        $id = Request::input('id');
+        $column = Request::input('column');
+
+        /// saijruulah
+        $options = null;
+        foreach($this->form_input_control as $formControl){
+            if($formControl['type'] == '--combogrid' && $formControl['column'] == $column){
+
+                $options = $formControl['options'];
+
+
+
+            }
+        }
+
+        $table_datas = DB::table($options['table'])->where('id', '=', $id)->select($options['grid_columns'])->get();
+
+
+
+        return  $table_datas;
+
+    }
+    public function insertComboGrid(){
+        $formData = Request::input('data');
+        $column = Request::input('column');
+
+        $options = null;
+        foreach($this->form_input_control as $formControl){
+            if($formControl['type'] == '--combogrid' && $formControl['column'] == $column){
+
+                $options = $formControl['options'];
+
+
+
+
+
+            }
+
+
+        }
+
+
+        $insertQuery = [];
+        foreach($options['form_input_control'] as $formControl){
+            if($formControl['type']=='--checkbox'){
+                $checkBoxValue = $formData[$formControl['column']];
+                if($checkBoxValue == 'true')
+                    $checkBoxValue = 1;
+                else
+                    $checkBoxValue = 0;
+                $insertQuery[$formControl['column']] = $checkBoxValue;
+
+            } else
+                $insertQuery[$formControl['column']] = $formData[$formControl['column']];
+        }
+
+        $saved = DB::table($options['table'])->insert($insertQuery);
+
+        $response = null;
+        if($saved){
+            $response = 'success';
+        } else {
+            $response = "error";
+        }
+        return $response;
+
+
+    }
+    public function updateComboGrid(){
+        $formData = Request::input('data');
+        $id = Request::input('id');
+
+        $column = Request::input('column');
+
+        $options = null;
+        foreach($this->form_input_control as $formControl){
+            if($formControl['type'] == '--combogrid' && $formControl['column'] == $column){
+
+                $options = $formControl['options'];
+
+
+
+
+
+            }
+
+
+        }
+
+        $insertQuery = [];
+        foreach($options['form_input_control'] as $formControl){
+            if($formControl['type']=='--checkbox'){
+                $checkBoxValue = $formData[$formControl['column']];
+                if($checkBoxValue == 'true')
+                    $checkBoxValue = 1;
+                else
+                    $checkBoxValue = 0;
+                $insertQuery[$formControl['column']] = $checkBoxValue;
+
+            } else
+                $insertQuery[$formControl['column']] = $formData[$formControl['column']];
+        }
+
+        $saved = DB::table($options['table'])->where('id', '=', $id)->update($insertQuery);
+
+        $response = null;
+        if($saved){
+            $response = 'success';
+        } else {
+            $response = "none";
+        }
+        return $response;
+    }
+    public function deleteComboGrid(){
+        $id = Request::input('id');
+
+        $column = Request::input('column');
+
+        $options = null;
+        foreach($this->form_input_control as $formControl){
+            if($formControl['type'] == '--combogrid' && $formControl['column'] == $column){
+
+                $options = $formControl['options'];
+
+
+
+
+
+            }
+
+
+        }
+
+        $deleted = DB::table($options['table'])->where('id', '=', $id)->delete();
+
+        if($deleted)
+            return 'success';
+        else
+            return 'error';
+    }
 
 }

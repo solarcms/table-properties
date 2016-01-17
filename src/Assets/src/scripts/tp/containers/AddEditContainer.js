@@ -66,24 +66,53 @@ class AddEditContainer extends Component {
 
     }
     // form field value recieve functions
-    changeValues(e){
+    changeValues(e, type, cvalue, text, column){
 
-        const index = e.target.name.replace("solar-input", "");
-        const value = e.target.value;
-
+        if(type && type === 'combo-grid'){
 
 
-        const FD = this.props.formControls;
+            this.props.actions.setComboGridText(column, text);
 
-        e.target.type == 'checkbox' ?
-            this.props.actions.chagenValue(index, e.target.checked)
-        :
+            let index = null
+
+            this.props.formControls.map((FC, FC_index)=>{
+                if(FC.column == column)
+                    index = FC_index
+            });
+
+            const value = cvalue;
+
+            const FD = this.props.formControls;
+
             this.props.actions.chagenValue(index, value)
 
+            // check validation with on change
+            const error = (validation(value, FD[index].validate));
 
-        // check validation with on change
-        const error = (validation(value, FD[index].validate));
-        this.props.actions.setError(index, error);
+            this.props.actions.setError(index, error);
+
+            $("#combo-grid-"+column).removeClass('open');
+
+
+        } else {
+            const index = e.target.name.replace("grid_table-solar-input", "");
+            const value = e.target.value;
+
+
+
+            const FD = this.props.formControls;
+
+            e.target.type == 'checkbox' ?
+                this.props.actions.chagenValue(index, e.target.checked)
+                :
+                this.props.actions.chagenValue(index, value)
+
+
+            // check validation with on change
+            const error = (validation(value, FD[index].validate));
+            this.props.actions.setError(index, error);
+        }
+
 
     }
     componentWillMount() {
@@ -98,6 +127,10 @@ class AddEditContainer extends Component {
             edit(this.props.params.id).then((data)=> {
                 if(data.length >= 1)
                     this.props.formControls.map((formControl, index)=>{
+                        if(formControl.type === '--combogrid'){
+
+                            this.props.actions.setComboGridText(formControl.column, data[0][formControl.column+"_"+formControl.options['textField']]);
+                        }
                         this.props.actions.chagenValue(index, data[0][formControl.column])
                     })
                 else
@@ -114,6 +147,8 @@ class AddEditContainer extends Component {
 
         const { setup, formControls, formData, focusIndex } = this.props;
 
+        const gridId = 'grid_table'
+
         return (
             <div className="">
                 <Header pageName={setup.page_name} icon="fa fa-chevron-left" link="#/" type="addEdit"
@@ -123,13 +158,13 @@ class AddEditContainer extends Component {
                     <div className="row white m-x-sm" >
                             <div className="form-horizontal solar-form p-a-md" >
 
-                                <Form formControls={formControls} formData={formData} ref="fromRefs" focusIndex={focusIndex}
+                                <Form formControls={formControls} formData={formData} ref="fromRefs" focusIndex={focusIndex} gridId={gridId}
                                       changeHandler={this.changeValues.bind(this)}
                                 />
 
                                 <div>
                                     {this.props.params.id
-                                        ? <button type="button" className="btn btn-fw btn-success p-h-lg" onClick={this.updateForm.bind(this)}>
+                                        ?   <button type="button" className="btn btn-fw btn-success p-h-lg" onClick={this.updateForm.bind(this)}>
                                                 <i className="fa fa-check"></i>
 
                                             </button>

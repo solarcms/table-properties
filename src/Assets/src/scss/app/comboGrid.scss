@@ -180,8 +180,25 @@
   color: #d68273;
 }
 
-
-
-
-
-
+.combo-grid{
+  .dropdown-menu {
+    border-top: 2px solid #666;
+    margin-top: -1px;
+    min-width: 600px;
+    min-height: 550px;
+  }
+  .m-a-sm{
+    margin: 0;
+  }
+  #gridBody{
+    height: 400px;
+    width:100%;
+    overflow-y: scroll;
+    border: none;
+    position: relative;
+    //background: green;
+  }
+  .page-limit{
+    display: none!important;
+  }
+}

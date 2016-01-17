@@ -18,7 +18,7 @@ export default class Page extends Component {
         } else {
             el = (
                 <li className={className}>
-                    <a onClick={this.props.onClick.bind(this, this.props.pageNumber)} href="#">
+                    <a onClick={this.props.onClick.bind(this, this.props.pageNumber)} href="javascript:void(0)">
                         { text }
                     </a>
                 </li>
