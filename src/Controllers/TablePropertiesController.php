@@ -63,7 +63,7 @@ class TablePropertiesController extends Controller {
         $tp->formType = 'inline';
 
         $tp->grid_output_control = [
-            ['column'=>'active', 'title'=>'Идвэхтэй', 'type'=>'--checkbox', 'fixed'=>true],
+            ['column'=>'active', 'title'=>'Идвэхтэй', 'type'=>'--checkbox', 'fixed'=>false],
             ['column'=>'name', 'title'=>'Нэр', 'type'=>'--text'],
         ];
 
@@ -81,7 +81,7 @@ class TablePropertiesController extends Controller {
         $tp->table = 'article';
         $tp->page_name = 'Мэдээ';
         $tp->identity_name = 'id';
-        $tp->grid_columns = ['article.active', 'article.name', 'acticle_category.name as category_id_name', 'article.id'];
+        $tp->grid_columns = ['article.active', 'article.name', 'acticle_category.name as category_id_name', 'article.id', 'locales.code', 'article.test_tag'];
         $tp->grid_default_order_by = 'id DESC';
         $tp->formType = 'page';
 
@@ -89,6 +89,7 @@ class TablePropertiesController extends Controller {
             ['column'=>'active', 'title'=>'Идвэхтэй', 'type'=>'--checkbox', 'fixed'=>true],
             ['column'=>'name', 'title'=>'Нэр', 'type'=>'--text'],
             ['column'=>'category_id_name', 'title'=>'Бүлэг', 'type'=>'--text'],
+            ['column'=>'code', 'title'=>'Хэл', 'type'=>'--text'],
         ];
 
         $tp->form_input_control = [
@@ -110,8 +111,35 @@ class TablePropertiesController extends Controller {
                 'grid_columns'=>['id', 'active', 'name'],
                 'grid_default_order_by'=>'id DESC'
             ]],
+            ['column'=>'hel', 'title'=>'Хэл', 'type'=>'--combobox', 'value'=>null, 'validate'=>'required', 'options'=>[
+                'valueField'=> 'id',
+                'textField'=> 'code',
+                'table'=>'locales',
+                'identity_name'=>'id',
+                'grid_columns'=>['id', 'code'],
+                'grid_default_order_by'=>'id DESC'
+            ]],
+            ['column'=>'test_tag', 'title'=>'Төрөл', 'type'=>'--tag', 'value'=>null, 'validate'=>'required', 'options'=>[
+                'valueField'=> 'ID',
+                'textField'=> 'category_name',
+                'table'=>'category',
+                'identity_name'=>'ID',
+                'grid_columns'=>['ID', 'category_name'],
+                'grid_default_order_by'=>'ID DESC'
+            ]],
+            ['column'=>'test_ungu', 'title'=>'Color', 'type'=>'--tag', 'value'=>null, 'validate'=>'required', 'options'=>[
+                'valueField'=> 'id',
+                'textField'=> 'ungu',
+                'table'=>'ungu',
+                'identity_name'=>'id',
+                'grid_columns'=>['id', 'ungu'],
+                'grid_default_order_by'=>'ungu DESC'
+            ]],
+            ['column'=>'test_radio', 'title'=>'test radio', 'type'=>'--radio', 'value'=>null, 'choices'=>[['value'=>'a', 'text'=>'A'], ['value'=>'b', 'text'=>'B'], ['value'=>'c', 'text'=>'C']], 'validate'=>'required'],
             ['column'=>'intro', 'title'=>'Оршил', 'type'=>'--textarea', 'value'=>null, 'validate'=>'required'],
             ['column'=>'body', 'title'=>'Агуулага', 'type'=>'--textarea', 'value'=>null, 'validate'=>'required'],
+            ['column'=>'test_date', 'title'=>'Огноо', 'type'=>'--date', 'value'=>null, 'validate'=>'required'],
+            ['column'=>'test_datetime', 'title'=>'Огноо цаг', 'type'=>'--datetime', 'value'=>null, 'validate'=>'required'],
 
         ];
         return $tp->run($action);

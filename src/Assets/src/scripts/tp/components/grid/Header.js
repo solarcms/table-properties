@@ -6,34 +6,51 @@ export default class Header extends Component {
         let addButton = "";
 
         if(this.props.formType == 'inline')
-            addButton = <a href="javascript:void(0)" className="nav-link" onClick={this.props.addInlineForm}><i className="fa fa-plus"></i> Нэмэх</a>
+            addButton = <a href="javascript:void(0)" className="nav-link" onClick={this.props.addInlineForm}>
+                <i className="material-icons">&#xE145;</i>
+                Нэмэх
+            </a>
         else if(this.props.formType == 'window')
-            addButton = <a className="nav-link" href="javascript:void(0)" onClick={this.props.showModal}><i className="fa fa-plus"></i> Нэмэх</a>
+            addButton = <a className="nav-link" href="javascript:void(0)" onClick={this.props.showModal}>
+                <i className="material-icons">&#xE145;</i>
+                Нэмэх
+            </a>
         else
-            addButton = <a href={this.props.link} className="nav-link"><i className="fa fa-plus"></i> Нэмэх</a>
+            addButton = <a href={this.props.link} className="nav-link"><i className="material-icons">&#xE145;</i> Нэмэх</a>
 
         let actionControls = this.props.type == 'list'?
             <ul className="nav navbar-nav pull-right">
                 <li className="nav-item dropdown">
                     <a className="nav-link p-l b-l" href="javascript:void(0)" data-toggle="dropdown">
-                        <i className="fa fa-upload"></i>
+
+                        <i className="material-icons">&#xE2C6;</i>
                     </a>
                     <div className="dropdown-menu dropdown-menu-scale pull-right text-color"
                          role="menu">
-                        <a className="dropdown-item" onClick={this.props.exportPDF}><i className="fa fa-file-pdf-o"></i> PDF</a>
-                        <a className="dropdown-item" onClick={this.props.exportEXCEL}><i className="fa fa-file-excel-o"></i> Excel</a>
-                        <a className="dropdown-item" href=""><i className="fa fa-print"></i> Print</a>
+                        <a className="dropdown-item" onClick={this.props.exportPDF}>
+                            <i className="material-icons">&#xE415;</i>
+                            &nbsp;&nbsp;PDF
+                        </a>
+                        <a className="dropdown-item" onClick={this.props.exportEXCEL}>
+                            <i className="material-icons">&#xE3EC;</i>
+                            &nbsp;&nbsp;Excel
+                        </a>
+                        <a className="dropdown-item" href="">
+                            <i className="material-icons">&#xE8AD;</i>
+                            &nbsp;&nbsp;Print
+                        </a>
                     </div>
                 </li>
                 <li className="nav-item">
                     <a className="nav-link" onClick={this.props.handlerReload}>
-                        <i className="fa fa-refresh"></i>
+
+                        <i className="material-icons">&#xE5D5;</i>
                     </a>
                 </li>
 
                 <li className="nav-item dropdown">
                     <a className="nav-link p-l b-l" href="" data-toggle="dropdown">
-                        <i className="icon-options-vertical icon"></i>
+                        <i className="material-icons">&#xE8B8;</i>
                     </a>
                     <div className="dropdown-menu dropdown-menu-scale pull-right text-color"
                          role="menu">
@@ -57,7 +74,9 @@ export default class Header extends Component {
                             <span className="input-group-btn">
                                 <button type="button" className="btn white b-a rounded no-b-l no-shadow"
                                         onClick={this.props.handlerSearch}>
-                                    <i className="fa fa-search"></i>
+
+                                    <i className="material-icons">&#xE8B6;</i>
+
                                 </button>
                             </span>
                         </div>

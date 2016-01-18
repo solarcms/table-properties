@@ -1,5 +1,14 @@
 import React, { Component, PropTypes }  from 'react';
 import Combogrid from '../elements/ComboGrid';
+import Select from 'react-select';
+import DateTimePicker from 'react-widgets/lib/DateTimePicker';
+
+
+import Moment from 'moment'
+import momentLocalizer from 'react-widgets/lib/localizers/moment'
+
+momentLocalizer(Moment);
+
 
 
 export default class Form extends Component {
@@ -13,6 +22,33 @@ export default class Form extends Component {
 
         this.props.changeHandler(null, 'combo-grid', value, text, column)
 
+
+    }
+
+    comboBoxSelected(name, value){
+
+
+
+       this.props.changeHandler(null, 'combobox', value, name)
+
+    }
+
+    dateTimeChange(name, value){
+        value = Moment(value).format("YYYY.MM.DD HH:mm");
+       this.props.changeHandler(null, 'combobox', value, name)
+
+    }
+
+
+    dateChange(name, value){
+        value = Moment(value).format("YYYY.MM.DD");
+       this.props.changeHandler(null, 'combobox', value, name)
+
+    }
+
+    date(name, value){
+
+       this.props.changeHandler(null, 'combobox', value, name)
 
     }
 
@@ -120,6 +156,78 @@ export default class Form extends Component {
                             </span>
                 </div>}
             </div>
+
+            else if (field.type == '--date')
+
+                return <div key={field.column}>
+                    {formType == 'inline' ? <div className={`form-group ${fieldClass}`}>
+
+                        <DateTimePicker
+                            name={`${gridId}-solar-input${index}`}
+                            defaultValue={mainValue === null ? null : new Date(mainValue)}
+                            format={"YYYY.MM.DD"}
+                            placeholder={field.title}
+                            time={false}
+                            onChange={this.dateChange.bind(this, `${gridId}-solar-input${index}`)}
+                        />
+
+
+                                <span className="help-block">
+
+                                    {field.error}
+                                </span>
+                    </div>
+                        : <div key={field.column} className={`form-group ${fieldClass}`}>
+                        <label className="control-label">{field.title}</label>
+                        <DateTimePicker
+                            name={`${gridId}-solar-input${index}`}
+                            value={mainValue === null ? null : new Date(mainValue)}
+                            format={"YYYY.MM.DD"}
+                            time={false}
+                            onChange={this.dateChange.bind(this, `${gridId}-solar-input${index}`)}
+                            placeholder={field.title}
+                        />
+                            <span className="help-block">
+
+                                {field.error}
+                            </span>
+                    </div>}
+                </div>
+
+            else if (field.type == '--datetime')
+
+                return <div key={field.column}>
+                {formType == 'inline' ? <div className={`form-group ${fieldClass}`}>
+
+                    <DateTimePicker
+                        name={`${gridId}-solar-input${index}`}
+                        defaultValue={mainValue === null ? null : new Date(mainValue)}
+                        format={"YYYY.MM.DD HH:mm"}
+                        placeholder={field.title}
+                        onChange={this.dateTimeChange.bind(this, `${gridId}-solar-input${index}`)}
+                    />
+
+
+                                <span className="help-block">
+
+                                    {field.error}
+                                </span>
+                </div>
+                    : <div key={field.column} className={`form-group ${fieldClass}`}>
+                    <label className="control-label">{field.title}</label>
+                    <DateTimePicker
+                        name={`${gridId}-solar-input${index}`}
+                        value={mainValue === null ? null : new Date(mainValue)}
+                        format={"YYYY.MM.DD HH:mm"}
+                        onChange={this.dateTimeChange.bind(this, `${gridId}-solar-input${index}`)}
+                        placeholder={field.title}
+                    />
+                            <span className="help-block">
+
+                                {field.error}
+                            </span>
+                </div>}
+            </div>
             else if (field.type == '--combogrid') {
 
                 return <div key={field.column} className={`form-group ${fieldClass}`}>
@@ -138,9 +246,82 @@ export default class Form extends Component {
                                        totalPages={formData[field.column].data.last_page}
                                        totalItems={formData[field.column].data.total}
                                        pageName={field.title}
-                                       comboGridSelected={this.comboGridSelected.bind(this)}
 
-                            />
+                                        comboGridSelected={this.comboGridSelected.bind(this)}
+
+
+                    />
+
+
+                        :
+                        null}
+                    <span className="help-block">
+                            {field.error}
+                    </span>
+
+
+                </div>
+            }
+            else if (field.type == '--combobox') {
+                let options = [];
+                if(formData[field.column])
+                formData[field.column].data.data.map((data, sindex)=>{
+                    options.push({value: data[field.options.valueField], label: data[field.options.textField]})
+                })
+
+                return <div key={field.column} className={`form-group ${fieldClass}`}>
+                    {formType == 'inline' ? '' : <label className="control-label">{field.title}</label>}
+
+
+
+
+
+                    {formData[field.column] ?
+
+
+
+                        <Select
+                        name={`${gridId}-solar-input${index}`}
+                        value={field.value}
+                        options={options}
+                        onChange={this.comboBoxSelected.bind(this, `${gridId}-solar-input${index}`)}
+                        />
+
+
+                        :
+                        null}
+                    <span className="help-block">
+                            {field.error}
+                    </span>
+
+
+                </div>
+            }
+            else if (field.type == '--tag') {
+                let options = [];
+                if(formData[field.column])
+                formData[field.column].data.data.map((data, sindex)=>{
+                    options.push({value: data[field.options.valueField], label: data[field.options.textField]})
+                })
+
+                return <div key={field.column} className={`form-group ${fieldClass}`}>
+                    {formType == 'inline' ? '' : <label className="control-label">{field.title}</label>}
+
+
+
+
+
+                    {formData[field.column] ?
+
+
+
+                        <Select
+                        name={`${gridId}-solar-input${index}`}
+                        value={field.value}
+                        options={options}
+                        multi={true}
+                        onChange={this.comboBoxSelected.bind(this, `${gridId}-solar-input${index}`)}
+                        />
 
 
                         :
@@ -159,7 +340,8 @@ export default class Form extends Component {
                             <input type="checkbox"
 
                                    name={`${gridId}-solar-input${index}`}
-
+                                   checked={field.value == 1 ? true: false  }
+                                   value={1}
                                    defaultChecked={mainValue}
                                    onChange={changeHandler}
                             />
@@ -168,13 +350,45 @@ export default class Form extends Component {
                                 <input type="checkbox"
 
                                        name={`${gridId}-solar-input${index}`}
-
+                                       checked={field.value == 1 ? true: false  }
+                                       value={1}
                                        defaultChecked={mainValue}
                                        onChange={changeHandler}
                                 />
                                 {field.title}
                             </label>
                         }
+                        < span className="help-block">
+                        {field.error}
+                            </span>
+
+                    </div>
+                </div>
+            else if (field.type == '--radio')
+                return <div key={field.column} className={`form-group ${fieldClass}`}>
+                    <div className="radio">
+
+                            <label>
+
+                                {field.title}
+                            </label> <br/>
+
+                        {field.choices.map((choice, cindex)=>
+                            <label key={cindex}>
+                            <input type="radio"
+
+                                   name={`${gridId}-solar-input${index}`}
+
+                                   checked={field.value == choice.value ? true: false  }
+
+                                   value={choice.value}
+                                   onChange={changeHandler}
+                            />
+                                {choice.text} &nbsp;&nbsp;&nbsp;
+                            </label>
+                        )}
+
+
                         < span className="help-block">
                         {field.error}
                             </span>

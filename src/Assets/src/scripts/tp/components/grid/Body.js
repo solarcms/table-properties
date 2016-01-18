@@ -167,43 +167,43 @@ export default class Body extends Component {
                             <span>
                     <a className="btn btn-sm btn-success"
                        onClick={this.saveInlineForm.bind(this, data.id)}>
-                        <i className="fa fa-check"></i>
+                        <i className="material-icons">&#xE2C3;</i>
                     </a>
                                 &nbsp;
                                 <a className="btn btn-sm btn-danger" onClick={this.setRowEdit.bind(this, 0, 0)}>
-                                    <i className="fa fa-times"></i>
+                                    <i className="material-icons">&#xE5CD;</i>
                                 </a>
                     </span>
 
                             :
                             <span>
                     <a className="btn btn-sm" onClick={this.setRowEdit.bind(this, data.id, 0)}>
-                        <i className="fa fa-pencil"></i>
+                        <i className="material-icons">&#xE254;</i>
                     </a>
                                 &nbsp;
                                 <a className="btn btn-sm" onClick={this.handleDeleteItem.bind(this, data.id)}>
-                                    <i className="fa fa-trash"></i>
+                                    <i className="material-icons">&#xE872;</i>
                                 </a>
                     </span>
                         : formType == 'window' ?
                         <span>
                     <a className="btn btn-sm" href="javascript:void(0)"
                        onClick={this.callWindowEdit.bind(this, data.id)}>
-                        <i className="fa fa-pencil"></i>
+                        <i className="material-icons">&#xE254;</i>
                     </a>
                             &nbsp;
                             <a className="btn btn-sm" onClick={this.handleDeleteItem.bind(this, data.id)}>
-                                <i className="fa fa-trash"></i>
+                                <i className="material-icons">&#xE872;</i>
                             </a>
                     </span>
                         :
                         <span>
                     <a className="btn btn-sm" href={`#edit/${data.id}`}>
-                        <i className="fa fa-pencil"></i>
+                        <i className="material-icons">&#xE254;</i>
                     </a>
                             &nbsp;
                             <a className="btn btn-sm" onClick={this.handleDeleteItem.bind(this, data.id)}>
-                                <i className="fa fa-trash"></i>
+                                <i className="material-icons">&#xE872;</i>
                             </a>
                     </span>}
                 </td>
@@ -334,12 +334,12 @@ export default class Body extends Component {
 
                             <span>
                                 <a className="btn btn-sm btn-success" onClick={this.saveInlineForm.bind(this)}>
-                                    <i className="fa fa-check"></i>
+                                    <i className="material-icons">&#xE2C3;</i>
                                 </a>
                                 &nbsp;
 
                                 <a className="btn btn-sm btn-danger" onClick={removeInlineForm}>
-                                    <i className="fa fa-times"></i>
+                                    <i className="material-icons">&#xE5CD;</i>
                                 </a>
                             </span>
             </td>
@@ -370,7 +370,7 @@ export default class Body extends Component {
                     <table id={`${gridId}-rigth0`} className="table table-striped table-bordered table-hover tp-table-rigth0">
                         <thead>
                         <tr>
-                            <th className="solar-grid-actions"><i className="fa fa-ellipsis-h"></i></th>
+                            <th className="solar-grid-actions"><i className="material-icons">&#xE5D3;</i></th>
                         </tr>
                         </thead>
                     </table>
@@ -408,7 +408,7 @@ export default class Body extends Component {
                 <table id={`${gridId}-rigth`} className="table table-striped table-bordered table-hover tp-table-rigth">
                     <thead>
                     <tr>
-                        <th className="solar-grid-actions"><i className="fa fa-ellipsis-h"></i></th>
+                        <th className="solar-grid-actions"><i className="material-icons">&#xE5D3;</i></th>
                     </tr>
                     </thead>
                     <tbody>

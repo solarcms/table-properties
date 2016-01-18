@@ -94,16 +94,37 @@ class AddEditContainer extends Component {
             $("#combo-grid-"+column).removeClass('open');
 
 
-        } else {
+        } else if(type && type === 'combobox'){
+
+            const index = text.replace("grid_table-solar-input", "");
+            const value = cvalue;
+
+
+            const FD = this.props.formControls;
+
+
+            this.props.actions.chagenValue(index, value)
+
+
+            // check validation with on change
+            const error = (validation(value, FD[index].validate));
+            this.props.actions.setError(index, error);
+
+
+        }
+
+        else {
             const index = e.target.name.replace("grid_table-solar-input", "");
             const value = e.target.value;
-
 
 
             const FD = this.props.formControls;
 
             e.target.type == 'checkbox' ?
-                this.props.actions.chagenValue(index, e.target.checked)
+                    e.target.checked ?
+                        this.props.actions.chagenValue(index, value)
+                    :
+                        this.props.actions.chagenValue(index, 0)
                 :
                 this.props.actions.chagenValue(index, value)
 
@@ -165,19 +186,19 @@ class AddEditContainer extends Component {
                                 <div>
                                     {this.props.params.id
                                         ?   <button type="button" className="btn btn-fw btn-success p-h-lg" onClick={this.updateForm.bind(this)}>
-                                                <i className="fa fa-check"></i>
+                                                    <i className="material-icons">&#xE2C3;</i>
 
                                             </button>
                                         :
                                             <button type="button" className="btn btn-fw btn-success p-h-lg" onClick={this.saveForm.bind(this)}>
-                                                <i className="fa fa-check"></i>
+                                                <i className="material-icons">&#xE2C3;</i>
 
                                             </button>
                                     }
 
                                     &nbsp;
                                     <a href="#/" className="btn btn-fw danger p-h-lg">
-                                        <i className="fa fa-times"></i>
+                                        <i className="material-icons">&#xE5CD;</i>
                                     </a>
 
 

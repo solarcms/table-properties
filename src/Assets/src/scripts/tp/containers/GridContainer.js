@@ -22,7 +22,7 @@ class GridContainer extends Component {
     exportEXCEL(){
         //$('#tp-table').tableExport({type:'pdf'});
         //$('#tp-table').tableExport({type:'json'});
-        $('#tp-table').tableExport({type:'xls'});
+        $('#grid_table').tableExport({type:'csv'});
         //$('#tp-table').tableExport({type:'sql'});
     }
     selectRow(row){
@@ -94,10 +94,7 @@ class GridContainer extends Component {
                 else
                     alert('please try agian')
 
-
             });
-
-
 
     }
     removeInlineForm(){
@@ -116,7 +113,6 @@ class GridContainer extends Component {
                 this.props.actions.setError(index, error);
                 foundError = true;
             }
-
         })
         if(foundError === false)
             if(isNaN(id) === false && id != 0){
@@ -131,7 +127,6 @@ class GridContainer extends Component {
                             this.setRowEdit(0, 0);
                         else if(this.props.formType == 'window')
                             this.hideModal();
-
                     }
 
                 }).fail(()=>{
@@ -149,7 +144,6 @@ class GridContainer extends Component {
                             this.removeInlineForm();
                         else if(this.props.formType == 'window')
                             this.hideModal();
-
                     }
 
                 }).fail(()=>{

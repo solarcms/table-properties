@@ -124,7 +124,7 @@ class Tp
         $table_datas = DB::table($this->table)->select($this->grid_columns);
 
         foreach($this->form_input_control as $formControl){
-            if($formControl['type'] == '--combogrid'){
+            if($formControl['type'] == '--combogrid' || $formControl['type'] == '--combobox' || $formControl['type'] == '--tag'){
 
                 $options = $formControl['options'];
 
@@ -148,6 +148,8 @@ class Tp
             $table_datas->orderBy($order[0], $order[1]);
         }
 
+
+
         return  $table_datas->paginate($pageLimit);
 
     }
@@ -165,6 +167,20 @@ class Tp
                 $data = $data->toArray();
 
                 $FormData[$formControl['column']] = ['data'=>$data, 'form_input_control'=>$options['form_input_control'], 'text'=>null];
+
+              //  print_r($data);
+                //->take($this->pageLimit)->get()
+
+            }
+            if($formControl['type'] == '--combobox' || $formControl['type'] == '--tag'){
+
+                $options = $formControl['options'];
+                $order = explode(" ", $options['grid_default_order_by']);
+                $data = DB::table($options['table'])->select($options['grid_columns'])->orderBy($order[0], $order[1])->paginate(20);
+
+                $data = $data->toArray();
+
+                $FormData[$formControl['column']] = ['data'=>$data];
 
               //  print_r($data);
                 //->take($this->pageLimit)->get()
@@ -193,7 +209,7 @@ class Tp
 
             $table_datas->addSelect("$this->table." . $formControl['column']);
 
-            if($formControl['type'] == '--combogrid'){
+            if($formControl['type'] == '--combogrid' || $formControl['type'] == '--combobox' || $formControl['type'] == '--tag'){
 
                 $options = $formControl['options'];
 
@@ -224,7 +240,7 @@ class Tp
         foreach($this->form_input_control as $formControl){
             if($formControl['type']=='--checkbox'){
                 $checkBoxValue = $formData[$formControl['column']];
-                if($checkBoxValue == 'true')
+                if($checkBoxValue == 1)
                     $checkBoxValue = 1;
                 else
                     $checkBoxValue = 0;
@@ -258,7 +274,7 @@ class Tp
         foreach($this->form_input_control as $formControl){
             if($formControl['type']=='--checkbox'){
                 $checkBoxValue = $formData[$formControl['column']];
-                if($checkBoxValue == 'true')
+                if($checkBoxValue == 1)
                     $checkBoxValue = 1;
                 else
                     $checkBoxValue = 0;
@@ -487,7 +503,7 @@ class Tp
         foreach($options['form_input_control'] as $formControl){
             if($formControl['type']=='--checkbox'){
                 $checkBoxValue = $formData[$formControl['column']];
-                if($checkBoxValue == 'true')
+                if($checkBoxValue == 1)
                     $checkBoxValue = 1;
                 else
                     $checkBoxValue = 0;

@@ -198,7 +198,7 @@ export default class ComboGrid extends Component {
             <div className="dropdown combo-grid " id={`combo-grid-${column}`}>
                 <a className="dropdown-toggle realLarge" data-toggle="dropdown" href  onClick={this.handleOpen.bind(this)}  >
                     {text === null ? <span>Сонгох</span> : <span>{text}</span>}
-                <b></b>
+                <b><i className="material-icons">&#xE5C5;</i></b>
                 </a>
                 <div className="dropdown-menu  grid-menu" >
                     <form>
