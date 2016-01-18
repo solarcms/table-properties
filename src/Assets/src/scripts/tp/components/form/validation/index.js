@@ -5,6 +5,18 @@ export function email(value) {
         return 'Invalid email address';
     }
 }
+export function link(value) {
+    // Let's not start a debate on email regex. This is just for an example app!
+    if (!isEmpty(value) && !/^(ftp|http|https):\/\/[^ "]+$/i.test(value)) {
+        return 'Invalid url address';
+    }
+}
+export function number(value) {
+    // Let's not start a debate on email regex. This is just for an example app!
+    if (!isEmpty(value) && !/^[+-]?(?=.)(?:\d+,)*\d*(?:\.\d+)?$/i.test(value)) {
+        return 'Invalid number';
+    }
+}
 
 export function required(value) {
     if (isEmpty(value)) {
@@ -59,6 +71,33 @@ export default function validation(value, validationData){
     rules.map((rule) => {
         if(rule == 'required'){
             const error = required(value);
+            if (error) {
+                if(errors !== null)
+                    errors = errors+", "+error;
+                else
+                    errors = error;
+            }
+        }
+        else if(rule == 'email'){
+            const error = email(value);
+            if (error) {
+                if(errors !== null)
+                    errors = errors+", "+error;
+                else
+                    errors = error;
+            }
+        }
+        else if(rule == 'link'){
+            const error = link(value);
+            if (error) {
+                if(errors !== null)
+                    errors = errors+", "+error;
+                else
+                    errors = error;
+            }
+        }
+        else if(rule == 'number'){
+            const error = number(value);
             if (error) {
                 if(errors !== null)
                     errors = errors+", "+error;

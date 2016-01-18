@@ -140,6 +140,11 @@ class TablePropertiesController extends Controller {
             ['column'=>'body', 'title'=>'Агуулага', 'type'=>'--textarea', 'value'=>null, 'validate'=>'required'],
             ['column'=>'test_date', 'title'=>'Огноо', 'type'=>'--date', 'value'=>null, 'validate'=>'required'],
             ['column'=>'test_datetime', 'title'=>'Огноо цаг', 'type'=>'--datetime', 'value'=>null, 'validate'=>'required'],
+            ['column'=>'test_money', 'title'=>'test money', 'type'=>'--money', 'value'=>null, 'validate'=>'required|money'],
+            ['column'=>'test_number', 'title'=>'Too', 'type'=>'--number', 'value'=>null, 'validate'=>'required|number'],
+            ['column'=>'test_email', 'title'=>'Mail', 'type'=>'--email', 'value'=>null, 'validate'=>'required|email'],
+            ['column'=>'test_link', 'title'=>'Link', 'type'=>'--link', 'value'=>null, 'validate'=>'required|link'],
+
 
         ];
         return $tp->run($action);

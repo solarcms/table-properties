@@ -11,11 +11,20 @@ momentLocalizer(Moment);
 
 
 
+
 export default class Form extends Component {
     moveCursorToEnd(e) {
 
+
         var index = e.target.value.length;
         e.target.setSelectionRange(index, index);
+
+    }
+    moneyMask(n){
+        n = n * 1;
+        return n.toFixed(2).replace(/./g, function(c, i, a) {
+                return i > 0 && c !== "." && (a.length - i) % 3 === 0 ? "," + c : c;
+            });
 
     }
     comboGridSelected(value, text, column){
@@ -51,7 +60,12 @@ export default class Form extends Component {
        this.props.changeHandler(null, 'combobox', value, name)
 
     }
+    componentDidUpdate(){
 
+        $('.number').autoNumeric("init", {aPad:false});
+        $('.money').autoNumeric({aPad: true, aForm: true});
+
+    }
     render() {
         const { formControls, changeHandler, formData, formType, formValue, focusIndex, gridIndex, gridId  } = this.props;
 
@@ -118,6 +132,158 @@ export default class Form extends Component {
                             </span>
                         </div>}
                 </div>
+            else if (field.type == '--number')
+                return <div key={field.column}>
+                    {formType == 'inline' ? <div className={`form-group ${fieldClass}`}>
+                        <input
+                            autoFocus={focus}
+                            className="form-control number"
+                            name={`${gridId}-solar-input${index}`}
+                            defaultValue={mainValue}
+                            placeholder={field.title}
+                            onFocus={this.moveCursorToEnd.bind(this)}
+                            onKeyUp={changeHandler}
+                            type="text"/>
+
+
+                                <span className="help-block">
+
+                                    {field.error}
+                                </span>
+                    </div>
+                        : <div key={field.column} className={`form-group ${fieldClass}`}>
+                        <label className="control-label">{field.title}</label>
+                        <input
+                            autoFocus={focus}
+                            className="form-control number"
+                            name={`${gridId}-solar-input${index}`}
+                            value={mainValue}
+                            placeholder={field.title}
+                            onFocus={this.moveCursorToEnd.bind(this)}
+                            onKeyUp={changeHandler}
+                            type="text"/>
+                            <span className="help-block">
+
+                                {field.error}
+                            </span>
+                    </div>}
+                </div>
+            else if (field.type == '--money'){
+               
+
+
+                return <div key={field.column}>
+                    {formType == 'inline' ? <div className={`form-group ${fieldClass}`}>
+                        <input
+                            autoFocus={focus}
+                            className="form-control money"
+                            name={`${gridId}-solar-input${index}`}
+                            defaultValue={mainValue}
+                            placeholder={field.title}
+                            onFocus={this.moveCursorToEnd.bind(this)}
+                            onKeyUp={changeHandler}
+                            type="text"/>
+
+
+                                <span className="help-block">
+
+                                    {field.error}
+                                </span>
+                    </div>
+                        : <div key={field.column} className={`form-group ${fieldClass}`}>
+                        <label className="control-label">{field.title}</label>
+                        <input
+                            autoFocus={focus}
+                            className="form-control money"
+                            name={`${gridId}-solar-input${index}`}
+                            value={mainValue}
+                            placeholder={field.title}
+                            onFocus={this.moveCursorToEnd.bind(this)}
+                            onKeyUp={changeHandler}
+                            type="text"/>
+                            <span className="help-block">
+
+                                {field.error}
+                            </span>
+                    </div>}
+                </div>
+            }
+
+
+            else if (field.type == '--email')
+                return <div key={field.column}>
+                    {formType == 'inline' ? <div className={`form-group ${fieldClass}`}>
+                        <input
+                            autoFocus={focus}
+                            className="form-control"
+                            name={`${gridId}-solar-input${index}`}
+                            defaultValue={mainValue}
+                            placeholder={field.title}
+
+                            onChange={changeHandler}
+                            type="email"/>
+
+
+                                <span className="help-block">
+
+                                    {field.error}
+                                </span>
+                    </div>
+                        : <div key={field.column} className={`form-group ${fieldClass}`}>
+                        <label className="control-label">{field.title}</label>
+                        <input
+                            autoFocus={focus}
+                            className="form-control"
+                            name={`${gridId}-solar-input${index}`}
+                            value={mainValue}
+                            placeholder={field.title}
+
+                            onChange={changeHandler}
+                            type="email"/>
+                            <span className="help-block">
+
+                                {field.error}
+                            </span>
+                    </div>}
+                </div>
+
+            else if (field.type == '--link')
+                return <div key={field.column}>
+                    {formType == 'inline' ? <div className={`form-group ${fieldClass}`}>
+                        <input
+                            autoFocus={focus}
+                            className="form-control"
+                            name={`${gridId}-solar-input${index}`}
+                            defaultValue={mainValue}
+                            placeholder={field.title}
+                            onFocus={this.moveCursorToEnd.bind(this)}
+                            onChange={changeHandler}
+                            type="text"/>
+
+
+                                <span className="help-block">
+
+                                    {field.error}
+                                </span>
+                    </div>
+                        : <div key={field.column} className={`form-group ${fieldClass}`}>
+                        <label className="control-label">{field.title}</label>
+                        <input
+                            autoFocus={focus}
+                            className="form-control"
+                            name={`${gridId}-solar-input${index}`}
+                            value={mainValue}
+                            placeholder={field.title}
+                            onFocus={this.moveCursorToEnd.bind(this)}
+                            onChange={changeHandler}
+                            type="text"/>
+                            <span className="help-block">
+
+                                {field.error}
+                            </span>
+                    </div>}
+                </div>
+
 
             if (field.type == '--textarea')
 
