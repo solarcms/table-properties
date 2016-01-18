@@ -2,6 +2,7 @@ import $ from "jquery"
 export function fixRowHeigth(gridId) {
 
 
+
     let aRowHeights = [];
     // Loop through the tables
     $("#gridBody").find("table").each(function (indx, table) {
@@ -26,44 +27,65 @@ export function fixRowHeigth(gridId) {
         });
     });
 
-    let leftTableWidth = $("#"+gridId+"-left > thead").width();
+    /////////////
+
+
+
+
+
+
+    let leftTableWidth = $("#"+gridId+"-left > thead").outerWidth();
 
 
 
     /////////////// fixed table header
 
-    $("#"+gridId+"-left").css("width", (leftTableWidth+2))
+    $("#"+gridId+"-left").css("width", (leftTableWidth)+2)
 
-    $("#"+gridId+"-wrapper").css('width', $("#"+gridId+"-wrapper").parent().width() - 105 - leftTableWidth);
-    $("#"+gridId+"-wrapper0").css('width', $("#"+gridId+"-wrapper").width());
-    $(".virtual_scroll").css('width', $(".virtual_scroll").parent().width() - 105 - leftTableWidth);
-    $(".virtual_scroll").css('margin-left', leftTableWidth);
+    $("#"+gridId+"-wrapper").css('width', $("#"+gridId+"-wrapper").parent().outerWidth() - 103 - leftTableWidth);
+    $("#"+gridId+"-wrapper0").css('width', $("#"+gridId+"-wrapper").outerWidth());
+    $(".virtual_scroll").css('width', $(".virtual_scroll").parent().outerWidth() - 103 - leftTableWidth);
+    $(".virtual_scroll").css('margin-left', leftTableWidth+2);
 
-
+    //
     $("#"+gridId+"-left0").css("width", (leftTableWidth+2));
     $("#"+gridId+"-left0 > thead > tr").empty();
     $("#"+gridId+"-left > thead > tr").find("th").each(function (indx, td) {
 
-        var copy = "<th style='width: " + $(td).width() + "px; height: " + $(td).height() + "px' class='sorting'>" + $(td).html() + "</th>";
+        let numberOfindex = indx + 1;
+
+        let realWidth = $("#"+gridId+"-left > tbody tr:last-child td:nth-child("+numberOfindex+")").outerWidth();
+
+        if(gridId == 'grid_table')
+
+
+        if(indx == 0)
+            var copy = "<th style='width: " + realWidth + "px; height: " + $(td).height() + "px' >" + $(td).html() + "</th>";
+        else
+            var copy = "<th style='width: " + realWidth + "px; height: " + $(td).height() + "px' class='sorting'>" + $(td).html() + "</th>";
         $("#"+gridId+"-left0 > thead > tr").append(copy);
 
     });
 
-    $("#"+gridId+"0").css("width", $("#"+gridId+"").width());
+    $("#"+gridId+"0").css("width", $("#"+gridId+"").outerWidth());
     $("#"+gridId+"0 > thead > tr").empty();
-    $("#"+gridId+" > thead > tr").find("th").each(function (indx, td) {
+    $("#"+gridId+" > thead tr:last-child").find("th").each(function (indx, td) {
+        let numberOfindex = indx + 1;
+
+        let realWidth = $("#"+gridId+" > tbody tr:last-child td:nth-child("+numberOfindex+")").outerWidth();
 
 
-        var copy = "<th style='width: " + $(td).width() + "px; height: " + $(td).height() + "px' class='sorting'>" + $(td).html() + "</th>";
+
+        var copy = "<th style='width: " + realWidth + "px; height: " + $(td).height() + "px' class='sorting'>" + $(td).html() + "</th>";
         $("#"+gridId+"0 > thead > tr").append(copy);
 
     });
 
-    $("#"+gridId+"-rigth0").css("width", 87);
+    $("#"+gridId+"-rigth0").css("width", 80);
     $("#"+gridId+"-rigth0 > thead > tr").empty();
     $("#"+gridId+"-rigth > thead > tr").find("th").each(function (indx, td) {
 
-        var copy = "<th style='width: 87px; height: " + $(td).height() + "px' >" + $(td).html() + "</th>";
+        var copy = "<th style='width: 80px; height: " + $(td).height() + "px' >" + $(td).html() + "</th>";
         $("#"+gridId+"-rigth0 > thead > tr").append(copy);
 
     });

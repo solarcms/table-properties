@@ -1,35 +1,59 @@
 .table > thead > tr > th {
-  padding: 12px;
-  height: 47px;
+  padding: 5px;
+  height: 30px;
 
 }
 
 .table {
   margin-bottom: 0;
-
+  font-size: 12px;
   .checkbox-inline input[type=checkbox], .checkbox input[type=checkbox], .radio-inline input[type=radio], .radio input[type=radio] {
     margin-left: 0px;
+  }
+  .form-group{
+    margin-bottom: 0;
+    .form-control{
+      font-size: 12px;
+      padding: 3px 5px;
+      min-height: 25px;
+    }
+  }
+  .radio, .checkbox{
+    margin-bottom: 0;
   }
 
 }
 
 .tp-table-left0, .tp-table-left{
-  min-width: 39px!important;
+
   text-align: center;
   display: inline-block;
   vertical-align: top;
-  border-right: 2px solid #ccc ;
-  th{
-    border-right:none!important;
+  th:first-child{
+    min-width: 35px;
   }
-  tr{
-    td{
-      padding: 5px;
-      text-align: center;
-      height: 40px;
+  td:first-child{
+    min-width: 35px;
+  }
+  th:last-child{
+    border-right: 1px solid #000 ;
+  }
+  td:last-child{
+    border-right: 1px solid #000 ;
+  }
 
-    }
+  td, th{
+      padding: 3px 4px!important;
+      text-align: center;
+      height: 25px;
+
   }
+
+  th.sorting{
+    padding-right: 20px!important;
+
+  }
+
 }
 .tp-table-wrapper0, .tp-table-wrapper{
   width: -moz-calc(100% - 96px);
@@ -43,12 +67,9 @@
     min-width: 800px!important;
     tr{
       td{
-        padding: 5px;
+        padding: 3px 4px;
 
-        height: 40px;
-
-
-
+        height: 25px;
 
       }
     }
@@ -71,11 +92,16 @@
 ;}
 
 .tp-table-rigth0, .tp-table-rigth{
-  width: 87px;
+  width: 80px;
   text-align: center;
   display: inline-block;
   vertical-align: top;
-  border-left: 2px solid #ccc ;
+  th:first-child{
+    border-left: 1px solid #000 ;
+  }
+  td:first-child{
+    border-left: 1px solid #000 ;
+  }
   th{
     text-align: center;
 
@@ -84,8 +110,11 @@
     td{
       padding: 3px!important;
       text-align: center;
-      height: 40px;
-      width: 87px!important;
+      height: 25px;
+      width: 80px!important;
+      .btn-sm{
+        padding: 0 5px;
+      }
     }
 
 }

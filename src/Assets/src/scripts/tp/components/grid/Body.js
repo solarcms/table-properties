@@ -78,7 +78,6 @@ export default class Body extends Component {
 
     componentDidUpdate() {
         fixRowHeigth(this.props.gridId)
-
     }
 
     selectRow(row){
@@ -380,7 +379,7 @@ export default class Body extends Component {
                 <table id={`${gridId}-left`} className="table table-striped table-bordered table-hover tp-table-left">
                     <thead>
                     <tr>
-                        <th className="solar-grid-index sorting"><b>№</b></th>
+                        <th className="solar-grid-index"><b>№</b></th>
                         {gridHeaderLeft}
                     </tr>
                     </thead>
