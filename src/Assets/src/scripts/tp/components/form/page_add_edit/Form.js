@@ -62,7 +62,7 @@ export default class Form extends Component {
     }
     componentDidUpdate(){
 
-        $('.number').autoNumeric("init", {aPad:false});
+        //$('.number').autoNumeric("init", {aPad:false});
         $('.money').autoNumeric({aPad: true, aForm: true});
 
     }
@@ -141,9 +141,9 @@ export default class Form extends Component {
                             name={`${gridId}-solar-input${index}`}
                             defaultValue={mainValue}
                             placeholder={field.title}
-                            onFocus={this.moveCursorToEnd.bind(this)}
-                            onKeyUp={changeHandler}
-                            type="text"/>
+
+                            onChange={changeHandler}
+                            type="number"/>
 
 
                                 <span className="help-block">
@@ -159,9 +159,9 @@ export default class Form extends Component {
                             name={`${gridId}-solar-input${index}`}
                             value={mainValue}
                             placeholder={field.title}
-                            onFocus={this.moveCursorToEnd.bind(this)}
-                            onKeyUp={changeHandler}
-                            type="text"/>
+
+                            onChange={changeHandler}
+                            type="number"/>
                             <span className="help-block">
 
                                 {field.error}

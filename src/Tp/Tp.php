@@ -12,6 +12,7 @@ use Illuminate\Routing\ResponseFactory as Resp;
 class Tp
 {
 
+    public $viewName = '';
     public $table = '';                     // required, table for use for sql_insert(), sql_update(), sql_update_grid() and sql_delete()
     public $identity_name = '';             // required, column name of id primary key
 
@@ -100,7 +101,7 @@ class Tp
             case "update_grid":   return $this->update_grid(); break;
             case "delete":        return $this->delete();      break;
 
-            case "index":         return $this->index();       break;
+            case "index":         return $this->index($this->viewName);       break;
             case "setup":         return $this->setup();       break;
             case "grid_list":     return $this->gridList();    break;
             case "get_form_datas":     return $this->get_form_datas();    break;
@@ -111,7 +112,7 @@ class Tp
             case "update-combo-grid":        return $this->updateComboGrid();      break;
             case "delete-combo-grid":        return $this->deleteComboGrid();      break;
 
-            default:              return $this->index();
+            default:              return $this->index($this->viewName);
         }
 
     }
@@ -312,9 +313,11 @@ class Tp
             return 'error';
     }
 
-    public function index(){
+    public function index($viewName){
+
+
         $page_name = $this->page_name;
-        return view('TableProperties::index', compact('page_name'));
+        return view($viewName, compact('page_name'));
     }
 
 
