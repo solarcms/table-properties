@@ -15,7 +15,8 @@ const initialState = {
     showInlineForm: false,
     comboGrid:{
         currentPage:1,
-    }
+    },
+    comboBoxAddAble:{}
 };
 
 export default createReducer(initialState, {
@@ -150,8 +151,24 @@ export default createReducer(initialState, {
     [types.COMBO_GRID_CHANGE_VALUE](state, { column, index, value }) {
 
 
+        return state;
+    },
+    [types.SET_COMBOBOX_ADD](state, { column, data }) {
 
-        state = state.setIn(['formData', column, 'form_input_control', index, 'value'], value);
+
+
+        const formData = Immutable.fromJS(data);
+
+        state = state.set('comboBoxAddAble', formData);
+
+
+        return state;
+    },
+    [types.COMBOX_ADD_CHANGE_VALUE](state, { column, index, value }) {
+
+
+
+        state = state.setIn(['setup', 'form_input_control', index, 'value'], value);
 
 
         return state;
@@ -159,7 +176,7 @@ export default createReducer(initialState, {
     [types.COMBO_GRID_SET_ERROR](state, { column, index, error }) {
 
 
-        state = state.setIn(['formData', column, 'form_input_control', index, 'error'], error);
+        state = state.setIn(['form_input_control', column, 'form_input_control', index, 'error'], error);
 
         return state;
     },

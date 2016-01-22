@@ -146,3 +146,11 @@ export function setComboGridText(column, text) {
         text: text
     }
 }
+export function setComboxAdd(column, data) {
+
+    return {
+        type: types.SET_COMBOBOX_ADD,
+        column: column,
+        data: data
+    }
+}

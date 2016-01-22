@@ -125,7 +125,7 @@ class Tp
         $table_datas = DB::table($this->table)->select($this->grid_columns);
 
         foreach($this->form_input_control as $formControl){
-            if($formControl['type'] == '--combogrid' || $formControl['type'] == '--combobox' || $formControl['type'] == '--tag'){
+            if($formControl['type'] == '--combogrid' || $formControl['type'] == '--combobox' || $formControl['type'] == '--tag' || $formControl['type'] == '--combobox-addable' || $formControl['type'] == '--combobox-hidden'){
 
                 $options = $formControl['options'];
 
@@ -173,13 +173,13 @@ class Tp
                 //->take($this->pageLimit)->get()
 
             }
-            if($formControl['type'] == '--combobox' || $formControl['type'] == '--tag'){
+            if($formControl['type'] == '--combobox' || $formControl['type'] == '--tag' || $formControl['type'] == '--combobox-addable' || $formControl['type'] == '--combobox-hidden'){
 
                 $options = $formControl['options'];
                 $order = explode(" ", $options['grid_default_order_by']);
-                $data = DB::table($options['table'])->select($options['grid_columns'])->orderBy($order[0], $order[1])->paginate(20);
+                $data['data'] = DB::table($options['table'])->select($options['grid_columns'])->orderBy($order[0], $order[1])->get();
 
-                $data = $data->toArray();
+//                $data = $data->toArray();
 
                 $FormData[$formControl['column']] = ['data'=>$data];
 
@@ -210,7 +210,7 @@ class Tp
 
             $table_datas->addSelect("$this->table." . $formControl['column']);
 
-            if($formControl['type'] == '--combogrid' || $formControl['type'] == '--combobox' || $formControl['type'] == '--tag'){
+            if($formControl['type'] == '--combogrid' || $formControl['type'] == '--combobox' || $formControl['type'] == '--tag' || $formControl['type'] == '--combobox-addable' || $formControl['type'] == '--combobox-hidden'){
 
                 $options = $formControl['options'];
 

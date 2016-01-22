@@ -6,9 +6,95 @@ import Header from '../components/grid/Header'
 import Form from "../components/form/page_add_edit/Form"
 import validation from "../components/form/validation/"
 import {save, edit, update} from "../api/"
+import Window from "../components/form/window/"
+import {modal} from 'bootstrap'
 
 class AddEditContainer extends Component {
+    //// ComboboxAdableForm
+    openComboboxAdableForm(column){
 
+        this.showModal(column);
+    }
+    showModal(column){
+        $('#windowForm'+column).modal({'backdrop': false}, 'show');
+    }
+    hideModal(column){
+
+        $('#windowForm'+column).modal('hide');
+        //this.props.actions.clearFromValidation();
+    }
+    changeValuesWindow(e, type, cvalue, text, column){
+
+
+        if(type && type === 'combo-grid'){
+
+
+            this.props.actions.setComboGridText(column, text);
+
+            let index = null
+
+            this.props.formControls.map((FC, FC_index)=>{
+                if(FC.column == column)
+                    index = FC_index
+            });
+
+            const value = cvalue;
+
+            const FD = this.props.formControls;
+
+            this.props.actions.chagenValue(index, value)
+
+            // check validation with on change
+            const error = (validation(value, FD[index].validate));
+
+            this.props.actions.setError(index, error);
+
+            $("#combo-grid-"+column).removeClass('open');
+
+
+        } else if(type && type === 'combobox'){
+
+            const index = text.replace("grid_table-solar-input", "");
+            const value = cvalue;
+
+
+            const FD = this.props.formControls;
+
+
+            this.props.actions.chagenValue(index, value)
+
+
+            // check validation with on change
+            const error = (validation(value, FD[index].validate));
+            this.props.actions.setError(index, error);
+
+
+        }
+
+        else {
+            const index = e.target.name.replace("grid_table-solar-input", "");
+            const value = e.target.value;
+
+
+            const FD = this.props.formControls;
+
+            e.target.type == 'checkbox' ?
+                e.target.checked ?
+                    this.props.actions.chagenValue(index, value)
+                    :
+                    this.props.actions.chagenValue(index, 0)
+                :
+                this.props.actions.chagenValue(index, value)
+
+
+            // check validation with on change
+            const error = (validation(value, FD[index].validate));
+            this.props.actions.setError(index, error);
+        }
+
+
+    }
+    //// ComboboxAdableForm
     saveForm(){
         const FD = this.props.formControls;
 
@@ -137,6 +223,7 @@ class AddEditContainer extends Component {
 
 
     }
+
     componentWillMount() {
 
         //clear form validation
@@ -171,6 +258,29 @@ class AddEditContainer extends Component {
 
         const gridId = 'grid_table'
 
+        let ComboboxAddableForm = formControls.map((field, index) => {
+            if (field.type == '--combobox-addable') {
+
+                //this.props.actions.setComboxAdd(field.column, field.options.form_input_control);
+
+
+
+                return <Window key={index}
+                               id={field.column}
+                    formControls={field.options.form_input_control}
+                    formData={formData}
+                    pageName={field.options.page_name}
+                    changeHandler={this.changeValues.bind(this)}
+                    saveForm={this.saveForm.bind(this)}
+                    hideModal={this.hideModal.bind(this, field.column)}
+                />
+
+            }
+
+        })
+
+
+
         return (
             <div className="">
                 <Header pageName={setup.page_name} icon="fa fa-chevron-left" link="#/" type="addEdit"
@@ -182,6 +292,7 @@ class AddEditContainer extends Component {
 
                                 <Form formControls={formControls} formData={formData} ref="fromRefs" focusIndex={focusIndex} gridId={gridId}
                                       changeHandler={this.changeValues.bind(this)}
+                                      openComboboxAdableForm={this.openComboboxAdableForm.bind(this)}
                                 />
 
                                 <div>
@@ -208,7 +319,8 @@ class AddEditContainer extends Component {
                     </div>
                 </div>
 
-                <hr/>
+                {ComboboxAddableForm}
+
             </div>
 
         )
