@@ -23,7 +23,7 @@ export default class Window extends Component {
 
                         </div>
                         <div className="modal-body">
-                            <Form formControls={formControls} formData={formData} ref="fromRefs" focusIndex="0"
+                            <Form gridId={id} formControls={formControls} formData={formData} ref="fromRefs" focusIndex="0"
                                   changeHandler={changeHandler}
                             />
                         </div>
