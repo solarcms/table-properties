@@ -1,7 +1,7 @@
 import React, { Component, PropTypes }  from 'react';
 
 import Pagination from "./pagination/Pagination";
-import ComboBox from "../form/elements/ComboBox";
+import ComboBox from "./pagination/ComboBox";
 
 export default class Paginator extends Component {
 

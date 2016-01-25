@@ -47,7 +47,7 @@ export default class SingleFileUploader extends Component {
 
     }
     render() {
-        const { mainValue } = this.props;
+        const { mainValue, fieldClass, placeholder, errorText } = this.props;
 
 
 
@@ -108,12 +108,18 @@ export default class SingleFileUploader extends Component {
         }
 
         return (
-            <div>
-                <DropzoneComponent config={componentConfig}
-                                   eventHandlers={eventHandlers}
-                                   djsConfig={djsConfig} />
-            </div>
 
+            <div  className={`form-group ${fieldClass}`}>
+                <label className="control-label">{placeholder}</label>
+                <div>
+                    <DropzoneComponent config={componentConfig}
+                                       eventHandlers={eventHandlers}
+                                       djsConfig={djsConfig} />
+                </div>
+                <span className="help-block">
+                    {errorText}
+                </span>
+            </div>
         )
     }
 }

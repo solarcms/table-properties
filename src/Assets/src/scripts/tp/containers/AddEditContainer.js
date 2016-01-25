@@ -185,7 +185,7 @@ class AddEditContainer extends Component {
             $("#combo-grid-"+column).removeClass('open');
 
 
-        } else if(type && type === 'combobox'){
+        } else if(type && type === 'manual'){
 
             const index = text.replace("grid_table-solar-input", "");
             const value = cvalue;
@@ -238,6 +238,7 @@ class AddEditContainer extends Component {
             this.props.actions.clearFromValidation();
 
         if(this.props.params.id){
+
             edit(this.props.params.id).then((data)=> {
                 if(data.length >= 1)
                     this.props.formControls.map((formControl, index)=>{
@@ -253,6 +254,7 @@ class AddEditContainer extends Component {
                 this.props.actions.setShowAddEditForm(true)
             });
         } else {
+
             this.props.actions.setShowAddEditForm(true)
         }
 

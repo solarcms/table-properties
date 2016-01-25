@@ -14,64 +14,46 @@ momentLocalizer(Moment);
 import {moveCursorToEnd} from './helpers/'
 
 //// form elemenets
-
 import Input from './elements/Input'
+import ComboBox from './elements/ComboBox'
 
 
 export default class Form extends Component {
     openComboxFrom(column) {
-
         this.props.openComboboxAdableForm(column)
-
     }
-    moveCursorToEnd(e) {
-        var index = e.target.value.length;
-        e.target.setSelectionRange(index, index);
 
-    }
-    moneyMask(n){
-        n = n * 1;
-        return n.toFixed(2).replace(/./g, function(c, i, a) {
-                return i > 0 && c !== "." && (a.length - i) % 3 === 0 ? "," + c : c;
-        });
-
-    }
-    comboGridSelected(value, text, column){
+    comboGridSelected(value, text, column) {
 
         this.props.changeHandler(null, 'combo-grid', value, text, column)
 
     }
 
-    comboBoxSelected(name, value){
-
-       this.props.changeHandler(null, 'combobox', value, name)
+    manualChange(name, value) {
+        this.props.changeHandler(null, 'manual', value, name)
     }
 
-    dateTimeChange(name, value){
+    dateTimeChange(name, value) {
         value = Moment(value).format("YYYY.MM.DD HH:mm");
-        this.props.changeHandler(null, 'combobox', value, name)
+        this.props.changeHandler(null, 'manual', value, name)
 
     }
 
-
-    dateChange(name, value){
+    dateChange(name, value) {
         value = Moment(value).format("YYYY.MM.DD");
-       this.props.changeHandler(null, 'combobox', value, name)
+        this.props.changeHandler(null, 'manual', value, name)
     }
 
-    date(name, value){
-       this.props.changeHandler(null, 'combobox', value, name)
+    componentDidUpdate() {
+
     }
-    componentDidUpdate(){
-        //$('.number').autoNumeric("init", {aPad:false});
-        $('.money').autoNumeric({aPad: true, aForm: true});
+
+    componentWillUnmount() {
+
     }
-    componentWillUnmount(){
-        $('.money').autoNumeric('destroy');
-    }
+
     render() {
         const { formControls, changeHandler, formData, formType, formValue, focusIndex, gridIndex, gridId  } = this.props;
-
 
 
         const formFields = formControls.map((field, index) => {
@@ -128,372 +110,189 @@ export default class Form extends Component {
                     />
                     break;
                 case "--money":
-                    return <div key={field.column}>
-                                {formType == 'inline' ? <div className={`form-group ${fieldClass}`}>
-                                    <input
-                                        autoFocus={focus}
-                                        className="form-control money"
-                                        name={`${gridId}-solar-input${index}`}
-                                        defaultValue={mainValue}
-                                        placeholder={field.title}
-                                        onFocus={moveCursorToEnd}
-                                        onKeyUp={changeHandler}
-                                        onChange={changeHandler}
-                                        type="text"/>
+                    return <Input
+                        key={field.column}
+                        fieldClass={fieldClass}
+                        value={mainValue}
+                        type="money"
+                        autoFocus={focus}
+                        placeholder={field.title}
+                        name={`${gridId}-solar-input${index}`}
+                        changeHandler={changeHandler}
+                        errorText={field.error}
 
-
-                                        <span className="help-block">
-
-                                            {field.error}
-                                        </span>
-                                </div>
-                                    : <div key={field.column} className={`form-group ${fieldClass}`}>
-                                    <label className="control-label">{field.title}</label>
-                                    <input
-                                        autoFocus={focus}
-                                        className="form-control money"
-                                        name={`${gridId}-solar-input${index}`}
-                                        value={mainValue}
-                                        placeholder={field.title}
-                                        onFocus={moveCursorToEnd}
-                                        onKeyUp={changeHandler}
-                                        onChange={changeHandler}
-                                        type="text"/>
-                                    <span className="help-block">
-
-                                        {field.error}
-                                    </span>
-                                </div>}
-                            </div>
+                    />
                     break;
                 case "--email":
-                    return <div key={field.column}>
-                                {formType == 'inline' ? <div className={`form-group ${fieldClass}`}>
-                                    <input
-                                        autoFocus={focus}
-                                        className="form-control"
-                                        name={`${gridId}-solar-input${index}`}
-                                        defaultValue={mainValue}
-                                        placeholder={field.title}
+                    return <Input
+                        key={field.column}
+                        fieldClass={fieldClass}
+                        value={mainValue}
+                        type="email"
+                        autoFocus={focus}
+                        placeholder={field.title}
+                        name={`${gridId}-solar-input${index}`}
+                        changeHandler={changeHandler}
+                        errorText={field.error}
 
-                                        onChange={changeHandler}
-                                        type="email"/>
-
-
-                                        <span className="help-block">
-
-                                            {field.error}
-                                        </span>
-                                </div>
-                                    : <div key={field.column} className={`form-group ${fieldClass}`}>
-                                    <label className="control-label">{field.title}</label>
-                                    <input
-                                        autoFocus={focus}
-                                        className="form-control"
-                                        name={`${gridId}-solar-input${index}`}
-                                        value={mainValue}
-                                        placeholder={field.title}
-
-                                        onChange={changeHandler}
-                                        type="email"/>
-                                    <span className="help-block">
-
-                                        {field.error}
-                                    </span>
-                                </div>}
-                            </div>
-
+                    />
                     break;
                 case "--link":
-                    return <div key={field.column}>
-                        {formType == 'inline' ? <div className={`form-group ${fieldClass}`}>
-                            <input
-                                autoFocus={focus}
-                                className="form-control"
-                                name={`${gridId}-solar-input${index}`}
-                                defaultValue={mainValue}
-                                placeholder={field.title}
-                                onFocus={moveCursorToEnd}
-                                onChange={changeHandler}
-                                type="text"/>
+                    return <Input
+                        key={field.column}
+                        fieldClass={fieldClass}
+                        value={mainValue}
+                        type="text"
+                        autoFocus={focus}
+                        placeholder={field.title}
+                        name={`${gridId}-solar-input${index}`}
+                        changeHandler={changeHandler}
+                        errorText={field.error}
 
-
-                                <span className="help-block">
-
-                                    {field.error}
-                                </span>
-                        </div>
-                            : <div key={field.column} className={`form-group ${fieldClass}`}>
-                            <label className="control-label">{field.title}</label>
-                            <input
-                                autoFocus={focus}
-                                className="form-control"
-                                name={`${gridId}-solar-input${index}`}
-                                value={mainValue}
-                                placeholder={field.title}
-                                onFocus={moveCursorToEnd}
-                                onChange={changeHandler}
-                                type="text"/>
-                            <span className="help-block">
-
-                                {field.error}
-                            </span>
-                        </div>}
-                    </div>
+                    />
                     break;
                 case "--textarea":
-                    return <div key={field.column}>
-                        {formType == 'inline' ? <div className={`form-group ${fieldClass}`}>
-                    <textarea
-                        autoFocus={focus}
-                        className="form-control"
-                        name={`${gridId}-solar-input${index}`}
-                        defaultValue={mainValue}
-                        placeholder={field.title}
-                        onFocus={moveCursorToEnd}
-                        onChange={changeHandler}
-                        type="text"/>
-
-
-                                <span className="help-block">
-
-                                    {field.error}
-                                </span>
-                        </div>
-                            : <div key={field.column} className={`form-group ${fieldClass}`}>
-                            <label className="control-label">{field.title}</label>
-                    <textarea
-                        autoFocus={focus}
-                        className="form-control"
-                        name={`${gridId}-solar-input${index}`}
+                    return <Input
+                        key={field.column}
+                        fieldClass={fieldClass}
                         value={mainValue}
+                        type="textarea"
+                        autoFocus={focus}
                         placeholder={field.title}
-                        onFocus={moveCursorToEnd}
-                        onChange={changeHandler}
-                        type="text"/>
-                            <span className="help-block">
+                        name={`${gridId}-solar-input${index}`}
+                        changeHandler={changeHandler}
+                        errorText={field.error}
 
-                                {field.error}
-                            </span>
-                        </div>}
-                    </div>
+                    />
                     break;
                 case "--ckeditor":
-                    return <div key={field.column}>
-                        <div key={field.column} className={`form-group ${fieldClass}`}>
-                            <label className="control-label">{field.title}</label>
-                            <CK
+                    return <CK
+                        key={field.column}
+                        placeholder={field.title}
+                        fieldClass={fieldClass}
+                        gridId={gridId}
+                        index={index}
+                        mainValue={mainValue}
+                        changeHandler={this.manualChange.bind(this)}
+                        errorText={field.error}
 
-                                gridId={gridId}
-                                index={index}
-                                mainValue={mainValue}
-                                changeHandler={this.comboBoxSelected.bind(this)}
-
-                            />
-                            <span className="help-block">
-
-                                {field.error}
-                            </span>
-                        </div>
-                    </div>
+                    />
                     break;
                 case "--drag-map":
-                    return <div key={field.column}>
-                        <div key={field.column} className={`form-group ${fieldClass}`}>
-                            <label className="control-label">{field.title}</label>
-                            <DragMap
-                                gridId={gridId}
-                                index={index}
-                                mainValue={mainValue}
-                                changeHandler={this.comboBoxSelected.bind(this)}
+                    return <DragMap
+                        key={field.column}
+                        placeholder={field.title}
+                        fieldClass={fieldClass}
+                        gridId={gridId}
+                        index={index}
+                        mainValue={mainValue}
+                        changeHandler={this.manualChange.bind(this)}
+                        errorText={field.error}
 
-                            />
-                            <span className="help-block">
-
-                                {field.error}
-                            </span>
-                        </div>
-                    </div>
+                    />
                     break;
                 case "--single-file":
-                    return <div key={field.column}>
-                        <div key={field.column} className={`form-group ${fieldClass}`}>
-                            <label className="control-label">{field.title}</label>
-                            <SingleFileUploader
-                                gridId={gridId}
-                                index={index}
-                                mainValue={mainValue}
-                                changeHandler={this.comboBoxSelected.bind(this)}
-
-                            />
-                            <span className="help-block">
-
-                                {field.error}
-                            </span>
-                        </div>
-                    </div>
+                    return <SingleFileUploader
+                        key={field.column}
+                        fieldClass={fieldClass}
+                        gridId={gridId}
+                        placeholder={field.title}
+                        index={index}
+                        mainValue={mainValue}
+                        changeHandler={this.manualChange.bind(this)}
+                        errorText={field.error}
+                    />
                     break;
                 case "--date":
-                    return <div key={field.column}>
-                        {formType == 'inline' ? <div className={`form-group ${fieldClass}`}>
-
-                            <DateTimePicker
-                                name={`${gridId}-solar-input${index}`}
-                                defaultValue={mainValue === null ? null : new Date(mainValue)}
-                                format={"YYYY.MM.DD"}
-                                placeholder={field.title}
-                                time={false}
-                                onChange={this.dateChange.bind(this, `${gridId}-solar-input${index}`)}
-                            />
-
-
+                    return <div key={field.column} className={`form-group ${fieldClass}`}>
+                        <label className="control-label">{field.title}</label>
+                        <DateTimePicker
+                            name={`${gridId}-solar-input${index}`}
+                            defaultValue={mainValue === null ? null : new Date(mainValue)}
+                            value={mainValue === null ? null : new Date(mainValue)}
+                            format={"YYYY.MM.DD"}
+                            time={false}
+                            onChange={this.dateChange.bind(this, `${gridId}-solar-input${index}`)}
+                            placeholder={field.title}
+                        />
                                 <span className="help-block">
-
                                     {field.error}
                                 </span>
-                        </div>
-                            : <div key={field.column} className={`form-group ${fieldClass}`}>
-                            <label className="control-label">{field.title}</label>
-                            <DateTimePicker
-                                name={`${gridId}-solar-input${index}`}
-                                value={mainValue === null ? null : new Date(mainValue)}
-                                format={"YYYY.MM.DD"}
-                                time={false}
-                                onChange={this.dateChange.bind(this, `${gridId}-solar-input${index}`)}
-                                placeholder={field.title}
-                            />
-                            <span className="help-block">
-
-                                {field.error}
-                            </span>
-                        </div>}
                     </div>
                     break;
                 case "--datetime":
-                    return <div key={field.column}>
-                        {formType == 'inline' ? <div className={`form-group ${fieldClass}`}>
-
-                            <DateTimePicker
-                                name={`${gridId}-solar-input${index}`}
-                                defaultValue={mainValue === null ? null : new Date(mainValue)}
-                                format={"YYYY.MM.DD HH:mm"}
-                                placeholder={field.title}
-                                onChange={this.dateTimeChange.bind(this, `${gridId}-solar-input${index}`)}
-                            />
-
-
+                    return <div key={field.column} className={`form-group ${fieldClass}`}>
+                        <DateTimePicker
+                            name={`${gridId}-solar-input${index}`}
+                            defaultValue={mainValue === null ? null : new Date(mainValue)}
+                            value={mainValue === null ? null : new Date(mainValue)}
+                            format={"YYYY.MM.DD HH:mm"}
+                            placeholder={field.title}
+                            onChange={this.dateTimeChange.bind(this, `${gridId}-solar-input${index}`)}
+                        />
                                 <span className="help-block">
 
                                     {field.error}
                                 </span>
-                        </div>
-                            : <div key={field.column} className={`form-group ${fieldClass}`}>
-                            <label className="control-label">{field.title}</label>
-                            <DateTimePicker
-                                name={`${gridId}-solar-input${index}`}
-                                value={mainValue === null ? null : new Date(mainValue)}
-                                format={"YYYY.MM.DD HH:mm"}
-                                onChange={this.dateTimeChange.bind(this, `${gridId}-solar-input${index}`)}
-                                placeholder={field.title}
-                            />
-                            <span className="help-block">
-
-                                {field.error}
-                            </span>
-                        </div>}
                     </div>
                     break;
                 case "--combogrid":
                     return <div key={field.column} className={`form-group ${fieldClass}`}>
-                        {formType == 'inline' ? '' : <label className="control-label">{field.title}</label>}
+                                {formType == 'inline' ? '' : <label className="control-label">{field.title}</label>}
+                                <Combogrid listData={formData[field.column].data.data}
+                                               gridHeader={field.options.grid_output_control}
+                                               valueField={field.options.valueField}
+                                               textField={field.options.textField}
+                                               formControls={formData[field.column].form_input_control}
+                                               text={formData[field.column].text}
+                                               column={field.column}
+                                               totalPages={formData[field.column].data.last_page}
+                                               totalItems={formData[field.column].data.total}
+                                               pageName={field.title}
+                                               comboGridSelected={this.comboGridSelected.bind(this)}
+                                    />
 
-                        {formData[field.column] ?
-
-                            <Combogrid listData={formData[field.column].data.data}
-                                       gridHeader={field.options.grid_output_control}
-                                       valueField={field.options.valueField}
-                                       textField={field.options.textField}
-                                       formControls={formData[field.column].form_input_control}
-                                       text={formData[field.column].text}
-
-                                       column={field.column}
-                                       totalPages={formData[field.column].data.last_page}
-                                       totalItems={formData[field.column].data.total}
-                                       pageName={field.title}
-
-                                       comboGridSelected={this.comboGridSelected.bind(this)}
-
-
-                            />
-
-
-                            :
-                            null}
-                    <span className="help-block">
-                            {field.error}
-                    </span>
-
-
-                    </div>
+                                <span className="help-block">
+                                    {field.error}
+                                </span>
+                        </div>
                     break;
                 case "--combobox":
-                    let options = [];
-                    if(formData[field.column])
-                        formData[field.column].data.data.map((data, sindex)=>{
-                            if (field.options.textField instanceof Array) {
-                                let arrayLabel = "";
-                                for (var i = 0; i < field.options.textField.length; ++i) {
-                                    if(i == 0)
-                                        arrayLabel = data[field.options.textField[i]]
-                                    else
-                                        arrayLabel = arrayLabel +", "+ data[field.options.textField[i]]
-                                }
 
-                                options.push({value: data[field.options.valueField], label: arrayLabel})
-                            }
-                            else {
-                                options.push({value: data[field.options.valueField], label: data[field.options.textField]})
-                            }
-
-                        })
-
-                    return <div key={field.column} className={`form-group ${fieldClass}`}>
-                        {formType == 'inline' ? '' : <label className="control-label">{field.title}</label>}
-
-                        {formData[field.column] ?
-
-                            <Select
+                    return <ComboBox
+                                key={field.column}
+                                column={field.column}
                                 name={`${gridId}-solar-input${index}`}
-                                value={field.value}
-                                options={options}
-                                onChange={this.comboBoxSelected.bind(this, `${gridId}-solar-input${index}`)}
+                                fieldClass={fieldClass}
+                                placeholder={field.title}
+                                formType={formType}
+                                formData={formData}
+                                value={mainValue}
+                                fieldOptions={field.options}
+                                changeHandler={this.manualChange.bind(this, `${gridId}-solar-input${index}`)}
+                                errorText={field.error}
                             />
-                            :
-                            null}
-                    <span className="help-block">
-                            {field.error}
-                    </span>
-
-
-                    </div>
                     break;
                 case "--combobox-addable":
                     let options2 = [];
-                    if(formData[field.column])
-                        formData[field.column].data.data.map((data, sindex)=>{
+                    if (formData[field.column])
+                        formData[field.column].data.data.map((data, sindex)=> {
                             if (field.options.textField instanceof Array) {
                                 let arrayLabel = "";
                                 for (var i = 0; i < field.options.textField.length; ++i) {
-                                    if(i == 0)
+                                    if (i == 0)
                                         arrayLabel = data[field.options.textField[i]]
                                     else
-                                        arrayLabel = arrayLabel +", "+ data[field.options.textField[i]]
+                                        arrayLabel = arrayLabel + ", " + data[field.options.textField[i]]
                                 }
 
                                 options2.push({value: data[field.options.valueField], label: arrayLabel})
                             }
                             else {
-                                options2.push({value: data[field.options.valueField], label: data[field.options.textField]})
+                                options2.push({
+                                    value: data[field.options.valueField],
+                                    label: data[field.options.textField]
+                                })
                             }
 
                         })
@@ -507,7 +306,7 @@ export default class Form extends Component {
                                 name={`${gridId}-solar-input${index}`}
                                 value={field.value}
                                 options={options2}
-                                onChange={this.comboBoxSelected.bind(this, `${gridId}-solar-input${index}`)}
+                                onChange={this.manualChange.bind(this, `${gridId}-solar-input${index}`)}
                             />
 
 
@@ -525,21 +324,24 @@ export default class Form extends Component {
                     break;
                 case "--tag":
                     let options_tag = [];
-                    if(formData[field.column])
-                        formData[field.column].data.data.map((data, sindex)=>{
+                    if (formData[field.column])
+                        formData[field.column].data.data.map((data, sindex)=> {
                             if (field.options.textField instanceof Array) {
                                 let arrayLabel = "";
                                 for (var i = 0; i < field.options.textField.length; ++i) {
-                                    if(i == 0)
+                                    if (i == 0)
                                         arrayLabel = data[field.options.textField[i]]
                                     else
-                                        arrayLabel = arrayLabel +", "+ data[field.options.textField[i]]
+                                        arrayLabel = arrayLabel + ", " + data[field.options.textField[i]]
                                 }
 
                                 options_tag.push({value: data[field.options.valueField], label: arrayLabel})
                             }
                             else {
-                                options_tag.push({value: data[field.options.valueField], label: data[field.options.textField]})
+                                options_tag.push({
+                                    value: data[field.options.valueField],
+                                    label: data[field.options.textField]
+                                })
                             }
                         })
 
@@ -547,11 +349,7 @@ export default class Form extends Component {
                         {formType == 'inline' ? '' : <label className="control-label">{field.title}</label>}
 
 
-
-
-
                         {formData[field.column] ?
-
 
 
                             <Select
@@ -559,7 +357,7 @@ export default class Form extends Component {
                                 value={field.value}
                                 options={options_tag}
                                 multi={true}
-                                onChange={this.comboBoxSelected.bind(this, `${gridId}-solar-input${index}`)}
+                                onChange={this.manualChange.bind(this, `${gridId}-solar-input${index}`)}
                             />
 
 

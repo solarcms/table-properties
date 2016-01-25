@@ -12,7 +12,7 @@ export default class DragMap extends Component {
     }
 
     render() {
-        const { mainValue } = this.props;
+        const { mainValue, fieldClass, placeholder, errorText } = this.props;
 
         let DefaultPosition = {};
         if(mainValue === null || mainValue === ''){
@@ -50,9 +50,19 @@ export default class DragMap extends Component {
             />
         </section>
         return (
-            <div>
-                {myMap}
+
+            <div  className={`form-group ${fieldClass}`}>
+                <label className="control-label">{placeholder}</label>
+                <div>
+                    {myMap}
+                </div>
+                <span className="help-block">
+
+                    {errorText}
+                </span>
             </div>
+
+
 
         )
     }
