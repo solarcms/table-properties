@@ -2,5 +2,6 @@ src/Assets/node_modules
 npm-debug.log
 src/Assets/npm-debug.log
 .idea
+src/Assets/logs/
 src/Assets/logs/webpack.timestamp.log
 
