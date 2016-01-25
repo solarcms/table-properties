@@ -1,7 +1,11 @@
 import React, { Component, PropTypes }  from 'react';
 import Combogrid from '../elements/ComboGrid';
+import CK from '../elements/CK';
+import DragMap from '../elements/DragMap';
+import SingleFileUploader from '../elements/SingleFileUploader';
 import Select from 'react-select';
 import DateTimePicker from 'react-widgets/lib/DateTimePicker';
+
 
 
 import Moment from 'moment'
@@ -13,6 +17,11 @@ momentLocalizer(Moment);
 
 
 export default class Form extends Component {
+    openComboxFrom(column) {
+
+        this.props.openComboboxAdableForm(column)
+
+    }
     moveCursorToEnd(e) {
 
 
@@ -62,9 +71,14 @@ export default class Form extends Component {
     }
     componentDidUpdate(){
 
-        $('.number').autoNumeric("init", {aPad:false});
+        //$('.number').autoNumeric("init", {aPad:false});
         $('.money').autoNumeric({aPad: true, aForm: true});
 
+
+    }
+    componentWillUnmount(){
+
+        $('.money').autoNumeric('destroy');
     }
     render() {
         const { formControls, changeHandler, formData, formType, formValue, focusIndex, gridIndex, gridId  } = this.props;
@@ -141,9 +155,9 @@ export default class Form extends Component {
                             name={`${gridId}-solar-input${index}`}
                             defaultValue={mainValue}
                             placeholder={field.title}
-                            onFocus={this.moveCursorToEnd.bind(this)}
-                            onKeyUp={changeHandler}
-                            type="text"/>
+
+                            onChange={changeHandler}
+                            type="number"/>
 
 
                                 <span className="help-block">
@@ -159,9 +173,9 @@ export default class Form extends Component {
                             name={`${gridId}-solar-input${index}`}
                             value={mainValue}
                             placeholder={field.title}
-                            onFocus={this.moveCursorToEnd.bind(this)}
-                            onKeyUp={changeHandler}
-                            type="text"/>
+
+                            onChange={changeHandler}
+                            type="number"/>
                             <span className="help-block">
 
                                 {field.error}
@@ -169,7 +183,7 @@ export default class Form extends Component {
                     </div>}
                 </div>
             else if (field.type == '--money'){
-               
+
 
 
                 return <div key={field.column}>
@@ -182,6 +196,7 @@ export default class Form extends Component {
                             placeholder={field.title}
                             onFocus={this.moveCursorToEnd.bind(this)}
                             onKeyUp={changeHandler}
+                            onChange={changeHandler}
                             type="text"/>
 
 
@@ -200,6 +215,7 @@ export default class Form extends Component {
                             placeholder={field.title}
                             onFocus={this.moveCursorToEnd.bind(this)}
                             onKeyUp={changeHandler}
+                            onChange={changeHandler}
                             type="text"/>
                             <span className="help-block">
 
@@ -208,7 +224,6 @@ export default class Form extends Component {
                     </div>}
                 </div>
             }
-
 
             else if (field.type == '--email')
                 return <div key={field.column}>
@@ -284,8 +299,7 @@ export default class Form extends Component {
                     </div>}
                 </div>
 
-
-            if (field.type == '--textarea')
+            else if (field.type == '--textarea')
 
                 return <div key={field.column}>
                 {formType == 'inline' ? <div className={`form-group ${fieldClass}`}>
@@ -321,6 +335,64 @@ export default class Form extends Component {
                                 {field.error}
                             </span>
                 </div>}
+            </div>
+
+            else if (field.type == '--ckeditor')
+
+                return <div key={field.column}>
+                 <div key={field.column} className={`form-group ${fieldClass}`}>
+                    <label className="control-label">{field.title}</label>
+                    <CK
+
+                        gridId={gridId}
+                        index={index}
+                        mainValue={mainValue}
+                        changeHandler={this.comboBoxSelected.bind(this)}
+
+                   />
+                            <span className="help-block">
+
+                                {field.error}
+                            </span>
+                </div>
+            </div>
+
+            else if (field.type == '--drag-map')
+
+                return <div key={field.column}>
+                 <div key={field.column} className={`form-group ${fieldClass}`}>
+                    <label className="control-label">{field.title}</label>
+                            <DragMap
+                                gridId={gridId}
+                                index={index}
+                                mainValue={mainValue}
+                                changeHandler={this.comboBoxSelected.bind(this)}
+
+                            />
+                            <span className="help-block">
+
+                                {field.error}
+                            </span>
+                </div>
+            </div>
+
+            else if (field.type == '--single-file')
+
+                return <div key={field.column}>
+                 <div key={field.column} className={`form-group ${fieldClass}`}>
+                    <label className="control-label">{field.title}</label>
+                            <SingleFileUploader
+                                gridId={gridId}
+                                index={index}
+                                mainValue={mainValue}
+                                changeHandler={this.comboBoxSelected.bind(this)}
+
+                            />
+                            <span className="help-block">
+
+                                {field.error}
+                            </span>
+                </div>
             </div>
 
             else if (field.type == '--date')
@@ -432,19 +504,68 @@ export default class Form extends Component {
                 let options = [];
                 if(formData[field.column])
                 formData[field.column].data.data.map((data, sindex)=>{
-                    options.push({value: data[field.options.valueField], label: data[field.options.textField]})
+                    if (field.options.textField instanceof Array) {
+                        let arrayLabel = "";
+                        for (var i = 0; i < field.options.textField.length; ++i) {
+                            if(i == 0)
+                                arrayLabel = data[field.options.textField[i]]
+                            else
+                                arrayLabel = arrayLabel +", "+ data[field.options.textField[i]]
+                        }
+
+                        options.push({value: data[field.options.valueField], label: arrayLabel})
+                    }
+                    else {
+                        options.push({value: data[field.options.valueField], label: data[field.options.textField]})
+                    }
+
                 })
 
                 return <div key={field.column} className={`form-group ${fieldClass}`}>
                     {formType == 'inline' ? '' : <label className="control-label">{field.title}</label>}
 
-
-
-
-
                     {formData[field.column] ?
 
+                        <Select
+                        name={`${gridId}-solar-input${index}`}
+                        value={field.value}
+                        options={options}
+                        onChange={this.comboBoxSelected.bind(this, `${gridId}-solar-input${index}`)}
+                        />
+                        :
+                        null}
+                    <span className="help-block">
+                            {field.error}
+                    </span>
 
+
+                </div>
+            }
+            else if (field.type == '--combobox-addable') {
+                let options = [];
+                if(formData[field.column])
+                formData[field.column].data.data.map((data, sindex)=>{
+                    if (field.options.textField instanceof Array) {
+                        let arrayLabel = "";
+                        for (var i = 0; i < field.options.textField.length; ++i) {
+                            if(i == 0)
+                                arrayLabel = data[field.options.textField[i]]
+                            else
+                                arrayLabel = arrayLabel +", "+ data[field.options.textField[i]]
+                        }
+
+                        options.push({value: data[field.options.valueField], label: arrayLabel})
+                    }
+                    else {
+                        options.push({value: data[field.options.valueField], label: data[field.options.textField]})
+                    }
+
+                })
+
+                return <div key={field.column} className={`form-group ${fieldClass}`}>
+                    {formType == 'inline' ? '' : <label className="control-label">{field.title}</label>}
+
+                    {formData[field.column] ?
 
                         <Select
                         name={`${gridId}-solar-input${index}`}
@@ -460,6 +581,9 @@ export default class Form extends Component {
                             {field.error}
                     </span>
 
+                    <button className="btn btn-success" onClick={this.openComboxFrom.bind(this,field.column)}>
+                        <i className="material-icons">&#xE145;</i>
+                    </button>
 
                 </div>
             }
@@ -467,7 +591,20 @@ export default class Form extends Component {
                 let options = [];
                 if(formData[field.column])
                 formData[field.column].data.data.map((data, sindex)=>{
-                    options.push({value: data[field.options.valueField], label: data[field.options.textField]})
+                    if (field.options.textField instanceof Array) {
+                        let arrayLabel = "";
+                        for (var i = 0; i < field.options.textField.length; ++i) {
+                            if(i == 0)
+                                arrayLabel = data[field.options.textField[i]]
+                            else
+                                arrayLabel = arrayLabel +", "+ data[field.options.textField[i]]
+                        }
+
+                        options.push({value: data[field.options.valueField], label: arrayLabel})
+                    }
+                    else {
+                        options.push({value: data[field.options.valueField], label: data[field.options.textField]})
+                    }
                 })
 
                 return <div key={field.column} className={`form-group ${fieldClass}`}>

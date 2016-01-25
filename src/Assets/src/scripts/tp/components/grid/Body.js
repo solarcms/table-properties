@@ -254,7 +254,7 @@ export default class Body extends Component {
             </tr>
         )
 
-        const inlineAddFormLeft = <tr>
+        const inlineAddFormLeft = formType == 'inline' ? <tr>
             <th></th>
             {bodyHeader.map((grid, columnIndex) => {
                 let cellformControl = [];
@@ -288,10 +288,10 @@ export default class Body extends Component {
 
 
             })}
-        </tr>
+        </tr> : null
 
 
-        const inlineAddForm = <tr  >
+        const inlineAddForm = formType == 'inline' ? <tr  >
 
             {bodyHeader.map((grid, columnIndex) => {
                 let cellformControl = [];
@@ -328,8 +328,8 @@ export default class Body extends Component {
 
             })}
 
-        </tr>
-        const inlineAddFormRight = <tr  >
+        </tr> : null
+        const inlineAddFormRight = formType == 'inline' ? <tr  >
             <td style={{width: '87px', padding: '3px'}}>
 
                             <span>
@@ -343,7 +343,7 @@ export default class Body extends Component {
                                 </a>
                             </span>
             </td>
-        </tr>
+        </tr> : null
         return (<div className="m-a-sm white with-3d-shadow">
 
             <div id="gridBody">

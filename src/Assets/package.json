@@ -69,6 +69,8 @@
     "jquery-ui": "^1.10.5",
     "react-bootstrap-datetimepicker": "0.0.22",
     "react-day-picker": "^1.2.0",
+    "react-dropzone-component": "^0.8.1",
+    "react-google-maps": "^4.7.2",
     "react-select": "^0.9.1",
     "react-widgets": "^3.1.6"
   }

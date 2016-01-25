@@ -7,14 +7,14 @@ import Form from "../page_add_edit/Form"
 export default class Window extends Component {
 
     componentDidMount(){
-        $("#windowForm").draggable({
+        $(`#windowForm${this.props.id}`).draggable({
             handle: ".modal-header"
         });
     }
     render() {
-        const { pageName, formControls, formData, changeHandler, saveForm, hideModal } = this.props;
+        const { pageName, formControls, formData, changeHandler, saveForm, hideModal, id } = this.props;
         return (
-            <div id="windowForm" className="modal fade">
+            <div id={`windowForm${id}`} className="modal fade">
                 <div className="modal-dialog">
                     <div className="modal-content box-shadow-z2">
                         <div className="modal-header">
@@ -23,26 +23,26 @@ export default class Window extends Component {
 
                         </div>
                         <div className="modal-body">
-                            <Form formControls={formControls} formData={formData} ref="fromRefs" focusIndex="0"
+                            <Form gridId={id} formControls={formControls} formData={formData} ref="fromRefs" focusIndex="0"
                                   changeHandler={changeHandler}
                             />
                         </div>
                         <div className="modal-footer">
                             {this.props.edit
                                 ? <button type="button" className="btn btn-fw btn-success p-h-lg" onClick="">
-                                <i className="fa fa-check"></i>
+                                <i className="material-icons">&#xE2C3;</i>
 
                             </button>
                                 :
                                 <button type="button" className="btn btn-fw btn-success p-h-lg" onClick={saveForm}>
-                                    <i className="fa fa-check"></i>
+                                    <i className="material-icons">&#xE2C3;</i>
 
                                 </button>
                             }
 
                             &nbsp;
                             <a href="javascript:void(0)" className="btn btn-fw danger p-h-lg" onClick={hideModal}>
-                                <i className="fa fa-times"></i>
+                                <i className="material-icons">&#xE5CD;</i>
                             </a>
 
                         </div>
@@ -56,5 +56,6 @@ export default class Window extends Component {
     }
 }
 Window.defaultProps = {
-    formControls: []
+    formControls: [],
+    id: ''
 }

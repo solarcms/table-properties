@@ -14,7 +14,7 @@ export function link(value) {
 export function number(value) {
     // Let's not start a debate on email regex. This is just for an example app!
     if (!isEmpty(value) && !/^[+-]?(?=.)(?:\d+,)*\d*(?:\.\d+)?$/i.test(value)) {
-        return 'Invalid number';
+        return 'Зөвхөн тоо оруулана уу';
     }
 }
 
