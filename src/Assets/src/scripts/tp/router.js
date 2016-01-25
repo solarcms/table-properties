@@ -2,9 +2,9 @@ import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { history } from 'history';
 import { Router, Route, Link, IndexRoute } from 'react-router';
-import Main from '../components/Main';
-import GridContainer from './GridContainer';
-import AddEditContainer from './AddEditContainer';
+import Main from './components/Main';
+import GridContainer from './containers/GridContainer';
+import AddEditContainer from './containers/AddEditContainer';
 
 export default () => {
     return (

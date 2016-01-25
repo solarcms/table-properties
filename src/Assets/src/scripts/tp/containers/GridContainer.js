@@ -3,7 +3,7 @@ import $ from "jquery"
 
 
 //import {modal} from 'bootstrap'
-import * as DataActions from "../actions/"
+import * as DataActions from "../actions/grid"
 import { bindActionCreators } from "redux"
 import { connect } from "react-redux"
 
@@ -12,7 +12,7 @@ import Header from "../components/grid/Header"
 import Body from "../components/grid/Body"
 import Pagination from "../components/grid/Paginator"
 import validation from "../components/form/validation/"
-import Window from "../components/form/window/"
+import Window from "../components/window/"
 
 class GridContainer extends Component {
     //export

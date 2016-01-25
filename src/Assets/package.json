@@ -66,6 +66,8 @@
     "jquery": "^2.1.4",
     "jquery-ui": "^1.10.5",
     "moment": "^2.11.1",
+    "react": "^0.14.6",
+    "react-bootstrap": "^0.28.2",
     "react-dropzone-component": "^0.8.1",
     "react-google-maps": "^4.7.2",
     "react-select": "^0.9.1",

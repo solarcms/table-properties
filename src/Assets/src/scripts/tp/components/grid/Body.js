@@ -1,5 +1,5 @@
 import React, { Component, PropTypes }  from "react"
-import Form from "../form/page_add_edit/Form"
+import Form from "../form/Form"
 import $ from "jquery"
 
 import {fixRowHeigth} from './fixed/HeaderColumn'

@@ -25,5 +25,9 @@ export const CLEAR_COMBO_GRID_FORM_VALIDATION = 'CLEAR_COMBO_GRID_FORM_VALIDATIO
 export const SET_COMBO_GRID_TEXT = 'SET_COMBO_GRID_TEXT';
 
 
+//combo box
+export const SET_ADD_MODAL = 'SET_ADD_MODAL';
+
+
 
 

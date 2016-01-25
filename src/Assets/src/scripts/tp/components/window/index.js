@@ -2,7 +2,9 @@ import React, { Component, PropTypes }  from 'react';
 import $ from 'jquery'
 require('jquery-ui/draggable');
 
-import Form from "../page_add_edit/Form"
+import Form from "../form/Form"
+
+import { Modal } from 'react-bootstrap';
 
 export default class Window extends Component {
 
@@ -12,9 +14,11 @@ export default class Window extends Component {
         });
     }
     render() {
-        const { pageName, formControls, formData, changeHandler, saveForm, hideModal, id } = this.props;
+        const { pageName, formControls, formData, changeHandler, saveForm, hideModal, id, show } = this.props;
+
+
         return (
-            <div id={`windowForm${id}`} className="modal fade">
+            <Modal id={`windowForm${id}`} show={show} className="modal fade">
                 <div className="modal-dialog">
                     <div className="modal-content box-shadow-z2">
                         <div className="modal-header">
@@ -50,7 +54,7 @@ export default class Window extends Component {
 
                 </div>
 
-            </div>
+            </Modal>
 
         )
     }

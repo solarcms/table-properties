@@ -3,7 +3,7 @@ import Body from '../../grid/Body'
 import Pagination from "../../grid/Paginator"
 import $ from "jquery"
 import { getComboList, deleteItemComboGrid, saveComboGrid, updateComboGrid, editComboGrid } from "../../../api/"
-import * as DataActions from "../../../actions/"
+import * as DataActions from "../../../actions/grid"
 import { bindActionCreators } from "redux"
 import { connect } from "react-redux"
 

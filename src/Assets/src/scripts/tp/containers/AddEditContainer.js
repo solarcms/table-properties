@@ -1,13 +1,13 @@
 import React, { Component, PropTypes } from 'react'
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux'
-import * as DataActions from '../actions/'
+import * as DataActions from '../actions/grid'
 import Header from '../components/grid/Header'
-import Form from "../components/form/page_add_edit/Form"
+import Form from "../components/form/Form"
 import validation from "../components/form/validation/"
 import {save, edit, update} from "../api/"
-import Window from "../components/form/window/"
-//import {modal} from 'bootstrap'
+import Window from "../components/window/"
+
 
 class AddEditContainer extends Component {
     //// ComboboxAdableForm
@@ -17,7 +17,9 @@ class AddEditContainer extends Component {
     }
     showModal(column){
 
-        $('#windowForm'+column).modal({'backdrop': false}, 'show');
+   //     $('#windowForm'+column).modal({'backdrop': false}, 'show');
+
+        this.props.actions.setAddModal(true);
 
     }
     hideModal(column){
@@ -261,7 +263,10 @@ class AddEditContainer extends Component {
     }
     render() {
 
-        const { setup, formControls, formData, focusIndex, showAddEditForm } = this.props;
+        const { setup, formControls, formData, focusIndex, showAddEditForm, showAddModal } = this.props;
+
+
+
 
         const gridId = 'grid_table'
 
@@ -274,6 +279,7 @@ class AddEditContainer extends Component {
                     formControls={field.options.form_input_control}
                     formData={formData}
                     pageName={field.options.page_name}
+                               show={showAddModal}
                     changeHandler={this.changeValuesWindow.bind(this)}
                     saveForm={this.saveForm.bind(this)}
                     hideModal={this.hideModal.bind(this, field.column)}
@@ -290,6 +296,7 @@ class AddEditContainer extends Component {
                   ref="fromRefs"
                   focusIndex={focusIndex}
                   gridId={gridId}
+
                   changeHandler={this.changeValues.bind(this)}
                   openComboboxAdableForm={this.openComboboxAdableForm.bind(this)}
             />
@@ -351,12 +358,15 @@ AddEditContainer.propTypes = {
 
 function mapStateToProps(state) {
     const TpStore = state.TpStore;
+    const ComboBox = state.ComboBox;
+
     return {
         setup: TpStore.get('setup').toJS(),
         showAddEditForm: TpStore.get('showAddEditForm'),
         focusIndex: TpStore.get('focusIndex'),
         formData: TpStore.get('formData').toJS(),
         formControls: TpStore.get('setup').toJS().form_input_control,
+        showAddModal: ComboBox.get('showAddModal')
     }
 }
 // Which action creators does it want to receive by props?
