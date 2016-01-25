@@ -6,8 +6,6 @@ import SingleFileUploader from '../elements/SingleFileUploader';
 import Select from 'react-select';
 import DateTimePicker from 'react-widgets/lib/DateTimePicker';
 
-
-
 import Moment from 'moment'
 import momentLocalizer from 'react-widgets/lib/localizers/moment'
 
