@@ -186,6 +186,33 @@ class Tp
               //  print_r($data);
                 //->take($this->pageLimit)->get()
 
+                if($formControl['type'] == '--combobox-addable'){
+                    $options = $formControl['options'];
+
+                    $comboAddAbleFC = $options['form_input_control'];
+
+                    foreach($comboAddAbleFC as $CAformControl) {
+
+
+
+                        if ($CAformControl['type'] == '--combobox') {
+
+
+                            $CAoptions = $CAformControl['options'];
+
+                            $CAorder = explode(" ", $CAoptions['grid_default_order_by']);
+                            $CAdata['data'] = DB::table($CAoptions['table'])->select($CAoptions['grid_columns'])->orderBy($CAorder[0], $CAorder[1])->get();
+
+                            $FormData[$CAformControl['column']] = ['data'=>$CAdata];
+
+                        }
+
+                    }
+
+
+
+                }
+
             }
         }
 

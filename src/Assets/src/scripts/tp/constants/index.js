@@ -27,6 +27,9 @@ export const SET_COMBO_GRID_TEXT = 'SET_COMBO_GRID_TEXT';
 
 //combo box
 export const SET_ADD_MODAL = 'SET_ADD_MODAL';
+export const ADD_COMBO_ADD_ABLE = 'ADD_COMBO_ADD_ABLE';
+export const COMBO_ADD_CHANGE_VALUE = 'COMBO_ADD_CHANGE_VALUE';
+export const COMBO_SET_ERROR = 'COMBO_SET_ERROR';
 
 
 

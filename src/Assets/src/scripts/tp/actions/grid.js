@@ -1,6 +1,6 @@
 import { setupPage, getFormData } from '../api/'
 import * as types from '../constants/';
-export * from './comboBox'
+
 
 /*
  * action creators

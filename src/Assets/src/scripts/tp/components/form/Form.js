@@ -16,12 +16,11 @@ import {moveCursorToEnd} from './helpers/'
 //// form elemenets
 import Input from './elements/Input'
 import ComboBox from './elements/ComboBox'
+import ComboBoxAddAble from '../../containers/formContainers/ComboBoxAddAbleContainer'
 
 
 export default class Form extends Component {
-    openComboxFrom(column) {
-        this.props.openComboboxAdableForm(column)
-    }
+
 
     comboGridSelected(value, text, column) {
 
@@ -274,53 +273,19 @@ export default class Form extends Component {
                             />
                     break;
                 case "--combobox-addable":
-                    let options2 = [];
-                    if (formData[field.column])
-                        formData[field.column].data.data.map((data, sindex)=> {
-                            if (field.options.textField instanceof Array) {
-                                let arrayLabel = "";
-                                for (var i = 0; i < field.options.textField.length; ++i) {
-                                    if (i == 0)
-                                        arrayLabel = data[field.options.textField[i]]
-                                    else
-                                        arrayLabel = arrayLabel + ", " + data[field.options.textField[i]]
-                                }
-
-                                options2.push({value: data[field.options.valueField], label: arrayLabel})
-                            }
-                            else {
-                                options2.push({
-                                    value: data[field.options.valueField],
-                                    label: data[field.options.textField]
-                                })
-                            }
-
-                        })
-
-                    return <div key={field.column} className={`form-group ${fieldClass}`}>
-                        {formType == 'inline' ? '' : <label className="control-label">{field.title}</label>}
-
-                        {formData[field.column] ?
-
-                            <Select
-                                name={`${gridId}-solar-input${index}`}
-                                value={field.value}
-                                options={options2}
-                                onChange={this.manualChange.bind(this, `${gridId}-solar-input${index}`)}
-                            />
-
-
-                            :
-                            null}
-                    <span className="help-block">
-                            {field.error}
-                    </span>
-
-                        <button className="btn btn-success" onClick={this.openComboxFrom.bind(this,field.column)}>
-                            <i className="material-icons">&#xE145;</i>
-                        </button>
-
-                    </div>
+                    return <ComboBoxAddAble
+                        key={field.column}
+                        column={field.column}
+                        name={`${gridId}-solar-input${index}`}
+                        fieldClass={fieldClass}
+                        placeholder={field.title}
+                        formType={formType}
+                        formData={formData}
+                        value={mainValue}
+                        fieldOptions={field.options}
+                        changeHandler={this.manualChange.bind(this, `${gridId}-solar-input${index}`)}
+                        errorText={field.error}
+                    />
                     break;
                 case "--tag":
                     let options_tag = [];

@@ -332,7 +332,7 @@ GridContainer.defaultProps = {
     pageLimit: 10,
     searchValue: '',
     listData:[],
-    //listData:{},
+    formControls:[],
 
 }
 GridContainer.propTypes = {

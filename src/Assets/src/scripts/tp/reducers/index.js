@@ -1,2 +1,2 @@
 export { default as TpStore } from './TpStore';
-export { default as ComboBox } from './ComboBox';
+export { default as ComboBoxAddAble } from './ComboBoxAddAble';
