@@ -10,6 +10,7 @@ const initialState = {
     currentPage:1,
     pageLimit:50,
     formData:{},
+    showAddEditForm:false,
     editID:0,
     focusIndex:0,
     showInlineForm: false,
@@ -52,6 +53,12 @@ export default createReducer(initialState, {
     [types.SET_SEARCH](state, { word }) {
 
         state = state.set('searchValue', word);
+
+        return state;
+    },
+    [types.SET_SHOW_ADD_EDIT_FORM](state, { value }) {
+
+        state = state.set('showAddEditForm', value);
 
         return state;
     },

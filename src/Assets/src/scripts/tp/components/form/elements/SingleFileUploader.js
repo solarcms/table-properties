@@ -6,19 +6,50 @@ export default class SingleFileUploader extends Component {
     uploadSuccess(e, responsejson){
 
         if(e.status == 'success')
-            this.props.changeHandler(`${this.props.gridId}-solar-input${this.props.index}`, '{"originalName":"'+e.name+'","path": "/uploads/'+responsejson+'", "thumbPath":"/uploads/thumbs'+responsejson+'"}');
+            this.props.changeHandler(`${this.props.gridId}-solar-input${this.props.index}`, '{"size":'+e.size+',"originalName":"'+e.name+'","path": "/uploads/'+responsejson+'", "thumbPath":"/uploads/thumbs/'+responsejson+'"}');
         else
             alert('error please try again')
     }
 
     removeImage(e){
 
-        console.log(e.name)
-        console.log(e)
-    }
 
+    }
+    initCallback(dropzone){
+
+        const { mainValue } = this.props;
+
+
+
+        if(mainValue !== null && mainValue !== ''){
+
+            let image = JSON.parse(mainValue)
+
+
+            let mockFile = { name: image.originalName, size: image.size };
+
+            let myDropzone = dropzone;
+
+            myDropzone.emit("addedfile", mockFile);
+
+
+            myDropzone.emit("thumbnail", mockFile, image.thumbPath);
+
+            // myDropzone.createThumbnailFromUrl(file, imageUrl, callback, crossOrigin);
+
+            myDropzone.emit("complete", mockFile);
+
+
+
+
+
+        }
+
+    }
     render() {
         const { mainValue } = this.props;
+
+
 
         const componentConfig = {
             iconFiletypes: ['.jpg', '.png', '.gif'],
@@ -42,7 +73,7 @@ export default class SingleFileUploader extends Component {
             // This one receives the dropzone object as the first parameter
             // and can be used to additional work with the dropzone.js
             // object
-            init: null,
+            init: this.initCallback.bind(this),
 
             dragstart: null,
             dragend: null,

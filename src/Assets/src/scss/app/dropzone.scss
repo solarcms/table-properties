@@ -251,7 +251,7 @@
       .dz-image {
         // opacity: 0.8;
         img {
-          @include prefix((transform: scale(1.05, 1.05))); // Getting rid of that white bleed-in
+
           @include prefix((filter: blur(8px)), webkit); // Getting rid of that white bleed-in
         }
       }
@@ -267,6 +267,14 @@
 
       img {
         display: block;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        height: 100%;
+        width: auto;
+        -webkit-transform: translate(-50%,-50%);
+        -ms-transform: translate(-50%,-50%);
+        transform: translate(-50%,-50%);
       }
     }
 

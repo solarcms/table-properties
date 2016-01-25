@@ -8,6 +8,7 @@ export const SET_PAGE_LIMIT = 'SET_PAGE_LIMIT';
 export const SET_SEARCH = 'SET_SEARCH';
 
 // add edit form
+export const SET_SHOW_ADD_EDIT_FORM = 'SET_SHOW_ADD_EDIT_FORM';
 export const CHANGE_VALUE = 'CHANGE_VALUE';
 export const SET_FORM_DATA = 'SET_FORM_DATA';
 export const SET_ERROR = 'SET_ERROR';

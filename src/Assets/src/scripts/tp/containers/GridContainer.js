@@ -282,7 +282,11 @@ class GridContainer extends Component {
 
             />
             :
-            null
+            <div className="tp-laoder">
+                <img src="/shared/table-properties/img/loader.gif" alt="Loading"/>
+                <br/>
+                Ачааллаж байна
+            </div>
 
         return (
             <div >

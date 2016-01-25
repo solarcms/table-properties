@@ -376,24 +376,27 @@ export default class Form extends Component {
                 </div>
             </div>
 
-            else if (field.type == '--single-file')
+            else if (field.type == '--single-file'){
+
 
                 return <div key={field.column}>
-                 <div key={field.column} className={`form-group ${fieldClass}`}>
-                    <label className="control-label">{field.title}</label>
-                            <SingleFileUploader
-                                gridId={gridId}
-                                index={index}
-                                mainValue={mainValue}
-                                changeHandler={this.comboBoxSelected.bind(this)}
+                    <div key={field.column} className={`form-group ${fieldClass}`}>
+                        <label className="control-label">{field.title}</label>
+                        <SingleFileUploader
+                            gridId={gridId}
+                            index={index}
+                            mainValue={mainValue}
+                            changeHandler={this.comboBoxSelected.bind(this)}
 
-                            />
+                        />
                             <span className="help-block">
 
                                 {field.error}
                             </span>
+                    </div>
                 </div>
-            </div>
+            }
+
 
             else if (field.type == '--date')
 
