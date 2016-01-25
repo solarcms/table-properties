@@ -247,17 +247,21 @@ class AddEditContainer extends Component {
                     })
                 else
                     alert('please try agian')
+
+                this.props.actions.setShowAddEditForm(true)
             });
+        } else {
+            this.props.actions.setShowAddEditForm(true)
         }
 
 
-
-
     }
-
+    componentWillUnmount(){
+        this.props.actions.setShowAddEditForm(false)
+    }
     render() {
 
-        const { setup, formControls, formData, focusIndex } = this.props;
+        const { setup, formControls, formData, focusIndex, showAddEditForm } = this.props;
 
         const gridId = 'grid_table'
 
@@ -279,6 +283,22 @@ class AddEditContainer extends Component {
 
         })
 
+        const containerForm = showAddEditForm === true
+        ?
+            <Form formControls={formControls}
+                  formData={formData}
+                  ref="fromRefs"
+                  focusIndex={focusIndex}
+                  gridId={gridId}
+                  changeHandler={this.changeValues.bind(this)}
+                  openComboboxAdableForm={this.openComboboxAdableForm.bind(this)}
+            />
+        :
+            <div className="tp-laoder">
+                <img src="/shared/table-properties/img/loader.gif" alt="Loading"/>
+                <br/>
+                Ачааллаж байна
+            </div>
 
 
         return (
@@ -290,14 +310,8 @@ class AddEditContainer extends Component {
                     <div className="row white m-x-sm" >
                             <div className="form-horizontal solar-form p-a-md" >
 
-                                <Form formControls={formControls}
-                                      formData={formData}
-                                      ref="fromRefs"
-                                      focusIndex={focusIndex}
-                                      gridId={gridId}
-                                      changeHandler={this.changeValues.bind(this)}
-                                      openComboboxAdableForm={this.openComboboxAdableForm.bind(this)}
-                                />
+                                {containerForm}
+
                                 <div>
                                     {this.props.params.id
                                         ?   <button type="button" className="btn btn-fw btn-success p-h-lg" onClick={this.updateForm.bind(this)}>
@@ -339,6 +353,7 @@ function mapStateToProps(state) {
     const TpStore = state.TpStore;
     return {
         setup: TpStore.get('setup').toJS(),
+        showAddEditForm: TpStore.get('showAddEditForm'),
         focusIndex: TpStore.get('focusIndex'),
         formData: TpStore.get('formData').toJS(),
         formControls: TpStore.get('setup').toJS().form_input_control,

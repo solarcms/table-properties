@@ -47,6 +47,14 @@ export function chagenValue(index, value) {
     }
 }
 
+export function setShowAddEditForm(value) {
+
+    return {
+        type: types.SET_SHOW_ADD_EDIT_FORM,
+        value: value
+    }
+}
+
 export function setError(index, error) {
     return {
         type: types.SET_ERROR,

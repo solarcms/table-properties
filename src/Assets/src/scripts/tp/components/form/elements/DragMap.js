@@ -15,7 +15,7 @@ export default class DragMap extends Component {
         const { mainValue } = this.props;
 
         let DefaultPosition = {};
-        if(mainValue === null){
+        if(mainValue === null || mainValue === ''){
             DefaultPosition = {lat: 47.919088, lng: 106.917888}
         } else {
 
