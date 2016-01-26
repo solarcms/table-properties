@@ -21,15 +21,36 @@ export function getFormData() {
     return postResuest(`get_form_datas`, {});
 }
 
-export function save(formData) {
+export function save(formData, subItems) {
 
     let data = {};
     formData.map((fData) => {
         data[fData.column] = fData.value;
 
     })
+    let realSubItems = [];
+    if(subItems.length >=1){
+        for (var i = 0; i < subItems.length; ++i) {
+            let items = [];
+            for (var a = 0; a < subItems[i].items.length; ++a) {
+                let item = {id: subItems[i].items[a].id};
+                for (var c = 0; c < subItems[i].items[a].data.length; ++c) {
 
-    return postResuest(`insert`, {data: data});
+                    item[subItems[i].items[a].data[c].column] = subItems[i].items[a].data[c].value;
+
+                }
+
+                items.push(item);
+
+            }
+            realSubItems.push({
+                connect_column: subItems[i].connect_column,
+                items:items
+            })
+        }
+    }
+
+    return postResuest(`insert`, {data: data, subItems: realSubItems});
 }
 export function saveComboGrid(column, formData) {
 
@@ -52,7 +73,7 @@ export function editComboGrid(column, id) {
     return postResuest(`edit-combo-grid`, {column: column, id: id});
 }
 
-export function update(formData, id) {
+export function update(formData, id, subItems) {
 
     let data = {};
     formData.map((fData) => {
@@ -60,7 +81,29 @@ export function update(formData, id) {
 
     })
 
-    return postResuest(`update`, {id: id, data: data});
+    let realSubItems = [];
+    if(subItems.length >=1){
+        for (var i = 0; i < subItems.length; ++i) {
+            let items = [];
+            for (var a = 0; a < subItems[i].items.length; ++a) {
+                let item = {id: subItems[i].items[a].id};
+                for (var c = 0; c < subItems[i].items[a].data.length; ++c) {
+
+                    item[subItems[i].items[a].data[c].column] = subItems[i].items[a].data[c].value;
+
+                }
+
+                items.push(item);
+
+            }
+            realSubItems.push({
+                connect_column: subItems[i].connect_column,
+                items:items
+            })
+        }
+    }
+
+    return postResuest(`update`, {id: id, data: data, subItems: realSubItems});
 }
 export function updateComboGrid(column, formData, id) {
 

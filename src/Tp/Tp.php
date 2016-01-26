@@ -116,6 +116,10 @@ class Tp
             case "insert-combo-add-able":        return $this->insertCombAddAble();      break;
             case "combo-list":     return $this->comboList();    break;
 
+            // sub items
+            case "edit-sub-items":     return $this->editSubItems();    break;
+            case "delete-sub-items":     return $this->deleteSubItems();    break;
+
             default:              return $this->index($this->viewName);
         }
 
@@ -158,6 +162,7 @@ class Tp
         return  $table_datas->paginate($pageLimit);
 
     }
+
     public function get_form_datas(){
 
         $FormData = [];
@@ -177,7 +182,7 @@ class Tp
                 //->take($this->pageLimit)->get()
 
             }
-            if($formControl['type'] == '--combobox' || $formControl['type'] == '--tag' || $formControl['type'] == '--combobox-addable' || $formControl['type'] == '--combobox-hidden'){
+            if($formControl['type'] == '--combobox' || $formControl['type'] == '--tag'){
 
                 $options = $formControl['options'];
                 $order = explode(" ", $options['grid_default_order_by']);
@@ -190,33 +195,82 @@ class Tp
               //  print_r($data);
                 //->take($this->pageLimit)->get()
 
-                if($formControl['type'] == '--combobox-addable'){
-                    $options = $formControl['options'];
-
-                    $comboAddAbleFC = $options['form_input_control'];
-
-                    foreach($comboAddAbleFC as $CAformControl) {
 
 
+            }
+            if($formControl['type'] == '--combobox-addable'){
+                $options = $formControl['options'];
 
-                        if ($CAformControl['type'] == '--combobox') {
+                $comboAddAbleFC = $options['form_input_control'];
+
+                foreach($comboAddAbleFC as $CAformControl) {
 
 
-                            $CAoptions = $CAformControl['options'];
 
-                            $CAorder = explode(" ", $CAoptions['grid_default_order_by']);
-                            $CAdata['data'] = DB::table($CAoptions['table'])->select($CAoptions['grid_columns'])->orderBy($CAorder[0], $CAorder[1])->get();
+                    if ($CAformControl['type'] == '--combobox' || $CAformControl['type'] == '--tag' || $CAformControl['type'] == '--combobox-addable') {
 
-                            $FormData[$CAformControl['column']] = ['data'=>$CAdata];
 
-                        }
+                        $CAoptions = $CAformControl['options'];
+
+                        $CAorder = explode(" ", $CAoptions['grid_default_order_by']);
+                        $CAdata['data'] = DB::table($CAoptions['table'])->select($CAoptions['grid_columns'])->orderBy($CAorder[0], $CAorder[1])->get();
+
+                        $FormData[$CAformControl['column']] = ['data'=>$CAdata];
 
                     }
 
-
-
                 }
 
+
+
+            }
+        }
+        if(count($this->subItems) >= 1){
+            foreach($this->subItems as $subItem){
+
+                foreach($subItem['form_input_control'] as $SformControl) {
+
+
+
+                    if ($SformControl['type'] == '--combobox' || $SformControl['type'] == '--tag' || $SformControl['type'] == '--combobox-addable') {
+
+
+                        $CAoptions = $SformControl['options'];
+
+                        $CAorder = explode(" ", $CAoptions['grid_default_order_by']);
+                        $CAdata['data'] = DB::table($CAoptions['table'])->select($CAoptions['grid_columns'])->orderBy($CAorder[0], $CAorder[1])->get();
+
+                        $FormData[$SformControl['column']] = ['data'=>$CAdata];
+
+                    }
+                    if($SformControl['type'] == '--combobox-addable'){
+                        $CAoptions = $SformControl['options'];
+
+                        $comboAddAbleFC = $CAoptions['form_input_control'];
+
+                        foreach($comboAddAbleFC as $CAformControl) {
+
+
+
+                            if ($CAformControl['type'] == '--combobox' || $CAformControl['type'] == '--tag') {
+
+
+                                $CAoptions = $CAformControl['options'];
+
+                                $CAorder = explode(" ", $CAoptions['grid_default_order_by']);
+                                $CAdata['data'] = DB::table($CAoptions['table'])->select($CAoptions['grid_columns'])->orderBy($CAorder[0], $CAorder[1])->get();
+
+                                $FormData[$CAformControl['column']] = ['data'=>$CAdata];
+
+                            }
+
+                        }
+
+
+
+                    }
+
+                }
             }
         }
 
@@ -284,6 +338,11 @@ class Tp
 
         $saved = DB::table($this->table)->insert($insertQuery);
 
+        $insertedId = DB::getPdo()->lastInsertId();
+
+        if(count($this->subItems) >= 1)
+            $this->saveSubItems($insertedId, $this->subItems, Request::input('subItems'));
+
         $response = null;
         if($saved){
             $response = 'success';
@@ -317,6 +376,9 @@ class Tp
         }
 
         $saved = DB::table($this->table)->where('id', '=', $id)->update($insertQuery);
+
+        if(count($this->subItems) >= 1)
+            $this->saveSubItems($id, $this->subItems, Request::input('subItems'));
 
         $response = null;
         if($saved){
@@ -374,7 +436,11 @@ class Tp
 //                $columns[] = ['name'=>$col_name, 'type'=>$col_type];
 //        }
 //        $fields =  $this->create_grid_from_fields($columns);
-
+        $subItems = [];
+        foreach($this->subItems as $subItem){
+            $subItem['items']=[];
+            $subItems[] = $subItem;
+        }
         return [
             'form_input_control'=>$this->form_input_control,
             'grid_output_control'=>$this->grid_output_control,
@@ -382,7 +448,7 @@ class Tp
             'pagination_position'=>$this->pagination_position,
             'formType'=>$this->formType,
             'pageLimit'=>$this->pageLimit,
-            'subItems'=>$this->subItems,
+            'subItems'=>$subItems,
         ];
 
     }
@@ -672,6 +738,42 @@ class Tp
         else
             $saved = false;
 
+
+        if(!$saved){
+            $insertQuery = [];
+            $table = '';
+            foreach($this->subItems as $subItem) {
+
+                foreach ($subItem['form_input_control'] as $SformControl) {
+
+
+                    if ($SformControl['type'] == '--combobox-addable') {
+
+
+                        $form_input_control = $SformControl['options']['form_input_control'];
+                        $table = $SformControl['options']['table'];
+
+                        foreach($form_input_control as $formControl2){
+                            if($formControl2['type']=='--checkbox'){
+                                $checkBoxValue = $formData[$formControl2['column']];
+                                if($checkBoxValue == 1)
+                                    $checkBoxValue = 1;
+                                else
+                                    $checkBoxValue = 0;
+                                $insertQuery[$formControl2['column']] = $checkBoxValue;
+
+                            } else
+                                $insertQuery[$formControl2['column']] = $formData[$formControl2['column']];
+                        }
+
+                    }
+
+                }
+
+            }
+            $saved = DB::table($table)->insert($insertQuery);
+        }
+
         $response = null;
         if($saved){
             $response = 'success';
@@ -684,6 +786,7 @@ class Tp
         $column = Request::input('column');
 
         $table = '';
+        $table_datas = null;
 
         foreach($this->form_input_control as $formControl){
             if($formControl['type']=='--combobox-addable' && $formControl['column']==$column){
@@ -694,12 +797,119 @@ class Tp
 
                 $table_datas['data'] = DB::table($table)->select($grid_columns)->orderBy($order[0], $order[1])->get();
 
-                return  $table_datas;
+
             }
 
         }
 
+        if(count($this->subItems) >= 1 && $table_datas == null){
+            foreach($this->subItems as $subItem){
 
+                foreach($subItem['form_input_control'] as $SformControl) {
+
+
+
+
+                    if($SformControl['type'] == '--combobox-addable'){
+
+
+                        $table = $SformControl['options']['table'];
+                        $grid_columns = $SformControl['options']['grid_columns'];
+                        $order = explode(" ", $SformControl['options']['grid_default_order_by']);
+
+                        $table_datas['data'] = DB::table($table)->select($grid_columns)->orderBy($order[0], $order[1])->get();
+
+
+
+                    }
+
+                }
+            }
+        }
+
+        return  $table_datas;
+
+
+
+    }
+
+
+    /*sub items*/
+    public function saveSubItems($parentId, $thisSubItems, $subItems){
+        foreach($thisSubItems as $subItem){
+
+            foreach($subItems as $subItem_posted){
+                if($subItem_posted['connect_column'] == $subItem['connect_column']){
+                    foreach($subItem_posted['items'] as $item){
+                        $insertQuery = [];
+                        $insertQuery[$subItem['connect_column']] = $parentId;
+                        $table = $subItem['table'];
+                        $formData = $item;
+                        foreach($subItem['form_input_control'] as $formControl){
+                            if($formControl['type']=='--checkbox'){
+                                $checkBoxValue = $formData[$formControl['column']];
+                                if($checkBoxValue == 1)
+                                    $checkBoxValue = 1;
+                                else
+                                    $checkBoxValue = 0;
+                                $insertQuery[$formControl['column']] = $checkBoxValue;
+
+                            } else
+                                $insertQuery[$formControl['column']] = $formData[$formControl['column']];
+                        }
+
+                        if($item['id']==null)
+
+                            DB::table($table)->insert($insertQuery);
+                        else
+                            DB::table($table)->where('id', '=', $item['id'])->update($insertQuery);
+
+                    }
+                }
+            }
+
+
+
+        }
+    }
+    public function editSubItems(){
+
+        $connect_column = Request::input('connect_column');
+        $parent_id = Request::input('parent_id');
+
+
+        foreach($this->subItems as $subItem){
+            if($subItem['connect_column'] == $connect_column){
+
+                $table = $subItem['table'];
+
+
+                $edit_data = DB::table($table)->where("$connect_column", "=", $parent_id)->get();
+
+                return $edit_data;
+
+            }
+        }
+
+    }
+    public function deleteSubItems(){
+
+        $connect_column = Request::input('connect_column');
+        $id = Request::input('id');
+
+
+        foreach($this->subItems as $subItem){
+            if($subItem['connect_column'] == $connect_column){
+
+                $table = $subItem['table'];
+
+
+                DB::table($table)->where("id", "=", $id)->delete();
+
+                return 'success';
+
+            }
+        }
 
     }
 

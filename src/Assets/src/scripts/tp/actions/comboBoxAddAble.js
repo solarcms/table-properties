@@ -1,23 +1,11 @@
 import { setupPage, getFormData } from '../api/'
-import {SET_MODAL, ADD_MODAL,  ADD_COMBO_ADD_ABLE, COMBO_ADD_CHANGE_VALUE, COMBO_SET_ERROR, COMBO_CLEAR_FORM_VALIDATION, CHANGE_FORM_DATA}  from '../constants/';
+import {ADD_COMBO_ADD_ABLE, COMBO_ADD_CHANGE_VALUE, COMBO_SET_ERROR, COMBO_CLEAR_FORM_VALIDATION, CHANGE_FORM_DATA}  from '../constants/';
+export {setModal, addModal} from './modal'
 
-export function setModal(column, value) {
-    return {
-        type: SET_MODAL,
-        column,
-        value
-    }
-}
-export function addModal(column) {
-    return {
-        type: ADD_MODAL,
-        column
-    }
-}
-
-export function addComboAddAble(data) {
+export function addComboAddAble(column, data) {
     return {
         type: ADD_COMBO_ADD_ABLE,
+        column:column,
         data:data
     }
 }

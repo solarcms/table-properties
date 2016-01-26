@@ -12,11 +12,24 @@ export default createReducer(initialState, {
 
     [ADD_COMBO_ADD_ABLE](state, { column, data }) {
 
-        const new_combo = Immutable.fromJS(data);
+        const comboNew = Immutable.fromJS(data);
 
-        state = state.set('comboBoxs', new_combo);
+        const comboBoxs = state.get('comboBoxs').toJS();
+        let found = false;
+        comboBoxs.map((comboBox)=>{
+
+            if(comboBox.column == column)
+                found = true
+        })
+
+
+        if(found === false)
+            state = state.update('comboBoxs', (comboBoxs) =>
+                comboBoxs.push(comboNew)
+            );
 
         return state;
+
     },
     [COMBO_ADD_CHANGE_VALUE](state, { column, CAIndex, index, value }) {
 

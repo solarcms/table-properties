@@ -14,10 +14,12 @@ class ComboBoxAddAbleContainer extends Component {
         });
     }
     showModal(column) {
+
         this.props.actions.setModal('combo-'+column, true);
     }
-    hideModal(column) {
+    hideModal(column, CAIndex) {
         this.props.actions.setModal('combo-'+column, false);
+        this.props.actions.clearFromValidation(CAIndex);
     }
     saveForm(CAcolumn, CAIndex){
         const FD = this.props.comboBoxs[CAIndex].form_input_control;
@@ -38,8 +40,7 @@ class ComboBoxAddAbleContainer extends Component {
 
                 if(data == 'success'){
                     this.callPageDatas(CAcolumn);
-                    this.props.actions.clearFromValidation(CAIndex);
-                    this.hideModal(CAcolumn);
+                    this.hideModal(CAcolumn, CAIndex);
                 }
 
             }).fail(()=>{
@@ -119,18 +120,8 @@ class ComboBoxAddAbleContainer extends Component {
 
     }
     componentWillMount() {
-        let comboBox = []
-        this.props.formControls.map((field, index) => {
-            if (field.type == '--combobox-addable') {
-
-                comboBox.push({column: field.column, form_input_control:field.options.form_input_control});
-                this.props.actions.addModal('combo-'+field.column);
-
-            }
-
-        })
-
-        this.props.actions.addComboAddAble(comboBox);
+        this.props.actions.addModal('combo-'+this.props.column);
+        this.props.actions.addComboAddAble(this.props.column, {column: this.props.column, form_input_control: this.props.formControls});
 
     }
     componentWillUnmount(){
@@ -184,7 +175,7 @@ class ComboBoxAddAbleContainer extends Component {
                                show={shwoModal}
                                changeHandler={this.changeValues.bind(this, comboBox.column, index)}
                                saveForm={this.saveForm.bind(this, comboBox.column, index)}
-                               hideModal={this.hideModal.bind(this, comboBox.column)}
+                               hideModal={this.hideModal.bind(this, comboBox.column, index)}
                 />
 
 
@@ -233,12 +224,12 @@ ComboBoxAddAbleContainer.propTypes = {
 }
 
 function mapStateToProps(state) {
-    const TpStore = state.TpStore;
+
     const ComboBoxAddAble = state.ComboBoxAddAble;
     const Modal = state.Modal;
 
     return {
-        formControls: TpStore.get('setup').toJS().form_input_control,
+
         modals: Modal.get('modals').toJS(),
         comboBoxs: ComboBoxAddAble.get('comboBoxs').toJS()
     }

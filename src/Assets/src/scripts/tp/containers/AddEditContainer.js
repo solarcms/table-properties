@@ -7,10 +7,10 @@ import Form from "../components/form/Form"
 import validation from "../components/form/validation/"
 import {save, edit, update} from "../api/"
 import Window from "../components/window/"
+import SubItemsContainer from "./formContainers/SubItemsContainer"
 
 
 class AddEditContainer extends Component {
-
 
 
     saveForm(){
@@ -28,7 +28,7 @@ class AddEditContainer extends Component {
         })
 
         if(foundError === false)
-            save(FD).done((data)=>{
+            save(FD, this.props.subItems).done((data)=>{
 
                 if(data == 'success'){
                     this.props.actions.clearFromValidation();
@@ -57,7 +57,7 @@ class AddEditContainer extends Component {
         })
 
         if(foundError === false)
-            update(FD, this.props.params.id).done((data)=>{
+            update(FD, this.props.params.id, this.props.subItems).done((data)=>{
 
                 if(data == 'success' || 'none'){
                     this.props.actions.clearFromValidation();
@@ -180,8 +180,10 @@ class AddEditContainer extends Component {
     }
     render() {
 
-        const { setup, formControls, formData, focusIndex, showAddEditForm, showAddModal } = this.props;
+        const { setup, formControls, formData, focusIndex, showAddEditForm, showAddModal, subItems } = this.props;
         const gridId = 'grid_table'
+
+
 
         const containerForm = showAddEditForm === true
         ?
@@ -200,6 +202,8 @@ class AddEditContainer extends Component {
                 <br/>
                 Ачааллаж байна
             </div>
+        const edit_parent_id = this.props.params.id ? this.props.params.id : false
+        const formSubItmes = subItems.length >= 1 ? <SubItemsContainer formData={formData} subItems={subItems} edit_parent_id={edit_parent_id} /> : null
 
 
         return (
@@ -212,6 +216,8 @@ class AddEditContainer extends Component {
                             <div className="form-horizontal solar-form p-a-md" >
 
                                 {containerForm}
+
+                                {formSubItmes}
 
                                 <div>
                                     {this.props.params.id
@@ -252,6 +258,7 @@ AddEditContainer.propTypes = {
 
 function mapStateToProps(state) {
     const TpStore = state.TpStore;
+    const SubItems = state.SubItems;
 
 
     return {
@@ -260,6 +267,7 @@ function mapStateToProps(state) {
         focusIndex: TpStore.get('focusIndex'),
         formData: TpStore.get('formData').toJS(),
         formControls: TpStore.get('setup').toJS().form_input_control,
+        subItems: SubItems.get('subItems').toJS(),
     }
 }
 // Which action creators does it want to receive by props?

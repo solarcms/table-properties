@@ -16,7 +16,9 @@ export default class Window extends Component {
     render() {
         const { pageName, formControls, formData, changeHandler, saveForm, hideModal, id, show } = this.props;
 
-
+        const deleteButton = this.props.showDelete == true ? <button type="button" className="btn btn-fw btn-danger p-h-lg" onClick={this.props.delete}>
+                                                        <i className="material-icons">&#xE872;</i>
+                                                    </button> : null
 
 
         return (
@@ -48,6 +50,9 @@ export default class Window extends Component {
                         <a href="javascript:void(0)" className="btn btn-fw danger p-h-lg" onClick={hideModal}>
                             <i className="material-icons">&#xE5CD;</i>
                         </a>
+
+                        {deleteButton}
+
                     </Modal.Footer>
 
                 </Modal>

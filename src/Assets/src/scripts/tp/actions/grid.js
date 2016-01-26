@@ -1,6 +1,6 @@
 import { setupPage, getFormData } from '../api/'
 import * as types from '../constants/';
-
+import {setSubItems} from './subItems'
 
 /*
  * action creators
@@ -96,6 +96,7 @@ export function getSetupData() {
     return dispatch => {
         setupPage().then((data)=>{
             dispatch(receiveSetupData(data))
+            dispatch(setSubItems(data.subItems))
         });
         getFormData().then((data)=>{
             dispatch(setFormData(data))
@@ -154,4 +155,3 @@ export function setComboGridText(column, text) {
         text: text
     }
 }
-

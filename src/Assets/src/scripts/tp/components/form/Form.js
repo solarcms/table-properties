@@ -283,6 +283,7 @@ export default class Form extends Component {
                         formData={formData}
                         value={mainValue}
                         fieldOptions={field.options}
+                        formControls={field.options.form_input_control}
                         changeHandler={this.manualChange.bind(this, `${gridId}-solar-input${index}`)}
                         errorText={field.error}
                     />
