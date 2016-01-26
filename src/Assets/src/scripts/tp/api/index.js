@@ -1,19 +1,5 @@
-import $ from 'jquery'
-export function postResuest(url, data) {
-    return $.ajax({
-        url: url,
-        type: 'POST',
-        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        data:data
-    })
-}
+import {postResuest, getResuest} from './ajaxRequest'
 
-export function getResuest(url) {
-    return $.ajax({
-        url: url,
-        type: 'GET'
-    })
-}
 
 export function setupPage() {
     return postResuest(`setup`, {});

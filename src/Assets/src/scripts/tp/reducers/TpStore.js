@@ -118,13 +118,6 @@ export default createReducer(initialState, {
 
         state = state.updateIn(['setup', 'form_input_control'], (formControl) =>{
                 return formControl.map((input) => {
-                    return (input.set('error', null));
-                })
-
-        })
-
-        state = state.updateIn(['setup', 'form_input_control'], (formControl) =>{
-                return formControl.map((input) => {
                     const type = input.get('type')
                     if(type == '--checkbox')
                         return (input.set('value', false))

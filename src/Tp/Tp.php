@@ -84,7 +84,8 @@ class Tp
     //form types
     public $formType = 'page'; // page, inline, window
 
-    //sub grid
+    //subitems
+    public $subItems = [];
 
     function __construct(){
 
@@ -111,6 +112,9 @@ class Tp
             case "edit-combo-grid":          return $this->editComboGrid();        break;
             case "update-combo-grid":        return $this->updateComboGrid();      break;
             case "delete-combo-grid":        return $this->deleteComboGrid();      break;
+            // combo box add able
+            case "insert-combo-add-able":        return $this->insertCombAddAble();      break;
+            case "combo-list":     return $this->comboList();    break;
 
             default:              return $this->index($this->viewName);
         }
@@ -378,6 +382,7 @@ class Tp
             'pagination_position'=>$this->pagination_position,
             'formType'=>$this->formType,
             'pageLimit'=>$this->pageLimit,
+            'subItems'=>$this->subItems,
         ];
 
     }
@@ -626,6 +631,76 @@ class Tp
             return 'success';
         else
             return 'error';
+    }
+
+
+    /*
+     * Combox add able
+     * */
+    public function insertCombAddAble(){
+        $formData = Request::input('data');
+        $column = Request::input('column');
+
+
+
+        $insertQuery = [];
+        $table = '';
+        foreach($this->form_input_control as $formControl){
+            if($formControl['type']=='--combobox-addable' && $formControl['column']==$column){
+
+                $form_input_control = $formControl['options']['form_input_control'];
+                $table = $formControl['options']['table'];
+
+                foreach($form_input_control as $formControl2){
+                    if($formControl2['type']=='--checkbox'){
+                        $checkBoxValue = $formData[$formControl2['column']];
+                        if($checkBoxValue == 1)
+                            $checkBoxValue = 1;
+                        else
+                            $checkBoxValue = 0;
+                        $insertQuery[$formControl2['column']] = $checkBoxValue;
+
+                    } else
+                        $insertQuery[$formControl2['column']] = $formData[$formControl2['column']];
+                }
+
+            }
+
+        }
+        if($table != '')
+            $saved = DB::table($table)->insert($insertQuery);
+        else
+            $saved = false;
+
+        $response = null;
+        if($saved){
+            $response = 'success';
+        } else {
+            $response = "error";
+        }
+        return $response;
+    }
+    public function comboList(){
+        $column = Request::input('column');
+
+        $table = '';
+
+        foreach($this->form_input_control as $formControl){
+            if($formControl['type']=='--combobox-addable' && $formControl['column']==$column){
+
+                $table = $formControl['options']['table'];
+                $grid_columns = $formControl['options']['grid_columns'];
+                $order = explode(" ", $formControl['options']['grid_default_order_by']);
+
+                $table_datas['data'] = DB::table($table)->select($grid_columns)->orderBy($order[0], $order[1])->get();
+
+                return  $table_datas;
+            }
+
+        }
+
+
+
     }
 
 }

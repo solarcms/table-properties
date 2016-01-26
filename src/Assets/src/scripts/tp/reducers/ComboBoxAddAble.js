@@ -2,21 +2,14 @@ import createReducer from '../lib/createReducer';
 
 import Immutable from 'immutable';
 
-import { SET_ADD_MODAL, ADD_COMBO_ADD_ABLE, COMBO_ADD_CHANGE_VALUE, COMBO_SET_ERROR} from '../constants/';
+import { ADD_COMBO_ADD_ABLE, COMBO_ADD_CHANGE_VALUE, COMBO_SET_ERROR, COMBO_CLEAR_FORM_VALIDATION} from '../constants/';
 
 const initialState = {
     comboBoxs: [],
-    showAddModal: false
 };
 
 export default createReducer(initialState, {
-    [SET_ADD_MODAL](state, { value }) {
 
-        state = state.set('showAddModal', value);
-
-        return state;
-
-    },
     [ADD_COMBO_ADD_ABLE](state, { column, data }) {
 
         const new_combo = Immutable.fromJS(data);
@@ -37,6 +30,28 @@ export default createReducer(initialState, {
         state = state.setIn(['comboBoxs', CAIndex, 'form_input_control', index, 'error'], error);
 
 
+        return state;
+    },
+    [COMBO_CLEAR_FORM_VALIDATION](state, {CAIndex}) {
+
+        state = state.updateIn(['comboBoxs', CAIndex, 'form_input_control'], (formControl) =>{
+            return formControl.map((input) => {
+                return (input.set('error', null));
+            })
+
+        })
+
+
+        state = state.updateIn(['comboBoxs', CAIndex, 'form_input_control'], (formControl) =>{
+            return formControl.map((input) => {
+                const type = input.get('type')
+                if(type == '--checkbox')
+                    return (input.set('value', false))
+                else
+                    return (input.set('value', null))
+            })
+
+        })
         return state;
     },
 });

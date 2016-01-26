@@ -17,6 +17,8 @@ export default class Window extends Component {
         const { pageName, formControls, formData, changeHandler, saveForm, hideModal, id, show } = this.props;
 
 
+
+
         return (
             <Draggable handle=".modal-header">
                 <Modal id={`windowForm${id}`} show={show} backdrop={false}  onHide={hideModal}>

@@ -1,10 +1,17 @@
 import { setupPage, getFormData } from '../api/'
-import {SET_ADD_MODAL, ADD_COMBO_ADD_ABLE, COMBO_ADD_CHANGE_VALUE, COMBO_SET_ERROR}  from '../constants/';
+import {SET_MODAL, ADD_MODAL,  ADD_COMBO_ADD_ABLE, COMBO_ADD_CHANGE_VALUE, COMBO_SET_ERROR, COMBO_CLEAR_FORM_VALIDATION, CHANGE_FORM_DATA}  from '../constants/';
 
-export function setAddModal(value) {
+export function setModal(column, value) {
     return {
-        type: SET_ADD_MODAL,
+        type: SET_MODAL,
+        column,
         value
+    }
+}
+export function addModal(column) {
+    return {
+        type: ADD_MODAL,
+        column
     }
 }
 
@@ -32,5 +39,19 @@ export function setError(column, CAIndex, index, error) {
         CAIndex: CAIndex,
         index: index,
         error: error
+    }
+}
+export function clearFromValidation(CAIndex) {
+    return {
+        type: COMBO_CLEAR_FORM_VALIDATION,
+        CAIndex
+    }
+}
+export function changeFormData(column, data) {
+
+    return {
+        type: CHANGE_FORM_DATA,
+        column: column,
+        data: data
     }
 }

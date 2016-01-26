@@ -2,20 +2,25 @@ import React, { Component, PropTypes } from 'react'
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux'
 import * as DataActions from '../../actions/comboBoxAddAble'
-import {save, edit, update} from "../../api/"
+import {saveComboAdd, getComboList} from "../../api/comboAddAble"
 import Window from "../../components/window/"
 import Select from 'react-select';
 import validation from "../../components/form/validation/"
 
 class ComboBoxAddAbleContainer extends Component {
+    callPageDatas(CAcolumn) {
+        getComboList(CAcolumn).then((data)=> {
+            this.props.actions.changeFormData(CAcolumn, data);
+        });
+    }
     showModal(column) {
-        this.props.actions.setAddModal(true);
+        this.props.actions.setModal('combo-'+column, true);
     }
     hideModal(column) {
-        this.props.actions.setAddModal(false);
+        this.props.actions.setModal('combo-'+column, false);
     }
-    saveForm(){
-        const FD = this.props.formControls;
+    saveForm(CAcolumn, CAIndex){
+        const FD = this.props.comboBoxs[CAIndex].form_input_control;
 
         let foundError = false;
 
@@ -29,11 +34,12 @@ class ComboBoxAddAbleContainer extends Component {
         })
 
         if(foundError === false)
-            save(FD).done((data)=>{
+            saveComboAdd(CAcolumn, FD).done((data)=>{
 
                 if(data == 'success'){
-                    this.props.actions.clearFromValidation();
-                    window.location.replace('#/');
+                    this.callPageDatas(CAcolumn);
+                    this.props.actions.clearFromValidation(CAIndex);
+                    this.hideModal(CAcolumn);
                 }
 
             }).fail(()=>{
@@ -118,12 +124,14 @@ class ComboBoxAddAbleContainer extends Component {
             if (field.type == '--combobox-addable') {
 
                 comboBox.push({column: field.column, form_input_control:field.options.form_input_control});
+                this.props.actions.addModal('combo-'+field.column);
 
             }
 
         })
 
         this.props.actions.addComboAddAble(comboBox);
+
     }
     componentWillUnmount(){
 
@@ -134,7 +142,7 @@ class ComboBoxAddAbleContainer extends Component {
 
     render() {
 
-        const { fieldClass, formData, column, fieldOptions, value, changeHandler, errorText, formType, placeholder, name, formControls, showAddModal, comboBoxs } = this.props;
+        const { modals, fieldClass, formData, column, fieldOptions, value, changeHandler, errorText, formType, placeholder, name, formControls, showAddModal, comboBoxs } = this.props;
 
         let options = [];
         if(formData[column])
@@ -161,21 +169,28 @@ class ComboBoxAddAbleContainer extends Component {
         windowForm = comboBoxs.map((comboBox, index) => {
 
 
+                let shwoModal = false;
+
+                modals.map((modal) => {
+                    if(modal.name == "combo-"+comboBox.column)
+                        shwoModal = modal.show;
+                })
 
                 return <Window key={index}
                                id={comboBox.column}
                                formControls={comboBox.form_input_control}
                                formData={formData}
-                               pageName="test"
-                               show={showAddModal}
+                               pageName={placeholder}
+                               show={shwoModal}
                                changeHandler={this.changeValues.bind(this, comboBox.column, index)}
-                               saveForm={this.saveForm.bind(this)}
+                               saveForm={this.saveForm.bind(this, comboBox.column, index)}
                                hideModal={this.hideModal.bind(this, comboBox.column)}
                 />
 
 
 
         })
+
 
 
 
@@ -220,10 +235,11 @@ ComboBoxAddAbleContainer.propTypes = {
 function mapStateToProps(state) {
     const TpStore = state.TpStore;
     const ComboBoxAddAble = state.ComboBoxAddAble;
+    const Modal = state.Modal;
 
     return {
         formControls: TpStore.get('setup').toJS().form_input_control,
-        showAddModal: ComboBoxAddAble.get('showAddModal'),
+        modals: Modal.get('modals').toJS(),
         comboBoxs: ComboBoxAddAble.get('comboBoxs').toJS()
     }
 }
