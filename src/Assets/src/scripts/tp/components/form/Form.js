@@ -369,6 +369,7 @@ export default class Form extends Component {
                     </div>
                     break;
                 case "--radio":
+
                     return <div key={field.column} className={`form-group ${fieldClass}`}>
                         <div className="radio">
 

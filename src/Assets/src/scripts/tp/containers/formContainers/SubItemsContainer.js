@@ -166,6 +166,15 @@ class SubItemsContainer extends Component {
                                         validate: form_i_c.validate,
                                         options:form_i_c.options
                                     });
+                                else if(form_i_c.choices)
+                                    FD.push({
+                                        column: form_i_c.column,
+                                        title: form_i_c.title,
+                                        type: form_i_c.type,
+                                        value: edit_data[form_i_c.column],
+                                        validate: form_i_c.validate,
+                                        choices: form_i_c.choices
+                                    });
                                 else
                                     FD.push({
                                         column: form_i_c.column,
@@ -219,7 +228,7 @@ class SubItemsContainer extends Component {
             )
             const showDelete = this.props.editIndex == -1 ? false : true
             return <div key={index} className="sub-items">
-                        <h4>{subItem.page_name}</h4>
+                        <h5>{subItem.page_name}</h5>
 
 
                 {savedItems}
