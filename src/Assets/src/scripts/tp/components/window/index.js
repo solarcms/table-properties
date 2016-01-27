@@ -23,15 +23,17 @@ export default class Window extends Component {
 
         return (
             <Draggable handle=".modal-header">
-                <Modal id={`windowForm${id}`} show={show} backdrop={false}  onHide={hideModal}>
+                <Modal id={`windowForm${id}`} className="modal-shadowed" show={show} backdrop={false}  onHide={hideModal} bsSize="large">
 
                     <Modal.Header closeButton>
                         <Modal.Title>{pageName}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <Form gridId={id} formControls={formControls} formData={formData} ref="fromRefs" focusIndex="0"
-                              changeHandler={changeHandler}
-                        />
+                        <div className="row">
+                            <Form gridId={id} formControls={formControls} formData={formData} ref="fromRefs" focusIndex="0"
+                                  changeHandler={changeHandler}
+                            />
+                        </div>
                     </Modal.Body>
                     <Modal.Footer>
                         {this.props.edit

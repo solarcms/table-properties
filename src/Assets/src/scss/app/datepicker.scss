@@ -267,7 +267,7 @@ ul.rw-list > li.rw-list-option, ul.rw-list > li.rw-list-empty, .rw-selectlist > 
 ul.rw-list > li.rw-list-option, .rw-selectlist > li.rw-list-option {
   cursor: pointer;
   border: 1px solid transparent;
-  border-radius: 3px
+  border-radius: 0px
 }
 
 ul.rw-list > li.rw-list-option:hover, .rw-selectlist > li.rw-list-option:hover {
@@ -327,7 +327,7 @@ ul.rw-list.rw-list-grouped > li.rw-list-option, .rw-selectlist.rw-list-grouped >
 .rw-widget {
   background-color: #fff;
   border: #ccc 1px solid;
-  border-radius: 4px
+  border-radius: 0px
 }
 
 .rw-widget .rw-input {
@@ -336,10 +336,7 @@ ul.rw-list.rw-list-grouped > li.rw-list-option, .rw-selectlist.rw-list-grouped >
 }
 
 .rw-rtl.rw-widget .rw-input {
-  border-bottom-left-radius: 0;
-  border-top-left-radius: 0;
-  border-bottom-right-radius: 4px;
-  border-top-right-radius: 4px
+  border-radius: 0px
 }
 
 .rw-widget > .rw-select {
@@ -527,7 +524,7 @@ ul.rw-list.rw-list-grouped > li.rw-list-option, .rw-selectlist.rw-list-grouped >
 }
 
 .rw-datetimepicker.rw-has-neither .rw-input {
-  border-radius: 4px
+  border-radius: 0px
 }
 
 .rw-datetimepicker.rw-has-both {
@@ -563,7 +560,7 @@ ul.rw-list.rw-list-grouped > li.rw-list-option, .rw-selectlist.rw-list-grouped >
 .rw-calendar .rw-header .rw-btn-view {
   width: 75%;
   background-color: #eee;
-  border-radius: 4px
+  border-radius: 0px
 }
 
 .rw-calendar .rw-header .rw-btn-view[disabled] {

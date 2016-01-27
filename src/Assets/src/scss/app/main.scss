@@ -4,7 +4,7 @@
   height: -webkit-calc(100vh - 2px);
   height: calc(100vh - 2px);
   position: relative;
-  background: #000;
+  background: #fff;
   margin: 0;
   padding: 0;
   width: 100%;
@@ -13,7 +13,7 @@
 }
 
 .solar-form {
-  max-width: 600px;
+
 }
 .pagination {
   margin: 0;
@@ -89,5 +89,11 @@
 }
 
 
-
+.add-btn{
+  border-radius: 0;
+  padding: 8px 12px;
+}
+.btn{
+  border-radius: 0;
+}
 

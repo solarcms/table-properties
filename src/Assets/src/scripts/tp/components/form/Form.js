@@ -203,7 +203,7 @@ export default class Form extends Component {
                     />
                     break;
                 case "--date":
-                    return <div key={field.column} className={`form-group ${fieldClass}`}>
+                    return <div key={field.column} className={`form-group ${fieldClass}  col-md-6`}>
                         <label className="control-label">{field.title}</label>
                         <DateTimePicker
                             name={`${gridId}-solar-input${index}`}
@@ -220,7 +220,11 @@ export default class Form extends Component {
                     </div>
                     break;
                 case "--datetime":
-                    return <div key={field.column} className={`form-group ${fieldClass}`}>
+                    return <div key={field.column} className={`form-group ${fieldClass}  col-md-6`}>
+                        <label>
+
+                            {field.title}
+                        </label>
                         <DateTimePicker
                             name={`${gridId}-solar-input${index}`}
                             defaultValue={mainValue === null ? null : new Date(mainValue)}
@@ -236,7 +240,7 @@ export default class Form extends Component {
                     </div>
                     break;
                 case "--combogrid":
-                    return <div key={field.column} className={`form-group ${fieldClass}`}>
+                    return <div key={field.column} className={`form-group ${fieldClass}  col-md-6`}>
                                 {formType == 'inline' ? '' : <label className="control-label">{field.title}</label>}
                                 <Combogrid listData={formData[field.column].data.data}
                                                gridHeader={field.options.grid_output_control}
@@ -311,7 +315,7 @@ export default class Form extends Component {
                             }
                         })
 
-                    return <div key={field.column} className={`form-group ${fieldClass}`}>
+                    return <div key={field.column} className={`form-group ${fieldClass}  col-md-6`}>
                         {formType == 'inline' ? '' : <label className="control-label">{field.title}</label>}
 
 
@@ -337,7 +341,7 @@ export default class Form extends Component {
                     </div>
                     break;
                 case "--checkbox":
-                    return <div key={field.column} className={`form-group ${fieldClass}`}>
+                    return <div key={field.column} className={`form-group ${fieldClass} col-md-6`}>
                         <div className="checkbox">
                             {formType == 'inline' ?
                                 <input type="checkbox"
@@ -370,7 +374,7 @@ export default class Form extends Component {
                     break;
                 case "--radio":
 
-                    return <div key={field.column} className={`form-group ${fieldClass}`}>
+                    return <div key={field.column} className={`form-group ${fieldClass} col-md-6`}>
                         <div className="radio">
 
                             <label>

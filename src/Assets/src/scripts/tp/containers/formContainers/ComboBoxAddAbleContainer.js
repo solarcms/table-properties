@@ -188,12 +188,12 @@ class ComboBoxAddAbleContainer extends Component {
 
 
         return (
-            <div className={`form-group ${fieldClass}`}>
+            <div className={`form-group ${fieldClass}  col-md-6`}>
                 {formType == 'inline' ? '' : <label className="control-label">{placeholder}</label>}
 
                 {formData[column] ?
 
-                    <Select
+                    <Select className="addable-combo"
                         name={name}
                         value={value}
                         options={options}
@@ -202,7 +202,7 @@ class ComboBoxAddAbleContainer extends Component {
                     :
                     null}
 
-                <button className="btn btn-success" onClick={this.showModal.bind(this,column)}>
+                <button className="btn btn-primary add-btn combo-add-btn" onClick={this.showModal.bind(this,column)}>
                     <i className="material-icons">&#xE145;</i>
                 </button>
 

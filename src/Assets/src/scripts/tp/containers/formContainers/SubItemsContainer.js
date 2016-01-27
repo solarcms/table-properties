@@ -227,7 +227,7 @@ class SubItemsContainer extends Component {
 
             )
             const showDelete = this.props.editIndex == -1 ? false : true
-            return <div key={index} className="sub-items">
+            return <div key={index} className="sub-items col-md-12">
                         <h5>{subItem.page_name}</h5>
 
 
@@ -236,7 +236,7 @@ class SubItemsContainer extends Component {
 
 
 
-                <button className="btn btn-success" onClick={this.showModal.bind(this,subItem.connect_column)}>
+                <button className="btn btn-primary add-btn" onClick={this.showModal.bind(this,subItem.connect_column)}>
                     <i className="material-icons">&#xE145;</i>
                 </button>
 
