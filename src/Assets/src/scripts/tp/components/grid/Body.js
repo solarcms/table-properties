@@ -344,7 +344,7 @@ export default class Body extends Component {
                             </span>
             </td>
         </tr> : null
-        return (<div className="m-a-sm white with-3d-shadow">
+        return (<div className="white">
 
             <div id="gridBody">
 

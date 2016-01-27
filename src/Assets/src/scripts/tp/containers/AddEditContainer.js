@@ -208,9 +208,7 @@ class AddEditContainer extends Component {
 
         return (
             <div className="">
-                <Header pageName={setup.page_name} icon="fa fa-chevron-left" link="#/" type="addEdit"
-
-                       />
+                <Header pageName={setup.page_name} icon="fa fa-chevron-left" link="#/" type="addEdit"/>
                 <div className="p-y-sm">
                     <div className="row white m-x-sm" >
                             <div className="form-horizontal solar-form p-a-md" >
@@ -238,9 +236,6 @@ class AddEditContainer extends Component {
                             </div>
                     </div>
                 </div>
-
-
-
             </div>
 
         )

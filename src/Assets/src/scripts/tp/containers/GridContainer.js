@@ -262,7 +262,7 @@ class GridContainer extends Component {
                 pageLimit={pageLimit}
                 handler={this.hangePageLimitChange.bind(this)}
                 handlerPage={this.handlePageChange.bind(this)}
-                paginationMarg="m-r-sm m-l-sm m-t-sm"
+                paginationMarg=""
             />
             :
             null
@@ -275,7 +275,7 @@ class GridContainer extends Component {
                 pageLimit={pageLimit}
                 handler={this.hangePageLimitChange.bind(this)}
                 handlerPage={this.handlePageChange.bind(this)}
-                paginationMarg="m-r-sm m-l-sm m-b-sm paginationBottom"
+                paginationMarg="paginationBottom"
             />
             :
             null
