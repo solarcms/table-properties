@@ -50,6 +50,10 @@ class Tp
     //subitems
     public $subItems = [];
 
+    //translation
+    public $translate = false;
+
+
     function __construct(){
 
     }
