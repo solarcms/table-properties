@@ -12,7 +12,9 @@ export default class DragMap extends Component {
     }
 
     render() {
-        const { mainValue, fieldClass, placeholder, errorText } = this.props;
+        const { mainValue, fieldClass, placeholder, errorText, disabled } = this.props;
+
+        const canDrag = disabled == true ? false : true;
 
         let DefaultPosition = {};
         if(mainValue === null || mainValue === ''){
@@ -41,7 +43,7 @@ export default class DragMap extends Component {
 
                         <Marker
                                position={DefaultPosition}
-                               draggable={true}
+                               draggable={canDrag}
                                 onDragend={this.dragEndHandler.bind(this)}
                              />
 

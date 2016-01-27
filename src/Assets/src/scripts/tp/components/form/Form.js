@@ -52,10 +52,19 @@ export default class Form extends Component {
     }
 
     render() {
-        const { formControls, changeHandler, formData, formType, formValue, focusIndex, gridIndex, gridId  } = this.props;
+        const { formControls, changeHandler, formData, formType, formValue, focusIndex, gridIndex, gridId, ifUpdateDisabledCanEditColumns, permission, addFrom  } = this.props;
 
 
         const formFields = formControls.map((field, index) => {
+            let thisDisabled = true;
+            if(permission.u !== true && addFrom == false){
+                ifUpdateDisabledCanEditColumns.map((ifUpdateDisabledCanEditColumn)=>{
+                    if(field.column == ifUpdateDisabledCanEditColumn)
+                        thisDisabled = false;
+                })
+            } else
+                thisDisabled = false;
+
 
             let fieldClass = '';
             if (field.error)
@@ -82,6 +91,7 @@ export default class Form extends Component {
             switch (field.type) {
                 case "--text":
                     return <Input
+                        disabled={thisDisabled}
                         key={field.column}
                         fieldClass={fieldClass}
                         value={mainValue}
@@ -96,6 +106,7 @@ export default class Form extends Component {
                     break;
                 case "--number":
                     return <Input
+                        disabled={thisDisabled}
                         key={field.column}
                         fieldClass={fieldClass}
                         value={mainValue}
@@ -110,6 +121,7 @@ export default class Form extends Component {
                     break;
                 case "--money":
                     return <Input
+                        disabled={thisDisabled}
                         key={field.column}
                         fieldClass={fieldClass}
                         value={mainValue}
@@ -124,6 +136,7 @@ export default class Form extends Component {
                     break;
                 case "--email":
                     return <Input
+                        disabled={thisDisabled}
                         key={field.column}
                         fieldClass={fieldClass}
                         value={mainValue}
@@ -138,6 +151,7 @@ export default class Form extends Component {
                     break;
                 case "--link":
                     return <Input
+                        disabled={thisDisabled}
                         key={field.column}
                         fieldClass={fieldClass}
                         value={mainValue}
@@ -152,6 +166,7 @@ export default class Form extends Component {
                     break;
                 case "--textarea":
                     return <Input
+                        disabled={thisDisabled}
                         key={field.column}
                         fieldClass={fieldClass}
                         value={mainValue}
@@ -166,6 +181,7 @@ export default class Form extends Component {
                     break;
                 case "--ckeditor":
                     return <CK
+                        disabled={thisDisabled}
                         key={field.column}
                         placeholder={field.title}
                         fieldClass={fieldClass}
@@ -179,6 +195,7 @@ export default class Form extends Component {
                     break;
                 case "--drag-map":
                     return <DragMap
+                        disabled={thisDisabled}
                         key={field.column}
                         placeholder={field.title}
                         fieldClass={fieldClass}
@@ -192,6 +209,7 @@ export default class Form extends Component {
                     break;
                 case "--single-file":
                     return <SingleFileUploader
+                        disabled={thisDisabled}
                         key={field.column}
                         fieldClass={fieldClass}
                         gridId={gridId}
@@ -206,6 +224,7 @@ export default class Form extends Component {
                     return <div key={field.column} className={`form-group ${fieldClass}  col-md-6`}>
                         <label className="control-label">{field.title}</label>
                         <DateTimePicker
+                            disabled={thisDisabled}
                             name={`${gridId}-solar-input${index}`}
                             defaultValue={mainValue === null ? null : new Date(mainValue)}
                             value={mainValue === null ? null : new Date(mainValue)}
@@ -226,6 +245,7 @@ export default class Form extends Component {
                             {field.title}
                         </label>
                         <DateTimePicker
+                            disabled={thisDisabled}
                             name={`${gridId}-solar-input${index}`}
                             defaultValue={mainValue === null ? null : new Date(mainValue)}
                             value={mainValue === null ? null : new Date(mainValue)}
@@ -243,6 +263,7 @@ export default class Form extends Component {
                     return <div key={field.column} className={`form-group ${fieldClass}  col-md-6`}>
                                 {formType == 'inline' ? '' : <label className="control-label">{field.title}</label>}
                                 <Combogrid listData={formData[field.column].data.data}
+                                                disabled={thisDisabled}
                                                gridHeader={field.options.grid_output_control}
                                                valueField={field.options.valueField}
                                                textField={field.options.textField}
@@ -263,6 +284,7 @@ export default class Form extends Component {
                 case "--combobox":
 
                     return <ComboBox
+                                disabled={thisDisabled}
                                 key={field.column}
                                 column={field.column}
                                 name={`${gridId}-solar-input${index}`}
@@ -278,6 +300,7 @@ export default class Form extends Component {
                     break;
                 case "--combobox-addable":
                     return <ComboBoxAddAble
+                        disabled={thisDisabled}
                         key={field.column}
                         column={field.column}
                         name={`${gridId}-solar-input${index}`}
@@ -323,9 +346,11 @@ export default class Form extends Component {
 
 
                             <Select
+                                disabled={thisDisabled}
                                 name={`${gridId}-solar-input${index}`}
                                 value={field.value}
                                 options={options_tag}
+                                placeholder={`Сонгох`}
                                 multi={true}
                                 onChange={this.manualChange.bind(this, `${gridId}-solar-input${index}`)}
                             />
@@ -345,7 +370,7 @@ export default class Form extends Component {
                         <div className="checkbox">
                             {formType == 'inline' ?
                                 <input type="checkbox"
-
+                                       disabled={thisDisabled}
                                        name={`${gridId}-solar-input${index}`}
                                        checked={field.value == 1 ? true: false  }
                                        value={1}
@@ -355,7 +380,7 @@ export default class Form extends Component {
                                 :
                                 <label>
                                     <input type="checkbox"
-
+                                           disabled={thisDisabled}
                                            name={`${gridId}-solar-input${index}`}
                                            checked={field.value == 1 ? true: false  }
                                            value={1}
@@ -385,7 +410,7 @@ export default class Form extends Component {
                             {field.choices.map((choice, cindex)=>
                                 <label key={cindex}>
                                     <input type="radio"
-
+                                           disabled={thisDisabled}
                                            name={`${gridId}-solar-input${index}`}
 
                                            checked={field.value == choice.value ? true: false  }
@@ -415,7 +440,9 @@ export default class Form extends Component {
 
     }
 }
-Form.defaultProps = {};
+Form.defaultProps = {
+    ifUpdateDisabledCanEditColumns:[]
+};
 
 Form.propTypes = {
     formControls: PropTypes.array.isRequired,

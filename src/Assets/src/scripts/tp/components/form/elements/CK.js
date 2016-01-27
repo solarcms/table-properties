@@ -28,7 +28,7 @@ export default class CK extends Component {
     }
 
     render() {
-        const { gridId, mainValue, changeHandler, index, errorText, fieldClass, placeholder } = this.props;
+        const { gridId, mainValue, changeHandler, index, errorText, fieldClass, placeholder, disabled } = this.props;
 
         return (
 
@@ -40,6 +40,7 @@ export default class CK extends Component {
                     name={`${gridId}-solar-input${index}`}
                     value={mainValue}
                     onChange={changeHandler}
+                    disabled={disabled}
                 />
                 <span className="help-block">
                     {errorText}

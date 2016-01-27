@@ -4,22 +4,24 @@ export default class Header extends Component {
 
     render() {
         let addButton = "";
+        if(this.props.permission.c == true){
+            if(this.props.formType == 'inline')
+                addButton = <a href="javascript:void(0)" className="nav-link" onClick={this.props.addInlineForm}>
+                    <i className="material-icons">&#xE145;</i>
+                    Нэмэх
+                </a>
+            else if(this.props.formType == 'window')
+                addButton = <a className="nav-link" href="javascript:void(0)" onClick={this.props.showModal}>
+                    <i className="material-icons">&#xE145;</i>
+                    Нэмэх
+                </a>
+            else
+                addButton = <a href={this.props.link} className="nav-link"><i className="material-icons">&#xE145;</i> Нэмэх</a>
+        }
 
-        if(this.props.formType == 'inline')
-            addButton = <a href="javascript:void(0)" className="nav-link" onClick={this.props.addInlineForm}>
-                <i className="material-icons">&#xE145;</i>
-                Нэмэх
-            </a>
-        else if(this.props.formType == 'window')
-            addButton = <a className="nav-link" href="javascript:void(0)" onClick={this.props.showModal}>
-                <i className="material-icons">&#xE145;</i>
-                Нэмэх
-            </a>
-        else
-            addButton = <a href={this.props.link} className="nav-link"><i className="material-icons">&#xE145;</i> Нэмэх</a>
 
         let actionControls = this.props.type == 'list'?
-            <ul className="nav navbar-nav pull-right">
+            <ul className="nav navbar-nav pull-right hidden-md-down">
                 <li className="nav-item dropdown">
                     <a className="nav-link p-l b-l" href="javascript:void(0)" data-toggle="dropdown">
 
@@ -62,7 +64,7 @@ export default class Header extends Component {
             null
         let searchBar = this.props.type == 'list' || this.props.type == 'comboGrid'
             ?
-            <div className="collapse navbar-toggleable-sm" id="navbar-3">
+            <div className="collapse navbar-toggleable-sm hidden-sm-down" id="navbar-3">
                 <div
                     className="navbar-form form-inline pull-right pull-none-sm navbar-item v-m ng-pristine ng-valid ng-scope"
                     role="search">
@@ -95,7 +97,7 @@ export default class Header extends Component {
                 <div className="white box-shadow-z0 b-b">
                     <div className="navbar">
 
-                        <div className="navbar-item pull-left h5 p-l" id="pageTitle">{this.props.pageName}</div>
+                        <div className="navbar-item pull-left h6 p-l" id="pageTitle" >{this.props.pageName}</div>
 
                         {actionControls}
                         {searchBar}
@@ -105,4 +107,7 @@ export default class Header extends Component {
         )
     }
 }
+Header.defaultProps = {
+    permission:{c:false, r:false, u:false, d:false}
 
+}

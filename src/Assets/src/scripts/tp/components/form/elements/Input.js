@@ -13,7 +13,7 @@ export default class Input extends Component {
             $('.money').autoNumeric('destroy');
     }
     render() {
-        const { autoFocus, name, value, placeholder, changeHandler, errorText, fieldClass, type } = this.props;
+        const { autoFocus, name, value, placeholder, changeHandler, errorText, fieldClass, type, disabled } = this.props;
 
         const focusHandler = type == 'text' ? moveCursorToEnd : false
 
@@ -23,6 +23,7 @@ export default class Input extends Component {
         switch (type){
             case 'money':
                 input = <input
+                        disabled={disabled}
                         autoFocus={autoFocus}
                         className="form-control money"
                         name={name}
@@ -35,6 +36,7 @@ export default class Input extends Component {
                 break;
             case 'textarea':
                 input = <textarea
+                        disabled={disabled}
                         autoFocus={autoFocus}
                         className="form-control"
                         name={name}
@@ -47,6 +49,7 @@ export default class Input extends Component {
                 break;
             default:
                 input = <input
+                        disabled={disabled}
                         autoFocus={autoFocus}
                         className="form-control"
                         name={name}

@@ -19,7 +19,8 @@ class SubItemsContainer extends Component {
     }
     delete(column, CAIndex, deleteItem) {
 
-
+        if(this.props.permission.d !== true)
+            return false;
 
         this.hideModal(column, CAIndex);
 
@@ -203,7 +204,10 @@ class SubItemsContainer extends Component {
     }
     render() {
 
-        const {subItems, formData, modals, showAddEditForm} = this.props;
+        const {subItems, formData, modals, showAddEditForm,
+            ifUpdateDisabledCanEditColumns,
+            permission
+            } = this.props;
 
 
         const Items = showAddEditForm === true ? subItems.map((subItem, index)=>{
@@ -226,7 +230,7 @@ class SubItemsContainer extends Component {
                 </span>
 
             )
-            const showDelete = this.props.editIndex == -1 ? false : true
+            const showDelete = this.props.permission.d == true ? this.props.editIndex == -1 ? false : true : false
             return <div key={index} className="sub-items col-md-12">
                         <h5>{subItem.page_name}</h5>
 
@@ -250,6 +254,8 @@ class SubItemsContainer extends Component {
                         saveForm={this.saveForm.bind(this, subItem.connect_column, index)}
                         hideModal={this.hideModal.bind(this, subItem.connect_column, index)}
                         delete={this.delete.bind(this, subItem.connect_column, index, subItem.items)}
+                        permission={{c:true, r:true, u:true, d:true}}
+                        ifUpdateDisabledCanEditColumns={[]}
                         showDelete={showDelete}
                 />
 
@@ -268,7 +274,8 @@ class SubItemsContainer extends Component {
 }
 
 SubItemsContainer.defaultProps = {
-    subItems: []
+    subItems: [],
+    permission:{c:false, r:false, u:false, d:false}
 }
 SubItemsContainer.propTypes = {
     subItems: PropTypes.array.isRequired
@@ -277,10 +284,12 @@ SubItemsContainer.propTypes = {
 function mapStateToProps(state) {
     const SubItems = state.SubItems;
     const Modal = state.Modal;
+    const TpStore = state.TpStore;
 
     return {
         modals: Modal.get('modals').toJS(),
         editIndex: SubItems.get('editIndex'),
+        permission: TpStore.get('setup').toJS().permission,
     }
 }
 // Which action creators does it want to receive by props?

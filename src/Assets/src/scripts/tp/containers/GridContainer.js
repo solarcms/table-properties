@@ -33,6 +33,9 @@ class GridContainer extends Component {
      * Grid main actions starting
      * */
     callPageDatas(page, pageLimit, searchValue) {
+        if(this.props.permission.r !== true)
+            return false;
+
         this.props.actions.setShowGrid(false);
         getList(page, {
             pageLimit: pageLimit,
@@ -58,12 +61,14 @@ class GridContainer extends Component {
         this.callPageDatas(1, this.props.pageLimit, sword)
     }
     handleDeleteItem(id) {
-        deleteItem(id).then((data)=> {
-            if(data == 'success')
-                this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
-            else
-                alert("Please try agian")
-        });
+        if(this.props.permission.d == true) {
+            deleteItem(id).then((data)=> {
+                if (data == 'success')
+                    this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
+                else
+                    alert("Please try agian")
+            });
+        }
     }
     /*
      * Grid main actions starting
@@ -77,26 +82,31 @@ class GridContainer extends Component {
     }
     setRowEdit(editId, focusIndex){
 
-        const FC = this.props.formControls;
 
-        if(FC.length >= 1)
-            this.props.actions.clearFromValidation();
-
-        if(editId === this.props.editID)
+        if(this.props.permission.u !== true)
             return false;
 
-        this.props.actions.setRowEdit(editId, focusIndex)
-        if(editId >=1)
-            edit(editId).then((data)=> {
-                if(data.length >= 1)
-                    this.props.formControls.map((formControl, index)=>{
+            const FC = this.props.formControls;
 
-                        this.props.actions.chagenValue(index, data[0][formControl.column])
-                    })
-                else
-                    alert('please try agian')
+            if (FC.length >= 1)
+                this.props.actions.clearFromValidation();
 
-            });
+            if (editId === this.props.editID)
+                return false;
+
+            this.props.actions.setRowEdit(editId, focusIndex)
+            if (editId >= 1)
+                edit(editId).then((data)=> {
+                    if (data.length >= 1)
+                        this.props.formControls.map((formControl, index)=> {
+
+                            this.props.actions.chagenValue(index, data[0][formControl.column])
+                        })
+                    else
+                        alert('please try agian')
+
+                });
+
 
     }
     removeInlineForm(){
@@ -118,23 +128,28 @@ class GridContainer extends Component {
         })
         if(foundError === false)
             if(isNaN(id) === false && id != 0){
+                if(this.props.permission.u !== true)
+                    return false;
+                    update(FD, id).done((data)=> {
 
-                update(FD, id).done((data)=>{
+                        if (data == 'success' || 'none') {
+                            this.props.actions.clearFromValidation();
+                            this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
 
-                    if(data == 'success' || 'none'){
-                        this.props.actions.clearFromValidation();
-                        this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
+                            if (this.props.formType == 'inline')
+                                this.setRowEdit(0, 0);
+                            else if (this.props.formType == 'window')
+                                this.hideModal();
+                        }
 
-                        if(this.props.formType == 'inline')
-                            this.setRowEdit(0, 0);
-                        else if(this.props.formType == 'window')
-                            this.hideModal();
-                    }
+                    }).fail(()=> {
+                        alert("Уучлаарай алдаа гарлаа дахин оролдоно уу")
+                    })
 
-                }).fail(()=>{
-                    alert("Уучлаарай алдаа гарлаа дахин оролдоно уу")
-                })
             } else {
+
+                if(this.props.permission.c !== true)
+                    return false;
 
                 save(FD).done((data)=>{
 
@@ -199,20 +214,26 @@ class GridContainer extends Component {
     * Window form
     * */
     callWindowEdit(id){
-        this.props.actions.setRowEdit(id, 0)
-        edit(id).then((data)=> {
-            if(data.length >= 1)
-                this.props.formControls.map((formControl, index)=>{
-                    this.props.actions.chagenValue(index, data[0][formControl.column])
-                })
-            else
-                alert('please try agian')
-        });
+        if(this.props.permission.u !== true)
+            return false;
 
 
-        $('#windowForm').modal({'backdrop': false}, 'show');
+            this.props.actions.setRowEdit(id, 0)
+            edit(id).then((data)=> {
+                if(data.length >= 1)
+                    this.props.formControls.map((formControl, index)=>{
+                        this.props.actions.chagenValue(index, data[0][formControl.column])
+                    })
+                else
+                    alert('please try agian')
+            });
+            $('#windowForm').modal({'backdrop': false}, 'show');
+
+
     }
     showModal(){
+        if(this.props.permission.c !== true)
+           return false;
         $('#windowForm').modal({'backdrop': false}, 'show');
     }
     hideModal(){
@@ -227,6 +248,13 @@ class GridContainer extends Component {
     }
     componentDidMount() {
         this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
+    }
+    componentDidUpdate(prevProps) {
+
+        if(prevProps.permission.r == false && this.props.permission.r == true){
+            this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
+        }
+
     }
 
     render() {
@@ -248,7 +276,9 @@ class GridContainer extends Component {
             showInlineForm,
             gridWidth,
             gridHeight,
-            showGird
+            showGird,
+            permission,
+            ifUpdateDisabledCanEditColumns
             } = this.props;
 
 
@@ -279,7 +309,7 @@ class GridContainer extends Component {
             />
             :
             null
-        const gridBody = showGird === true ? listData.length >= 1 ?
+        const gridBody = permission.r === true ? showGird === true ? listData.length >= 1 ?
             <Body
                 gridId={gridId}
                 bodyData={listData}
@@ -297,6 +327,8 @@ class GridContainer extends Component {
                 inlineChangeValues={this.ChangeValues.bind(this)}
                 callWindowEdit={this.callWindowEdit.bind(this)}
                 saveInlineForm={this.saveForm.bind(this)}
+                permission={permission}
+                ifUpdateDisabledCanEditColumns={ifUpdateDisabledCanEditColumns}
 
             />
             :
@@ -308,6 +340,10 @@ class GridContainer extends Component {
                 <img src="/shared/table-properties/img/loader.gif" alt="Loading"/>
                 <br/>
                 Ачааллаж байна
+            </div>
+            :
+            <div className="tp-laoder">
+                <h5>Уучлаарай таньд хандах эрх байхгүй байна !!!</h5>
             </div>
 
         return (
@@ -323,6 +359,7 @@ class GridContainer extends Component {
                         handlerReload={this.callPageDatas.bind(this, this.props.currentPage, this.props.pageLimit, this.props.searchValue)}
                         exportPDF={this.exportPDF.bind(this)}
                         exportEXCEL={this.exportEXCEL.bind(this)}
+                        permission={permission}
                 />
 
                 {topPagination}
@@ -355,6 +392,8 @@ GridContainer.defaultProps = {
     searchValue: '',
     listData:[],
     formControls:[],
+    permission:{c:false, r:false, u:false, d:false},
+    ifUpdateDisabledCanEditColumns:[]
 
 }
 GridContainer.propTypes = {
@@ -374,6 +413,8 @@ function mapStateToProps(state) {
         showGird: TpStore.get('showGird'),
         focusIndex: TpStore.get('focusIndex'),
         formControls: TpStore.get('setup').toJS().form_input_control,
+        permission: TpStore.get('setup').toJS().permission,
+        ifUpdateDisabledCanEditColumns: TpStore.get('setup').toJS().ifUpdateDisabledCanEditColumns,
         paginationPosition: TpStore.get('setup').toJS().pagination_position,
         formType: TpStore.get('setup').toJS().formType,
         //listData: TpStore.getIn(['listData', 'data']),

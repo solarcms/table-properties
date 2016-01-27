@@ -14,7 +14,7 @@ export default class Window extends Component {
 
     }
     render() {
-        const { pageName, formControls, formData, changeHandler, saveForm, hideModal, id, show } = this.props;
+        const { pageName, formControls, formData, changeHandler, saveForm, hideModal, id, show, permission, ifUpdateDisabledCanEditColumns } = this.props;
 
         const deleteButton = this.props.showDelete == true ? <button type="button" className="btn btn-fw btn-danger p-h-lg" onClick={this.props.delete}>
                                                         <i className="material-icons">&#xE872;</i>
@@ -29,8 +29,10 @@ export default class Window extends Component {
                         <Modal.Title>{pageName}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <div className="row">
+                        <div className="row solar-form">
                             <Form gridId={id} formControls={formControls} formData={formData} ref="fromRefs" focusIndex="0"
+                                  permission={permission}
+                                  ifUpdateDisabledCanEditColumns={ifUpdateDisabledCanEditColumns}
                                   changeHandler={changeHandler}
                             />
                         </div>

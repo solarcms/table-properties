@@ -36,10 +36,10 @@
     min-width: 35px;
   }
   th:last-child{
-    border-right: 1px solid #000 ;
+
   }
   td:last-child{
-    border-right: 1px solid #000 ;
+
   }
 
   td, th{
@@ -97,10 +97,10 @@
   display: inline-block;
   vertical-align: top;
   th:first-child{
-    border-left: 1px solid #000 ;
+
   }
   td:first-child{
-    border-left: 1px solid #000 ;
+
   }
   th{
     text-align: center;
@@ -121,6 +121,7 @@
 
 .table_header{
   top: 0;
+  display: none;
   table{background: #fff}
   background: #fff;
   width: 100%;

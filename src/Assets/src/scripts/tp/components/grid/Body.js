@@ -8,10 +8,12 @@ import {fixRowHeigth} from './fixed/HeaderColumn'
 export default class Body extends Component {
 
 
-    resizeHandler(){
+    resizeHandler() {
 
         setTimeout(
-            () => { fixRowHeigth(this.props.gridId) },
+            () => {
+                fixRowHeigth(this.props.gridId)
+            },
             100
         );
 
@@ -24,12 +26,14 @@ export default class Body extends Component {
     }
 
     handleDeleteItem(id) {
-
-        if (!confirm('Delete this record?')) {
-            return;
+        if(this.props.permission.d == true){
+            if (!confirm('Delete this record?')) {
+                return;
+            }
+            else
+                this.props.handleDeleteItem(id)
         }
-        else
-            this.props.handleDeleteItem(id)
+
 
 
     }
@@ -48,18 +52,17 @@ export default class Body extends Component {
         const {gridId } = this.props
 
         $(".virtual_scroll").scroll(function () {
-            $("#"+gridId+"-wrapper")
+            $("#" + gridId + "-wrapper")
                 .scrollLeft($(".virtual_scroll").scrollLeft());
-            $("#"+gridId+"-wrapper0")
+            $("#" + gridId + "-wrapper0")
                 .scrollLeft($(".virtual_scroll").scrollLeft());
         });
 
-        document.querySelector("#"+gridId+"-header").parentElement.addEventListener("scroll", function () {
-            document.querySelector("#"+gridId+"-header").style.transform = "translateY(" + this.scrollTop + "px)";
+        document.querySelector("#" + gridId + "-header").parentElement.addEventListener("scroll", function () {
+            document.querySelector("#" + gridId + "-header").style.transform = "translateY(" + this.scrollTop + "px)";
         });
 
         fixRowHeigth(this.props.gridId)
-
 
 
     }
@@ -67,6 +70,7 @@ export default class Body extends Component {
     componentWillMount() {
         window.addEventListener('resize', this.resizeHandler.bind(this));
     }
+
     componentWillUnmount() {
         window.removeEventListener('resize', this.resizeHandler);
     }
@@ -80,18 +84,34 @@ export default class Body extends Component {
         fixRowHeigth(this.props.gridId)
     }
 
-    selectRow(row){
+    selectRow(row) {
         this.props.selectRow(row)
     }
 
 
     render() {
-        const { bodyData, bodyHeader, formType, editID, formData, formControls, focusIndex,
-            handleDeleteItem, saveInlineForm, showInlineForm, removeInlineForm, gridId} = this.props;
+        const {
+            bodyData,
+            bodyHeader,
+            formType,
+            editID,
+            formData,
+            formControls,
+            focusIndex,
+            handleDeleteItem,
+            saveInlineForm,
+            showInlineForm,
+            removeInlineForm,
+            gridId,
+            permission,
+            ifUpdateDisabledCanEditColumns
+            } = this.props;
+
+
 
         let comboGridSelection = false;
 
-        if (gridId.indexOf("combo-grid-") !=-1) {
+        if (gridId.indexOf("combo-grid-") != -1) {
             comboGridSelection = true;
         }
 
@@ -147,12 +167,12 @@ export default class Body extends Component {
 
 
             })
-            const rowClickAction =  comboGridSelection === true ? this.selectRow.bind(this, data) : this.setRowEdit.bind(this, data.id, 0)
+            const rowClickAction = comboGridSelection === true ? this.selectRow.bind(this, data) : this.setRowEdit.bind(this, data.id, 0)
             return <tr key={data.id}>
 
-                    <td onClick={rowClickAction}>
-                        {index + 1}
-                    </td>
+                <td onClick={rowClickAction}>
+                    {index + 1}
+                </td>
 
                 {fixedColumns}
             </tr>
@@ -165,46 +185,58 @@ export default class Body extends Component {
                     {formType == 'inline' ?
                         editID == data.id ?
                             <span>
-                    <a className="btn btn-sm btn-success"
-                       onClick={this.saveInlineForm.bind(this, data.id)}>
-                        <i className="material-icons">&#xE2C3;</i>
-                    </a>
+                                {permission.u == true || ifUpdateDisabledCanEditColumns.length >=1 ?
+                                <a className="btn btn-sm btn-success"
+                                   onClick={this.saveInlineForm.bind(this, data.id)}>
+                                    <i className="material-icons">&#xE2C3;</i>
+                                </a> : null }
                                 &nbsp;
+                                {permission.d == true ?
                                 <a className="btn btn-sm btn-danger" onClick={this.setRowEdit.bind(this, 0, 0)}>
                                     <i className="material-icons">&#xE5CD;</i>
                                 </a>
+                                    : null}
                     </span>
 
                             :
                             <span>
-                    <a className="btn btn-sm" onClick={this.setRowEdit.bind(this, data.id, 0)}>
-                        <i className="material-icons">&#xE254;</i>
-                    </a>
+                                {permission.u == true || ifUpdateDisabledCanEditColumns.length >=1 ?
+                                <a className="btn btn-sm" onClick={this.setRowEdit.bind(this, data.id, 0)}>
+                                    <i className="material-icons">&#xE254;</i>
+                                </a> : null }
                                 &nbsp;
+                                {permission.d == true ?
                                 <a className="btn btn-sm" onClick={this.handleDeleteItem.bind(this, data.id)}>
                                     <i className="material-icons">&#xE872;</i>
                                 </a>
+                                    : null }
                     </span>
                         : formType == 'window' ?
                         <span>
-                    <a className="btn btn-sm" href="javascript:void(0)"
-                       onClick={this.callWindowEdit.bind(this, data.id)}>
-                        <i className="material-icons">&#xE254;</i>
-                    </a>
+                           {permission.u == true || ifUpdateDisabledCanEditColumns.length >=1 ?
+                            <a className="btn btn-sm" href="javascript:void(0)"
+                               onClick={this.callWindowEdit.bind(this, data.id)}>
+                                <i className="material-icons">&#xE254;</i>
+                            </a> : null }
                             &nbsp;
+                            {permission.d == true ?
                             <a className="btn btn-sm" onClick={this.handleDeleteItem.bind(this, data.id)}>
                                 <i className="material-icons">&#xE872;</i>
                             </a>
+                                : null }
                     </span>
                         :
                         <span>
-                    <a className="btn btn-sm" href={`#edit/${data.id}`}>
-                        <i className="material-icons">&#xE254;</i>
-                    </a>
-                            &nbsp;
-                            <a className="btn btn-sm" onClick={this.handleDeleteItem.bind(this, data.id)}>
-                                <i className="material-icons">&#xE872;</i>
-                            </a>
+                            {permission.u == true || ifUpdateDisabledCanEditColumns.length >=1 ?
+                            <a className="btn btn-sm" href={`#edit/${data.id}`}>
+                                <i className="material-icons">&#xE254;</i>
+                            </a> : null } &nbsp;
+                            {permission.d == true ?
+                                <a className="btn btn-sm" onClick={this.handleDeleteItem.bind(this, data.id)}>
+
+                                    <i className="material-icons">&#xE872;</i>
+
+                                </a> : null }
                     </span>}
                 </td>
             </tr>
@@ -226,7 +258,7 @@ export default class Body extends Component {
                     if (grid.fixed && grid.fixed === true) {
 
                     } else {
-                        const rowClickAction =  comboGridSelection === true ? this.selectRow.bind(this, data) : this.setRowEdit.bind(this, data.id, columnIndex)
+                        const rowClickAction = comboGridSelection === true ? this.selectRow.bind(this, data) : this.setRowEdit.bind(this, data.id, columnIndex)
                         return <td key={columnIndex} onClick={rowClickAction}>
                             {formType == 'inline' && editID == data.id ?
                                 <Form formControls={cellformControl}
@@ -269,7 +301,7 @@ export default class Body extends Component {
                 if (grid.fixed && grid.fixed === true) {
 
 
-                    return <td key={columnIndex} >
+                    return <td key={columnIndex}>
 
                         <Form formControls={cellformControl}
                               formData={formData}
@@ -307,8 +339,8 @@ export default class Body extends Component {
 
                 } else {
 
-                    if(formControls[columnIndex])
-                    return <td key={columnIndex} >
+                    if (formControls[columnIndex])
+                        return <td key={columnIndex}>
 
                             <Form formControls={cellformControl}
                                   formData={formData}
@@ -322,7 +354,7 @@ export default class Body extends Component {
                             />
 
 
-                    </td>
+                        </td>
                 }
 
 
@@ -349,7 +381,8 @@ export default class Body extends Component {
             <div id="gridBody">
 
                 <div id={`${gridId}-header`} className="table_header">
-                    <table id={`${gridId}-left0`} className="table table-striped table-bordered table-hover tp-table-left0">
+                    <table id={`${gridId}-left0`}
+                           className="table table-striped table-bordered table-hover tp-table-left0">
                         <thead>
                         <tr>
                         </tr>
@@ -357,7 +390,8 @@ export default class Body extends Component {
 
                     </table>
                     <div id={`${gridId}-wrapper0`} className="tp-table-wrapper0">
-                        <table id={`${gridId}0`} className="table table-striped table-bordered table-hover tp-table0" width="100%">
+                        <table id={`${gridId}0`} className="table table-striped table-bordered table-hover tp-table0"
+                               width="100%">
                             <thead>
                             <tr className="solar-grid-header">
 
@@ -367,7 +401,8 @@ export default class Body extends Component {
 
                         </table>
                     </div>
-                    <table id={`${gridId}-rigth0`} className="table table-striped table-bordered table-hover tp-table-rigth0">
+                    <table id={`${gridId}-rigth0`}
+                           className="table table-striped table-bordered table-hover tp-table-rigth0">
                         <thead>
                         <tr>
                             <th className="solar-grid-actions"><i className="material-icons">&#xE5D3;</i></th>
@@ -384,13 +419,14 @@ export default class Body extends Component {
                     </tr>
                     </thead>
                     <tbody>
-                    { showInlineForm === true ? inlineAddFormLeft : null}
+                    { showInlineForm === true && this.props.permission.c === true ? inlineAddFormLeft : null}
                     { gridFixedLeft }
 
                     </tbody>
                 </table>
                 <div id={`${gridId}-wrapper`} className="tp-table-wrapper">
-                    <table id={`${gridId}`} className="table table-striped table-bordered table-hover tp-table" width="100%">
+                    <table id={`${gridId}`} className="table table-striped table-bordered table-hover tp-table"
+                           width="100%">
                         <thead>
                         <tr className="solar-grid-header">
 
@@ -399,7 +435,7 @@ export default class Body extends Component {
                         </tr>
                         </thead>
                         <tbody>
-                        { showInlineForm === true ? inlineAddForm : null}
+                        { showInlineForm === true && this.props.permission.c === true ? inlineAddForm : null}
                         { gridData }
 
                         </tbody>
@@ -412,7 +448,7 @@ export default class Body extends Component {
                     </tr>
                     </thead>
                     <tbody>
-                    { showInlineForm === true ? inlineAddFormRight : null}
+                    { showInlineForm === true && this.props.permission.c === true ? inlineAddFormRight : null}
                     { gridFixedRight }
 
                     </tbody>

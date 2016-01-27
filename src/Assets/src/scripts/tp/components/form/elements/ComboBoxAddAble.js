@@ -7,7 +7,7 @@ export default class ComboBoxAddAble extends Component {
         //this.props.openComboboxAdableForm(column)
     }
     render() {
-        const { fieldClass, formData, column, fieldOptions, value, changeHandler, errorText, formType, placeholder, name } = this.props;
+        const { fieldClass, formData, column, fieldOptions, value, changeHandler, errorText, formType, placeholder, name, disabled } = this.props;
 
         let options = [];
         if(formData[column])
@@ -36,6 +36,7 @@ export default class ComboBoxAddAble extends Component {
                 {formData[column] ?
 
                     <Select
+                        disabled={disabled}
                         name={name}
                         value={value}
                         options={options}
@@ -44,7 +45,7 @@ export default class ComboBoxAddAble extends Component {
                     :
                     null}
 
-                <button className="btn btn-success" onClick={this.openComboxFrom.bind(this,column)}>
+                <button className="btn btn-success" onClick={this.openComboxFrom.bind(this,column)} disabled={disabled}>
                     <i className="material-icons">&#xE145;</i>
                 </button>
 

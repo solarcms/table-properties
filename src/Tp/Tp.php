@@ -3,6 +3,7 @@
 namespace Solarcms\Core\TableProperties\Tp;
 use Solarcms\TableProperties\TableProperties;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Response;
 use Request;
 use Illuminate\Routing\ResponseFactory as Resp;
 
@@ -16,6 +17,8 @@ class Tp
 
     public $page_name ='';
     public $permission = ['c'=>true, 'r'=>true, 'u'=>true, 'd'=>true]; // Create, Read, Update, Delete CRUD default is all true
+    public $ifUpdateDisabledCanEditColumns = []; //['acitve', 'name']
+    public $ifUpdateDisabledCanEditColumnsByValue = [];  //[['acitve'=>1]]
 
 
     public $exclude_field = array();        // don't allow users to update or insert into these fields, even if data is posted. place the field name in the key of the array. example: $lm->exclude_field['is_admin'] = '';
@@ -87,6 +90,9 @@ class Tp
 
     public function gridList(){
 
+        if($this->permission['r'] != true)
+            return Response::json('permission denied', 400);
+
         $pageLimit = Request::input('pageLimit');
         $searchValue = Request::input('searchValue');
 
@@ -124,6 +130,9 @@ class Tp
     }
 
     public function get_form_datas(){
+        if($this->permission['r'] != true && $this->permission['c'] === false)
+            return Response::json('permission denied', 400);
+
 
         $FormData = [];
 
@@ -142,7 +151,7 @@ class Tp
                 //->take($this->pageLimit)->get()
 
             }
-            if($formControl['type'] == '--combobox' || $formControl['type'] == '--tag'){
+            if($formControl['type'] == '--combobox' || $formControl['type'] == '--tag' || $formControl['type'] == '--combobox-addable'){
 
                 $options = $formControl['options'];
                 $order = explode(" ", $options['grid_default_order_by']);
@@ -239,14 +248,17 @@ class Tp
 
     }
 
-
     public function edit(){
+
+        if(empty($this->ifUpdateDisabledCanEditColumns))
+            if($this->permission['u'] != true)
+                return Response::json('permission denied', 400);
+
         $id = Request::input('id');
 
         /// saijruulah
 
         $table_datas = DB::table($this->table)->where($this->table.".id", '=', $id);
-
         $table_datas->select($this->grid_columns);
 
 
@@ -259,23 +271,22 @@ class Tp
 
                 $options = $formControl['options'];
 
-
-
                 $table_datas->leftjoin($options['table'], "$this->table." . $formControl['column'], '=', $options['table']. "." .$options['valueField']);
+
 
             }
         }
-
-
-
-
 
         return  $table_datas->get();
 
     }
 
-
     public function insert(){
+
+        if($this->permission['c'] != true)
+            return Response::json('permission denied', 400);
+
+
         $formData = Request::input('data');
 
         if(count($this->form_input_control) <= 0){
@@ -314,6 +325,11 @@ class Tp
 
 
     public function update(){
+        if(empty($this->ifUpdateDisabledCanEditColumns))
+            if($this->permission['u'] != true)
+                return Response::json('permission denied', 400);
+
+
         $formData = Request::input('data');
         $id = Request::input('id');
 
@@ -323,17 +339,44 @@ class Tp
 
         $insertQuery = [];
         foreach($this->form_input_control as $formControl){
-            if($formControl['type']=='--checkbox'){
-                $checkBoxValue = $formData[$formControl['column']];
-                if($checkBoxValue == 1)
-                    $checkBoxValue = 1;
-                else
-                    $checkBoxValue = 0;
-                $insertQuery[$formControl['column']] = $checkBoxValue;
+            if($this->permission['u'] != true){
+                if(count($this->ifUpdateDisabledCanEditColumns) >= 1){
 
-            } else
-                $insertQuery[$formControl['column']] = $formData[$formControl['column']];
+                    foreach($this->ifUpdateDisabledCanEditColumns as $ifUpdateDisabledCanEditColumn){
+
+                        if($ifUpdateDisabledCanEditColumn == $formControl['column']){
+
+                            if($formControl['type']=='--checkbox'){
+                                $checkBoxValue = $formData[$formControl['column']];
+                                if($checkBoxValue == 1)
+                                    $checkBoxValue = 1;
+                                else
+                                    $checkBoxValue = 0;
+                                $insertQuery[$formControl['column']] = $checkBoxValue;
+
+                            } else
+                                $insertQuery[$formControl['column']] = $formData[$formControl['column']];
+                        }
+
+                    }
+                }
+
+            } else {
+                if($formControl['type']=='--checkbox'){
+                    $checkBoxValue = $formData[$formControl['column']];
+                    if($checkBoxValue == 1)
+                        $checkBoxValue = 1;
+                    else
+                        $checkBoxValue = 0;
+                    $insertQuery[$formControl['column']] = $checkBoxValue;
+
+                } else
+                    $insertQuery[$formControl['column']] = $formData[$formControl['column']];
+            }
+
         }
+
+
 
         $saved = DB::table($this->table)->where('id', '=', $id)->update($insertQuery);
 
@@ -356,14 +399,18 @@ class Tp
 
 
     public function delete(){
+        if($this->permission['d'] != true)
+            return Response::json('permission denied', 400);
+
         $id = Request::input('id');
 
         $deleted = DB::table($this->table)->where('id', '=', $id)->delete();
 
-        if($deleted)
+        if ($deleted)
             return 'success';
         else
             return 'error';
+
     }
 
     public function index($viewName){
@@ -409,6 +456,8 @@ class Tp
             'formType'=>$this->formType,
             'pageLimit'=>$this->pageLimit,
             'subItems'=>$subItems,
+            'permission'=>$this->permission,
+            'ifUpdateDisabledCanEditColumns'=>$this->ifUpdateDisabledCanEditColumns
         ];
 
     }
@@ -632,31 +681,34 @@ class Tp
         return $response;
     }
     public function deleteComboGrid(){
-        $id = Request::input('id');
+        if($this->permission['d'] == true){
+            $id = Request::input('id');
 
-        $column = Request::input('column');
+            $column = Request::input('column');
 
-        $options = null;
-        foreach($this->form_input_control as $formControl){
-            if($formControl['type'] == '--combogrid' && $formControl['column'] == $column){
+            $options = null;
+            foreach($this->form_input_control as $formControl){
+                if($formControl['type'] == '--combogrid' && $formControl['column'] == $column){
 
-                $options = $formControl['options'];
+                    $options = $formControl['options'];
 
 
 
+
+
+                }
 
 
             }
 
+            $deleted = DB::table($options['table'])->where('id', '=', $id)->delete();
 
+            if($deleted)
+                return 'success';
+            else
+                return 'error';
         }
 
-        $deleted = DB::table($options['table'])->where('id', '=', $id)->delete();
-
-        if($deleted)
-            return 'success';
-        else
-            return 'error';
     }
 
 

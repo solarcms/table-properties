@@ -133,7 +133,7 @@ class ComboBoxAddAbleContainer extends Component {
 
     render() {
 
-        const { modals, fieldClass, formData, column, fieldOptions, value, changeHandler, errorText, formType, placeholder, name, formControls, showAddModal, comboBoxs } = this.props;
+        const {disabled, modals, fieldClass, formData, column, fieldOptions, value, changeHandler, errorText, formType, placeholder, name, formControls, showAddModal, comboBoxs } = this.props;
 
         let options = [];
         if(formData[column])
@@ -173,6 +173,8 @@ class ComboBoxAddAbleContainer extends Component {
                                formData={formData}
                                pageName={placeholder}
                                show={shwoModal}
+                               permission={{c:true, r:true, u:true, d:false}}
+                               ifUpdateDisabledCanEditColumns={[]}
                                changeHandler={this.changeValues.bind(this, comboBox.column, index)}
                                saveForm={this.saveForm.bind(this, comboBox.column, index)}
                                hideModal={this.hideModal.bind(this, comboBox.column, index)}
@@ -194,15 +196,17 @@ class ComboBoxAddAbleContainer extends Component {
                 {formData[column] ?
 
                     <Select className="addable-combo"
+                            disabled={disabled}
                         name={name}
                         value={value}
                         options={options}
                         onChange={changeHandler}
+                            placeholder={`Сонгох`}
                     />
                     :
                     null}
 
-                <button className="btn btn-primary add-btn combo-add-btn" onClick={this.showModal.bind(this,column)}>
+                <button className="btn btn-primary add-btn combo-add-btn" onClick={this.showModal.bind(this,column)} disabled={disabled}>
                     <i className="material-icons">&#xE145;</i>
                 </button>
 

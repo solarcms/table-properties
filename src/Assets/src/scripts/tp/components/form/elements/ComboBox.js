@@ -5,7 +5,7 @@ export default class ComboBox extends Component {
 
 
     render() {
-        const { fieldClass, formData, column, fieldOptions, value, changeHandler, errorText, formType, placeholder, name } = this.props;
+        const { fieldClass, formData, column, fieldOptions, value, changeHandler, errorText, formType, placeholder, name, disabled } = this.props;
 
         let options = [];
         if(formData[column])
@@ -34,10 +34,12 @@ export default class ComboBox extends Component {
                 {formData[column] ?
 
                     <Select
+                        disabled={disabled}
                         name={name}
                         value={value}
                         options={options}
                         onChange={changeHandler}
+                        placeholder={`Сонгох`}
                     />
                     :
                     null}
