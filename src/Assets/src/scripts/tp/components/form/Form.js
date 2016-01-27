@@ -306,6 +306,7 @@ export default class Form extends Component {
                         name={`${gridId}-solar-input${index}`}
                         fieldClass={fieldClass}
                         placeholder={field.title}
+                        pageName={field.options.page_name}
                         formType={formType}
                         formData={formData}
                         value={mainValue}

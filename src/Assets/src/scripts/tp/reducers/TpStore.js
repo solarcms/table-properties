@@ -78,7 +78,14 @@ export default createReducer(initialState, {
         //    return value
         //});
 
-        state = state.setIn(['setup', 'form_input_control', index, 'value'], value);
+        const type = state.getIn(['setup', 'form_input_control', index, 'type']);
+        const deFValue = state.getIn(['setup', 'form_input_control', index, 'value']);
+
+        if(type == '--hidden'){
+            state = state.setIn(['setup', 'form_input_control', index, 'value'], deFValue);
+        } else {
+            state = state.setIn(['setup', 'form_input_control', index, 'value'], value);
+        }
 
 
         return state;
@@ -126,10 +133,17 @@ export default createReducer(initialState, {
         state = state.updateIn(['setup', 'form_input_control'], (formControl) =>{
                 return formControl.map((input) => {
                     const type = input.get('type')
-                    if(type == '--checkbox')
-                        return (input.set('value', false))
-                    else
-                        return (input.set('value', null))
+                    const value = input.get('value')
+                    if(type == '--hidden'){
+                        return (input.set('value', value))
+                    } else {
+                        if(type == '--checkbox')
+                            return (input.set('value', false))
+                        else
+                            return (input.set('value', null))
+
+                    }
+
                 })
 
         })

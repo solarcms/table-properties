@@ -19,6 +19,8 @@ class Tp
     public $permission = ['c'=>true, 'r'=>true, 'u'=>true, 'd'=>true]; // Create, Read, Update, Delete CRUD default is all true
     public $ifUpdateDisabledCanEditColumns = []; //['acitve', 'name']
     public $ifUpdateDisabledCanEditColumnsByValue = [];  //[['acitve'=>1]]
+    public $read_condition = [];  //[['active'=>0], ['user_id'=>21]]
+    public $search_columns = [];
 
 
     public $exclude_field = array();        // don't allow users to update or insert into these fields, even if data is posted. place the field name in the key of the array. example: $lm->exclude_field['is_admin'] = '';
@@ -53,12 +55,24 @@ class Tp
     //translation
     public $translate = false;
 
+    //TRIGGER
+    public $save_from_parent = []; // parent columns :"id", "active", "name", child columns:'id', 'parent_id', 'parent_name'(NULL ABLE)  #['child_column'=>'parent_name', 'parent_column'=>'name']
+    public $save_sub_items_count = []; // parent columns :"id", "active", "name" "total_childs", child columns:'id', 'parent_id',  #['child_connect_column'=>'parent_id', 'parent_column'=>'total_childs']
+
 
     function __construct(){
 
     }
 
     public function run($action){
+
+
+        if(count($this->read_condition) >= 1 && count($this->ifUpdateDisabledCanEditColumnsByValue))
+        foreach($this->read_condition as $read_condition){
+            if (in_array($read_condition, $this->ifUpdateDisabledCanEditColumnsByValue)) {
+                $this->permission['u'] = true;
+            }
+        }
 
         // purpose: built-in controller
         switch($action){
@@ -114,7 +128,7 @@ class Tp
 
         if($searchValue != '') {
             $loop = 0;
-            foreach($this->grid_columns as $sw){
+            foreach($this->search_columns as $sw){
                 if($loop == 0)
                     $table_datas->where($sw, 'LIKE', "%$searchValue%");
                 else
@@ -122,6 +136,18 @@ class Tp
                 $loop++;
             }
         }
+
+        // read condition
+        if(count($this->read_condition) >= 1){
+            foreach($this->read_condition as $read_condition){
+
+                foreach($read_condition as $column=>$value){
+
+                        $table_datas->where($column, '=', $value);
+                }
+            }
+        }
+
         if($this->grid_default_order_by != ''){
             $order = explode(" ",$this->grid_default_order_by);
             $table_datas->orderBy($order[0], $order[1]);
@@ -311,6 +337,19 @@ class Tp
             $insertQuery[$formControl['column']] = $formData[$formControl['column']];
         }
 
+        if(!empty($this->save_sub_items_count)){
+            $posted_sub_items = Request::input('subItems');
+
+            foreach($posted_sub_items as $posted_sub_item){
+                if($posted_sub_item['connect_column'] == $this->save_sub_items_count['child_connect_column']){
+                    $subitmesCount = count($posted_sub_item['items']);
+
+                    $insertQuery[$this->save_sub_items_count['parent_column']] = $subitmesCount;
+                }
+            }
+
+        }
+
         $saved = DB::table($this->table)->insert($insertQuery);
 
         $insertedId = DB::getPdo()->lastInsertId();
@@ -380,6 +419,18 @@ class Tp
 
         }
 
+        if(!empty($this->save_sub_items_count)){
+            $posted_sub_items = Request::input('subItems');
+
+            foreach($posted_sub_items as $posted_sub_item){
+                if($posted_sub_item['connect_column'] == $this->save_sub_items_count['child_connect_column']){
+                    $subitmesCount = count($posted_sub_item['items']);
+
+                    $insertQuery[$this->save_sub_items_count['parent_column']] = $subitmesCount;
+                }
+            }
+
+        }
 
 
         $saved = DB::table($this->table)->where('id', '=', $id)->update($insertQuery);
@@ -873,6 +924,13 @@ class Tp
 
                                 } else
                                     $insertQuery[$formControl['column']] = $formData[$formControl['column']];
+                            }
+
+                            if(!empty($this->save_from_parent)){
+
+                                $will_save_parent_value = DB::table($this->table)->select($this->save_from_parent['parent_column'])->where('id', '=', $parentId)->pluck($this->save_from_parent['parent_column']);
+
+                                $insertQuery[$this->save_from_parent['child_column']] = $will_save_parent_value;
                             }
 
                             if($item['id']==null)

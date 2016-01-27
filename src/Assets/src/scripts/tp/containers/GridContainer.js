@@ -392,7 +392,7 @@ GridContainer.defaultProps = {
     searchValue: '',
     listData:[],
     formControls:[],
-    permission:{c:false, r:false, u:false, d:false},
+    permission:{c:false, r:true, u:false, d:false},
     ifUpdateDisabledCanEditColumns:[]
 
 }

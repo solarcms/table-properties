@@ -133,7 +133,7 @@ class ComboBoxAddAbleContainer extends Component {
 
     render() {
 
-        const {disabled, modals, fieldClass, formData, column, fieldOptions, value, changeHandler, errorText, formType, placeholder, name, formControls, showAddModal, comboBoxs } = this.props;
+        const {disabled, modals, fieldClass, formData, column, fieldOptions, value, changeHandler, errorText, formType, placeholder, pageName, name, formControls, showAddModal, comboBoxs } = this.props;
 
         let options = [];
         if(formData[column])
@@ -160,25 +160,30 @@ class ComboBoxAddAbleContainer extends Component {
         windowForm = comboBoxs.map((comboBox, index) => {
 
 
-                let shwoModal = false;
 
-                modals.map((modal) => {
-                    if(modal.name == "combo-"+comboBox.column)
-                        shwoModal = modal.show;
-                })
 
-                return <Window key={index}
-                               id={comboBox.column}
-                               formControls={comboBox.form_input_control}
-                               formData={formData}
-                               pageName={placeholder}
-                               show={shwoModal}
-                               permission={{c:true, r:true, u:true, d:false}}
-                               ifUpdateDisabledCanEditColumns={[]}
-                               changeHandler={this.changeValues.bind(this, comboBox.column, index)}
-                               saveForm={this.saveForm.bind(this, comboBox.column, index)}
-                               hideModal={this.hideModal.bind(this, comboBox.column, index)}
-                />
+                if(comboBox.column == column){
+                    let shwoModal = false;
+
+                    modals.map((modal) => {
+                        if(modal.name == "combo-"+comboBox.column)
+                            shwoModal = modal.show;
+                    })
+                    return <Window key={index}
+                                   id={comboBox.column}
+                                   formControls={comboBox.form_input_control}
+                                   formData={formData}
+                                   pageName={pageName}
+                                   show={shwoModal}
+                                   permission={{c:true, r:true, u:true, d:false}}
+                                   ifUpdateDisabledCanEditColumns={[]}
+                                   changeHandler={this.changeValues.bind(this, comboBox.column, index)}
+                                   saveForm={this.saveForm.bind(this, comboBox.column, index)}
+                                   hideModal={this.hideModal.bind(this, comboBox.column, index)}
+                    />
+                }
+
+
 
 
 
