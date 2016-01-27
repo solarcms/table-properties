@@ -28,7 +28,7 @@ export default class ComboBox extends Component {
         })
 
         return (
-            <div className={`form-group ${fieldClass}  col-md-6`}>
+            <div className={`form-group ${fieldClass}  col-md-12`}>
                 {formType == 'inline' ? '' : <label className="control-label">{placeholder}</label>}
 
                 {formData[column] ?

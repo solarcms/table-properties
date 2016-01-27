@@ -45,7 +45,7 @@ class AddEditContainer extends Component {
 
     updateForm() {
         if (this.props.ifUpdateDisabledCanEditColumns.length <= 0)
-            if (this.props.permission.u == true)
+            if (this.props.permission.u !== true)
                 return false;
 
 

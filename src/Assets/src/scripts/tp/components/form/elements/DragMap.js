@@ -53,7 +53,7 @@ export default class DragMap extends Component {
         </section>
         return (
 
-            <div  className={`form-group ${fieldClass}  col-md-6`}>
+            <div  className={`form-group ${fieldClass}  col-md-12`}>
                 <label className="control-label">{placeholder}</label>
                 <div>
                     {myMap}

@@ -65,7 +65,7 @@ export default class Input extends Component {
 
         return (
 
-                <div  className={`form-group ${fieldClass} col-md-6`}>
+                <div  className={`form-group ${fieldClass} col-md-12`}>
                     <label className="control-label">{placeholder}</label>
                     {input}
                     <span className="help-block">
