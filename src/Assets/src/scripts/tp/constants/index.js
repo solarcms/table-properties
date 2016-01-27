@@ -6,6 +6,7 @@ export const SET_LIST = 'SET_LIST';
 export const SET_CURENT_PAGE = 'SET_CURENT_PAGE';
 export const SET_PAGE_LIMIT = 'SET_PAGE_LIMIT';
 export const SET_SEARCH = 'SET_SEARCH';
+export const SET_SHOW_GRID = 'SET_SHOW_GRID';
 
 // add edit form
 export const SET_SHOW_ADD_EDIT_FORM = 'SET_SHOW_ADD_EDIT_FORM';

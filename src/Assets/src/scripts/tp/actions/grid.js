@@ -55,6 +55,14 @@ export function setShowAddEditForm(value) {
     }
 }
 
+export function setShowGrid(value) {
+
+    return {
+        type: types.SET_SHOW_GRID,
+        value: value
+    }
+}
+
 export function setError(index, error) {
     return {
         type: types.SET_ERROR,

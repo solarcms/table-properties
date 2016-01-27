@@ -203,7 +203,7 @@ class AddEditContainer extends Component {
                 Ачааллаж байна
             </div>
         const edit_parent_id = this.props.params.id ? this.props.params.id : false
-        const formSubItmes = subItems.length >= 1 ? <SubItemsContainer formData={formData} subItems={subItems} edit_parent_id={edit_parent_id} /> : null
+        const formSubItmes = subItems.length >= 1 ? <SubItemsContainer formData={formData} subItems={subItems} edit_parent_id={edit_parent_id} showAddEditForm={showAddEditForm} /> : null
 
 
         return (

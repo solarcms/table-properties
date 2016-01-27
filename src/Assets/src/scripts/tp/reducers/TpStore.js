@@ -11,6 +11,7 @@ const initialState = {
     pageLimit:50,
     formData:{},
     showAddEditForm:false,
+    showGird:false,
     editID:0,
     focusIndex:0,
     showInlineForm: false,
@@ -59,6 +60,12 @@ export default createReducer(initialState, {
     [types.SET_SHOW_ADD_EDIT_FORM](state, { value }) {
 
         state = state.set('showAddEditForm', value);
+
+        return state;
+    },
+    [types.SET_SHOW_GRID](state, { value }) {
+
+        state = state.set('showGird', value);
 
         return state;
     },

@@ -1,8 +1,6 @@
 <?php
 
 namespace Solarcms\Core\TableProperties\Tp;
-
-
 use Solarcms\TableProperties\TableProperties;
 use Illuminate\Support\Facades\DB;
 use Request;
@@ -17,9 +15,8 @@ class Tp
     public $identity_name = '';             // required, column name of id primary key
 
     public $page_name ='';
-    public $rename = array();               // associative array of column names and friendly names. example: array('prod_id' => 'Product ID')
+    public $permission = ['c'=>true, 'r'=>true, 'u'=>true, 'd'=>true]; // Create, Read, Update, Delete CRUD default is all true
 
-    public $uri_path = '';                  // to specify URI. Needed for some applications such as in admin WordPress Plugins.
 
     public $exclude_field = array();        // don't allow users to update or insert into these fields, even if data is posted. place the field name in the key of the array. example: $lm->exclude_field['is_admin'] = '';
 
@@ -32,54 +29,17 @@ class Tp
     public $grid_default_order_by = '';     // free-form 'order by' clause. Not used if grid_sql is specified. Example: column1 desc, column2 asc
     public $grid_input_control = [];   // for grid(), define inputs like select boxes, checkboxes, etc... *info on usage below*
     public $grid_output_control = [];  // for grid(). define outputs like --email to make a clickable mailto or --document to make a link. *info on usage below*
-    public $grid_multi_delete = false;      // display checkboxes on grid to allow for multiple record delete
-    public $grid_show_search_box = false;   // display search field at the top - grid_sql must be altered to accomodate search
     public $pageLimit = 50;               // pagination limit number of records per page
-    public $grid_show_images = false;       // option to show images inside the grid, otherwise a link is displayed for --image type
     public $pagination_position = 'bottom'; // both, top, bottom
 
 
 
-
-    // upload paths                             // relative path names only! paths are created at runtime as needed
-    public $upload_path = 'uploads';            // required when using --image or --document input types
-    public $thumb_path = 'thumbs';              // optional, leave blank if you don't need thumbnails
-
-    // image settings
-    public $upload_width = 400;                 // 0 height or width means no resizing or cropping
-    public $upload_height = 400;
-    public $upload_crop = false;                // crop versus resize: resize keeps the original aspect ratio but limits the size of the image
-    public $thumb_width = 100;
-    public $thumb_height = 100;
-    public $thumb_crop = true;
-
-
-    public $date_in = 'Y-m-d';                        // input format into database, no need to change
-    public $datetime_in = 'Y-m-d H:i:s';
-
-    // US date format
-    public $date_out = 'Y-m-d';                       // output date
-    public $datetime_out = 'Y-m-d H:i:s';             // output datetime
-
     public $upload_allow_list = '.mp3 .jpg .jpeg .png .gif .doc .docx .xls .xlsx .txt .pdf'; // space delimted file name extentions. include period
 
-    public $form_text_title_add    = 'Add Record';   // titles in the <th> of top of the edit form
-    public $form_text_title_edit   = 'Edit Record';
-    public $form_text_record_saved = 'Record Saved'; // customize success messages
-    public $form_text_record_added = 'Record Added';
-
-    public $grid_text_record_added = "Record Added";
-    public $grid_text_changes_saved = "Changes Saved";
-    public $grid_text_record_deleted = "Record Deleted";
-    public $grid_text_save_changes = "Save Changes";
-    public $grid_text_delete = "Delete";
-    public $grid_text_no_records_found = "No Records Found";
 
     // time stamp
     public $created_at = false;
     public $updated_at = false;
-
-    //grid
 
     //form types
     public $formType = 'page'; // page, inline, window
@@ -840,36 +800,35 @@ class Tp
 
             foreach($subItems as $subItem_posted){
                 if($subItem_posted['connect_column'] == $subItem['connect_column']){
-                    foreach($subItem_posted['items'] as $item){
-                        $insertQuery = [];
-                        $insertQuery[$subItem['connect_column']] = $parentId;
-                        $table = $subItem['table'];
-                        $formData = $item;
-                        foreach($subItem['form_input_control'] as $formControl){
-                            if($formControl['type']=='--checkbox'){
-                                $checkBoxValue = $formData[$formControl['column']];
-                                if($checkBoxValue == 1)
-                                    $checkBoxValue = 1;
-                                else
-                                    $checkBoxValue = 0;
-                                $insertQuery[$formControl['column']] = $checkBoxValue;
+                    if(isset($subItem_posted['items'])){
+                        foreach($subItem_posted['items'] as $item){
+                            $insertQuery = [];
+                            $insertQuery[$subItem['connect_column']] = $parentId;
+                            $table = $subItem['table'];
+                            $formData = $item;
+                            foreach($subItem['form_input_control'] as $formControl){
+                                if($formControl['type']=='--checkbox'){
+                                    $checkBoxValue = $formData[$formControl['column']];
+                                    if($checkBoxValue == 1)
+                                        $checkBoxValue = 1;
+                                    else
+                                        $checkBoxValue = 0;
+                                    $insertQuery[$formControl['column']] = $checkBoxValue;
 
-                            } else
-                                $insertQuery[$formControl['column']] = $formData[$formControl['column']];
+                                } else
+                                    $insertQuery[$formControl['column']] = $formData[$formControl['column']];
+                            }
+
+                            if($item['id']==null)
+
+                                DB::table($table)->insert($insertQuery);
+                            else
+                                DB::table($table)->where('id', '=', $item['id'])->update($insertQuery);
+
                         }
-
-                        if($item['id']==null)
-
-                            DB::table($table)->insert($insertQuery);
-                        else
-                            DB::table($table)->where('id', '=', $item['id'])->update($insertQuery);
-
                     }
                 }
             }
-
-
-
         }
     }
     public function editSubItems(){

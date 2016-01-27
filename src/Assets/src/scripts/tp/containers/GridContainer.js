@@ -33,11 +33,13 @@ class GridContainer extends Component {
      * Grid main actions starting
      * */
     callPageDatas(page, pageLimit, searchValue) {
+        this.props.actions.setShowGrid(false);
         getList(page, {
             pageLimit: pageLimit,
             searchValue: searchValue
         }).then((data)=> {
             this.props.actions.receiveListData(data);
+            this.props.actions.setShowGrid(true);
         });
     }
     hangePageLimitChange(e) {
@@ -229,9 +231,25 @@ class GridContainer extends Component {
 
     render() {
 
-        const { setup, listData, gridHeader, totalPages, pageLimit, totalItems,
-            currentPage, paginationPosition, formData, editID, formType, formControls,
-            focusIndex, showInlineForm, gridWidth, gridHeight } = this.props;
+        const {
+            setup,
+            listData,
+            gridHeader,
+            totalPages,
+            pageLimit,
+            totalItems,
+            currentPage,
+            paginationPosition,
+            formData,
+            editID,
+            formType,
+            formControls,
+            focusIndex,
+            showInlineForm,
+            gridWidth,
+            gridHeight,
+            showGird
+            } = this.props;
 
 
 
@@ -261,7 +279,7 @@ class GridContainer extends Component {
             />
             :
             null
-        const gridBody = listData.length >= 1 ?
+        const gridBody = showGird === true ? listData.length >= 1 ?
             <Body
                 gridId={gridId}
                 bodyData={listData}
@@ -281,6 +299,10 @@ class GridContainer extends Component {
                 saveInlineForm={this.saveForm.bind(this)}
 
             />
+            :
+            <div className="tp-laoder">
+               <h5>Мэдээлэл хадаглагдаагүй байна</h5>
+            </div>
             :
             <div className="tp-laoder">
                 <img src="/shared/table-properties/img/loader.gif" alt="Loading"/>
@@ -349,6 +371,7 @@ function mapStateToProps(state) {
         formData: TpStore.get('formData').toJS(),
         editID: TpStore.get('editID'),
         showInlineForm: TpStore.get('showInlineForm'),
+        showGird: TpStore.get('showGird'),
         focusIndex: TpStore.get('focusIndex'),
         formControls: TpStore.get('setup').toJS().form_input_control,
         paginationPosition: TpStore.get('setup').toJS().pagination_position,

@@ -203,10 +203,10 @@ class SubItemsContainer extends Component {
     }
     render() {
 
-        const {subItems, formData, modals} = this.props;
+        const {subItems, formData, modals, showAddEditForm} = this.props;
 
 
-        const Items = subItems.map((subItem, index)=>{
+        const Items = showAddEditForm === true ? subItems.map((subItem, index)=>{
 
             let shwoModal = false;
 
@@ -255,7 +255,7 @@ class SubItemsContainer extends Component {
 
                     </div>
 
-        })
+        }) : null
 
 
         return (
