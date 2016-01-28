@@ -25238,6 +25238,7 @@ webpackJsonp([1],[
 	var _ajaxRequest = __webpack_require__(226);
 
 	function setupPage() {
+
 	    return (0, _ajaxRequest.postResuest)('setup', {});
 	}
 
@@ -25368,9 +25369,12 @@ webpackJsonp([1],[
 
 	var _jquery2 = _interopRequireDefault(_jquery);
 
+	var protcol = window.location.protocol !== 'https:' ? 'http://' : 'https://';
+	var baseUrl = protcol + window.location.hostname + window.location.pathname + '/';
+
 	function postResuest(url, data) {
 	    return _jquery2['default'].ajax({
-	        url: url,
+	        url: baseUrl + url,
 	        type: 'POST',
 	        headers: { 'X-CSRF-TOKEN': (0, _jquery2['default'])('meta[name="csrf-token"]').attr('content') },
 	        data: data
@@ -25379,7 +25383,7 @@ webpackJsonp([1],[
 
 	function getResuest(url) {
 	    return _jquery2['default'].ajax({
-	        url: url,
+	        url: baseUrl + url,
 	        type: 'GET'
 	    });
 	}

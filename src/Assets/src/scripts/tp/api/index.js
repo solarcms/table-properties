@@ -2,6 +2,7 @@ import {postResuest, getResuest} from './ajaxRequest'
 
 
 export function setupPage() {
+
     return postResuest(`setup`, {});
 }
 
