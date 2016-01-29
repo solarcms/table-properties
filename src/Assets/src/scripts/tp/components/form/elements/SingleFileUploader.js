@@ -6,7 +6,7 @@ export default class SingleFileUploader extends Component {
     uploadSuccess(e, responsejson){
 
         if(e.status == 'success')
-            this.props.changeHandler(`${this.props.gridId}-solar-input${this.props.index}`, '{"size":'+e.size+',"originalName":"'+e.name+'","path": "/uploads/'+responsejson+'", "thumbPath":"/uploads/thumbs/'+responsejson+'"}');
+            this.props.changeHandler(this.props.name, '{"size":'+e.size+',"originalName":"'+e.name+'","path": "/uploads/'+responsejson+'", "thumbPath":"/uploads/thumbs/'+responsejson+'"}');
         else
             alert('error please try again')
     }
@@ -109,7 +109,7 @@ export default class SingleFileUploader extends Component {
 
         return (
 
-            <div  className={`form-group ${fieldClass}`}>
+            <div  className={`form-group ${fieldClass} col-md-12`}>
                 <label className="control-label">{placeholder}</label>
                 <div>
                     {disabled == true ? null :

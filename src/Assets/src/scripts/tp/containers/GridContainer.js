@@ -7,7 +7,7 @@ import * as DataActions from "../actions/grid"
 import { bindActionCreators } from "redux"
 import { connect } from "react-redux"
 
-import { getList, setupPage, deleteItem, save, update, edit } from "../api/"
+import { getList, setupPage, deleteItem, save, update, edit, changeLanguage } from "../api/"
 import Header from "../components/grid/Header"
 import Body from "../components/grid/Body"
 import Pagination from "../components/grid/Paginator"
@@ -29,6 +29,13 @@ class GridContainer extends Component {
         return false;
     }
     //export
+    //translation
+    changeLanguage(id){
+        changeLanguage(id).then(()=>{
+            this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
+        })
+
+    }
     /*
      * Grid main actions starting
      * */
@@ -261,6 +268,7 @@ class GridContainer extends Component {
 
         const {
             setup,
+            locales,
             listData,
             gridHeader,
             totalPages,
@@ -349,6 +357,8 @@ class GridContainer extends Component {
         return (
             <div >
                 <Header pageName={setup.page_name} icon="fa fa-plus"
+                        locales={locales}
+                        changeLanguage={this.changeLanguage.bind(this)}
                         link="#/add"
                         type="list"
                         formType={formType}
@@ -392,6 +402,7 @@ GridContainer.defaultProps = {
     searchValue: '',
     listData:[],
     formControls:[],
+    locales:[],
     permission:{c:false, r:true, u:false, d:false},
     ifUpdateDisabledCanEditColumns:[]
 
@@ -407,6 +418,7 @@ function mapStateToProps(state) {
 
     return {
         setup: TpStore.get('setup').toJS(),
+        locales: TpStore.get('setup').toJS().locales,
         formData: TpStore.get('formData').toJS(),
         editID: TpStore.get('editID'),
         showInlineForm: TpStore.get('showInlineForm'),

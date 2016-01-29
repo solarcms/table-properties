@@ -2,6 +2,11 @@ import React, { Component, PropTypes }  from 'react';
 
 export default class Header extends Component {
 
+    changeLanguage(id){
+        this.props.changeLanguage(id)
+    }
+
+
     render() {
         let addButton = "";
         if(this.props.permission.c == true){
@@ -56,7 +61,14 @@ export default class Header extends Component {
                     </a>
                     <div className="dropdown-menu dropdown-menu-scale pull-right text-color"
                          role="menu">
-                        <a className="dropdown-item" href="">Тохиргоо</a>
+                        <a className="dropdown-item" href="javascript:void(0)">Тохиргоо</a>
+
+                        {this.props.locales.map((locale)=>
+                            <a className="dropdown-item" href="javascript:void(0)" key={locale.code} onClick={this.changeLanguage.bind(this, locale.id)}>
+                                <i className="material-icons">&#xE894;</i> {locale.code}
+                            </a>
+                        )}
+
                     </div>
                 </li>
             </ul>

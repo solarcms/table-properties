@@ -5,7 +5,7 @@ import * as DataActions from '../actions/grid'
 import Header from '../components/grid/Header'
 import Form from "../components/form/Form"
 import validation from "../components/form/validation/"
-import {save, edit, update} from "../api/"
+import {save, edit, update, editTranslation} from "../api/"
 import Window from "../components/window/"
 import SubItemsContainer from "./formContainers/SubItemsContainer"
 
@@ -28,12 +28,25 @@ class AddEditContainer extends Component {
             }
 
         })
+        this.props.translateFormControls.map((locale, locale_index) => {
+
+            locale.translate_form_input_control.map((fromColumn, index) => {
+                const error = (validation(fromColumn.value, fromColumn.validate));
+                if (error) {
+                    this.props.actions.setTranslationError(locale_index, index, error);
+                    foundError = true;
+                }
+
+            })
+
+        })
 
         if (foundError === false)
-            save(FD, this.props.subItems).done((data)=> {
+            save(FD, this.props.translateFormControls, this.props.subItems).done((data)=> {
 
                 if (data == 'success') {
                     this.props.actions.clearFromValidation();
+                    this.props.actions.clearTranslationFromValidation();
                     window.location.replace('#/');
                 }
 
@@ -61,12 +74,25 @@ class AddEditContainer extends Component {
             }
 
         })
+        this.props.translateFormControls.map((locale, locale_index) => {
+
+            locale.translate_form_input_control.map((fromColumn, index) => {
+                const error = (validation(fromColumn.value, fromColumn.validate));
+                if (error) {
+                    this.props.actions.setTranslationError(locale_index, index, error);
+                    foundError = true;
+                }
+
+            })
+
+        })
 
         if (foundError === false)
-            update(FD, this.props.params.id, this.props.subItems).done((data)=> {
+            update(FD, this.props.translateFormControls, this.props.params.id, this.props.subItems).done((data)=> {
 
                 if (data == 'success' || 'none') {
                     this.props.actions.clearFromValidation();
+                    this.props.actions.clearTranslationFromValidation();
                     window.location.replace('#/');
                 }
 
@@ -78,6 +104,62 @@ class AddEditContainer extends Component {
     }
 
     // form field value recieve functions
+    translateChangeHandler(e, type, cvalue, text, column) {
+
+
+
+        if (type && type === 'manual') {
+
+            let name_el = text.split("__locale__");
+            const locale_index = name_el[0]
+
+            const index = name_el[1].replace("grid_table-solar-input", "");
+            const value = cvalue;
+
+
+            const FD = this.props.translateFormControls[locale_index].translate_form_input_control;
+
+
+            this.props.actions.changeTranslationValue(locale_index, index, value)
+
+
+            // check validation with on change
+            const error = (validation(value, FD[index].validate));
+
+            this.props.actions.setTranslationError(locale_index, index, error);
+
+
+        }
+
+        else {
+            let name_el = e.target.name.split("__locale__");
+            const locale_index = name_el[0]
+
+            const index = name_el[1].replace("grid_table-solar-input", "");
+            const value = e.target.value;
+
+
+            const FD = this.props.translateFormControls[locale_index].translate_form_input_control;
+
+
+
+            e.target.type == 'checkbox' ?
+                e.target.checked ?
+                    this.props.actions.changeTranslationValue(locale_index,index, value)
+                    :
+                    this.props.actions.changeTranslationValue(locale_index, index, 0)
+                :
+                this.props.actions.changeTranslationValue(locale_index, index, value)
+
+
+            // check validation with on change
+            const error = (validation(value, FD[index].validate));
+
+            this.props.actions.setTranslationError(locale_index, index, error);
+        }
+
+
+    }
     changeValues(e, type, cvalue, text, column) {
 
 
@@ -178,6 +260,29 @@ class AddEditContainer extends Component {
 
                 this.props.actions.setShowAddEditForm(true)
             });
+
+
+            editTranslation(this.props.params.id).then((data)=>{
+                    if (data.length >= 1)
+                        this.props.translateFormControls.map((translateFormControl, locale_index)=>{
+                            data.map((tdata)=>{
+
+                                if(tdata.locale_id == translateFormControl.locale_id){
+                                    translateFormControl.translate_form_input_control.map((formControl, index)=> {
+
+                                        this.props.actions.changeTranslationValue(locale_index, index, tdata[formControl.column])
+
+                                    })
+
+                                }
+                            })
+
+                        })
+
+            })
+
+
+
         } else {
             if (this.props.permission.c !== true)
                 window.location.replace('#/');
@@ -196,13 +301,15 @@ class AddEditContainer extends Component {
         const {
             setup,
             formControls,
+            translateFormControls,
             formData,
             focusIndex,
             showAddEditForm,
             showAddModal,
             subItems,
             ifUpdateDisabledCanEditColumns,
-            permission
+            permission,
+            locales
             } = this.props;
         const gridId = 'grid_table'
 
@@ -210,15 +317,19 @@ class AddEditContainer extends Component {
 
         const containerForm = showAddEditForm === true
             ?
-            <Form formControls={formControls}
+            <Form
+                  translateFormControls={translateFormControls}
+                  formControls={formControls}
                   formData={formData}
                   ref="fromRefs"
+                  locales={locales}
                   focusIndex={focusIndex}
                   gridId={gridId}
                   ifUpdateDisabledCanEditColumns={ifUpdateDisabledCanEditColumns}
                   permission={permission}
                   addFrom={addFrom}
                   changeHandler={this.changeValues.bind(this)}
+                  translateChangeHandler={this.translateChangeHandler.bind(this)}
 
             />
             :
@@ -239,7 +350,7 @@ class AddEditContainer extends Component {
             <div className="">
                 <Header pageName={setup.page_name} icon="fa fa-chevron-left" link="#/" type="addEdit"/>
                 <div className="p-y-sm">
-                    <div className="row white m-x-sm">
+                    <div className="row  m-x-sm">
                         <div className="form-horizontal solar-form p-a-md">
 
                             <div className="row">
@@ -293,6 +404,8 @@ function mapStateToProps(state) {
 
     return {
         setup: TpStore.get('setup').toJS(),
+        locales: TpStore.get('setup').toJS().locales,
+        translateFormControls: TpStore.get('translateFormControls').toJS(),
         showAddEditForm: TpStore.get('showAddEditForm'),
         focusIndex: TpStore.get('focusIndex'),
         formData: TpStore.get('formData').toJS(),

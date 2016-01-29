@@ -3,6 +3,7 @@
 namespace Solarcms\Core\TableProperties\Tp;
 use Solarcms\TableProperties\TableProperties;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Response;
 use Request;
 use Illuminate\Routing\ResponseFactory as Resp;
@@ -53,7 +54,15 @@ class Tp
     public $subItems = [];
 
     //translation
-    public $translate = false;
+    public $translation_table = "";
+    public $translation_connector = "";
+    public $locales_table = "locales";
+    public $locale_connector = "locale_id"; // same on all translate able tables
+    public $default_locale_id = 1; // EN;
+    public $translate_form_input_control = []; // EN;
+
+
+
 
     //TRIGGER
     public $save_from_parent = []; // parent columns :"id", "active", "name", child columns:'id', 'parent_id', 'parent_name'(NULL ABLE)  #['child_column'=>'parent_name', 'parent_column'=>'name']
@@ -101,6 +110,10 @@ class Tp
             case "edit-sub-items":     return $this->editSubItems();    break;
             case "delete-sub-items":     return $this->deleteSubItems();    break;
 
+            // translation
+            case "change-language":     return $this->changeLangauge();    break;
+            case "edit-translation":     return $this->editTranslation();    break;
+
             default:              return $this->index($this->viewName);
         }
 
@@ -114,14 +127,21 @@ class Tp
         $pageLimit = Request::input('pageLimit');
         $searchValue = Request::input('searchValue');
 
-        $table_datas = DB::table($this->table)->select($this->grid_columns);
+        $table_data = DB::table($this->table)->select($this->grid_columns);
+
+        if($this->translation_table != ""){
+            $default_language_id = Session::get('locale_id');
+            $table_data->join($this->translation_table, "$this->table." . $this->identity_name, '=', $this->translation_table. "." .$this->translation_connector);
+            $table_data->where($this->translation_table.".".$this->locale_connector, "=", $default_language_id);
+        }
+
 
         foreach($this->form_input_control as $formControl){
             if($formControl['type'] == '--combogrid' || $formControl['type'] == '--combobox' || $formControl['type'] == '--tag' || $formControl['type'] == '--combobox-addable' || $formControl['type'] == '--combobox-hidden'){
 
                 $options = $formControl['options'];
 
-                $table_datas->leftjoin($options['table'], "$this->table." . $formControl['column'], '=', $options['table']. "." .$options['valueField']);
+                $table_data->join($options['table'], "$this->table." . $formControl['column'], '=', $options['table']. "." .$options['valueField']);
 
             }
         }
@@ -130,12 +150,13 @@ class Tp
             $loop = 0;
             foreach($this->search_columns as $sw){
                 if($loop == 0)
-                    $table_datas->where($sw, 'LIKE', "%$searchValue%");
+                    $table_data->where($sw, 'LIKE', "%$searchValue%");
                 else
-                    $table_datas->orwhere($sw, 'LIKE', "%$searchValue%");
+                    $table_data->orwhere($sw, 'LIKE', "%$searchValue%");
                 $loop++;
             }
         }
+
 
         // read condition
         if(count($this->read_condition) >= 1){
@@ -143,19 +164,20 @@ class Tp
 
                 foreach($read_condition as $column=>$value){
 
-                        $table_datas->where($column, '=', $value);
+                        $table_data->where($column, '=', $value);
                 }
             }
         }
 
         if($this->grid_default_order_by != ''){
             $order = explode(" ",$this->grid_default_order_by);
-            $table_datas->orderBy($order[0], $order[1]);
+            $table_data->orderBy($order[0], $order[1]);
         }
 
+//        dd($table_data->toSql());
 
 
-        return  $table_datas->paginate($pageLimit);
+        return  $table_data->paginate($pageLimit);
 
     }
 
@@ -288,26 +310,48 @@ class Tp
 
         /// saijruulah
 
-        $table_datas = DB::table($this->table)->where($this->table.".id", '=', $id);
-        $table_datas->select($this->grid_columns);
+        $table_data = DB::table($this->table)->where($this->table.".id", '=', $id);
+        $table_data->select($this->grid_columns);
 
+        if($this->translation_table != ""){
+            $default_language_id = Session::get('locale_id');
+            $table_data->join($this->translation_table, "$this->table." . $this->identity_name, '=', $this->translation_table. "." .$this->translation_connector);
+            $table_data->where($this->translation_table.".".$this->locale_connector, "=", $default_language_id);
+        }
 
         $options = null;
         foreach($this->form_input_control as $formControl){
 
-            $table_datas->addSelect("$this->table." . $formControl['column']);
+            $table_data->addSelect("$this->table." . $formControl['column']);
 
             if($formControl['type'] == '--combogrid' || $formControl['type'] == '--combobox' || $formControl['type'] == '--tag' || $formControl['type'] == '--combobox-addable' || $formControl['type'] == '--combobox-hidden'){
 
                 $options = $formControl['options'];
 
-                $table_datas->leftjoin($options['table'], "$this->table." . $formControl['column'], '=', $options['table']. "." .$options['valueField']);
+                $table_data->join($options['table'], "$this->table." . $formControl['column'], '=', $options['table']. "." .$options['valueField']);
 
 
             }
         }
 
-        return  $table_datas->get();
+        return  $table_data->get();
+
+    }
+
+    public function editTranslation(){
+        if(empty($this->ifUpdateDisabledCanEditColumns))
+            if($this->permission['u'] != true)
+                return Response::json('permission denied', 400);
+
+        if($this->translation_table !== ''){
+            $id = Request::input('id');
+
+            $translation_datas = DB::table($this->translation_table)->where($this->translation_connector, "=", $id)->get();
+
+            return $translation_datas;
+        } else {
+            return [];
+        }
 
     }
 
@@ -318,6 +362,10 @@ class Tp
 
 
         $formData = Request::input('data');
+        $translateData = Request::input('translateData');
+
+
+
 
         if(count($this->form_input_control) <= 0){
             $this->setup();
@@ -354,6 +402,34 @@ class Tp
 
         $insertedId = DB::getPdo()->lastInsertId();
 
+
+        // transltation table save action
+        if(!empty($this->translate_form_input_control)){
+
+            foreach($translateData as $translate){
+                $translationInsertQuery = [];
+                $translationInsertQuery[$this->locale_connector] = $translate['locale_id'];
+                $translationInsertQuery[$this->translation_connector] = $insertedId;
+
+                foreach($this->translate_form_input_control as $translationformControl){
+                    if($translationformControl['type']=='--checkbox'){
+                        $checkBoxValue = $formData[$translationformControl['column']];
+                        if($checkBoxValue == 1)
+                            $checkBoxValue = 1;
+                        else
+                            $checkBoxValue = 0;
+                        $translationInsertQuery[$translationformControl['column']] = $checkBoxValue;
+
+                    } else
+                        $translationInsertQuery[$translationformControl['column']] = $translate['data'][$translationformControl['column']];
+                }
+
+                DB::table($this->translation_table)->insert($translationInsertQuery);
+            }
+
+
+        }
+
         if(count($this->subItems) >= 1)
             $this->saveSubItems($insertedId, $this->subItems, Request::input('subItems'));
 
@@ -375,6 +451,7 @@ class Tp
 
         $formData = Request::input('data');
         $id = Request::input('id');
+        $translateData = Request::input('translateData');
 
         if(count($this->form_input_control) <= 0){
             $this->setup();
@@ -435,6 +512,36 @@ class Tp
 
         $saved = DB::table($this->table)->where('id', '=', $id)->update($insertQuery);
 
+        // transltation table update action
+        if(!empty($this->translate_form_input_control)){
+
+            foreach($translateData as $translate){
+                $translationInsertQuery = [];
+                //$translationInsertQuery[$this->locale_connector] = $translate['locale_id'];
+                //$translationInsertQuery[$this->translation_connector] = $insertedId;
+
+                foreach($this->translate_form_input_control as $translationformControl){
+                    if($translationformControl['type']=='--checkbox'){
+                        $checkBoxValue = $formData[$translationformControl['column']];
+                        if($checkBoxValue == 1)
+                            $checkBoxValue = 1;
+                        else
+                            $checkBoxValue = 0;
+                        $translationInsertQuery[$translationformControl['column']] = $checkBoxValue;
+
+                    } else
+                        $translationInsertQuery[$translationformControl['column']] = $translate['data'][$translationformControl['column']];
+                }
+
+                DB::table($this->translation_table)
+                    ->where("$this->translation_connector", "=", $id)
+                    ->where("$this->locale_connector", "=", $translate['locale_id'])
+                    ->update($translationInsertQuery);
+            }
+
+
+        }
+
         if(count($this->subItems) >= 1)
             $this->saveSubItems($id, $this->subItems, Request::input('subItems'));
 
@@ -479,7 +586,7 @@ class Tp
     public function setup(){
         $columns = [];
 
-        $table_info_columns = DB::select( DB::raw("SHOW COLUMNS FROM $this->table"));
+        //$table_info_columns = DB::select( DB::raw("SHOW COLUMNS FROM $this->table"));
 
         // this will skip identity_name and created_at, updated_at columns
 //        foreach($table_info_columns as $column_pre){
@@ -503,8 +610,22 @@ class Tp
             $subItem['items']=[];
             $subItems[] = $subItem;
         }
+        if($this->translation_table !== ''){
+            if (Session::has('locale_id')) {
+
+            } else {
+                Session::set('locale_id', $this->default_locale_id);
+            }
+
+            $locales = DB::table($this->locales_table)->select('id', 'code')->orderBy('id', 'ASC')->get();
+        }
+
+        else
+            $locales = [];
         return [
+            'locales'=>$locales,
             'form_input_control'=>$this->form_input_control,
+            'translate_form_input_control'=>$this->translate_form_input_control,
             'grid_output_control'=>$this->grid_output_control,
             'page_name'=>$this->page_name,
             'pagination_position'=>$this->pagination_position,
@@ -601,15 +722,15 @@ class Tp
 
                 $options = $formControl['options'];
                 $order = explode(" ", $options['grid_default_order_by']);
-                $table_datas = DB::table($options['table'])->select($options['grid_columns'])->orderBy($order[0], $order[1]);
+                $table_data = DB::table($options['table'])->select($options['grid_columns'])->orderBy($order[0], $order[1]);
 
                 if($searchValue != '') {
                     $loop = 0;
                     foreach($options['grid_columns'] as $sw){
                         if($loop == 0)
-                            $table_datas->where($sw, 'LIKE', "%$searchValue%");
+                            $table_data->where($sw, 'LIKE', "%$searchValue%");
                         else
-                            $table_datas->orwhere($sw, 'LIKE', "%$searchValue%");
+                            $table_data->orwhere($sw, 'LIKE', "%$searchValue%");
                         $loop++;
                     }
                 }
@@ -618,7 +739,7 @@ class Tp
             }
         }
 
-        return  $table_datas->paginate(20);
+        return  $table_data->paginate(20);
 
     }
     public function editComboGrid(){
@@ -637,11 +758,11 @@ class Tp
             }
         }
 
-        $table_datas = DB::table($options['table'])->where('id', '=', $id)->select($options['grid_columns'])->get();
+        $table_data = DB::table($options['table'])->where('id', '=', $id)->select($options['grid_columns'])->get();
 
 
 
-        return  $table_datas;
+        return  $table_data;
 
     }
     public function insertComboGrid(){
@@ -853,7 +974,7 @@ class Tp
         $column = Request::input('column');
 
         $table = '';
-        $table_datas = null;
+        $table_data = null;
 
         foreach($this->form_input_control as $formControl){
             if($formControl['type']=='--combobox-addable' && $formControl['column']==$column){
@@ -862,14 +983,14 @@ class Tp
                 $grid_columns = $formControl['options']['grid_columns'];
                 $order = explode(" ", $formControl['options']['grid_default_order_by']);
 
-                $table_datas['data'] = DB::table($table)->select($grid_columns)->orderBy($order[0], $order[1])->get();
+                $table_data['data'] = DB::table($table)->select($grid_columns)->orderBy($order[0], $order[1])->get();
 
 
             }
 
         }
 
-        if(count($this->subItems) >= 1 && $table_datas == null){
+        if(count($this->subItems) >= 1 && $table_data == null){
             foreach($this->subItems as $subItem){
 
                 foreach($subItem['form_input_control'] as $SformControl) {
@@ -884,7 +1005,7 @@ class Tp
                         $grid_columns = $SformControl['options']['grid_columns'];
                         $order = explode(" ", $SformControl['options']['grid_default_order_by']);
 
-                        $table_datas['data'] = DB::table($table)->select($grid_columns)->orderBy($order[0], $order[1])->get();
+                        $table_data['data'] = DB::table($table)->select($grid_columns)->orderBy($order[0], $order[1])->get();
 
 
 
@@ -894,7 +1015,7 @@ class Tp
             }
         }
 
-        return  $table_datas;
+        return  $table_data;
 
 
 
@@ -986,4 +1107,15 @@ class Tp
 
     }
 
+    /*translation*/
+    public function changeLangauge(){
+        $locale_id = Request::input('locale_id');
+
+        if (Session::has('locale_id')) {
+            Session::set('locale_id', $locale_id);
+        } else {
+            Session::set('locale_id', $this->default_locale_id);
+        }
+
+    }
 }

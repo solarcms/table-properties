@@ -18,7 +18,8 @@ const initialState = {
     comboGrid:{
         currentPage:1,
     },
-    comboBoxAddAble: {}
+    comboBoxAddAble: {},
+    translateFormControls:[]
 };
 
 export default createReducer(initialState, {
@@ -29,6 +30,25 @@ export default createReducer(initialState, {
         state = state.set('setup', data);
 
         state = state.set('pageLimit', setupData.pageLimit);
+
+        const translate_form_input_control = setupData.translate_form_input_control;
+        const locales = setupData.locales;
+
+        const translateFormControls = [];
+        locales.map((locale)=>{
+
+            translateFormControls.push(
+                {
+                    locale_id: locale.id,
+                    locale_code: locale.code,
+                    translate_form_input_control: translate_form_input_control
+                }
+            )
+
+        });
+        const translateFormControls_im = Immutable.fromJS(translateFormControls);
+
+        state = state.set('translateFormControls', translateFormControls_im);
 
         return state;
     },
@@ -69,6 +89,13 @@ export default createReducer(initialState, {
 
         return state;
     },
+    [types.SET_ERROR](state, { index, error }) {
+
+        // const indexOfColumn = state.getIn(['setup', 'form_input_control']).findIndex(form => form.get('column') === column);
+        state = state.setIn(['setup', 'form_input_control', index, 'error'], error);
+
+        return state;
+    },
     [types.CHANGE_VALUE](state, { index, value }) {
 
         //find index example
@@ -90,14 +117,37 @@ export default createReducer(initialState, {
 
         return state;
     },
+    [types.CLEAR_FORM_VALIDATION](state, {}) {
 
-    [types.SET_ERROR](state, { index, error }) {
+        state = state.updateIn(['setup', 'form_input_control'], (formControl) =>{
+            return formControl.map((input) => {
+                return (input.set('error', null));
+            })
 
-       // const indexOfColumn = state.getIn(['setup', 'form_input_control']).findIndex(form => form.get('column') === column);
-       state = state.setIn(['setup', 'form_input_control', index, 'error'], error);
+        })
 
-       return state;
+
+        state = state.updateIn(['setup', 'form_input_control'], (formControl) =>{
+            return formControl.map((input) => {
+                const type = input.get('type')
+                const value = input.get('value')
+                if(type == '--hidden'){
+                    return (input.set('value', value))
+                } else {
+                    if(type == '--checkbox')
+                        return (input.set('value', false))
+                    else
+                        return (input.set('value', null))
+
+                }
+
+            })
+
+        })
+        return state;
     },
+
+
     [types.SET_EDIT_ROW](state, { editID, focusIndex }) {
 
        state = state.set('editID', editID);
@@ -120,35 +170,7 @@ export default createReducer(initialState, {
 
        return state;
     },
-    [types.CLEAR_FORM_VALIDATION](state, {}) {
 
-        state = state.updateIn(['setup', 'form_input_control'], (formControl) =>{
-                return formControl.map((input) => {
-                    return (input.set('error', null));
-                })
-
-        })
-
-
-        state = state.updateIn(['setup', 'form_input_control'], (formControl) =>{
-                return formControl.map((input) => {
-                    const type = input.get('type')
-                    const value = input.get('value')
-                    if(type == '--hidden'){
-                        return (input.set('value', value))
-                    } else {
-                        if(type == '--checkbox')
-                            return (input.set('value', false))
-                        else
-                            return (input.set('value', null))
-
-                    }
-
-                })
-
-        })
-        return state;
-    },
 
 
     /*
@@ -225,5 +247,71 @@ export default createReducer(initialState, {
 
 
         return state;
-    }
+    },
+    ////////// tanslation
+
+    [types.CHANGE_TRANSLATION_VALUE](state, { locale_index, index, value }) {
+
+
+
+        const type = state.getIn(['translateFormControls', locale_index,  'translate_form_input_control', index, 'type']);
+        const deFValue = state.getIn(['translateFormControls', locale_index, 'translate_form_input_control', index, 'value']);
+
+        if(type == '--hidden'){
+            state = state.setIn(['translateFormControls', locale_index, 'translate_form_input_control', index, 'value'], deFValue);
+        } else {
+            state = state.setIn(['translateFormControls', locale_index, 'translate_form_input_control', index, 'value'], value);
+        }
+
+
+        return state;
+    },
+    [types.SET_TRANSLATION_ERROR](state, { locale_index, index, error }) {
+
+        state = state.setIn(['translateFormControls', locale_index, 'translate_form_input_control', index, 'error'], error);
+
+        return state;
+    },
+    [types.CLEAR_TRANSLATION_FORM_VALIDATION](state, {}) {
+
+        state = state.updateIn(['translateFormControls'], (translateFormControls) =>{
+
+            return translateFormControls.map((translateFormControl) => {
+                return translateFormControl.updateIn(['translate_form_input_control'], (translate_form_input_control)=>{
+                    return translate_form_input_control.map((input) => {
+                        return (input.set('error', null));
+                    })
+                })
+            })
+        })
+
+
+        state = state.updateIn(['translateFormControls'], (translateFormControls) =>{
+
+            return translateFormControls.map((translateFormControl) => {
+                return translateFormControl.updateIn(['translate_form_input_control'], (translate_form_input_control)=>{
+                    return translate_form_input_control.map((input) => {
+                        const type = input.get('type')
+                        const value = input.get('value')
+                        if(type == '--hidden'){
+                            return (input.set('value', value))
+                        } else {
+                            if(type == '--checkbox')
+                                return (input.set('value', false))
+                            else
+                                return (input.set('value', null))
+
+                        }
+                    })
+                })
+            })
+        })
+
+
+
+
+
+        return state;
+    },
+
 });

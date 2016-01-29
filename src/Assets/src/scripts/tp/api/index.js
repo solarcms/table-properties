@@ -5,7 +5,10 @@ export function setupPage() {
 
     return postResuest(`setup`, {});
 }
+export function changeLanguage(locale_id) {
 
+    return postResuest(`change-language`, {locale_id: locale_id});
+}
 
 export function deleteItem(id) {
     return postResuest(`delete`, {id: id});
@@ -22,13 +25,33 @@ export function getFormData() {
     return postResuest(`get_form_datas`, {});
 }
 
-export function save(formData, subItems) {
+export function save(formData, translateFormControls, subItems) {
 
     let data = {};
     formData.map((fData) => {
         data[fData.column] = fData.value;
 
     })
+
+
+
+    let translateData = [];
+    translateFormControls.map((translateFormControl) => {
+        let data = {};
+        translateFormControl.translate_form_input_control.map((ftData) => {
+            data[ftData.column] = ftData.value;
+
+        })
+        let FTData = {
+            locale_id: translateFormControl.locale_id,
+            data: data
+        }
+
+        translateData.push(FTData);
+
+    })
+
+    /////////
     let realSubItems = [];
     if(subItems.length >=1){
         for (var i = 0; i < subItems.length; ++i) {
@@ -51,7 +74,7 @@ export function save(formData, subItems) {
         }
     }
 
-    return postResuest(`insert`, {data: data, subItems: realSubItems});
+    return postResuest(`insert`, {data: data, translateData: translateData, subItems: realSubItems});
 }
 export function saveComboGrid(column, formData) {
 
@@ -69,18 +92,40 @@ export function edit(id) {
 
     return postResuest(`edit`, {id: id});
 }
+export function editTranslation(id) {
+
+    return postResuest(`edit-translation`, {id: id});
+}
 export function editComboGrid(column, id) {
 
     return postResuest(`edit-combo-grid`, {column: column, id: id});
 }
 
-export function update(formData, id, subItems) {
+export function update(formData, translateFormControls, id, subItems) {
 
     let data = {};
     formData.map((fData) => {
         data[fData.column] = fData.value;
 
     })
+
+    let translateData = [];
+    translateFormControls.map((translateFormControl) => {
+        let data = {};
+        translateFormControl.translate_form_input_control.map((ftData) => {
+            data[ftData.column] = ftData.value;
+
+        })
+        let FTData = {
+            locale_id: translateFormControl.locale_id,
+            data: data
+        }
+
+        translateData.push(FTData);
+
+    })
+
+    /////////
 
     let realSubItems = [];
     if(subItems.length >=1){
@@ -104,7 +149,7 @@ export function update(formData, id, subItems) {
         }
     }
 
-    return postResuest(`update`, {id: id, data: data, subItems: realSubItems});
+    return postResuest(`update`, {id: id, translateData: translateData, data: data, subItems: realSubItems});
 }
 export function updateComboGrid(column, formData, id) {
 

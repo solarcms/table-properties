@@ -47,6 +47,30 @@ export function chagenValue(index, value) {
     }
 }
 
+export function changeTranslationValue(locale_index, index, value) {
+
+    return {
+        type: types.CHANGE_TRANSLATION_VALUE,
+        locale_index: locale_index,
+        index: index,
+        value: value
+    }
+}
+export function setTranslationError(locale_index, index, error) {
+
+    return {
+        type: types.SET_TRANSLATION_ERROR,
+        locale_index: locale_index,
+        index: index,
+        error: error
+    }
+}
+export function clearTranslationFromValidation() {
+    return {
+        type: types.CLEAR_TRANSLATION_FORM_VALIDATION
+    }
+}
+
 export function setShowAddEditForm(value) {
 
     return {
@@ -54,6 +78,7 @@ export function setShowAddEditForm(value) {
         value: value
     }
 }
+
 
 export function setShowGrid(value) {
 

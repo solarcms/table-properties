@@ -4,7 +4,7 @@
   height: -webkit-calc(100vh - 2px);
   height: calc(100vh - 2px);
   position: relative;
-  background: #fff;
+  background: transparent;
   margin: 0;
   padding: 0;
   width: 100%;
@@ -100,3 +100,7 @@
   border-radius: 0;
 }
 
+.none-translate-form{
+  background: #fff;
+  padding: 5px 0;
+}

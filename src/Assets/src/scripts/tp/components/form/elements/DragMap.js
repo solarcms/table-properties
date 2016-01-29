@@ -7,7 +7,7 @@ export default class DragMap extends Component {
     dragEndHandler(e){
        let position = '{"lat":'+e.latLng.lat()+',"lng":'+e.latLng.lng()+'}';
 
-        this.props.changeHandler(`${this.props.gridId}-solar-input${this.props.index}`, position);
+        this.props.changeHandler(this.props.name, position);
 
     }
 

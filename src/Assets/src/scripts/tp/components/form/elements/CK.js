@@ -13,7 +13,7 @@ export default class CK extends Component {
 
         CKEDITOR.instances['ckeditor-' + this.props.index].on('change', function () {
 
-            self.props.changeHandler(`${self.props.gridId}-solar-input${self.props.index}`, CKEDITOR.instances['ckeditor-' + self.props.index].getData());
+            self.props.changeHandler(self.props.name, CKEDITOR.instances['ckeditor-' + self.props.index].getData());
 
         });
     }
@@ -37,7 +37,7 @@ export default class CK extends Component {
                 <textarea
                     id={`ckeditor-${index}`}
                     className="form-control ckeditor"
-                    name={`${gridId}-solar-input${index}`}
+                    name={this.props.name}
                     value={mainValue}
                     onChange={changeHandler}
                     disabled={disabled}
