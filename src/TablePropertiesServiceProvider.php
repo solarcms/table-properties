@@ -22,8 +22,8 @@ class TablePropertiesServiceProvider extends ServiceProvider
 
         // For publishing configuration file
         $this->publishes([
-            __DIR__ . '/Config/tableproperties.php' => config_path('solar_tableproperties.php'),
-        ], 'tableproperties_config');
+            __DIR__ . '/Config/tableproperties.php' => config_path('tp_config.php'),
+        ], 'tpconfig');
 
         // For publishing assets
         $this->publishes([

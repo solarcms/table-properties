@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'test' => 'test'
+    'tp_debug' => true
 ];

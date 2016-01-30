@@ -11,8 +11,9 @@ export default class SingleFileUploader extends Component {
             alert('error please try again')
     }
 
-    removeImage(e){
-
+    removeImage(e, dropzone){
+        console.log(dropzone);
+        console.log(e);
 
     }
     initCallback(dropzone){
@@ -39,6 +40,11 @@ export default class SingleFileUploader extends Component {
 
             myDropzone.emit("complete", mockFile);
 
+            // If you use the maxFiles option, make sure you adjust it to the
+            // correct amount:
+
+            let existingFileCount = 1; // The number of files already uploaded
+            myDropzone.options.maxFiles = myDropzone.options.maxFiles - existingFileCount;
 
 
 
@@ -48,7 +54,6 @@ export default class SingleFileUploader extends Component {
     }
     render() {
         const { mainValue, fieldClass, placeholder, errorText, disabled } = this.props;
-
 
 
         const componentConfig = {
