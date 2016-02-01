@@ -6,7 +6,7 @@ export default class SingleFileUploader extends Component {
     uploadSuccess(e, responsejson){
 
         if(e.status == 'success')
-            this.props.changeHandler(this.props.name, '{"size":'+e.size+',"originalName":"'+e.name+'","path": "/uploads/'+responsejson+'", "thumbPath":"/uploads/thumbs/'+responsejson+'"}');
+            this.props.changeHandler('{"size":'+e.size+',"originalName":"'+e.name+'","path": "/uploads/'+responsejson+'", "thumbPath":"/uploads/thumbs/'+responsejson+'"}');
         else
             alert('error please try again')
     }

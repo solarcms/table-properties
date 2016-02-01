@@ -10,30 +10,36 @@ export default class ComboBoxAddAble extends Component {
         const { fieldClass, formData, column, fieldOptions, value, changeHandler, errorText, formType, placeholder, name, disabled } = this.props;
 
         let options = [];
-        if(formData[column])
-        formData[column].data.data.map((data, sindex)=>{
-                if (fieldOptions.textField instanceof Array) {
+
+
+        if(formData.get(column))
+
+            formData.getIn([column, 'data', 'data']).map((data, sindex)=>{
+
+                if (fieldOptions.get('textField') instanceof Object) {
+
                     let arrayLabel = "";
-                    for (var i = 0; i < fieldOptions.textField.length; ++i) {
+
+                    for (var i = 0; i < fieldOptions.get('textField').size; ++i) {
                         if(i == 0)
-                            arrayLabel = data[fieldOptions.textField[i]]
+                            arrayLabel = data.get(fieldOptions.getIn(['textField', i]))
                         else
-                            arrayLabel = arrayLabel +", "+ data[fieldOptions.textField[i]]
+                            arrayLabel = arrayLabel +", "+ data.get(fieldOptions.getIn(['textField', i]))
                     }
 
-                    options.push({value: data[fieldOptions.valueField], label: arrayLabel})
+                    options.push({value: data.get(fieldOptions.get('valueField')), label: arrayLabel})
                 }
                 else {
-                    options.push({value: data[fieldOptions.valueField], label: data[fieldOptions.textField]})
-                }
 
-        })
+                    options.push({value: data.get(fieldOptions.get('valueField')), label: data.get(fieldOptions.get('textField'))})
+                }
+            })
 
         return (
             <div className={`form-group ${fieldClass}`}>
                 {formType == 'inline' ? '' : <label className="control-label">{placeholder}</label>}
 
-                {formData[column] ?
+                {formData.get(column) ?
 
                     <Select
                         disabled={disabled}

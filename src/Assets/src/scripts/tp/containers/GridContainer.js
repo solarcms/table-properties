@@ -354,6 +354,16 @@ class GridContainer extends Component {
                 <h5>Уучлаарай таньд хандах эрх байхгүй байна !!!</h5>
             </div>
 
+        /*
+         <Window
+         formControls={formControls}
+         formData={formData}
+         pageName={setup.page_name}
+         changeHandler={this.ChangeValues.bind(this)}
+         saveForm={this.saveForm.bind(this, editID)}
+         hideModal={this.hideModal.bind(this)}
+         />*/
+
         return (
             <div >
                 <Header pageName={setup.page_name} icon="fa fa-plus"
@@ -379,14 +389,7 @@ class GridContainer extends Component {
                 {BottomPagination}
 
 
-                <Window
-                    formControls={formControls}
-                    formData={formData}
-                    pageName={setup.page_name}
-                    changeHandler={this.ChangeValues.bind(this)}
-                    saveForm={this.saveForm.bind(this, editID)}
-                    hideModal={this.hideModal.bind(this)}
-                />
+
             </div>
 
         )

@@ -37,155 +37,197 @@ export default class Form extends Component {
             this.props.changeHandler(null, 'manual', value, name)
     }
 
-    dateTimeChange(name, value) {
+    dateTimeChange(dIndex, value) {
         value = Moment(value).format("YYYY.MM.DD HH:mm");
-        this.props.changeHandler(null, 'manual', value, name)
+
+       this.manualChangeHandler(dIndex, value);
 
     }
 
-    dateChange(name, value) {
+    dateChange(dIndex, value) {
         value = Moment(value).format("YYYY.MM.DD");
-        this.props.changeHandler(null, 'manual', value, name)
+        this.manualChangeHandler(dIndex, value);
+    }
+    changeHandler(e){
+
+
+        let value  = null;
+        if(e.target.type == 'checkbox'){
+            value = e.target.checked ? e.target.value : null
+        } else {
+            value = e.target.value;
+        }
+
+
+        let dataIndexs  =  e.target.getAttribute('data-index').split('-');
+
+        let dataIndex = [];
+
+        dataIndexs.map((key)=>{
+            dataIndex.push(key*1);
+        });
+
+      this.props.changeHandler(dataIndex, value);
+    }
+    manualChangeHandler(dIndex, value) {
+
+
+        let dataIndexs  =  dIndex.split('-');
+
+        let dataIndex = [];
+
+        dataIndexs.map((key)=>{
+            dataIndex.push(key*1);
+        });
+
+       this.props.changeHandler(dataIndex, value);
+
+        //if(name.indexOf('__locale__') >= 1)
+        //    this.props.translateChangeHandler(null, 'manual', value, name)
+        //else
+        //    this.props.changeHandler(null, 'manual', value, name)
     }
 
-    getFromField(index, title, name, field, thisDisabled, fieldClass, mainValue, changeHandler, formType, formData, gridId, focus){
-        switch (field.type) {
+    getFromField(index,              title, name, field, thisDisabled, fieldClass, mainValue, formType, formData, gridId, focus){
+
+
+        switch (field.get('type')) {
             case "--text":
                 return <Input
                     disabled={thisDisabled}
-                    key={index}
+                    key={index} dataIndex={index}
                     fieldClass={fieldClass}
                     value={mainValue}
                     type="text"
                     autoFocus={focus}
                     placeholder={title}
                     name={name}
-                    changeHandler={changeHandler}
-                    errorText={field.error}
+                    changeHandler={this.changeHandler.bind(this)}
+                    errorText={field.get('error')}
 
                 />
                 break;
             case "--number":
                 return <Input
                     disabled={thisDisabled}
-                    key={index}
+                    key={index} dataIndex={index}
                     fieldClass={fieldClass}
                     value={mainValue}
                     type="number"
                     autoFocus={focus}
                     placeholder={title}
                     name={name}
-                    changeHandler={changeHandler}
-                    errorText={field.error}
+                    changeHandler={this.changeHandler.bind(this)}
+                    errorText={field.get('error')}
 
                 />
                 break;
             case "--money":
                 return <Input
                     disabled={thisDisabled}
-                    key={index}
+                    key={index} dataIndex={index}
                     fieldClass={fieldClass}
                     value={mainValue}
                     type="money"
                     autoFocus={focus}
                     placeholder={title}
                     name={name}
-                    changeHandler={changeHandler}
-                    errorText={field.error}
+                    changeHandler={this.changeHandler.bind(this)}
+                    errorText={field.get('error')}
 
                 />
                 break;
             case "--email":
                 return <Input
                     disabled={thisDisabled}
-                    key={index}
+                    key={index} dataIndex={index}
                     fieldClass={fieldClass}
                     value={mainValue}
                     type="email"
                     autoFocus={focus}
                     placeholder={title}
                     name={name}
-                    changeHandler={changeHandler}
-                    errorText={field.error}
+                    changeHandler={this.changeHandler.bind(this)}
+                    errorText={field.get('error')}
 
                 />
                 break;
             case "--link":
                 return <Input
                     disabled={thisDisabled}
-                    key={index}
+                    key={index} dataIndex={index}
                     fieldClass={fieldClass}
                     value={mainValue}
                     type="text"
                     autoFocus={focus}
                     placeholder={title}
                     name={name}
-                    changeHandler={changeHandler}
-                    errorText={field.error}
+                    changeHandler={this.changeHandler.bind(this)}
+                    errorText={field.get('error')}
 
                 />
                 break;
             case "--textarea":
                 return <Input
                     disabled={thisDisabled}
-                    key={index}
+                    key={index} dataIndex={index}
                     fieldClass={fieldClass}
                     value={mainValue}
                     type="textarea"
                     autoFocus={focus}
                     placeholder={title}
                     name={name}
-                    changeHandler={changeHandler}
-                    errorText={field.error}
+                    changeHandler={this.changeHandler.bind(this)}
+                    errorText={field.get('error')}
 
                 />
                 break;
             case "--ckeditor":
                 return <CK
                     disabled={thisDisabled}
-                    key={index}
+                    key={index} dataIndex={index}
                     placeholder={title}
                     fieldClass={fieldClass}
                     name={name}
                     gridId={gridId}
                     index={index}
                     mainValue={mainValue}
-                    changeHandler={this.manualChange.bind(this)}
-                    errorText={field.error}
+                    changeHandler={this.manualChange.bind(this, `${index}`)}
+                    errorText={field.get('error')}
 
                 />
                 break;
             case "--drag-map":
                 return <DragMap
                     disabled={thisDisabled}
-                    key={index}
+                    key={index} dataIndex={index}
                     placeholder={title}
                     fieldClass={fieldClass}
                     gridId={gridId}
                     index={index}
                     name={name}
                     mainValue={mainValue}
-                    changeHandler={this.manualChange.bind(this)}
-                    errorText={field.error}
+                    changeHandler={this.manualChange.bind(this, `${index}`)}
+                    errorText={field.get('error')}
 
                 />
                 break;
             case "--single-file":
                 return <SingleFileUploader
                     disabled={thisDisabled}
-                    key={index}
+                    key={index} dataIndex={index}
                     fieldClass={fieldClass}
                     gridId={gridId}
                     placeholder={title}
                     index={index}
                     name={name}
                     mainValue={mainValue}
-                    changeHandler={this.manualChange.bind(this)}
-                    errorText={field.error}
+                    changeHandler={this.manualChange.bind(this, `${index}`)}
+                    errorText={field.get('error')}
                 />
                 break;
             case "--date":
-                return <div key={index} className={`form-group ${fieldClass}  col-md-12`}>
+                return <div key={index} dataIndex={index} className={`form-group ${fieldClass}  col-md-12`}>
                     <label className="control-label">{title}</label>
                     <DateTimePicker
                         disabled={thisDisabled}
@@ -194,7 +236,7 @@ export default class Form extends Component {
                         value={mainValue === null ? null : new Date(mainValue)}
                         format={"YYYY.MM.DD"}
                         time={false}
-                        onChange={this.dateChange.bind(this, `${gridId}-solar-input${index}`)}
+                        onChange={this.dateChange.bind(this, `${index}`)}
                         placeholder={title}
                     />
                                 <span className="help-block">
@@ -203,7 +245,7 @@ export default class Form extends Component {
                 </div>
                 break;
             case "--datetime":
-                return <div key={index} className={`form-group ${fieldClass}  col-md-12`}>
+                return <div key={index} dataIndex={index} className={`form-group ${fieldClass}  col-md-12`}>
                     <label>
 
                         {title}
@@ -215,7 +257,7 @@ export default class Form extends Component {
                         value={mainValue === null ? null : new Date(mainValue)}
                         format={"YYYY.MM.DD HH:mm"}
                         placeholder={title}
-                        onChange={this.dateTimeChange.bind(this, `${gridId}-solar-input${index}`)}
+                        onChange={this.dateTimeChange.bind(this, `${index}`)}
                     />
                                 <span className="help-block">
 
@@ -224,18 +266,18 @@ export default class Form extends Component {
                 </div>
                 break;
             case "--combogrid":
-                return <div key={index} className={`form-group ${fieldClass}  col-md-12`}>
+                return <div key={index} dataIndex={index} className={`form-group ${fieldClass}  col-md-12`}>
                     {formType == 'inline' ? '' : <label className="control-label">{title}</label>}
-                    <Combogrid listData={formData[field.column].data.data}
+                    <Combogrid listData={formData[field.get('column')].data.data}
                                disabled={thisDisabled}
-                               gridHeader={field.options.grid_output_control}
-                               valueField={field.options.valueField}
-                               textField={field.options.textField}
-                               formControls={formData[field.column].form_input_control}
-                               text={formData[field.column].text}
-                               column={field.column}
-                               totalPages={formData[field.column].data.last_page}
-                               totalItems={formData[field.column].data.total}
+                               gridHeader={field.getIn(['options', 'grid_output_control'])}
+                               valueField={field.getIn(['options', 'valueField'])}
+                               textField={field.getIn(['options','textField'])}
+                               formControls={formData[field.get('column')].form_input_control}
+                               text={formData[field.get('column')].text}
+                               column={field.get('column')}
+                               totalPages={formData[field.get('column')].data.last_page}
+                               totalItems={formData[field.get('column')].data.total}
                                pageName={title}
                                comboGridSelected={this.comboGridSelected.bind(this)}
                     />
@@ -250,88 +292,56 @@ export default class Form extends Component {
                 return <ComboBox
                     disabled={thisDisabled}
                     key={index}
-                    column={field.column}
+                    column={field.get('column')}
                     name={name}
                     fieldClass={fieldClass}
                     placeholder={title}
                     formType={formType}
                     formData={formData}
                     value={mainValue}
-                    fieldOptions={field.options}
-                    changeHandler={this.manualChange.bind(this, `${gridId}-solar-input${index}`)}
-                    errorText={field.error}
+                    multi={false}
+                    fieldOptions={field.get('options')}
+                    changeHandler={this.manualChangeHandler.bind(this, `${index}`)}
+                    errorText={field.get('error')}
                 />
                 break;
             case "--combobox-addable":
                 return <ComboBoxAddAble
                     disabled={thisDisabled}
-                    key={index}
-                    column={field.column}
+                    key={index} dataIndex={index}
+                    column={field.get('column')}
                     name={name}
                     fieldClass={fieldClass}
                     placeholder={title}
-                    pageName={field.options.page_name}
+                    pageName={field.getIn(['options', 'page_name'])}
                     formType={formType}
                     formData={formData}
                     value={mainValue}
-                    fieldOptions={field.options}
-                    formControls={field.options.form_input_control}
-                    changeHandler={this.manualChange.bind(this, `${gridId}-solar-input${index}`)}
-                    errorText={field.error}
+                    fieldOptions={field.get('options')}
+                    formControls={field.getIn(['options', 'form_input_control'])}
+                    changeHandler={this.manualChangeHandler.bind(this, `${index}`)}
+                    errorText={field.get('error')}
                 />
                 break;
             case "--tag":
-                let options_tag = [];
-                if (formData[field.column])
-                    formData[field.column].data.data.map((data, sindex)=> {
-                        if (field.options.textField instanceof Array) {
-                            let arrayLabel = "";
-                            for (var i = 0; i < field.options.textField.length; ++i) {
-                                if (i == 0)
-                                    arrayLabel = data[field.options.textField[i]]
-                                else
-                                    arrayLabel = arrayLabel + ", " + data[field.options.textField[i]]
-                            }
-
-                            options_tag.push({value: data[field.options.valueField], label: arrayLabel})
-                        }
-                        else {
-                            options_tag.push({
-                                value: data[field.options.valueField],
-                                label: data[field.options.textField]
-                            })
-                        }
-                    })
-
-                return <div key={index} className={`form-group ${fieldClass}  col-md-12`}>
-                    {formType == 'inline' ? '' : <label className="control-label">{title}</label>}
-
-
-                    {formData[field.column] ?
-
-
-                        <Select
-                            disabled={thisDisabled}
-                            name={name}
-                            value={field.value}
-                            options={options_tag}
-                            placeholder={`Сонгох`}
-                            multi={true}
-                            onChange={this.manualChange.bind(this, `${gridId}-solar-input${index}`)}
-                        />
-
-
-                        :
-                        null}
-                    <span className="help-block">
-                            {field.error}
-                    </span>
-
-
-                </div>
+                return <ComboBox
+                    disabled={thisDisabled}
+                    key={index}
+                    column={field.get('column')}
+                    name={name}
+                    fieldClass={fieldClass}
+                    placeholder={title}
+                    formType={formType}
+                    formData={formData}
+                    value={mainValue}
+                    multi={true}
+                    fieldOptions={field.get('options')}
+                    changeHandler={this.manualChangeHandler.bind(this, `${index}`)}
+                    errorText={field.get('error')}
+                />
                 break;
             case "--checkbox":
-                return <div key={index} className={`form-group ${fieldClass} col-md-12`}>
+                return <div key={index}  className={`form-group ${fieldClass} col-md-12`}>
                     <div className="checkbox">
                         {formType == 'inline' ?
                             <input type="checkbox"
@@ -339,8 +349,9 @@ export default class Form extends Component {
                                    name={name}
                                    checked={field.value == 1 ? true: false  }
                                    value={1}
-                                   defaultChecked={mainValue}
-                                   onChange={changeHandler}
+
+                                   data-index={index}
+                                   onChange={this.changeHandler.bind(this)}
                             />
                             :
                             <label>
@@ -349,8 +360,9 @@ export default class Form extends Component {
                                        name={name}
                                        checked={field.value == 1 ? true: false  }
                                        value={1}
-                                       defaultChecked={mainValue}
-                                       onChange={changeHandler}
+
+                                       data-index={index}
+                                       onChange={this.changeHandler.bind(this)}
                                 />
                                 {title}
                             </label>
@@ -364,7 +376,7 @@ export default class Form extends Component {
                 break;
             case "--radio":
 
-                return <div key={index} className={`form-group ${fieldClass} col-md-12`}>
+                return <div key={index} dataIndex={index} className={`form-group ${fieldClass} col-md-12`}>
                     <div className="radio">
 
                         <label>
@@ -381,7 +393,7 @@ export default class Form extends Component {
                                        checked={field.value == choice.value ? true: false  }
 
                                        value={choice.value}
-                                       onChange={changeHandler}
+                                       onChange={this.changeHandler.bind(this)}
                                 />
                                 {choice.text} &nbsp;&nbsp;&nbsp;
                             </label>
@@ -405,7 +417,7 @@ export default class Form extends Component {
             let thisDisabled = true;
             if(this.props.permission.u !== true && addFrom == false){
                 ifUpdateDisabledCanEditColumns.map((ifUpdateDisabledCanEditColumn)=>{
-                    if(field.column == ifUpdateDisabledCanEditColumn)
+                    if(field.get('column') == ifUpdateDisabledCanEditColumn)
                         thisDisabled = false;
                 })
             } else
@@ -458,12 +470,11 @@ export default class Form extends Component {
     render() {
         const { formControls, translateFormControls, changeHandler, formData, formType, formValue, focusIndex, gridIndex, gridId, ifUpdateDisabledCanEditColumns, permission, addFrom  } = this.props;
 
-
-        const formFields = formControls.map((field, index) => {
+        let formFields = formControls.map((field, index) => {
             let thisDisabled = true;
             if(permission.u !== true && addFrom == false){
                 ifUpdateDisabledCanEditColumns.map((ifUpdateDisabledCanEditColumn)=>{
-                    if(field.column == ifUpdateDisabledCanEditColumn)
+                    if(field.get('column') == ifUpdateDisabledCanEditColumn)
                         thisDisabled = false;
                 })
             } else
@@ -471,13 +482,13 @@ export default class Form extends Component {
 
 
             let fieldClass = '';
-            if (field.error)
+            if (field.get('error'))
                 fieldClass = 'has-error'
 
             let mainValue = formValue ?
                 formValue
                 :
-                field.value
+                field.get('value')
 
 
             let focus = false;
@@ -492,14 +503,13 @@ export default class Form extends Component {
                     focus = true;
             }
 
-            const name = `${gridId}-solar-input${index}`;
+            const name = `testt-test${index}`;
 
 
-            return this.getFromField(index, field.title, name, field, thisDisabled, fieldClass, mainValue, changeHandler, formType, formData, gridId, focus);
+           return this.getFromField(index, field.get('title'), name, field, thisDisabled, fieldClass, mainValue, formType, formData, gridId, focus);
 
 
         })
-
 
         const translateForm = translateFormControls.map((translateFormControl, locale_index)=>{
 
@@ -507,7 +517,6 @@ export default class Form extends Component {
                 {this.getTranslationForm(translateFormControl.translate_form_input_control, translateFormControl.locale_id, translateFormControl.locale_code, locale_index)}
             </Tab>
         })
-
 
         return (
             <div>
@@ -533,6 +542,6 @@ Form.defaultProps = {
 };
 
 Form.propTypes = {
-    formControls: PropTypes.array.isRequired,
+    formControls: PropTypes.object.isRequired,
     changeHandler: PropTypes.func.isRequired
 };

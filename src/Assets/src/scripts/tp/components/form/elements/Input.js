@@ -13,7 +13,7 @@ export default class Input extends Component {
             $('.money').autoNumeric('destroy');
     }
     render() {
-        const { autoFocus, name, value, placeholder, changeHandler, errorText, fieldClass, type, disabled } = this.props;
+        const { autoFocus, name, value, placeholder, changeHandler, errorText, fieldClass, type, disabled, dataIndex } = this.props;
 
         const focusHandler = type == 'text' ? moveCursorToEnd : false
 
@@ -26,6 +26,7 @@ export default class Input extends Component {
                         disabled={disabled}
                         autoFocus={autoFocus}
                         className="form-control money"
+                        data-index={dataIndex}
                         name={name}
                         value={value}
                         defaultValue={value}
@@ -39,6 +40,7 @@ export default class Input extends Component {
                         disabled={disabled}
                         autoFocus={autoFocus}
                         className="form-control"
+                        data-index={dataIndex}
                         name={name}
                         value={value}
                         defaultValue={value}
@@ -52,6 +54,7 @@ export default class Input extends Component {
                         disabled={disabled}
                         autoFocus={autoFocus}
                         className="form-control"
+                        data-index={dataIndex}
                         name={name}
                         value={value}
                         defaultValue={value}

@@ -38,7 +38,7 @@ export function setSearch(word) {
     }
 }
 /// add edit form
-export function chagenValue(index, value) {
+export function changeValue(index, value) {
 
     return {
         type: types.CHANGE_VALUE,

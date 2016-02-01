@@ -160,74 +160,14 @@ class AddEditContainer extends Component {
 
 
     }
-    changeValues(e, type, cvalue, text, column) {
+    changeValues(dataIndex, value) {
 
+        this.props.actions.changeValue(dataIndex, value);
 
-        if (type && type === 'combo-grid') {
+        const field = this.props.formControls.getIn(dataIndex);
+        const error = validation(value, field.get('validate'));
 
-
-            this.props.actions.setComboGridText(column, text);
-
-            let index = null
-
-            this.props.formControls.map((FC, FC_index)=> {
-                if (FC.column == column)
-                    index = FC_index
-            });
-
-            const value = cvalue;
-
-            const FD = this.props.formControls;
-
-            this.props.actions.chagenValue(index, value)
-
-            // check validation with on change
-            const error = (validation(value, FD[index].validate));
-
-            this.props.actions.setError(index, error);
-
-            $("#combo-grid-" + column).removeClass('open');
-
-
-        } else if (type && type === 'manual') {
-
-            const index = text.replace("grid_table-solar-input", "");
-            const value = cvalue;
-
-
-            const FD = this.props.formControls;
-
-
-            this.props.actions.chagenValue(index, value)
-
-
-            // check validation with on change
-            const error = (validation(value, FD[index].validate));
-            this.props.actions.setError(index, error);
-
-
-        }
-
-        else {
-            const index = e.target.name.replace("grid_table-solar-input", "");
-            const value = e.target.value;
-
-
-            const FD = this.props.formControls;
-
-            e.target.type == 'checkbox' ?
-                e.target.checked ?
-                    this.props.actions.chagenValue(index, value)
-                    :
-                    this.props.actions.chagenValue(index, 0)
-                :
-                this.props.actions.chagenValue(index, value)
-
-
-            // check validation with on change
-            const error = (validation(value, FD[index].validate));
-            this.props.actions.setError(index, error);
-        }
+        this.props.actions.setError(dataIndex, error);
 
 
     }
@@ -237,7 +177,7 @@ class AddEditContainer extends Component {
         //clear form validation
         const FC = this.props.formControls;
 
-        if (FC.length >= 1)
+        if (FC.size >= 1)
             this.props.actions.clearFromValidation();
 
         if (this.props.params.id) {
@@ -262,24 +202,24 @@ class AddEditContainer extends Component {
             });
 
 
-            editTranslation(this.props.params.id).then((data)=>{
-                    if (data.length >= 1)
-                        this.props.translateFormControls.map((translateFormControl, locale_index)=>{
-                            data.map((tdata)=>{
-
-                                if(tdata.locale_id == translateFormControl.locale_id){
-                                    translateFormControl.translate_form_input_control.map((formControl, index)=> {
-
-                                        this.props.actions.changeTranslationValue(locale_index, index, tdata[formControl.column])
-
-                                    })
-
-                                }
-                            })
-
-                        })
-
-            })
+            //editTranslation(this.props.params.id).then((data)=>{
+            //        if (data.length >= 1)
+            //            this.props.translateFormControls.map((translateFormControl, locale_index)=>{
+            //                data.map((tdata)=>{
+            //
+            //                    if(tdata.locale_id == translateFormControl.locale_id){
+            //                        translateFormControl.translate_form_input_control.map((formControl, index)=> {
+            //
+            //                            this.props.actions.changeTranslationValue(locale_index, index, tdata[formControl.column])
+            //
+            //                        })
+            //
+            //                    }
+            //                })
+            //
+            //            })
+            //
+            //})
 
 
 
@@ -388,13 +328,12 @@ class AddEditContainer extends Component {
 
 AddEditContainer.defaultProps = {
     setup: {},
-    formControls: [],
     permission: {c: true, r: false, u: true, d: false},
     ifUpdateDisabledCanEditColumns: []
 }
 AddEditContainer.propTypes = {
     setup: PropTypes.object.isRequired,
-    formControls: PropTypes.array.isRequired
+    formControls: PropTypes.object.isRequired
 }
 
 function mapStateToProps(state) {
@@ -408,8 +347,8 @@ function mapStateToProps(state) {
         translateFormControls: TpStore.get('translateFormControls').toJS(),
         showAddEditForm: TpStore.get('showAddEditForm'),
         focusIndex: TpStore.get('focusIndex'),
-        formData: TpStore.get('formData').toJS(),
-        formControls: TpStore.get('setup').toJS().form_input_control,
+        formData: TpStore.get('formData'),
+        formControls: TpStore.get('form_input_control'),
         subItems: SubItems.get('subItems').toJS(),
         permission: TpStore.get('setup').toJS().permission,
         ifUpdateDisabledCanEditColumns: TpStore.get('setup').toJS().ifUpdateDisabledCanEditColumns,

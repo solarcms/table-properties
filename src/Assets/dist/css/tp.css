@@ -7,14 +7,14 @@
 #solar-tp {
   height: calc(100vh - 2px);
   position: relative;
-  background: #fff;
+  background: transparent;
   margin: 0;
   padding: 0;
   width: 100%;
   display: block; }
 
 .solar-form {
-  width: 800px; }
+  width: 1000px; }
   .solar-form .form-group {
     margin-bottom: 3px; }
 
@@ -71,6 +71,10 @@
 
 .btn {
   border-radius: 0; }
+
+.none-translate-form {
+  background: #fff;
+  padding: 5px 0; }
 
 .modal-shadowed .modal-content {
   box-shadow: -2px 2px 13px 0px rgba(0, 0, 0, 0.56); }
@@ -1623,3 +1627,36 @@ div.filepicker {
       display: none; }
     .sub-items .savedIems .btn:hover .edit {
       display: block; }
+
+.nav-tabs > li {
+  float: left; }
+
+.nav-tabs > li > a {
+  margin-right: 2px;
+  line-height: 1.42857143;
+  border: 1px solid transparent;
+  border-radius: 4px 4px 0 0;
+  position: relative;
+  display: block;
+  padding: 10px 15px; }
+
+/* Tab Navigation */
+.nav-tabs {
+  margin: 0;
+  padding: 0;
+  border: 0; }
+
+.nav-tabs > li > a {
+  background: #ccc;
+  border-radius: 0; }
+  .nav-tabs > li > a:hover {
+    background: #fff; }
+
+.nav-tabs > li.active > a {
+  background: #fff; }
+
+/* Tab Content */
+.tab-pane {
+  background: #fff;
+  border-radius: 0;
+  padding: 10px; }

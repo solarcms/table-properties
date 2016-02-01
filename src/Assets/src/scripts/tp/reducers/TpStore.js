@@ -7,6 +7,7 @@ import * as types from '../constants/';
 const initialState = {
     setup: {},
     listData:{},
+    form_input_control:{},
     currentPage:1,
     pageLimit:50,
     formData:{},
@@ -47,8 +48,10 @@ export default createReducer(initialState, {
 
         });
         const translateFormControls_im = Immutable.fromJS(translateFormControls);
+        const form_input_control = Immutable.fromJS(setupData.form_input_control);
 
         state = state.set('translateFormControls', translateFormControls_im);
+        state = state.set('form_input_control', form_input_control);
 
         return state;
     },
@@ -90,36 +93,29 @@ export default createReducer(initialState, {
         return state;
     },
     [types.SET_ERROR](state, { index, error }) {
+        let dataIndex = [];
+        index.map((key)=>dataIndex.push(key))
+        dataIndex.unshift('form_input_control')
+        dataIndex.push('error')
 
-        // const indexOfColumn = state.getIn(['setup', 'form_input_control']).findIndex(form => form.get('column') === column);
-        state = state.setIn(['setup', 'form_input_control', index, 'error'], error);
+        state = state.setIn(dataIndex, error);
 
         return state;
     },
     [types.CHANGE_VALUE](state, { index, value }) {
+        let dataIndex = [];
+        index.map((key)=>dataIndex.push(key))
+        dataIndex.unshift('form_input_control')
+        dataIndex.push('value')
 
-        //find index example
-        //const indexOfColumn = state.getIn(['setup', 'form_input_control']).findIndex(form => form.get('column') === column);
-
-        //state = state.updateIn(['setup', 'form_input_control', index, 'value'], ()=>{
-        //    return value
-        //});
-
-        const type = state.getIn(['setup', 'form_input_control', index, 'type']);
-        const deFValue = state.getIn(['setup', 'form_input_control', index, 'value']);
-
-        if(type == '--hidden'){
-            state = state.setIn(['setup', 'form_input_control', index, 'value'], deFValue);
-        } else {
-            state = state.setIn(['setup', 'form_input_control', index, 'value'], value);
-        }
+        state = state.setIn(dataIndex, value);
 
 
         return state;
     },
     [types.CLEAR_FORM_VALIDATION](state, {}) {
 
-        state = state.updateIn(['setup', 'form_input_control'], (formControl) =>{
+        state = state.updateIn(['form_input_control'], (formControl) =>{
             return formControl.map((input) => {
                 return (input.set('error', null));
             })
@@ -127,7 +123,7 @@ export default createReducer(initialState, {
         })
 
 
-        state = state.updateIn(['setup', 'form_input_control'], (formControl) =>{
+        state = state.updateIn(['form_input_control'], (formControl) =>{
             return formControl.map((input) => {
                 const type = input.get('type')
                 const value = input.get('value')

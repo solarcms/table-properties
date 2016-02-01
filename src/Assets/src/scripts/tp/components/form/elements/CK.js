@@ -13,7 +13,7 @@ export default class CK extends Component {
 
         CKEDITOR.instances['ckeditor-' + this.props.index].on('change', function () {
 
-            self.props.changeHandler(self.props.name, CKEDITOR.instances['ckeditor-' + self.props.index].getData());
+            self.props.changeHandler(CKEDITOR.instances['ckeditor-' + self.props.index].getData());
 
         });
     }

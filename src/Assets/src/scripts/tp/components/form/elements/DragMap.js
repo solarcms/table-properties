@@ -7,7 +7,7 @@ export default class DragMap extends Component {
     dragEndHandler(e){
        let position = '{"lat":'+e.latLng.lat()+',"lng":'+e.latLng.lng()+'}';
 
-        this.props.changeHandler(this.props.name, position);
+        this.props.changeHandler(position);
 
     }
 
