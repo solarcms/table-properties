@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux'
-import * as DataActions from '../actions/grid'
+import * as DataActions from '../../actions/grid'
 import Header from '../components/grid/Header'
 import Form from "../components/form/Form"
 import validation from "../components/form/validation/"

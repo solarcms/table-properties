@@ -88,7 +88,7 @@ export default class Form extends Component {
         //    this.props.changeHandler(null, 'manual', value, name)
     }
 
-    getFromField(index,              title, name, field, thisDisabled, fieldClass, mainValue, formType, formData, gridId, focus){
+    getFromField(index, title, name, field, thisDisabled, fieldClass, mainValue, formType, formData, gridId, focus){
 
 
         switch (field.get('type')) {
