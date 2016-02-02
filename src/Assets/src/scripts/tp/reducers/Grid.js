@@ -20,7 +20,7 @@ const initialState = {
         currentPage:1,
     },
     comboBoxAddAble: {},
-    translateFormControls:[]
+    translateFormControls:{}
 };
 
 export default createReducer(initialState, {
@@ -249,22 +249,27 @@ export default createReducer(initialState, {
     [types.CHANGE_TRANSLATION_VALUE](state, { locale_index, index, value }) {
 
 
+        let dataIndex = [];
+        index.map((key)=>dataIndex.push(key))
+        dataIndex.unshift('translate_form_input_control')
+        dataIndex.unshift(locale_index)
+        dataIndex.unshift('translateFormControls')
+        dataIndex.push('value')
 
-        const type = state.getIn(['translateFormControls', locale_index,  'translate_form_input_control', index, 'type']);
-        const deFValue = state.getIn(['translateFormControls', locale_index, 'translate_form_input_control', index, 'value']);
-
-        if(type == '--hidden'){
-            state = state.setIn(['translateFormControls', locale_index, 'translate_form_input_control', index, 'value'], deFValue);
-        } else {
-            state = state.setIn(['translateFormControls', locale_index, 'translate_form_input_control', index, 'value'], value);
-        }
-
+        state = state.setIn(dataIndex, value);
 
         return state;
     },
     [types.SET_TRANSLATION_ERROR](state, { locale_index, index, error }) {
 
-        state = state.setIn(['translateFormControls', locale_index, 'translate_form_input_control', index, 'error'], error);
+        let dataIndex = [];
+        index.map((key)=>dataIndex.push(key))
+        dataIndex.unshift('translate_form_input_control')
+        dataIndex.unshift(locale_index)
+        dataIndex.unshift('translateFormControls')
+        dataIndex.push('error')
+
+        state = state.setIn(dataIndex, error);
 
         return state;
     },

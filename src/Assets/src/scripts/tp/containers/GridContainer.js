@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from "react"
 import $ from "jquery"
 
-
 //import {modal} from 'bootstrap'
 import * as DataActions from "../actions/grid"
 import { bindActionCreators } from "redux"
@@ -404,7 +403,6 @@ GridContainer.defaultProps = {
     pageLimit: 10,
     searchValue: '',
     listData:[],
-    formControls:[],
     locales:[],
     permission:{c:false, r:true, u:false, d:false},
     ifUpdateDisabledCanEditColumns:[]
@@ -417,29 +415,29 @@ GridContainer.propTypes = {
 
 function mapStateToProps(state) {
 
-    const TpStore = state.TpStore;
+    const Grid = state.Grid;
 
     return {
-        setup: TpStore.get('setup').toJS(),
-        locales: TpStore.get('setup').toJS().locales,
-        formData: TpStore.get('formData').toJS(),
-        editID: TpStore.get('editID'),
-        showInlineForm: TpStore.get('showInlineForm'),
-        showGird: TpStore.get('showGird'),
-        focusIndex: TpStore.get('focusIndex'),
-        formControls: TpStore.get('setup').toJS().form_input_control,
-        permission: TpStore.get('setup').toJS().permission,
-        ifUpdateDisabledCanEditColumns: TpStore.get('setup').toJS().ifUpdateDisabledCanEditColumns,
-        paginationPosition: TpStore.get('setup').toJS().pagination_position,
-        formType: TpStore.get('setup').toJS().formType,
-        //listData: TpStore.getIn(['listData', 'data']),
-        listData: TpStore.get('listData').toJS().data,
-        gridHeader: TpStore.get('setup').toJS().grid_output_control,
-        totalItems: TpStore.get('listData').toJS().total,
-        totalPages: TpStore.get('listData').toJS().last_page,
-        currentPage: TpStore.get('currentPage'),
-        pageLimit: TpStore.get('pageLimit'),
-        searchValue: TpStore.get('searchValue'),
+        setup: Grid.get('setup').toJS(),
+        locales: Grid.get('setup').toJS().locales,
+        formData: Grid.get('formData').toJS(),
+        editID: Grid.get('editID'),
+        showInlineForm: Grid.get('showInlineForm'),
+        showGird: Grid.get('showGird'),
+        focusIndex: Grid.get('focusIndex'),
+        formControls: Grid.get('form_input_control'),
+        permission: Grid.get('setup').toJS().permission,
+        ifUpdateDisabledCanEditColumns: Grid.get('setup').toJS().ifUpdateDisabledCanEditColumns,
+        paginationPosition: Grid.get('setup').toJS().pagination_position,
+        formType: Grid.get('setup').toJS().formType,
+        //listData: Grid.getIn(['listData', 'data']),
+        listData: Grid.get('listData').toJS().data,
+        gridHeader: Grid.get('setup').toJS().grid_output_control,
+        totalItems: Grid.get('listData').toJS().total,
+        totalPages: Grid.get('listData').toJS().last_page,
+        currentPage: Grid.get('currentPage'),
+        pageLimit: Grid.get('pageLimit'),
+        searchValue: Grid.get('searchValue'),
 
     }
 }

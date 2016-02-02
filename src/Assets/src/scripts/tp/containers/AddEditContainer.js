@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux'
-import * as DataActions from '../../actions/grid'
+import * as DataActions from '../actions/grid'
 import Header from '../components/grid/Header'
 import Form from "../components/form/Form"
 import validation from "../components/form/validation/"
@@ -21,19 +21,19 @@ class AddEditContainer extends Component {
         let foundError = false;
 
         FD.map((fromColumn, index) => {
-            const error = (validation(fromColumn.value, fromColumn.validate));
+            const error = (validation(fromColumn.get('value'), fromColumn.get('validate')));
             if (error) {
-                this.props.actions.setError(index, error);
+                this.props.actions.setError([index], error);
                 foundError = true;
             }
 
         })
         this.props.translateFormControls.map((locale, locale_index) => {
 
-            locale.translate_form_input_control.map((fromColumn, index) => {
-                const error = (validation(fromColumn.value, fromColumn.validate));
+            locale.get('translate_form_input_control').map((fromColumn, index) => {
+                const error = (validation(fromColumn.get('value'), fromColumn.get('validate')));
                 if (error) {
-                    this.props.actions.setTranslationError(locale_index, index, error);
+                    this.props.actions.setTranslationError(locale_index, [index], error);
                     foundError = true;
                 }
 
@@ -45,8 +45,7 @@ class AddEditContainer extends Component {
             save(FD, this.props.translateFormControls, this.props.subItems).done((data)=> {
 
                 if (data == 'success') {
-                    this.props.actions.clearFromValidation();
-                    this.props.actions.clearTranslationFromValidation();
+
                     window.location.replace('#/');
                 }
 
@@ -67,19 +66,19 @@ class AddEditContainer extends Component {
         let foundError = false;
 
         FD.map((fromColumn, index) => {
-            const error = (validation(fromColumn.value, fromColumn.validate));
+            const error = (validation(fromColumn.get('value'), fromColumn.get('validate')));
             if (error) {
-                this.props.actions.setError(index, error);
+                this.props.actions.setError([index], error);
                 foundError = true;
             }
 
         })
         this.props.translateFormControls.map((locale, locale_index) => {
 
-            locale.translate_form_input_control.map((fromColumn, index) => {
-                const error = (validation(fromColumn.value, fromColumn.validate));
+            locale.get('translate_form_input_control').map((fromColumn, index) => {
+                const error = (validation(fromColumn.get('value'), fromColumn.get('validate')));
                 if (error) {
-                    this.props.actions.setTranslationError(locale_index, index, error);
+                    this.props.actions.setTranslationError(locale_index, [index], error);
                     foundError = true;
                 }
 
@@ -91,8 +90,7 @@ class AddEditContainer extends Component {
             update(FD, this.props.translateFormControls, this.props.params.id, this.props.subItems).done((data)=> {
 
                 if (data == 'success' || 'none') {
-                    this.props.actions.clearFromValidation();
-                    this.props.actions.clearTranslationFromValidation();
+
                     window.location.replace('#/');
                 }
 
@@ -104,63 +102,25 @@ class AddEditContainer extends Component {
     }
 
     // form field value recieve functions
-    translateChangeHandler(e, type, cvalue, text, column) {
+    translateChangeHandler(locale_index, dataIndex, value) {
 
 
-
-        if (type && type === 'manual') {
-
-            let name_el = text.split("__locale__");
-            const locale_index = name_el[0]
-
-            const index = name_el[1].replace("grid_table-solar-input", "");
-            const value = cvalue;
+        this.props.actions.changeTranslationValue(locale_index, dataIndex, value);
 
 
-            const FD = this.props.translateFormControls[locale_index].translate_form_input_control;
+        const FD = this.props.translateFormControls.getIn([locale_index, 'translate_form_input_control']);
 
+        const field = FD.getIn(dataIndex);
+        const error = validation(value, field.get('validate'));
 
-            this.props.actions.changeTranslationValue(locale_index, index, value)
+        this.props.actions.setTranslationError(locale_index, dataIndex, error);
 
-
-            // check validation with on change
-            const error = (validation(value, FD[index].validate));
-
-            this.props.actions.setTranslationError(locale_index, index, error);
-
-
-        }
-
-        else {
-            let name_el = e.target.name.split("__locale__");
-            const locale_index = name_el[0]
-
-            const index = name_el[1].replace("grid_table-solar-input", "");
-            const value = e.target.value;
-
-
-            const FD = this.props.translateFormControls[locale_index].translate_form_input_control;
-
-
-
-            e.target.type == 'checkbox' ?
-                e.target.checked ?
-                    this.props.actions.changeTranslationValue(locale_index,index, value)
-                    :
-                    this.props.actions.changeTranslationValue(locale_index, index, 0)
-                :
-                this.props.actions.changeTranslationValue(locale_index, index, value)
-
-
-            // check validation with on change
-            const error = (validation(value, FD[index].validate));
-
-            this.props.actions.setTranslationError(locale_index, index, error);
-        }
 
 
     }
     changeValues(dataIndex, value) {
+
+
 
         this.props.actions.changeValue(dataIndex, value);
 
@@ -189,11 +149,12 @@ class AddEditContainer extends Component {
             edit(this.props.params.id).then((data)=> {
                 if (data.length >= 1)
                     this.props.formControls.map((formControl, index)=> {
-                        if (formControl.type === '--combogrid') {
-
-                            this.props.actions.setComboGridText(formControl.column, data[0][formControl.column + "_" + formControl.options['textField']]);
-                        }
-                        this.props.actions.chagenValue(index, data[0][formControl.column])
+                        //if (formControl.type === '--combogrid') {
+                        //
+                        //    this.props.actions.setComboGridText(formControl.column, data[0][formControl.column + "_" + formControl.options['textField']]);
+                        //}
+                        if(formControl.get('type') !== '--hidden')
+                        this.props.actions.changeValue([index], data[0][formControl.get('column')])
                     })
                 else
                     alert('please try agian')
@@ -202,24 +163,25 @@ class AddEditContainer extends Component {
             });
 
 
-            //editTranslation(this.props.params.id).then((data)=>{
-            //        if (data.length >= 1)
-            //            this.props.translateFormControls.map((translateFormControl, locale_index)=>{
-            //                data.map((tdata)=>{
-            //
-            //                    if(tdata.locale_id == translateFormControl.locale_id){
-            //                        translateFormControl.translate_form_input_control.map((formControl, index)=> {
-            //
-            //                            this.props.actions.changeTranslationValue(locale_index, index, tdata[formControl.column])
-            //
-            //                        })
-            //
-            //                    }
-            //                })
-            //
-            //            })
-            //
-            //})
+            editTranslation(this.props.params.id).then((data)=>{
+                    if (data.length >= 1)
+                        this.props.translateFormControls.map((translateFormControl, locale_index)=>{
+                            data.map((tdata)=>{
+
+                                if(tdata.locale_id == translateFormControl.get('locale_id')){
+                                    translateFormControl.get('translate_form_input_control').map((formControl, index)=> {
+
+                                        if(formControl.get('type') !== '--hidden')
+                                        this.props.actions.changeTranslationValue(locale_index, [index], tdata[formControl.get('column')])
+
+                                    })
+
+                                }
+                            })
+
+                        })
+
+            })
 
 
 
@@ -233,6 +195,8 @@ class AddEditContainer extends Component {
     }
 
     componentWillUnmount() {
+        this.props.actions.clearFromValidation();
+        this.props.actions.clearTranslationFromValidation();
         this.props.actions.setShowAddEditForm(false)
     }
 
@@ -337,21 +301,21 @@ AddEditContainer.propTypes = {
 }
 
 function mapStateToProps(state) {
-    const TpStore = state.TpStore;
+    const Grid = state.Grid;
     const SubItems = state.SubItems;
 
 
     return {
-        setup: TpStore.get('setup').toJS(),
-        locales: TpStore.get('setup').toJS().locales,
-        translateFormControls: TpStore.get('translateFormControls').toJS(),
-        showAddEditForm: TpStore.get('showAddEditForm'),
-        focusIndex: TpStore.get('focusIndex'),
-        formData: TpStore.get('formData'),
-        formControls: TpStore.get('form_input_control'),
+        setup: Grid.get('setup').toJS(),
+        locales: Grid.get('setup').toJS().locales,
+        translateFormControls: Grid.get('translateFormControls'),
+        showAddEditForm: Grid.get('showAddEditForm'),
+        focusIndex: Grid.get('focusIndex'),
+        formData: Grid.get('formData'),
+        formControls: Grid.get('form_input_control'),
         subItems: SubItems.get('subItems').toJS(),
-        permission: TpStore.get('setup').toJS().permission,
-        ifUpdateDisabledCanEditColumns: TpStore.get('setup').toJS().ifUpdateDisabledCanEditColumns,
+        permission: Grid.get('setup').toJS().permission,
+        ifUpdateDisabledCanEditColumns: Grid.get('setup').toJS().ifUpdateDisabledCanEditColumns,
     }
 }
 // Which action creators does it want to receive by props?

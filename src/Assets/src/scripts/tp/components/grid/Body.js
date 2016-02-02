@@ -64,7 +64,9 @@ export default class Body extends Component {
 
         fixRowHeigth(this.props.gridId)
 
-
+        //$("#gridBody").scroll(function () {
+        //    make_fixed_hader(gridId);
+        //})
     }
 
     componentWillMount() {
@@ -136,7 +138,7 @@ export default class Body extends Component {
                 let cellformControl = [];
 
 
-                if (formControls.length >= 1)
+                if (formControls.size >= 1)
                     formControls.map((formControl)=> {
                         if (formControl.column == grid.column)
                             cellformControl.push(formControl)
@@ -249,9 +251,9 @@ export default class Body extends Component {
                     let cellformControl = [];
 
 
-                    if (formControls.length >= 1)
+                    if (formControls.size >= 1)
                         formControls.map((formControl)=> {
-                            if (formControl.column == grid.column)
+                            if (formControl.get('column') == grid.column)
                                 cellformControl.push(formControl)
                         })
 
@@ -292,7 +294,7 @@ export default class Body extends Component {
                 let cellformControl = [];
 
 
-                if (formControls.length >= 1)
+                if (formControls.size >= 1)
                     formControls.map((formControl)=> {
                         if (formControl.column == grid.column)
                             cellformControl.push(formControl)
@@ -307,7 +309,7 @@ export default class Body extends Component {
                               formData={formData}
                               formType={formType}
                               gridId={gridId}
-                              formValue={formControls[columnIndex].value}
+                              formValue={formControls.getIn([columnIndex, 'value'])}
                               focusIndex={focusIndex}
                               gridIndex={columnIndex}
 
@@ -329,7 +331,7 @@ export default class Body extends Component {
                 let cellformControl = [];
 
 
-                if (formControls.length >= 1)
+                if (formControls.size >= 1)
                     formControls.map((formControl)=> {
                         if (formControl.column == grid.column)
                             cellformControl.push(formControl)
@@ -346,7 +348,7 @@ export default class Body extends Component {
                                   formData={formData}
                                   formType={formType}
                                   gridId={gridId}
-                                  formValue={formControls[columnIndex].value}
+                                  formValue={formControls.getIn([columnIndex, 'value'])}
                                   focusIndex={focusIndex}
                                   gridIndex={columnIndex}
 
@@ -378,11 +380,11 @@ export default class Body extends Component {
         </tr> : null
         return (<div className="white">
 
-            <div id="gridBody">
+            <div id="gridBody" className="handsontable">
 
                 <div id={`${gridId}-header`} className="table_header">
                     <table id={`${gridId}-left0`}
-                           className="table table-striped table-bordered table-hover tp-table-left0">
+                           className="tp-table-left0">
                         <thead>
                         <tr>
                         </tr>
@@ -390,7 +392,7 @@ export default class Body extends Component {
 
                     </table>
                     <div id={`${gridId}-wrapper0`} className="tp-table-wrapper0">
-                        <table id={`${gridId}0`} className="table table-striped table-bordered table-hover tp-table0"
+                        <table id={`${gridId}0`} className="tp-table0"
                                width="100%">
                             <thead>
                             <tr className="solar-grid-header">
@@ -402,7 +404,7 @@ export default class Body extends Component {
                         </table>
                     </div>
                     <table id={`${gridId}-rigth0`}
-                           className="table table-striped table-bordered table-hover tp-table-rigth0">
+                           className="tp-table-rigth0">
                         <thead>
                         <tr>
                             <th className="solar-grid-actions"><i className="material-icons">&#xE5D3;</i></th>
@@ -411,7 +413,7 @@ export default class Body extends Component {
                     </table>
                 </div>
 
-                <table id={`${gridId}-left`} className="table table-striped table-bordered table-hover tp-table-left">
+                <table id={`${gridId}-left`} className="tp-table-left">
                     <thead>
                     <tr>
                         <th className="solar-grid-index"><b>№</b></th>
@@ -425,7 +427,7 @@ export default class Body extends Component {
                     </tbody>
                 </table>
                 <div id={`${gridId}-wrapper`} className="tp-table-wrapper">
-                    <table id={`${gridId}`} className="table table-striped table-bordered table-hover tp-table"
+                    <table id={`${gridId}`} className="tp-table"
                            width="100%">
                         <thead>
                         <tr className="solar-grid-header">
@@ -441,7 +443,7 @@ export default class Body extends Component {
                         </tbody>
                     </table>
                 </div>
-                <table id={`${gridId}-rigth`} className="table table-striped table-bordered table-hover tp-table-rigth">
+                <table id={`${gridId}-rigth`} className="tp-table-rigth">
                     <thead>
                     <tr>
                         <th className="solar-grid-actions"><i className="material-icons">&#xE5D3;</i></th>
@@ -464,7 +466,7 @@ export default class Body extends Component {
     }
 }
 Body.defaultProps = {
-    formControls: []
+
 };
 
 Body.propTypes = {

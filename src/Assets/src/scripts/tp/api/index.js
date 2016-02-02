@@ -29,7 +29,7 @@ export function save(formData, translateFormControls, subItems) {
 
     let data = {};
     formData.map((fData) => {
-        data[fData.column] = fData.value;
+        data[fData.get('column')] = fData.get('value');
 
     })
 
@@ -38,12 +38,12 @@ export function save(formData, translateFormControls, subItems) {
     let translateData = [];
     translateFormControls.map((translateFormControl) => {
         let data = {};
-        translateFormControl.translate_form_input_control.map((ftData) => {
-            data[ftData.column] = ftData.value;
+        translateFormControl.get('translate_form_input_control').map((ftData) => {
+            data[ftData.get('column')] = ftData.get('value');
 
         })
         let FTData = {
-            locale_id: translateFormControl.locale_id,
+            locale_id: translateFormControl.get('locale_id'),
             data: data
         }
 
@@ -105,19 +105,19 @@ export function update(formData, translateFormControls, id, subItems) {
 
     let data = {};
     formData.map((fData) => {
-        data[fData.column] = fData.value;
+        data[fData.get('column')] = fData.get('value');
 
     })
 
     let translateData = [];
     translateFormControls.map((translateFormControl) => {
         let data = {};
-        translateFormControl.translate_form_input_control.map((ftData) => {
-            data[ftData.column] = ftData.value;
+        translateFormControl.get('translate_form_input_control').map((ftData) => {
+            data[ftData.get('column')] = ftData.get('value');
 
         })
         let FTData = {
-            locale_id: translateFormControl.locale_id,
+            locale_id: translateFormControl.get('locale_id'),
             data: data
         }
 

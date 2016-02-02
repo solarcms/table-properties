@@ -12,5 +12,6 @@ require('../vendor/tableExport.jquery.plugin-master/tableExport.js');
 //require('../vendor/jquery-resizable-columns-gh-pages/dist/jquery.resizableColumns.js');
 
 require('../vendor/autoNumberic')
+//require('../vendor/fixedtable')
 //require('../vendor/bootstrap/js/bootstrap.js');
 

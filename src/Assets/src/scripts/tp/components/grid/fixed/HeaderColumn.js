@@ -40,43 +40,52 @@ export function fixRowHeigth(gridId) {
 
     /////////////// fixed table header
 
-    $("#"+gridId+"-left").css("width", (leftTableWidth)+2)
+    $("#"+gridId+"-left").css("width", (leftTableWidth))
 
     $("#"+gridId+"-wrapper").css('width', $("#"+gridId+"-wrapper").parent().outerWidth() - 103 - leftTableWidth);
-    $("#"+gridId+"-wrapper0").css('width', $("#"+gridId+"-wrapper").outerWidth());
+
     $(".virtual_scroll").css('width', $(".virtual_scroll").parent().outerWidth() - 103 - leftTableWidth);
     $(".virtual_scroll").css('margin-left', leftTableWidth+2);
 
-    //
-    $("#"+gridId+"-left0").css("width", (leftTableWidth+2));
+
+
+    ///////////////////////////////////
+
+
+    $("#"+gridId+"-wrapper0").css('width', $("#"+gridId+"-wrapper").outerWidth());
+    $("#"+gridId+"-left0").css("width", (leftTableWidth));
     $("#"+gridId+"-left0 > thead > tr").empty();
     $("#"+gridId+"-left > thead > tr").find("th").each(function (indx, td) {
 
         let numberOfindex = indx + 1;
 
-        let realWidth = $("#"+gridId+"-left > tbody tr:last-child td:nth-child("+numberOfindex+")").outerWidth();
+        let realWidth = $("#"+gridId+"-left > tbody tr:last-child td:nth-child("+numberOfindex+")").innerWidth();
 
         if(gridId == 'grid_table')
 
 
-        if(indx == 0)
-            var copy = "<th style='width: " + realWidth + "px; height: " + $(td).height() + "px' >" + $(td).html() + "</th>";
-        else
-            var copy = "<th style='width: " + realWidth + "px; height: " + $(td).height() + "px' class='sorting'>" + $(td).html() + "</th>";
+            if(indx == 0)
+                var copy = "<th style='width: " + realWidth + "px; height: " + $(td).height() + "px' >" + $(td).html() + "</th>";
+            else
+                var copy = "<th style='width: " + realWidth + "px; height: " + $(td).height() + "px' class='sorting'>" + $(td).html() + "</th>";
         $("#"+gridId+"-left0 > thead > tr").append(copy);
 
     });
 
-    $("#"+gridId+"0").css("width", $("#"+gridId+"").outerWidth());
+
     $("#"+gridId+"0 > thead > tr").empty();
-    $("#"+gridId+" > thead tr:last-child").find("th").each(function (indx, td) {
+
+    //$("#"+gridId+" thead  tr").clone().appendTo($("#"+gridId+"0 thead")) ;
+    $("#"+gridId+" > thead > tr").find("th").each(function (indx, th) {
         let numberOfindex = indx + 1;
 
-        let realWidth = $("#"+gridId+" > tbody tr:last-child td:nth-child("+numberOfindex+")").outerWidth();
+        console.log(getWidth(th));
+
+        let realWidth = getWidth(th);
 
 
 
-        var copy = "<th style='width: " + realWidth + "px; height: " + $(td).height() + "px' class='sorting'>" + $(td).html() + "</th>";
+        var copy = "<th style='width: " + realWidth + "px; height: " + $(th).height() + "px' class='sorting'>" + $(th).html() + "</th>";
         $("#"+gridId+"0 > thead > tr").append(copy);
 
     });
@@ -90,4 +99,10 @@ export function fixRowHeigth(gridId) {
 
     });
 
+
+
 }
+
+export function getWidth(td) {
+    return $(td).outerWidth()-24;
+};

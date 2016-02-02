@@ -29,27 +29,18 @@ export default class Form extends Component {
 
     }
 
-    manualChange(name, value) {
-
-        if(name.indexOf('__locale__') >= 1)
-            this.props.translateChangeHandler(null, 'manual', value, name)
-        else
-            this.props.changeHandler(null, 'manual', value, name)
-    }
-
     dateTimeChange(dIndex, value) {
         value = Moment(value).format("YYYY.MM.DD HH:mm");
 
-       this.manualChangeHandler(dIndex, value);
+       this.manualeChangeHandler(dIndex, value);
 
     }
 
     dateChange(dIndex, value) {
         value = Moment(value).format("YYYY.MM.DD");
-        this.manualChangeHandler(dIndex, value);
+        this.manualeChangeHandler(dIndex, value);
     }
-    changeHandler(e){
-
+    changeHandler(locale_index, e){
 
         let value  = null;
         if(e.target.type == 'checkbox'){
@@ -58,7 +49,6 @@ export default class Form extends Component {
             value = e.target.value;
         }
 
-
         let dataIndexs  =  e.target.getAttribute('data-index').split('-');
 
         let dataIndex = [];
@@ -66,10 +56,13 @@ export default class Form extends Component {
         dataIndexs.map((key)=>{
             dataIndex.push(key*1);
         });
+        if(locale_index === false)
+            this.props.changeHandler(dataIndex, value);
+        else
+            this.props.translateChangeHandler(locale_index, dataIndex, value);
 
-      this.props.changeHandler(dataIndex, value);
     }
-    manualChangeHandler(dIndex, value) {
+    manualeChangeHandler(locale_index, dIndex, value) {
 
 
         let dataIndexs  =  dIndex.split('-');
@@ -80,29 +73,30 @@ export default class Form extends Component {
             dataIndex.push(key*1);
         });
 
-       this.props.changeHandler(dataIndex, value);
+        if(locale_index === false)
+            this.props.changeHandler(dataIndex, value);
+        else
+            this.props.translateChangeHandler(locale_index, dataIndex, value);
 
-        //if(name.indexOf('__locale__') >= 1)
-        //    this.props.translateChangeHandler(null, 'manual', value, name)
-        //else
-        //    this.props.changeHandler(null, 'manual', value, name)
     }
 
-    getFromField(index, title, name, field, thisDisabled, fieldClass, mainValue, formType, formData, gridId, focus){
+    getFromField(locale_index, index, title, name, field, thisDisabled, fieldClass, mainValue, formType, formData, gridId, focus){
 
+
+        const keyIndex = locale_index === false ? index : `__local__${locale_index}-${index}`
 
         switch (field.get('type')) {
             case "--text":
                 return <Input
                     disabled={thisDisabled}
-                    key={index} dataIndex={index}
+                    key={keyIndex} dataIndex={index}
                     fieldClass={fieldClass}
                     value={mainValue}
                     type="text"
                     autoFocus={focus}
                     placeholder={title}
                     name={name}
-                    changeHandler={this.changeHandler.bind(this)}
+                    changeHandler={this.changeHandler.bind(this, locale_index)}
                     errorText={field.get('error')}
 
                 />
@@ -110,14 +104,14 @@ export default class Form extends Component {
             case "--number":
                 return <Input
                     disabled={thisDisabled}
-                    key={index} dataIndex={index}
+                    key={keyIndex} dataIndex={index}
                     fieldClass={fieldClass}
                     value={mainValue}
                     type="number"
                     autoFocus={focus}
                     placeholder={title}
                     name={name}
-                    changeHandler={this.changeHandler.bind(this)}
+                    changeHandler={this.changeHandler.bind(this, locale_index)}
                     errorText={field.get('error')}
 
                 />
@@ -125,14 +119,14 @@ export default class Form extends Component {
             case "--money":
                 return <Input
                     disabled={thisDisabled}
-                    key={index} dataIndex={index}
+                    key={keyIndex} dataIndex={index}
                     fieldClass={fieldClass}
                     value={mainValue}
                     type="money"
                     autoFocus={focus}
                     placeholder={title}
                     name={name}
-                    changeHandler={this.changeHandler.bind(this)}
+                    changeHandler={this.changeHandler.bind(this, locale_index)}
                     errorText={field.get('error')}
 
                 />
@@ -140,14 +134,14 @@ export default class Form extends Component {
             case "--email":
                 return <Input
                     disabled={thisDisabled}
-                    key={index} dataIndex={index}
+                    key={keyIndex} dataIndex={index}
                     fieldClass={fieldClass}
                     value={mainValue}
                     type="email"
                     autoFocus={focus}
                     placeholder={title}
                     name={name}
-                    changeHandler={this.changeHandler.bind(this)}
+                    changeHandler={this.changeHandler.bind(this, locale_index)}
                     errorText={field.get('error')}
 
                 />
@@ -155,14 +149,14 @@ export default class Form extends Component {
             case "--link":
                 return <Input
                     disabled={thisDisabled}
-                    key={index} dataIndex={index}
+                    key={keyIndex} dataIndex={index}
                     fieldClass={fieldClass}
                     value={mainValue}
                     type="text"
                     autoFocus={focus}
                     placeholder={title}
                     name={name}
-                    changeHandler={this.changeHandler.bind(this)}
+                    changeHandler={this.changeHandler.bind(this, locale_index)}
                     errorText={field.get('error')}
 
                 />
@@ -170,14 +164,14 @@ export default class Form extends Component {
             case "--textarea":
                 return <Input
                     disabled={thisDisabled}
-                    key={index} dataIndex={index}
+                    key={keyIndex} dataIndex={index}
                     fieldClass={fieldClass}
                     value={mainValue}
                     type="textarea"
                     autoFocus={focus}
                     placeholder={title}
                     name={name}
-                    changeHandler={this.changeHandler.bind(this)}
+                    changeHandler={this.changeHandler.bind(this, locale_index)}
                     errorText={field.get('error')}
 
                 />
@@ -185,14 +179,16 @@ export default class Form extends Component {
             case "--ckeditor":
                 return <CK
                     disabled={thisDisabled}
-                    key={index} dataIndex={index}
+                    key={keyIndex}
+                    keyIndex={keyIndex}
+                    dataIndex={index}
                     placeholder={title}
                     fieldClass={fieldClass}
                     name={name}
                     gridId={gridId}
                     index={index}
                     mainValue={mainValue}
-                    changeHandler={this.manualChange.bind(this, `${index}`)}
+                    changeHandler={this.manualeChangeHandler.bind(this, locale_index, `${index}`)}
                     errorText={field.get('error')}
 
                 />
@@ -200,14 +196,14 @@ export default class Form extends Component {
             case "--drag-map":
                 return <DragMap
                     disabled={thisDisabled}
-                    key={index} dataIndex={index}
+                    key={keyIndex} dataIndex={index}
                     placeholder={title}
                     fieldClass={fieldClass}
                     gridId={gridId}
                     index={index}
                     name={name}
                     mainValue={mainValue}
-                    changeHandler={this.manualChange.bind(this, `${index}`)}
+                    changeHandler={this.manualeChangeHandler.bind(this, locale_index, `${index}`)}
                     errorText={field.get('error')}
 
                 />
@@ -215,19 +211,19 @@ export default class Form extends Component {
             case "--single-file":
                 return <SingleFileUploader
                     disabled={thisDisabled}
-                    key={index} dataIndex={index}
+                    key={keyIndex} dataIndex={index}
                     fieldClass={fieldClass}
                     gridId={gridId}
                     placeholder={title}
                     index={index}
                     name={name}
                     mainValue={mainValue}
-                    changeHandler={this.manualChange.bind(this, `${index}`)}
+                    changeHandler={this.manualeChangeHandler.bind(this, locale_index, `${index}`)}
                     errorText={field.get('error')}
                 />
                 break;
             case "--date":
-                return <div key={index} dataIndex={index} className={`form-group ${fieldClass}  col-md-12`}>
+                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass}  col-md-12`}>
                     <label className="control-label">{title}</label>
                     <DateTimePicker
                         disabled={thisDisabled}
@@ -245,7 +241,7 @@ export default class Form extends Component {
                 </div>
                 break;
             case "--datetime":
-                return <div key={index} dataIndex={index} className={`form-group ${fieldClass}  col-md-12`}>
+                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass}  col-md-12`}>
                     <label>
 
                         {title}
@@ -266,7 +262,7 @@ export default class Form extends Component {
                 </div>
                 break;
             case "--combogrid":
-                return <div key={index} dataIndex={index} className={`form-group ${fieldClass}  col-md-12`}>
+                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass}  col-md-12`}>
                     {formType == 'inline' ? '' : <label className="control-label">{title}</label>}
                     <Combogrid listData={formData[field.get('column')].data.data}
                                disabled={thisDisabled}
@@ -291,7 +287,7 @@ export default class Form extends Component {
 
                 return <ComboBox
                     disabled={thisDisabled}
-                    key={index}
+                    key={keyIndex}
                     column={field.get('column')}
                     name={name}
                     fieldClass={fieldClass}
@@ -301,14 +297,14 @@ export default class Form extends Component {
                     value={mainValue}
                     multi={false}
                     fieldOptions={field.get('options')}
-                    changeHandler={this.manualChangeHandler.bind(this, `${index}`)}
+                    changeHandler={this.manualeChangeHandler.bind(this, locale_index, `${index}`)}
                     errorText={field.get('error')}
                 />
                 break;
             case "--combobox-addable":
                 return <ComboBoxAddAble
                     disabled={thisDisabled}
-                    key={index} dataIndex={index}
+                    key={keyIndex} dataIndex={index}
                     column={field.get('column')}
                     name={name}
                     fieldClass={fieldClass}
@@ -319,14 +315,14 @@ export default class Form extends Component {
                     value={mainValue}
                     fieldOptions={field.get('options')}
                     formControls={field.getIn(['options', 'form_input_control'])}
-                    changeHandler={this.manualChangeHandler.bind(this, `${index}`)}
+                    changeHandler={this.manualeChangeHandler.bind(this, locale_index, `${index}`)}
                     errorText={field.get('error')}
                 />
                 break;
             case "--tag":
                 return <ComboBox
                     disabled={thisDisabled}
-                    key={index}
+                    key={keyIndex}
                     column={field.get('column')}
                     name={name}
                     fieldClass={fieldClass}
@@ -336,33 +332,33 @@ export default class Form extends Component {
                     value={mainValue}
                     multi={true}
                     fieldOptions={field.get('options')}
-                    changeHandler={this.manualChangeHandler.bind(this, `${index}`)}
+                    changeHandler={this.manualeChangeHandler.bind(this, locale_index, `${index}`)}
                     errorText={field.get('error')}
                 />
                 break;
             case "--checkbox":
-                return <div key={index}  className={`form-group ${fieldClass} col-md-12`}>
+                return <div key={keyIndex}  className={`form-group ${fieldClass} col-md-12`}>
                     <div className="checkbox">
                         {formType == 'inline' ?
                             <input type="checkbox"
                                    disabled={thisDisabled}
                                    name={name}
-                                   checked={field.value == 1 ? true: false  }
+                                   checked={field.get('value') == 1 ? true: false  }
                                    value={1}
 
                                    data-index={index}
-                                   onChange={this.changeHandler.bind(this)}
+                                   onChange={this.changeHandler.bind(this, locale_index)}
                             />
                             :
                             <label>
                                 <input type="checkbox"
                                        disabled={thisDisabled}
                                        name={name}
-                                       checked={field.value == 1 ? true: false  }
+                                       checked={field.get('value') == 1 ? true: false  }
                                        value={1}
 
                                        data-index={index}
-                                       onChange={this.changeHandler.bind(this)}
+                                       onChange={this.changeHandler.bind(this, locale_index)}
                                 />
                                 {title}
                             </label>
@@ -376,7 +372,7 @@ export default class Form extends Component {
                 break;
             case "--radio":
 
-                return <div key={index} dataIndex={index} className={`form-group ${fieldClass} col-md-12`}>
+                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass} col-md-12`}>
                     <div className="radio">
 
                         <label>
@@ -393,7 +389,7 @@ export default class Form extends Component {
                                        checked={field.value == choice.value ? true: false  }
 
                                        value={choice.value}
-                                       onChange={this.changeHandler.bind(this)}
+                                       onChange={this.changeHandler.bind(this, locale_index)}
                                 />
                                 {choice.text} &nbsp;&nbsp;&nbsp;
                             </label>
@@ -416,7 +412,7 @@ export default class Form extends Component {
         return formControls.map((field, index) => {
             let thisDisabled = true;
             if(this.props.permission.u !== true && addFrom == false){
-                ifUpdateDisabledCanEditColumns.map((ifUpdateDisabledCanEditColumn)=>{
+                this.props.ifUpdateDisabledCanEditColumns.map((ifUpdateDisabledCanEditColumn)=>{
                     if(field.get('column') == ifUpdateDisabledCanEditColumn)
                         thisDisabled = false;
                 })
@@ -425,35 +421,31 @@ export default class Form extends Component {
 
 
             let fieldClass = '';
-            if (field.error)
+            if (field.get('error'))
                 fieldClass = 'has-error'
 
             let mainValue = this.props.formValue ?
-                formValue
+                this.props.formValue
                 :
-                field.value
-
-
-
-            const focus = false;
+                field.get('value')
 
 
             const name = `${locale_index}__locale__${this.props.gridId}-solar-input${index}`;
 
             let title = '';
 
-            if (field.title instanceof Object) {
+            if (field.get('title') instanceof Object) {
 
-                if(field.title[locale_code])
-                    title = field.title[locale_code]
+                if(field.getIn(['title', locale_code]))
+                    title = field.getIn(['title', locale_code])
                 else
-                    title = field.title[Object.keys(field.title)[0]]
+                    title = field.get('title').first()
             } else
-                title = field.title;
+                title = field.get('title');
 
 
 
-            return this.getFromField(`${locale_id}-${index}`, title, name, field, thisDisabled, fieldClass, mainValue, this.props.translateChangeHandler, this.props.formType, this.props.formData, this.props.gridId, focus);
+            return this.getFromField(locale_index, `${index}`, title, name, field, thisDisabled, fieldClass, mainValue, this.props.formType, this.props.formData, this.props.gridId, false);
 
 
         })
@@ -470,7 +462,7 @@ export default class Form extends Component {
     render() {
         const { formControls, translateFormControls, changeHandler, formData, formType, formValue, focusIndex, gridIndex, gridId, ifUpdateDisabledCanEditColumns, permission, addFrom  } = this.props;
 
-        let formFields = formControls.map((field, index) => {
+        let formFields = formControls.size >= 1 ? formControls.map((field, index) => {
             let thisDisabled = true;
             if(permission.u !== true && addFrom == false){
                 ifUpdateDisabledCanEditColumns.map((ifUpdateDisabledCanEditColumn)=>{
@@ -503,20 +495,21 @@ export default class Form extends Component {
                     focus = true;
             }
 
-            const name = `testt-test${index}`;
+            const name = `solar-input-${index}`;
 
 
-           return this.getFromField(index, field.get('title'), name, field, thisDisabled, fieldClass, mainValue, formType, formData, gridId, focus);
+           return this.getFromField(false, index, field.get('title'), name, field, thisDisabled, fieldClass, mainValue, formType, formData, gridId, focus);
 
 
         })
+            : null
 
-        const translateForm = translateFormControls.map((translateFormControl, locale_index)=>{
+        const translateForm = translateFormControls.size >= 1 ? translateFormControls.map((translateFormControl, locale_index)=>{
 
-            return <Tab eventKey={locale_index} title={translateFormControl.locale_code} key={locale_index}>
-                {this.getTranslationForm(translateFormControl.translate_form_input_control, translateFormControl.locale_id, translateFormControl.locale_code, locale_index)}
+            return <Tab eventKey={locale_index} title={translateFormControl.get('locale_code')} key={locale_index}>
+                {this.getTranslationForm(translateFormControl.get('translate_form_input_control'), translateFormControl.get('locale_id'), translateFormControl.get('locale_code'), locale_index)}
             </Tab>
-        })
+        }) : null
 
         return (
             <div>
@@ -538,7 +531,6 @@ export default class Form extends Component {
 Form.defaultProps = {
     ifUpdateDisabledCanEditColumns:[],
     locales:[],
-    translateFormControls:[],
 };
 
 Form.propTypes = {
