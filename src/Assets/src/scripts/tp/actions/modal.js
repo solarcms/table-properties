@@ -1,15 +1,15 @@
-import {SET_MODAL, ADD_MODAL}  from '../constants/';
+import * as types from '../constants/modal';
 
 export function setModal(column, value) {
     return {
-        type: SET_MODAL,
+        type: types.SET_MODAL,
         column,
         value
     }
 }
 export function addModal(column) {
     return {
-        type: ADD_MODAL,
+        type: types.ADD_MODAL,
         column
     }
 }

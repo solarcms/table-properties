@@ -1,20 +1,10 @@
 import createReducer from '../lib/createReducer';
 
 import Immutable from 'immutable';
-
-import {
-    SET_SUB_ITEMS,
-    SUB_ITEMS_CHANGE_VALUE,
-    SUB_ITEMS_SET_ERROR,
-    SUB_ITEMS_CLEAR_FORM_VALIDATION,
-    SUB_ITEMS_ADD_ITEM,
-    SUB_ITEMS_EDIT_ITEM,
-    SUB_ITEMS_UPDATE_ITEM,
-    SUB_ITEMS_DELETE_ITEM,
-    CLEAR_SUB_ITEMS
-} from '../constants/';
+import * as types from '../constants/subItems';
 
 const initialState = {
+    subItemsInit: [],
     subItems: [],
     items:[],
     editIndex: -1
@@ -22,18 +12,19 @@ const initialState = {
 
 export default createReducer(initialState, {
 
-    [SET_SUB_ITEMS](state, { data }) {
+    [types.SET_SUB_ITEMS](state, { data }) {
 
 
        const subitems = Immutable.fromJS(data);
 
         state = state.set('subItems', subitems);
+        state = state.set('subItemsInit', subitems);
 
         return state;
 
     },
 
-    [CLEAR_SUB_ITEMS](state, { }) {
+    [types.CLEAR_SUB_ITEMS](state, { }) {
 
 
         state = state.updateIn(['subItems'], (subItems) =>{
@@ -47,44 +38,60 @@ export default createReducer(initialState, {
         return state;
 
     },
-    [SUB_ITEMS_CHANGE_VALUE](state, { column, CAIndex, index, value }) {
+    [types.SUB_ITEMS_CHANGE_VALUE](state, { column, CAIndex, index, value }) {
 
-        state = state.setIn(['subItems', CAIndex, 'form_input_control', index, 'value'], value);
+        let dataIndex = [];
+        index.map((key)=>dataIndex.push(key))
+
+
+        dataIndex.unshift('form_input_control')
+
+        dataIndex.unshift(CAIndex)
+
+        dataIndex.unshift('subItems')
+
+        dataIndex.push('value')
+
+        state = state.setIn(dataIndex, value);
 
 
         return state;
     },
-    [SUB_ITEMS_SET_ERROR](state, { column, CAIndex, index, error }) {
+    [types.SUB_ITEMS_SET_ERROR](state, { column, CAIndex, index, error }) {
 
-        state = state.setIn(['subItems', CAIndex, 'form_input_control', index, 'error'], error);
+        let dataIndex = [];
+        index.map((key)=>dataIndex.push(key))
+
+
+        dataIndex.unshift('form_input_control')
+
+        dataIndex.unshift(CAIndex)
+
+        dataIndex.unshift('subItems')
+
+        dataIndex.push('error')
+
+        state = state.setIn(dataIndex, error);
 
 
         return state;
     },
-    [SUB_ITEMS_CLEAR_FORM_VALIDATION](state, {CAIndex}) {
+    [types.SUB_ITEMS_CLEAR_FORM_VALIDATION](state, {CAIndex}) {
 
-        state = state.updateIn(['subItems', CAIndex, 'form_input_control'], (formControl) =>{
-            return formControl.map((input) => {
-                return (input.set('error', null));
-            })
+       let initSubItems = state.get('subItemsInit');
 
-        })
+        initSubItems.map((initSubItem, subIndex)=>{
 
-
-        state = state.updateIn(['subItems', CAIndex, 'form_input_control'], (formControl) =>{
-            return formControl.map((input) => {
-                const type = input.get('type')
-                if(type == '--checkbox')
-                    return (input.set('value', false))
-                else
-                    return (input.set('value', null))
-            })
+            state = state.setIn(['subItems', subIndex, 'form_input_control'], initSubItem.get('form_input_control'))
 
         })
+
         state = state.set('editIndex', -1);
         return state;
     },
-    [SUB_ITEMS_ADD_ITEM](state, {Sindex, item}){
+    [types.SUB_ITEMS_ADD_ITEM](state, {Sindex, item}){
+
+
 
         const subitem = Immutable.fromJS(item);
 
@@ -95,7 +102,7 @@ export default createReducer(initialState, {
         return state;
 
     },
-    [SUB_ITEMS_EDIT_ITEM](state, {Sindex, formControl, editIndex}){
+    [types.SUB_ITEMS_EDIT_ITEM](state, {Sindex, formControl, editIndex}){
 
         const EditformControl = Immutable.fromJS(formControl);
 
@@ -105,17 +112,17 @@ export default createReducer(initialState, {
         return state;
 
     },
-    [SUB_ITEMS_UPDATE_ITEM](state, {Sindex, Iindex, item}){
+    [types.SUB_ITEMS_UPDATE_ITEM](state, {Sindex, Iindex, item}){
 
-        const updatedItem = Immutable.fromJS(item);
+        //const updatedItem = Immutable.fromJS(item);
 
-        state = state.setIn(['subItems', Sindex, 'items', Iindex, 'data'], updatedItem);
+        state = state.setIn(['subItems', Sindex, 'items', Iindex, 'data'], item);
         state = state.set('editIndex', -1);
 
         return state;
 
     },
-    [SUB_ITEMS_DELETE_ITEM](state, {Sindex, Iindex}){
+    [types.SUB_ITEMS_DELETE_ITEM](state, {Sindex, Iindex}){
 
         state = state.deleteIn(['subItems', Sindex, 'items', Iindex]);
         state = state.set('editIndex', -1);

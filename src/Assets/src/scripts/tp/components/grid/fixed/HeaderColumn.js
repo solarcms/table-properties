@@ -79,7 +79,7 @@ export function fixRowHeigth(gridId) {
     $("#"+gridId+" > thead > tr").find("th").each(function (indx, th) {
         let numberOfindex = indx + 1;
 
-        console.log(getWidth(th));
+
 
         let realWidth = getWidth(th);
 

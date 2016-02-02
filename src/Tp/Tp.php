@@ -114,6 +114,9 @@ class Tp
             case "change-language":     return $this->changeLangauge();    break;
             case "edit-translation":     return $this->editTranslation();    break;
 
+            // cascade
+            case "get-cascade-child": return $this->getCascadeChild(); break;
+
             default:              return $this->index($this->viewName);
         }
 
@@ -139,10 +142,31 @@ class Tp
         foreach($this->form_input_control as $formControl){
             if($formControl['type'] == '--combogrid' || $formControl['type'] == '--combobox' || $formControl['type'] == '--tag' || $formControl['type'] == '--combobox-addable' || $formControl['type'] == '--combobox-hidden'){
 
-                $options = $formControl['options'];
+                if(isset($formControl['save']) && $formControl['save'] == false){
 
-                $table_data->join($options['table'], "$this->table." . $formControl['column'], '=', $options['table']. "." .$options['valueField']);
+                } {
+                    $options = $formControl['options'];
 
+                    $table_data->join($options['table'], "$this->table." . $formControl['column'], '=', $options['table']. "." .$options['valueField']);
+                }
+
+            }
+            if($formControl['type'] == '--group'){
+                foreach($formControl['controls'] as $subformControl){
+                    if($subformControl['type'] == '--combogrid' || $subformControl['type'] == '--combobox' || $subformControl['type'] == '--tag' || $subformControl['type'] == '--combobox-addable' || $subformControl['type'] == '--combobox-hidden'){
+
+                        if(isset($subformControl['save']) && $subformControl['save'] == false){
+
+                        } {
+
+                            $suboptions = $subformControl['options'];
+
+                            $table_data->join($suboptions['table'], "$this->table." . $subformControl['column'], '=', $suboptions['table']. "." .$suboptions['valueField']);
+                        }
+
+                    }
+
+                }
             }
         }
 
@@ -180,15 +204,14 @@ class Tp
         return  $table_data->paginate($pageLimit);
 
     }
-
-    public function get_form_datas(){
+    public function get_data($formControls){
         if($this->permission['r'] != true && $this->permission['c'] === false)
             return Response::json('permission denied', 400);
 
-
         $FormData = [];
 
-        foreach($this->form_input_control as $formControl){
+
+        foreach($formControls as $formControl) {
             if($formControl['type'] == '--combogrid'){
 
                 $options = $formControl['options'];
@@ -199,22 +222,26 @@ class Tp
 
                 $FormData[$formControl['column']] = ['data'=>$data, 'form_input_control'=>$options['form_input_control'], 'text'=>null];
 
-              //  print_r($data);
+                //  print_r($data);
                 //->take($this->pageLimit)->get()
 
             }
             if($formControl['type'] == '--combobox' || $formControl['type'] == '--tag' || $formControl['type'] == '--combobox-addable'){
 
                 $options = $formControl['options'];
-                $order = explode(" ", $options['grid_default_order_by']);
-                $data['data'] = DB::table($options['table'])->select($options['grid_columns'])->orderBy($order[0], $order[1])->get();
+                if(isset($options['parent'])){
+                    $FormData[$formControl['column']] = ['data'=>['data'=>[]]];
 
-//                $data = $data->toArray();
+                } else{
+                    $order = explode(" ", $options['grid_default_order_by']);
+                    $data['data'] = DB::table($options['table'])->select($options['grid_columns'])->orderBy($order[0], $order[1])->get();
 
-                $FormData[$formControl['column']] = ['data'=>$data];
 
-              //  print_r($data);
-                //->take($this->pageLimit)->get()
+                    $FormData[$formControl['column']] = ['data'=>$data];
+                }
+
+
+
 
 
 
@@ -222,76 +249,58 @@ class Tp
             if($formControl['type'] == '--combobox-addable'){
                 $options = $formControl['options'];
 
-                $comboAddAbleFC = $options['form_input_control'];
 
-                foreach($comboAddAbleFC as $CAformControl) {
-
+                    $comboAddAbleFC = $options['form_input_control'];
 
 
-                    if ($CAformControl['type'] == '--combobox' || $CAformControl['type'] == '--tag' || $CAformControl['type'] == '--combobox-addable') {
+                    $FormData_pre = $this->get_data($comboAddAbleFC);
 
 
-                        $CAoptions = $CAformControl['options'];
-
-                        $CAorder = explode(" ", $CAoptions['grid_default_order_by']);
-                        $CAdata['data'] = DB::table($CAoptions['table'])->select($CAoptions['grid_columns'])->orderBy($CAorder[0], $CAorder[1])->get();
-
-                        $FormData[$CAformControl['column']] = ['data'=>$CAdata];
-
-                    }
-
-                }
+                    $FormData = array_merge($FormData, $FormData_pre);
 
 
 
             }
+            if($formControl['type'] == '--group'){
+                $controls = $formControl['controls'];
+
+
+
+                $FormData_pre = $this->get_data($controls);
+
+
+
+                $FormData = array_merge($FormData,$FormData_pre);
+
+
+            }
+
         }
+
+        return $FormData;
+    }
+    public function get_form_datas(){
+        if($this->permission['r'] != true && $this->permission['c'] === false)
+            return Response::json('permission denied', 400);
+
+
+        $FormData = [];
+
+        $FormData_pre = $this->get_data($this->form_input_control);
+
+
+        $FormData = array_merge($FormData,$FormData_pre);
+
         if(count($this->subItems) >= 1){
             foreach($this->subItems as $subItem){
 
-                foreach($subItem['form_input_control'] as $SformControl) {
+
+
+                $FormData_pre_sub = $this->get_data($subItem['form_input_control']);
 
 
 
-                    if ($SformControl['type'] == '--combobox' || $SformControl['type'] == '--tag' || $SformControl['type'] == '--combobox-addable') {
-
-
-                        $CAoptions = $SformControl['options'];
-
-                        $CAorder = explode(" ", $CAoptions['grid_default_order_by']);
-                        $CAdata['data'] = DB::table($CAoptions['table'])->select($CAoptions['grid_columns'])->orderBy($CAorder[0], $CAorder[1])->get();
-
-                        $FormData[$SformControl['column']] = ['data'=>$CAdata];
-
-                    }
-                    if($SformControl['type'] == '--combobox-addable'){
-                        $CAoptions = $SformControl['options'];
-
-                        $comboAddAbleFC = $CAoptions['form_input_control'];
-
-                        foreach($comboAddAbleFC as $CAformControl) {
-
-
-
-                            if ($CAformControl['type'] == '--combobox' || $CAformControl['type'] == '--tag') {
-
-
-                                $CAoptions = $CAformControl['options'];
-
-                                $CAorder = explode(" ", $CAoptions['grid_default_order_by']);
-                                $CAdata['data'] = DB::table($CAoptions['table'])->select($CAoptions['grid_columns'])->orderBy($CAorder[0], $CAorder[1])->get();
-
-                                $FormData[$CAformControl['column']] = ['data'=>$CAdata];
-
-                            }
-
-                        }
-
-
-
-                    }
-
-                }
+                $FormData = array_merge($FormData,$FormData_pre_sub);
             }
         }
 
@@ -311,7 +320,7 @@ class Tp
         /// saijruulah
 
         $table_data = DB::table($this->table)->where($this->table.".id", '=', $id);
-        $table_data->select($this->grid_columns);
+        $table_data->select('id');
 
         if($this->translation_table != ""){
             $default_language_id = Session::get('locale_id');
@@ -322,17 +331,41 @@ class Tp
         $options = null;
         foreach($this->form_input_control as $formControl){
 
+            if(isset($formControl['column']))
             $table_data->addSelect("$this->table." . $formControl['column']);
 
-            if($formControl['type'] == '--combogrid' || $formControl['type'] == '--combobox' || $formControl['type'] == '--tag' || $formControl['type'] == '--combobox-addable' || $formControl['type'] == '--combobox-hidden'){
+//            if($formControl['type'] == '--combogrid' || $formControl['type'] == '--combobox' || $formControl['type'] == '--tag' || $formControl['type'] == '--combobox-addable' || $formControl['type'] == '--combobox-hidden'){
+//
+//                $options = $formControl['options'];
+//
+//                $table_data->join($options['table'], "$this->table." . $formControl['column'], '=', $options['table']. "." .$options['valueField']);
+//
+//
+//            }
 
-                $options = $formControl['options'];
+            if($formControl['type'] == '--group'){
+                foreach($formControl['controls'] as $subformControl){
 
-                $table_data->join($options['table'], "$this->table." . $formControl['column'], '=', $options['table']. "." .$options['valueField']);
+                    if(isset($subformControl['column']))
+                        $table_data->addSelect("$this->table." . $subformControl['column']);
 
+//                    if($subformControl['type'] == '--combogrid' || $subformControl['type'] == '--combobox' || $subformControl['type'] == '--tag' || $subformControl['type'] == '--combobox-addable' || $subformControl['type'] == '--combobox-hidden'){
+//
+//                        if(isset($subformControl['save']) && $subformControl['save'] == false){
+//
+//                        } {
+//
+//                            $suboptions = $subformControl['options'];
+//
+//                            $table_data->join($suboptions['table'], "$this->table." . $subformControl['column'], '=', $suboptions['table']. "." .$suboptions['valueField']);
+//                        }
+//
+//                    }
 
+                }
             }
         }
+
 
         return  $table_data->get();
 
@@ -373,16 +406,35 @@ class Tp
 
         $insertQuery = [];
         foreach($this->form_input_control as $formControl){
-            if($formControl['type']=='--checkbox'){
-                $checkBoxValue = $formData[$formControl['column']];
-                if($checkBoxValue == 1)
-                    $checkBoxValue = 1;
-                else
-                    $checkBoxValue = 0;
-                $insertQuery[$formControl['column']] = $checkBoxValue;
+            if($formControl['type'] != '--group'){
+                if($formControl['type']=='--checkbox'){
+                    $checkBoxValue = $formData[$formControl['column']];
+                    if($checkBoxValue == 1)
+                        $checkBoxValue = 1;
+                    else
+                        $checkBoxValue = 0;
+                    $insertQuery[$formControl['column']] = $checkBoxValue;
 
-            } else
-            $insertQuery[$formControl['column']] = $formData[$formControl['column']];
+                } else
+                    $insertQuery[$formControl['column']] = $formData[$formControl['column']];
+            } else {
+                foreach($formControl['controls'] as $subformControl){
+                    if($subformControl['type'] != '--group'){
+                        if($subformControl['type']=='--checkbox'){
+                            $checkBoxValue = $formData[$subformControl['column']];
+                            if($checkBoxValue == 1)
+                                $checkBoxValue = 1;
+                            else
+                                $checkBoxValue = 0;
+                            $insertQuery[$subformControl['column']] = $checkBoxValue;
+
+                        } else
+                            $insertQuery[$subformControl['column']] = $formData[$subformControl['column']];
+                    }
+
+                }
+            }
+
         }
 
         if(!empty($this->save_sub_items_count)){
@@ -482,19 +534,43 @@ class Tp
                 }
 
             } else {
-                if($formControl['type']=='--checkbox'){
-                    $checkBoxValue = $formData[$formControl['column']];
-                    if($checkBoxValue == 1)
-                        $checkBoxValue = 1;
-                    else
-                        $checkBoxValue = 0;
-                    $insertQuery[$formControl['column']] = $checkBoxValue;
 
-                } else
-                    $insertQuery[$formControl['column']] = $formData[$formControl['column']];
+                if($formControl['type'] != '--group') {
+                    if ($formControl['type'] == '--checkbox') {
+                        $checkBoxValue = $formData[$formControl['column']];
+                        if ($checkBoxValue == 1)
+                            $checkBoxValue = 1;
+                        else
+                            $checkBoxValue = 0;
+                        $insertQuery[$formControl['column']] = $checkBoxValue;
+
+                    } else
+                        $insertQuery[$formControl['column']] = $formData[$formControl['column']];
+
+                } else {
+                    foreach($formControl['controls'] as $subformControl){
+                        if($subformControl['type'] != '--group'){
+                            if($subformControl['type']=='--checkbox'){
+                                $checkBoxValue = $formData[$subformControl['column']];
+                                if($checkBoxValue == 1)
+                                    $checkBoxValue = 1;
+                                else
+                                    $checkBoxValue = 0;
+                                $insertQuery[$subformControl['column']] = $checkBoxValue;
+
+                            } else
+                                $insertQuery[$subformControl['column']] = $formData[$subformControl['column']];
+                        }
+
+                    }
+                }
+
+
             }
 
         }
+
+
 
         if(!empty($this->save_sub_items_count)){
             $posted_sub_items = Request::input('subItems');
@@ -906,21 +982,45 @@ class Tp
                 $table = $formControl['options']['table'];
 
                 foreach($form_input_control as $formControl2){
-                    if($formControl2['type']=='--checkbox'){
-                        $checkBoxValue = $formData[$formControl2['column']];
-                        if($checkBoxValue == 1)
-                            $checkBoxValue = 1;
-                        else
-                            $checkBoxValue = 0;
-                        $insertQuery[$formControl2['column']] = $checkBoxValue;
+                    if($formControl2['type'] != '--group') {
+                        if ($formControl2['type'] == '--checkbox') {
+                            $checkBoxValue = $formData[$formControl2['column']];
+                            if ($checkBoxValue == 1)
+                                $checkBoxValue = 1;
+                            else
+                                $checkBoxValue = 0;
+                            $insertQuery[$formControl2['column']] = $checkBoxValue;
 
-                    } else
-                        $insertQuery[$formControl2['column']] = $formData[$formControl2['column']];
+                        } else
+                            $insertQuery[$formControl2['column']] = $formData[$formControl2['column']];
+
+                    } else {
+                        foreach($formControl2['controls'] as $subformControl){
+                            if($subformControl['type'] != '--group'){
+                                if($subformControl['type']=='--checkbox'){
+                                    $checkBoxValue = $formData[$subformControl['column']];
+                                    if($checkBoxValue == 1)
+                                        $checkBoxValue = 1;
+                                    else
+                                        $checkBoxValue = 0;
+                                    $insertQuery[$subformControl['column']] = $checkBoxValue;
+
+                                } else
+                                    $insertQuery[$subformControl['column']] = $formData[$subformControl['column']];
+                            }
+
+                        }
+                    }
                 }
 
             }
 
         }
+
+
+
+
+
         if($table != '')
             $saved = DB::table($table)->insert($insertQuery);
         else
@@ -983,7 +1083,7 @@ class Tp
                 $grid_columns = $formControl['options']['grid_columns'];
                 $order = explode(" ", $formControl['options']['grid_default_order_by']);
 
-                $table_data['data'] = DB::table($table)->select($grid_columns)->orderBy($order[0], $order[1])->get();
+                $table_data = DB::table($table)->select($grid_columns)->orderBy($order[0], $order[1])->get();
 
 
             }
@@ -1005,7 +1105,7 @@ class Tp
                         $grid_columns = $SformControl['options']['grid_columns'];
                         $order = explode(" ", $SformControl['options']['grid_default_order_by']);
 
-                        $table_data['data'] = DB::table($table)->select($grid_columns)->orderBy($order[0], $order[1])->get();
+                        $table_data = DB::table($table)->select($grid_columns)->orderBy($order[0], $order[1])->get();
 
 
 
@@ -1035,16 +1135,32 @@ class Tp
                             $table = $subItem['table'];
                             $formData = $item;
                             foreach($subItem['form_input_control'] as $formControl){
-                                if($formControl['type']=='--checkbox'){
-                                    $checkBoxValue = $formData[$formControl['column']];
-                                    if($checkBoxValue == 1)
-                                        $checkBoxValue = 1;
-                                    else
-                                        $checkBoxValue = 0;
-                                    $insertQuery[$formControl['column']] = $checkBoxValue;
+                                if($formControl['type'] != '--group'){
+                                    if($formControl['type']=='--checkbox'){
+                                        $checkBoxValue = $formData[$formControl['column']];
+                                        if($checkBoxValue == 1)
+                                            $checkBoxValue = 1;
+                                        else
+                                            $checkBoxValue = 0;
+                                        $insertQuery[$formControl['column']] = $checkBoxValue;
 
-                                } else
-                                    $insertQuery[$formControl['column']] = $formData[$formControl['column']];
+                                    } else
+                                        $insertQuery[$formControl['column']] = $formData[$formControl['column']];
+                                } else {
+                                    foreach($formControl['controls'] as $sformControl){
+                                        if($sformControl['type']=='--checkbox'){
+                                            $checkBoxValue = $formData[$sformControl['column']];
+                                            if($checkBoxValue == 1)
+                                                $checkBoxValue = 1;
+                                            else
+                                                $checkBoxValue = 0;
+                                            $insertQuery[$sformControl['column']] = $checkBoxValue;
+
+                                        } else
+                                            $insertQuery[$sformControl['column']] = $formData[$sformControl['column']];
+                                    }
+                                }
+
                             }
 
                             if(!empty($this->save_from_parent)){
@@ -1116,6 +1232,100 @@ class Tp
         } else {
             Session::set('locale_id', $this->default_locale_id);
         }
+
+    }
+
+    // cascade
+    public function getCascade($parent, $child, $form_input_control){
+        $data = [];
+        $found = false;
+
+        foreach($form_input_control as $formControl) {
+
+            if(isset($formControl["column"]) && $formControl["column"] == $child){
+
+                $options = $formControl['options'];
+                $order = explode(" ", $options['grid_default_order_by']);
+                $data = DB::table($options['table'])->select($options['grid_columns'])
+                    ->where($options['parent'], '=',$parent)
+                    ->orderBy($order[0], $order[1])->get();
+                return $data;
+
+            }
+
+        }
+
+    }
+    public function getCascadeChild()
+    {
+        $child = Request::input('child');
+        $parent = Request::input('parent');
+
+        $data = [];
+        $found = false;
+
+
+        $data = $this->getCascade($parent, $child, $this->form_input_control);
+
+        if(empty($data)){
+            foreach($this->form_input_control as $formControl) {
+
+                if($formControl['type'] == '--group' && empty($data)){
+                    $controls = $formControl['controls'];
+                    $data = $this->getCascade($parent, $child, $controls);
+                }
+            }
+        }
+        if(empty($data)){
+            foreach($this->form_input_control as $formControl) {
+
+                if($formControl['type'] == '--combobox-addable'){
+
+
+
+                    $data = $this->getCascade($parent, $child, $formControl['options']['form_input_control']);
+
+                    if(empty($data)){
+
+                        foreach($formControl['options']['form_input_control'] as $sformControl) {
+
+                            if($sformControl['type'] == '--group' && empty($data)){
+                                $controls = $sformControl['controls'];
+                                $this->getCascade($parent, $child, $controls);
+                            }
+                        }
+                    }
+                }
+            }
+
+
+        }
+        if(count($this->subItems) >= 1 && empty($data)){
+
+            foreach($this->subItems as $subItem){
+
+                if(empty($data)) {
+                    $data = $this->getCascade($parent, $child, $subItem['form_input_control']);
+                }
+            }
+
+            if(empty($data)) {
+                foreach($this->subItems as $subItem){
+
+                    foreach($subItem['form_input_control'] as $formControl) {
+
+                        if($formControl['type'] == '--group' && empty($data)){
+                            $controls = $formControl['controls'];
+                            $data = $this->getCascade($parent, $child, $controls);
+                        }
+                    }
+                }
+
+
+            }
+        }
+
+        return $data;
 
     }
 }

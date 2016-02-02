@@ -3,6 +3,9 @@ import _ from 'lodash';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import * as reducers from '../reducers';
+import createLogger from 'redux-logger';
+
+const logger = createLogger();
 
 export function arrayMiddleware() {
     return next =>
@@ -19,6 +22,7 @@ export default function (initialState) {
     const createStoreWithMiddleware = applyMiddleware(
         arrayMiddleware,
         thunk
+        //logger
     )(createStore);
 
     const reducer = combineReducers(reducers);

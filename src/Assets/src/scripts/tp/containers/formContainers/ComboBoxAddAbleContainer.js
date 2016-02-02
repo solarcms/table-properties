@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux'
 import * as DataActions from '../../actions/comboBoxAddAble'
-import {saveComboAdd, getComboList} from "../../api/comboAddAble"
+import {saveComboAdd, getComboList, getCascadeChild} from "../../api/comboAddAble"
 import Window from "../../components/window/"
 import Select from 'react-select';
 import validation from "../../components/form/validation/"
@@ -13,121 +13,126 @@ class ComboBoxAddAbleContainer extends Component {
             this.props.actions.changeFormData(CAcolumn, data);
         });
     }
+
     showModal(column) {
 
-        this.props.actions.setModal('combo-'+column, true);
+        this.props.actions.setModal('combo-' + column, true);
     }
+
     hideModal(column, CAIndex) {
-        this.props.actions.setModal('combo-'+column, false);
+        this.props.actions.setModal('combo-' + column, false);
         this.props.actions.clearFromValidation(CAIndex);
     }
-    saveForm(CAcolumn, CAIndex){
-        const FD = this.props.comboBoxs[CAIndex].form_input_control;
 
+    checkValidate(CAcolumn, CAIndex) {
+        const FD = this.props.comboBoxs.getIn([CAIndex, 'form_input_control']);
         let foundError = false;
 
-        FD.map((fromColumn, index) => {
-            const error = (validation(fromColumn.value, fromColumn.validate));
-            if(error){
-                this.props.actions.setError(CAcolumn, CAIndex, index, error);
-                foundError = true;
-            }
+        FD.map((formColumn, index) => {
+            if (formColumn.get('type') == '--group') {
+                formColumn.get('controls').map((formColumnSub, subIndex) => {
+                    const error = (validation(formColumnSub.get('value'), formColumnSub.get('validate')));
+                    if (error) {
+                        this.props.actions.setError(CAcolumn, CAIndex, [index, 'controls', subIndex], error);
 
+                        foundError = true;
+                    }
+                })
+            } else {
+                const error = (validation(formColumn.get('value'), formColumn.get('validate')));
+                if (error) {
+                    this.props.actions.setError(CAcolumn, CAIndex, [index], error);
+
+                    foundError = true;
+                }
+            }
         })
 
-        if(foundError === false)
-            saveComboAdd(CAcolumn, FD).done((data)=>{
 
-                if(data == 'success'){
+        return foundError;
+    }
+
+    saveForm(CAcolumn, CAIndex) {
+
+
+        let foundError = this.checkValidate(CAcolumn, CAIndex);
+
+        const FD = this.props.comboBoxs.getIn([CAIndex, 'form_input_control']);
+
+        if (foundError === false)
+            saveComboAdd(CAcolumn, FD).done((data)=> {
+
+                if (data == 'success') {
                     this.callPageDatas(CAcolumn);
                     this.hideModal(CAcolumn, CAIndex);
                 }
 
-            }).fail(()=>{
+            }).fail(()=> {
                 alert("Уучлаарай алдаа гарлаа дахин оролдоно уу")
             })
 
     }
-    changeValues(CAcolumn, CAIndex, e, type, cvalue, text, column){
+
+    changeValues(CAcolumn, CAIndex, dataIndex, value) {
+
+
+        let realDataIndex = [];
+
+        dataIndex.map((dIndex, index)=> {
+            if (index == 0) {
+                realDataIndex.push(dIndex);
+            } else if (index >= 1) {
+                realDataIndex.push('controls')
+                realDataIndex.push(dIndex)
+            }
+        })
 
 
 
-        if(type && type === 'combo-grid'){
 
 
-            this.props.actions.setComboGridText(column, text);
+        this.props.actions.chagenValue(CAcolumn, CAIndex, realDataIndex, value)
 
-            let index = null
-
-            this.props.formControls.map((FC, FC_index)=>{
-                if(FC.column == column)
-                    index = FC_index
-            });
-
-            const value = cvalue;
-
-            const FD = this.props.comboBoxs[CAIndex].form_input_control;
-
-            this.props.actions.chagenValue(CAcolumn, CAIndex, index, value)
-
-            // check validation with on change
-            const error = (validation(value, FD[index].validate));
-
-            this.props.actions.setError(CAcolumn, CAIndex, index, error);
-
-            $("#combo-grid-"+column).removeClass('open');
+        const field = this.props.comboBoxs.getIn([CAIndex, 'form_input_control']).getIn(realDataIndex);
 
 
-        } else if(type && type === 'manual'){
 
-            const index = text.replace(CAcolumn+"-solar-input", "");
-            const value = cvalue;
+        const error = validation(value, field.get('validate'));
 
 
-            const FD = this.props.comboBoxs[CAIndex].form_input_control;
 
 
-            this.props.actions.chagenValue(CAcolumn, CAIndex, index, value)
+        this.props.actions.setError(CAcolumn, CAIndex, realDataIndex, error);
 
-
-            // check validation with on change
-            const error = (validation(value, FD[index].validate));
-            this.props.actions.setError(CAcolumn, CAIndex, index, error);
-
-
+        /// cascad call
+        if(field.get('type') == '--combobox'){
+            if(field.getIn(['options', 'child'])){
+                getCascadeChild(field.getIn(['options', 'child']), value).then((data)=>{
+                    this.props.actions.changeFormData(field.getIn(['options', 'child']), data);
+                })
+            }
         }
 
-        else {
-            const index = e.target.name.replace(CAcolumn+"-solar-input", "");
-            const value = e.target.value;
-
-            const FD = this.props.comboBoxs[CAIndex].form_input_control;
-
-            e.target.type == 'checkbox' ?
-                e.target.checked ?
-                    this.props.actions.chagenValue(CAcolumn, CAIndex, index, value)
-                    :
-                    this.props.actions.chagenValue(index, 0)
-                :
-                this.props.actions.chagenValue(CAcolumn, CAIndex, index, value)
-
-
-            // check validation with on change
-            const error = (validation(value, FD[index].validate));
-            this.props.actions.setError(CAcolumn, CAIndex, index, error);
-        }
 
 
     }
+
+
+
     componentWillMount() {
-        this.props.actions.addModal('combo-'+this.props.column);
-        this.props.actions.addComboAddAble(this.props.column, {column: this.props.column, form_input_control: this.props.formControls});
+        this.props.actions.addModal('combo-' + this.props.column);
+        this.props.actions.addComboAddAble(this.props.column, {
+            column: this.props.column,
+            form_input_control: this.props.formControls
+        });
 
     }
-    componentWillUnmount(){
+
+    componentWillUnmount() {
 
     }
-    componentDidMount(){
+
+    componentDidMount() {
 
     }
 
@@ -136,82 +141,82 @@ class ComboBoxAddAbleContainer extends Component {
         const {disabled, modals, fieldClass, formData, column, fieldOptions, value, changeHandler, errorText, formType, placeholder, pageName, name, formControls, showAddModal, comboBoxs } = this.props;
 
         let options = [];
-        if(formData[column])
-            formData[column].data.data.map((data, sindex)=>{
-                if (fieldOptions.textField instanceof Array) {
+
+        if (formData.get(column))
+
+            formData.getIn([column, 'data', 'data']).map((data, sindex)=> {
+
+                if (fieldOptions.get('textField') instanceof Object) {
+
                     let arrayLabel = "";
-                    for (var i = 0; i < fieldOptions.textField.length; ++i) {
-                        if(i == 0)
-                            arrayLabel = data[fieldOptions.textField[i]]
+
+                    for (var i = 0; i < fieldOptions.get('textField').size; ++i) {
+                        if (i == 0)
+                            arrayLabel = data.get(fieldOptions.getIn(['textField', i]))
                         else
-                            arrayLabel = arrayLabel +", "+ data[fieldOptions.textField[i]]
+                            arrayLabel = arrayLabel + ", " + data.get(fieldOptions.getIn(['textField', i]))
                     }
 
-                    options.push({value: data[fieldOptions.valueField], label: arrayLabel})
+                    options.push({value: data.get(fieldOptions.get('valueField')), label: arrayLabel})
                 }
                 else {
-                    options.push({value: data[fieldOptions.valueField], label: data[fieldOptions.textField]})
-                }
 
+                    options.push({
+                        value: data.get(fieldOptions.get('valueField')),
+                        label: data.get(fieldOptions.get('textField'))
+                    })
+                }
             })
 
+
         let windowForm = null;
-       if(comboBoxs.length >= 1)
-        windowForm = comboBoxs.map((comboBox, index) => {
-
-
-
-
-                if(comboBox.column == column){
+        if (comboBoxs.size >= 1)
+            windowForm = comboBoxs.map((comboBox, index) => {
+                if (comboBox.get('column') == column) {
                     let shwoModal = false;
 
                     modals.map((modal) => {
-                        if(modal.name == "combo-"+comboBox.column)
-                            shwoModal = modal.show;
+                        if (modal.get('name') == "combo-" + comboBox.get('column'))
+                            shwoModal = modal.get('show');
                     })
                     return <Window key={index}
-                                   id={comboBox.column}
-                                   formControls={comboBox.form_input_control}
+                                   id={comboBox.get('column')}
+                                   formControls={comboBox.get('form_input_control')}
+
                                    formData={formData}
                                    pageName={pageName}
                                    show={shwoModal}
                                    permission={{c:true, r:true, u:true, d:false}}
                                    ifUpdateDisabledCanEditColumns={[]}
-                                   changeHandler={this.changeValues.bind(this, comboBox.column, index)}
-                                   saveForm={this.saveForm.bind(this, comboBox.column, index)}
-                                   hideModal={this.hideModal.bind(this, comboBox.column, index)}
+                                   changeHandler={this.changeValues.bind(this, comboBox.get('column'), index)}
+                                   saveForm={this.saveForm.bind(this, comboBox.get('column'), index)}
+                                   hideModal={this.hideModal.bind(this, comboBox.get('column'), index)}
                     />
                 }
 
 
-
-
-
-        })
-
-
-
-
+            })
 
 
         return (
-            <div className={`form-group ${fieldClass}  col-md-12`}>
+            <div className={`form-group ${fieldClass}  `}>
                 {formType == 'inline' ? '' : <label className="control-label">{placeholder}</label>}
 
-                {formData[column] ?
+                {formData.get(column) ?
 
                     <Select className="addable-combo"
                             disabled={disabled}
-                        name={name}
-                        value={value}
-                        options={options}
-                        onChange={changeHandler}
+                            name={name}
+                            value={value}
+                            options={options}
+                            onChange={changeHandler}
                             placeholder={`Сонгох`}
                     />
                     :
                     null}
 
-                <button className="btn btn-primary add-btn combo-add-btn" onClick={this.showModal.bind(this,column)} disabled={disabled}>
+                <button className="btn btn-primary add-btn combo-add-btn" onClick={this.showModal.bind(this,column)}
+                        disabled={disabled}>
                     <i className="material-icons">&#xE145;</i>
                 </button>
 
@@ -226,10 +231,10 @@ class ComboBoxAddAbleContainer extends Component {
 }
 
 ComboBoxAddAbleContainer.defaultProps = {
-    comboBoxs: []
+
 }
 ComboBoxAddAbleContainer.propTypes = {
-    comboBoxs: PropTypes.array.isRequired
+    comboBoxs: PropTypes.object.isRequired
 }
 
 function mapStateToProps(state) {
@@ -239,8 +244,8 @@ function mapStateToProps(state) {
 
     return {
 
-        modals: Modal.get('modals').toJS(),
-        comboBoxs: ComboBoxAddAble.get('comboBoxs').toJS()
+        modals: Modal.get('modals'),
+        comboBoxs: ComboBoxAddAble.get('comboBoxs')
     }
 }
 // Which action creators does it want to receive by props?

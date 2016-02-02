@@ -42,13 +42,13 @@ class GridContainer extends Component {
         if(this.props.permission.r !== true)
             return false;
 
-        this.props.actions.setShowGrid(false);
+         this.props.actions.setShowGrid(false);
         getList(page, {
             pageLimit: pageLimit,
             searchValue: searchValue
         }).then((data)=> {
             this.props.actions.receiveListData(data);
-            this.props.actions.setShowGrid(true);
+           this.props.actions.setShowGrid(true);
         });
     }
     hangePageLimitChange(e) {
@@ -416,21 +416,21 @@ GridContainer.propTypes = {
 function mapStateToProps(state) {
 
     const Grid = state.Grid;
+    const Form = state.Form;
 
     return {
         setup: Grid.get('setup').toJS(),
         locales: Grid.get('setup').toJS().locales,
-        formData: Grid.get('formData').toJS(),
+        formData: Form.get('formData').toJS(),
         editID: Grid.get('editID'),
-        showInlineForm: Grid.get('showInlineForm'),
+        showInlineForm: Form.get('showInlineForm'),
         showGird: Grid.get('showGird'),
         focusIndex: Grid.get('focusIndex'),
-        formControls: Grid.get('form_input_control'),
+        formControls: Form.get('form_input_control'),
         permission: Grid.get('setup').toJS().permission,
         ifUpdateDisabledCanEditColumns: Grid.get('setup').toJS().ifUpdateDisabledCanEditColumns,
         paginationPosition: Grid.get('setup').toJS().pagination_position,
         formType: Grid.get('setup').toJS().formType,
-        //listData: Grid.getIn(['listData', 'data']),
         listData: Grid.get('listData').toJS().data,
         gridHeader: Grid.get('setup').toJS().grid_output_control,
         totalItems: Grid.get('listData').toJS().total,

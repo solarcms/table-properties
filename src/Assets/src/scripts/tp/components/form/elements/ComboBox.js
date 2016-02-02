@@ -35,7 +35,7 @@ export default class ComboBox extends Component {
 
 
         return (
-            <div className={`form-group ${fieldClass}  col-md-12`}>
+            <div className={`form-group ${fieldClass}  `}>
                 {formType == 'inline' ? '' : <label className="control-label">{placeholder}</label>}
 
                 {formData.get(column) ?

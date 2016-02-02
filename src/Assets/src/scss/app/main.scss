@@ -4,7 +4,7 @@
   height: -webkit-calc(100vh - 2px);
   height: calc(100vh - 2px);
   position: relative;
-  background: transparent;
+  background: transparent!important;
   margin: 0;
   padding: 0;
   width: 100%;
@@ -13,6 +13,7 @@
 }
 
 .solar-form {
+  margin: 2px 15px;
   //width: 600px;
   .form-group{
     margin-bottom: 3px;
@@ -99,8 +100,22 @@
 .btn{
   border-radius: 0;
 }
+.add-edit-form{
 
+  max-width: 700px;
+}
 .none-translate-form{
   background: #fff;
-  padding: 5px 0;
+  padding: 10px;
+}
+
+.group-control{
+  h6{
+    font-weight: bold;
+  }
+  margin: 10px 0;
+  padding: 8px;
+  display: block;
+  border: 1px solid #ccc;
+
 }

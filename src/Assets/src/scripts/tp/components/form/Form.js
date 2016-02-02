@@ -29,16 +29,16 @@ export default class Form extends Component {
 
     }
 
-    dateTimeChange(dIndex, value) {
+    dateTimeChange(locale_index, dIndex, value) {
         value = Moment(value).format("YYYY.MM.DD HH:mm");
 
-       this.manualeChangeHandler(dIndex, value);
+       this.manualeChangeHandler(locale_index,dIndex, value);
 
     }
 
-    dateChange(dIndex, value) {
+    dateChange(locale_index, dIndex, value) {
         value = Moment(value).format("YYYY.MM.DD");
-        this.manualeChangeHandler(dIndex, value);
+        this.manualeChangeHandler(locale_index, dIndex, value);
     }
     changeHandler(locale_index, e){
 
@@ -100,6 +100,43 @@ export default class Form extends Component {
                     errorText={field.get('error')}
 
                 />
+                break;
+            case "--group":
+                return <div key={keyIndex} className="group-control " >
+                            <h6>{field.get('title')}</h6>
+                    {field.get('controls').map((control, subindex)=>{
+
+                        let thisSubDisabled = true;
+                        if(this.props.permission.u !== true && this.props.addFrom == false){
+                            this.props.ifUpdateDisabledCanEditColumns.map((ifUpdateDisabledCanEditColumn)=>{
+                                if(field.get('column') == ifUpdateDisabledCanEditColumn)
+                                    thisSubDisabled = false;
+                            })
+                        } else
+                            thisSubDisabled = false;
+
+
+                        let subFieldClass = '';
+                        if (control.get('error'))
+                            subFieldClass = 'has-error'
+
+                        let subMainValue = this.props.formValue ?
+                            this.props.formValue
+                            :
+                            control.get('value')
+
+
+                        let focus = false;
+
+
+                        const subname = `solar-input-${index}-${subindex}`;
+
+                        return this.getFromField(locale_index, `${index}-${subindex}`, control.get('title'), subname, control, thisSubDisabled, subFieldClass, subMainValue, formType, formData, focus);
+
+
+                    })}
+
+                       </div>
                 break;
             case "--number":
                 return <Input
@@ -223,7 +260,7 @@ export default class Form extends Component {
                 />
                 break;
             case "--date":
-                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass}  col-md-12`}>
+                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass}  `}>
                     <label className="control-label">{title}</label>
                     <DateTimePicker
                         disabled={thisDisabled}
@@ -232,7 +269,7 @@ export default class Form extends Component {
                         value={mainValue === null ? null : new Date(mainValue)}
                         format={"YYYY.MM.DD"}
                         time={false}
-                        onChange={this.dateChange.bind(this, `${index}`)}
+                        onChange={this.dateChange.bind(this, locale_index, `${index}`)}
                         placeholder={title}
                     />
                                 <span className="help-block">
@@ -241,7 +278,7 @@ export default class Form extends Component {
                 </div>
                 break;
             case "--datetime":
-                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass}  col-md-12`}>
+                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass}  `}>
                     <label>
 
                         {title}
@@ -253,7 +290,7 @@ export default class Form extends Component {
                         value={mainValue === null ? null : new Date(mainValue)}
                         format={"YYYY.MM.DD HH:mm"}
                         placeholder={title}
-                        onChange={this.dateTimeChange.bind(this, `${index}`)}
+                        onChange={this.dateTimeChange.bind(this, locale_index, `${index}`)}
                     />
                                 <span className="help-block">
 
@@ -262,7 +299,7 @@ export default class Form extends Component {
                 </div>
                 break;
             case "--combogrid":
-                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass}  col-md-12`}>
+                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass}  `}>
                     {formType == 'inline' ? '' : <label className="control-label">{title}</label>}
                     <Combogrid listData={formData[field.get('column')].data.data}
                                disabled={thisDisabled}
@@ -302,6 +339,7 @@ export default class Form extends Component {
                 />
                 break;
             case "--combobox-addable":
+
                 return <ComboBoxAddAble
                     disabled={thisDisabled}
                     key={keyIndex} dataIndex={index}
@@ -337,7 +375,7 @@ export default class Form extends Component {
                 />
                 break;
             case "--checkbox":
-                return <div key={keyIndex}  className={`form-group ${fieldClass} col-md-12`}>
+                return <div key={keyIndex}  className={`form-group ${fieldClass} `}>
                     <div className="checkbox">
                         {formType == 'inline' ?
                             <input type="checkbox"
@@ -372,7 +410,7 @@ export default class Form extends Component {
                 break;
             case "--radio":
 
-                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass} col-md-12`}>
+                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass} `}>
                     <div className="radio">
 
                         <label>
@@ -380,18 +418,18 @@ export default class Form extends Component {
                             {title}
                         </label> <br/>
 
-                        {field.choices.map((choice, cindex)=>
+                        {field.get('choices').map((choice, cindex)=>
                             <label key={cindex}>
                                 <input type="radio"
                                        disabled={thisDisabled}
                                        name={name}
+                                       data-index={index}
+                                       checked={field.get('value') == choice.get('value') ? true: false  }
 
-                                       checked={field.value == choice.value ? true: false  }
-
-                                       value={choice.value}
+                                       value={choice.get('value')}
                                        onChange={this.changeHandler.bind(this, locale_index)}
                                 />
-                                {choice.text} &nbsp;&nbsp;&nbsp;
+                                {choice.get('text')} &nbsp;&nbsp;&nbsp;
                             </label>
                         )}
 
@@ -498,13 +536,14 @@ export default class Form extends Component {
             const name = `solar-input-${index}`;
 
 
+
            return this.getFromField(false, index, field.get('title'), name, field, thisDisabled, fieldClass, mainValue, formType, formData, gridId, focus);
 
 
         })
             : null
 
-        const translateForm = translateFormControls.size >= 1 ? translateFormControls.map((translateFormControl, locale_index)=>{
+        const translateForm = translateFormControls && translateFormControls.size >= 1 ? translateFormControls.map((translateFormControl, locale_index)=>{
 
             return <Tab eventKey={locale_index} title={translateFormControl.get('locale_code')} key={locale_index}>
                 {this.getTranslationForm(translateFormControl.get('translate_form_input_control'), translateFormControl.get('locale_id'), translateFormControl.get('locale_code'), locale_index)}
@@ -512,7 +551,7 @@ export default class Form extends Component {
         }) : null
 
         return (
-            <div>
+            <div className="add-edit-form">
                 <Tabs defaultActiveKey={0} animation={false}>
                     {translateForm}
                 </Tabs>

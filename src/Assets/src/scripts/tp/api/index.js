@@ -29,7 +29,13 @@ export function save(formData, translateFormControls, subItems) {
 
     let data = {};
     formData.map((fData) => {
-        data[fData.get('column')] = fData.get('value');
+        if(fData.get('type') == '--group'){
+            fData.get('controls').map((fDataSub) => {
+                data[fDataSub.get('column')] = fDataSub.get('value');
+            })
+        } else
+            data[fData.get('column')] = fData.get('value');
+
 
     })
 
@@ -39,6 +45,11 @@ export function save(formData, translateFormControls, subItems) {
     translateFormControls.map((translateFormControl) => {
         let data = {};
         translateFormControl.get('translate_form_input_control').map((ftData) => {
+            if(ftData.get('type') == '--group'){
+                ftData.get('controls').map((ftDataSub) => {
+                    data[ftDataSub.get('column')] = ftDataSub.get('value');
+                })
+            } else
             data[ftData.get('column')] = ftData.get('value');
 
         })
@@ -53,25 +64,28 @@ export function save(formData, translateFormControls, subItems) {
 
     /////////
     let realSubItems = [];
-    if(subItems.length >=1){
-        for (var i = 0; i < subItems.length; ++i) {
+    if(subItems.size >=1){
+        subItems.map((subItem, subIndex)=>{
             let items = [];
-            for (var a = 0; a < subItems[i].items.length; ++a) {
-                let item = {id: subItems[i].items[a].id};
-                for (var c = 0; c < subItems[i].items[a].data.length; ++c) {
-
-                    item[subItems[i].items[a].data[c].column] = subItems[i].items[a].data[c].value;
-
-                }
+            subItem.get('items').map((sitem)=>{
+                let item = {id: sitem.get('id')};
+                sitem.get('data').map((data)=>{
+                    if(data.get('type') == '--group'){
+                        data.get('controls').map((control)=>{
+                            item[control.get('column')] = control.get('value')
+                        })
+                    } else
+                    item[data.get('column')] = data.get('value')
+                })
 
                 items.push(item);
+            })
 
-            }
             realSubItems.push({
-                connect_column: subItems[i].connect_column,
+                connect_column: subItem.get('connect_column'),
                 items:items
             })
-        }
+        })
     }
 
     return postResuest(`insert`, {data: data, translateData: translateData, subItems: realSubItems});
@@ -105,7 +119,12 @@ export function update(formData, translateFormControls, id, subItems) {
 
     let data = {};
     formData.map((fData) => {
-        data[fData.get('column')] = fData.get('value');
+        if(fData.get('type') == '--group'){
+            fData.get('controls').map((fDataSub) => {
+                data[fDataSub.get('column')] = fDataSub.get('value');
+            })
+        } else
+            data[fData.get('column')] = fData.get('value');
 
     })
 
@@ -113,7 +132,12 @@ export function update(formData, translateFormControls, id, subItems) {
     translateFormControls.map((translateFormControl) => {
         let data = {};
         translateFormControl.get('translate_form_input_control').map((ftData) => {
-            data[ftData.get('column')] = ftData.get('value');
+            if(ftData.get('type') == '--group'){
+                ftData.get('controls').map((ftDataSub) => {
+                    data[ftDataSub.get('column')] = ftDataSub.get('value');
+                })
+            } else
+                data[ftData.get('column')] = ftData.get('value');
 
         })
         let FTData = {
@@ -126,27 +150,29 @@ export function update(formData, translateFormControls, id, subItems) {
     })
 
     /////////
-
     let realSubItems = [];
-    if(subItems.length >=1){
-        for (var i = 0; i < subItems.length; ++i) {
+    if(subItems.size >=1){
+        subItems.map((subItem, subIndex)=>{
             let items = [];
-            for (var a = 0; a < subItems[i].items.length; ++a) {
-                let item = {id: subItems[i].items[a].id};
-                for (var c = 0; c < subItems[i].items[a].data.length; ++c) {
-
-                    item[subItems[i].items[a].data[c].column] = subItems[i].items[a].data[c].value;
-
-                }
+            subItem.get('items').map((sitem)=>{
+                let item = {id: sitem.get('id')};
+                sitem.get('data').map((data)=>{
+                    if(data.get('type') == '--group'){
+                        data.get('controls').map((control)=>{
+                            item[control.get('column')] = control.get('value')
+                        })
+                    } else
+                        item[data.get('column')] = data.get('value')
+                })
 
                 items.push(item);
+            })
 
-            }
             realSubItems.push({
-                connect_column: subItems[i].connect_column,
+                connect_column: subItem.get('connect_column'),
                 items:items
             })
-        }
+        })
     }
 
     return postResuest(`update`, {id: id, translateData: translateData, data: data, subItems: realSubItems});
@@ -164,4 +190,10 @@ export function updateComboGrid(column, formData, id) {
 
 export function deleteItemComboGrid(column, id) {
     return postResuest(`delete-combo-grid`, {column:column, id: id});
+}
+
+/// cascade
+
+export function getCascadeChild(child, parent) {
+    return postResuest(`get-cascade-child`, {child:child, parent: parent});
 }

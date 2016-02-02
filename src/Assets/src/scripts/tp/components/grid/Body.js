@@ -64,9 +64,8 @@ export default class Body extends Component {
 
         fixRowHeigth(this.props.gridId)
 
-        //$("#gridBody").scroll(function () {
-        //    make_fixed_hader(gridId);
-        //})
+
+
     }
 
     componentWillMount() {
@@ -84,6 +83,8 @@ export default class Body extends Component {
 
     componentDidUpdate() {
         fixRowHeigth(this.props.gridId)
+
+
     }
 
     selectRow(row) {
@@ -245,7 +246,7 @@ export default class Body extends Component {
         )
 
         const gridData = bodyData.map((data, index) =>
-            <tr key={data.id}>
+            <tr key={index}>
 
                 {bodyHeader.map((grid, columnIndex) => {
                     let cellformControl = [];

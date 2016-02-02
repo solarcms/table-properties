@@ -114,7 +114,7 @@ export default class SingleFileUploader extends Component {
 
         return (
 
-            <div  className={`form-group ${fieldClass} col-md-12`}>
+            <div  className={`form-group ${fieldClass}`}>
                 <label className="control-label">{placeholder}</label>
                 <div>
                     {disabled == true ? null :

@@ -1,10 +1,24 @@
 import { setupPage, getFormData } from '../api/'
-import * as types from '../constants/';
+import * as types from '../constants/grid';
 import {setSubItems} from './subItems'
 
-/*
- * action creators
- */
+// setup all
+import {setUpForm, setFormData} from './form'
+
+
+//init action
+export function getSetupData() {
+    return dispatch => {
+        setupPage().then((data)=>{
+            dispatch(receiveSetupData(data))
+            dispatch(setSubItems(data.subItems))
+            dispatch(setUpForm(data))
+        });
+        getFormData().then((data)=>{
+            dispatch(setFormData(data))
+        });
+    }
+}
 
 export function receiveSetupData(setupData) {
     return {
@@ -37,48 +51,6 @@ export function setSearch(word) {
         word
     }
 }
-/// add edit form
-export function changeValue(index, value) {
-
-    return {
-        type: types.CHANGE_VALUE,
-        index: index,
-        value: value
-    }
-}
-
-export function changeTranslationValue(locale_index, index, value) {
-
-    return {
-        type: types.CHANGE_TRANSLATION_VALUE,
-        locale_index: locale_index,
-        index: index,
-        value: value
-    }
-}
-export function setTranslationError(locale_index, index, error) {
-
-    return {
-        type: types.SET_TRANSLATION_ERROR,
-        locale_index: locale_index,
-        index: index,
-        error: error
-    }
-}
-export function clearTranslationFromValidation() {
-    return {
-        type: types.CLEAR_TRANSLATION_FORM_VALIDATION
-    }
-}
-
-export function setShowAddEditForm(value) {
-
-    return {
-        type: types.SET_SHOW_ADD_EDIT_FORM,
-        value: value
-    }
-}
-
 
 export function setShowGrid(value) {
 
@@ -88,20 +60,6 @@ export function setShowGrid(value) {
     }
 }
 
-export function setError(index, error) {
-    return {
-        type: types.SET_ERROR,
-        index: index,
-        error: error
-    }
-}
-export function setFormData(data) {
-
-    return {
-        type: types.SET_FORM_DATA,
-        data: data
-    }
-}
 export function setRowEdit(editID, focusIndex) {
 
     return {
@@ -117,74 +75,8 @@ export function setInlineFrom(value) {
         value: value
     }
 }
-export function clearFromValidation() {
-    return {
-        type: types.CLEAR_FORM_VALIDATION
-    }
-}
 
 
-/////
-export function getSetupData() {
-    return dispatch => {
-        setupPage().then((data)=>{
-            dispatch(receiveSetupData(data))
-            dispatch(setSubItems(data.subItems))
-        });
-        getFormData().then((data)=>{
-            dispatch(setFormData(data))
-        });
-    }
-}
 
 
-/// combo grid
-export function setCurrentPageComboGrid(page) {
 
-    return {
-        type: types.SET_CURENT_PAGE_COMBO_GRID,
-        page: page
-    }
-}
-
-export function changeFormData(column, data) {
-
-    return {
-        type: types.CHANGE_FORM_DATA,
-        column: column,
-        data: data
-    }
-}
-export function comboGridChageValue(column, index, value) {
-
-    return {
-        type: types.COMBO_GRID_CHANGE_VALUE,
-        column: column,
-        index: index,
-        value: value
-    }
-}
-export function comboGridSetError(column, index, error) {
-
-    return {
-        type: types.COMBO_GRID_SET_ERROR,
-        column: column,
-        index: index,
-        error: error
-    }
-}
-export function clearComboGridFormValidation(column) {
-
-    return {
-        type: types.CLEAR_COMBO_GRID_FORM_VALIDATION,
-        column: column
-    }
-}
-export function setComboGridText(column, text) {
-
-    return {
-        type: types.SET_COMBO_GRID_TEXT,
-        column: column,
-        text: text
-    }
-}

@@ -2,14 +2,14 @@ import createReducer from '../lib/createReducer';
 
 import Immutable from 'immutable';
 
-import { SET_MODAL, ADD_MODAL} from '../constants/';
+import * as types from '../constants/modal';
 
 const initialState = {
     modals: []
 };
 
 export default createReducer(initialState, {
-    [ADD_MODAL](state, { column }) {
+    [types.ADD_MODAL](state, { column }) {
 
 
         const modalNew = Immutable.fromJS({
@@ -34,7 +34,7 @@ export default createReducer(initialState, {
         return state;
 
     },
-    [SET_MODAL](state, { column, value }) {
+    [types.SET_MODAL](state, { column, value }) {
 
 
         //find index example
