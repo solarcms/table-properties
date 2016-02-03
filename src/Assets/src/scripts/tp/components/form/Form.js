@@ -102,8 +102,10 @@ export default class Form extends Component {
                 />
                 break;
             case "--group":
-                return <div key={keyIndex} className="group-control " >
-                            <h6>{field.get('title')}</h6>
+                return <fieldset className="field_set" key={keyIndex}>
+                            <legend className="legendStyle">
+                                {field.get('title')}
+                            </legend>
                     {field.get('controls').map((control, subindex)=>{
 
                         let thisSubDisabled = true;
@@ -136,7 +138,7 @@ export default class Form extends Component {
 
                     })}
 
-                       </div>
+                       </fieldset>
                 break;
             case "--number":
                 return <Input

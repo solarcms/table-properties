@@ -109,13 +109,16 @@
   padding: 10px;
 }
 
-.group-control{
-  h6{
+
+.field_set{
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 5px 0;
+  legend{
+    width: auto!important;
+    font-size: 14px;
+    padding: 0 8px;
     font-weight: bold;
   }
-  margin: 10px 0;
-  padding: 8px;
-  display: block;
-  border: 1px solid #ccc;
-
 }
+

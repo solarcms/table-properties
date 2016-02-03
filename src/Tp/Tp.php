@@ -117,6 +117,9 @@ class Tp
             // cascade
             case "get-cascade-child": return $this->getCascadeChild(); break;
 
+            // validate
+            case "check-unique": return $this->checkUnique(); break;
+
             default:              return $this->index($this->viewName);
         }
 
@@ -516,19 +519,39 @@ class Tp
 
                     foreach($this->ifUpdateDisabledCanEditColumns as $ifUpdateDisabledCanEditColumn){
 
-                        if($ifUpdateDisabledCanEditColumn == $formControl['column']){
+                        if($formControl['type'] != '--group') {
+                            if($ifUpdateDisabledCanEditColumn == $formControl['column']){
 
-                            if($formControl['type']=='--checkbox'){
-                                $checkBoxValue = $formData[$formControl['column']];
-                                if($checkBoxValue == 1)
-                                    $checkBoxValue = 1;
-                                else
-                                    $checkBoxValue = 0;
-                                $insertQuery[$formControl['column']] = $checkBoxValue;
+                                if($formControl['type']=='--checkbox'){
+                                    $checkBoxValue = $formData[$formControl['column']];
+                                    if($checkBoxValue == 1)
+                                        $checkBoxValue = 1;
+                                    else
+                                        $checkBoxValue = 0;
+                                    $insertQuery[$formControl['column']] = $checkBoxValue;
 
-                            } else
-                                $insertQuery[$formControl['column']] = $formData[$formControl['column']];
+                                } else
+                                    $insertQuery[$formControl['column']] = $formData[$formControl['column']];
+                            }
+                        } else {
+                            foreach($formControl['controls'] as $subformControl){
+                                if($subformControl['type'] != '--group'){
+                                    if($subformControl['type']=='--checkbox'){
+                                        $checkBoxValue = $formData[$subformControl['column']];
+                                        if($checkBoxValue == 1)
+                                            $checkBoxValue = 1;
+                                        else
+                                            $checkBoxValue = 0;
+                                        $insertQuery[$subformControl['column']] = $checkBoxValue;
+
+                                    } else
+                                        $insertQuery[$subformControl['column']] = $formData[$subformControl['column']];
+                                }
+
+                            }
                         }
+
+
 
                     }
                 }
@@ -1327,5 +1350,15 @@ class Tp
 
         return $data;
 
+    }
+
+    public function checkUnique(){
+        $table = Request::input('table');
+        $column = Request::input('column');
+        $value = Request::input('value');
+
+        $count = DB::table($table)->where($column, '=', $value)->count();
+
+        return $count;
     }
 }

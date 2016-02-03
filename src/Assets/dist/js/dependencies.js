@@ -83,7 +83,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "3cf3a7be71e494c0e28c"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "4c16690e7b9ea65654d1"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -630,6 +630,7 @@
 	//require('../vendor/jquery-resizable-columns-gh-pages/dist/jquery.resizableColumns.js');
 
 	__webpack_require__(7);
+	//require('../vendor/fixedtable')
 	//require('../vendor/bootstrap/js/bootstrap.js');
 
 /***/ },

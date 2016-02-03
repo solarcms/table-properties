@@ -197,3 +197,10 @@ export function deleteItemComboGrid(column, id) {
 export function getCascadeChild(child, parent) {
     return postResuest(`get-cascade-child`, {child:child, parent: parent});
 }
+
+
+// check unique
+
+export function checkUnique(table, column, value){
+    return postResuest(`check-unique`, {table:table, column: column, value: value});
+}
