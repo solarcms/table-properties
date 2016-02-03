@@ -145,7 +145,7 @@ export default class Body extends Component {
                             cellformControl.push(formControl)
                     })
 
-                if (grid.fixed && grid.fixed === true) {
+                if (grid.fixed && grid.fixed === true && grid) {
 
                     return <td key={columnIndex} onClick={this.setRowEdit.bind(this, data.id, columnIndex)}>
                         {formType == 'inline' && editID == data.id ?
@@ -262,25 +262,39 @@ export default class Body extends Component {
 
                     } else {
                         const rowClickAction = comboGridSelection === true ? this.selectRow.bind(this, data) : this.setRowEdit.bind(this, data.id, columnIndex)
-                        return <td key={columnIndex} onClick={rowClickAction}>
-                            {formType == 'inline' && editID == data.id ?
-                                <Form formControls={cellformControl}
-                                      formData={formData}
-                                      formType={formType}
-                                      gridId={gridId}
-                                      formValue={data[grid.column]}
-                                      focusIndex={focusIndex}
-                                      gridIndex={columnIndex}
+                        if(grid.type !== '--internal-link'){
+                            return <td key={columnIndex} onClick={rowClickAction}>
+                                {formType == 'inline' && editID == data.id ?
+                                    <Form formControls={cellformControl}
+                                          formData={formData}
+                                          formType={formType}
+                                          gridId={gridId}
+                                          formValue={data[grid.column]}
+                                          focusIndex={focusIndex}
+                                          gridIndex={columnIndex}
 
-                                      changeHandler={this.changeValues.bind(this)}
-                                />
-                                :
-                                <span>
+                                          changeHandler={this.changeValues.bind(this)}
+                                    />
+                                    :
+                                    <span>
                                         {data[grid.column]}
                                         </span>
-                            }
+                                }
 
-                        </td>
+                            </td>
+                        } else {
+                            return <td key={columnIndex} onClick={rowClickAction}>
+
+                                    <a href={`${grid.link}${data[grid.column]}`} target="_blank">
+
+                                        <span dangerouslySetInnerHTML={{__html: grid.icon}} />
+
+                                        </a>
+
+
+                            </td>
+                        }
+
                     }
 
 
