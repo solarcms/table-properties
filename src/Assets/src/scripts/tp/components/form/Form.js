@@ -3,6 +3,7 @@ import Combogrid from './elements/ComboGrid';
 import CK from './elements/CK';
 import DragMap from './elements/DragMap';
 import SingleFileUploader from './elements/SingleFileUploader';
+import MultiFileUploader from './elements/MultiFileUploader';
 import Select from 'react-select';
 import DateTimePicker from 'react-widgets/lib/DateTimePicker';
 import { Tabs, Tab } from 'react-bootstrap';
@@ -109,7 +110,7 @@ export default class Form extends Component {
                     {field.get('controls').map((control, subindex)=>{
 
                         let thisSubDisabled = true;
-                        if(this.props.permission.u !== true && this.props.addFrom == false){
+                        if(this.props.permission.u !== true && this.props.edit_parent_id == false){
                             this.props.ifUpdateDisabledCanEditColumns.map((ifUpdateDisabledCanEditColumn)=>{
                                 if(field.get('column') == ifUpdateDisabledCanEditColumn)
                                     thisSubDisabled = false;
@@ -257,6 +258,23 @@ export default class Form extends Component {
                     index={index}
                     name={name}
                     mainValue={mainValue}
+                    changeHandler={this.manualeChangeHandler.bind(this, locale_index, `${index}`)}
+                    errorText={field.get('error')}
+                />
+                break;
+            case "--multi-file":
+                let max = field.get('max') ? field.get('max') : false;
+                return <MultiFileUploader
+                    disabled={thisDisabled}
+                    key={keyIndex} dataIndex={index}
+                    fieldClass={fieldClass}
+                    gridId={gridId}
+                    placeholder={title}
+                    index={index}
+                    name={name}
+                    mainValue={mainValue}
+                    max={max}
+                    edit_parent_id={this.props.edit_parent_id}
                     changeHandler={this.manualeChangeHandler.bind(this, locale_index, `${index}`)}
                     errorText={field.get('error')}
                 />
@@ -451,7 +469,7 @@ export default class Form extends Component {
     getTranslationForm(formControls, locale_id, locale_code, locale_index){
         return formControls.map((field, index) => {
             let thisDisabled = true;
-            if(this.props.permission.u !== true && addFrom == false){
+            if(this.props.permission.u !== true && edit_parent_id == false){
                 this.props.ifUpdateDisabledCanEditColumns.map((ifUpdateDisabledCanEditColumn)=>{
                     if(field.get('column') == ifUpdateDisabledCanEditColumn)
                         thisDisabled = false;
@@ -500,11 +518,11 @@ export default class Form extends Component {
     }
 
     render() {
-        const { formControls, translateFormControls, changeHandler, formData, formType, formValue, focusIndex, gridIndex, gridId, ifUpdateDisabledCanEditColumns, permission, addFrom  } = this.props;
+        const { formControls, translateFormControls, changeHandler, formData, formType, formValue, focusIndex, gridIndex, gridId, ifUpdateDisabledCanEditColumns, permission, edit_parent_id  } = this.props;
 
         let formFields = formControls.size >= 1 ? formControls.map((field, index) => {
             let thisDisabled = true;
-            if(permission.u !== true && addFrom == false){
+            if(permission.u !== true && edit_parent_id == false){
                 ifUpdateDisabledCanEditColumns.map((ifUpdateDisabledCanEditColumn)=>{
                     if(field.get('column') == ifUpdateDisabledCanEditColumn)
                         thisDisabled = false;

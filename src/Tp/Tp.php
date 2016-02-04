@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Response;
 use Request;
 use Illuminate\Routing\ResponseFactory as Resp;
 
+use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Validator;
 
 class Tp
 {
@@ -39,8 +42,14 @@ class Tp
     public $pagination_position = 'bottom'; // both, top, bottom
 
 
+    //file upload
+    public $file_upload_allow_list = 'mimes:mp3,jpg,jpeg,png,gif,doc,docx,xls,xlsx,txt,pdf|max:80000';
+    public $image_upload_allow_list = 'mimes:png,gif,jpeg,jpg|max:80000';
 
-    public $upload_allow_list = '.mp3 .jpg .jpeg .png .gif .doc .docx .xls .xlsx .txt .pdf'; // space delimted file name extentions. include period
+    public $base_folder = 'uploaded';
+    public $destination_folder = 'common';
+    public $thumb_folder = 'thumb';
+
 
 
     // time stamp
@@ -119,6 +128,11 @@ class Tp
 
             // validate
             case "check-unique": return $this->checkUnique(); break;
+
+            //upload
+            case "upload-image": return $this->uploadImage(); break;
+            case "delete-file": return $this->deleteFile(); break;
+            case "get-extra-images": return $this->getExtraImages(); break;
 
             default:              return $this->index($this->viewName);
         }
@@ -409,20 +423,12 @@ class Tp
 
         $insertQuery = [];
         foreach($this->form_input_control as $formControl){
-            if($formControl['type'] != '--group'){
-                if($formControl['type']=='--checkbox'){
-                    $checkBoxValue = $formData[$formControl['column']];
-                    if($checkBoxValue == 1)
-                        $checkBoxValue = 1;
-                    else
-                        $checkBoxValue = 0;
-                    $insertQuery[$formControl['column']] = $checkBoxValue;
 
-                } else
-                    $insertQuery[$formControl['column']] = $formData[$formControl['column']];
-            } else {
+            if($formControl['type'] == '--group'){
                 foreach($formControl['controls'] as $subformControl){
-                    if($subformControl['type'] != '--group'){
+                    if($subformControl['type'] == '--group'){
+
+                    }else{
                         if($subformControl['type']=='--checkbox'){
                             $checkBoxValue = $formData[$subformControl['column']];
                             if($checkBoxValue == 1)
@@ -435,7 +441,19 @@ class Tp
                             $insertQuery[$subformControl['column']] = $formData[$subformControl['column']];
                     }
 
+
                 }
+            }else{
+                if($formControl['type']=='--checkbox'){
+                    $checkBoxValue = $formData[$formControl['column']];
+                    if($checkBoxValue == 1)
+                        $checkBoxValue = 1;
+                    else
+                        $checkBoxValue = 0;
+                    $insertQuery[$formControl['column']] = $checkBoxValue;
+
+                } else
+                    $insertQuery[$formControl['column']] = $formData[$formControl['column']];
             }
 
         }
@@ -519,23 +537,11 @@ class Tp
 
                     foreach($this->ifUpdateDisabledCanEditColumns as $ifUpdateDisabledCanEditColumn){
 
-                        if($formControl['type'] != '--group') {
-                            if($ifUpdateDisabledCanEditColumn == $formControl['column']){
-
-                                if($formControl['type']=='--checkbox'){
-                                    $checkBoxValue = $formData[$formControl['column']];
-                                    if($checkBoxValue == 1)
-                                        $checkBoxValue = 1;
-                                    else
-                                        $checkBoxValue = 0;
-                                    $insertQuery[$formControl['column']] = $checkBoxValue;
-
-                                } else
-                                    $insertQuery[$formControl['column']] = $formData[$formControl['column']];
-                            }
-                        } else {
+                        if($formControl['type'] == '--group'){
                             foreach($formControl['controls'] as $subformControl){
-                                if($subformControl['type'] != '--group'){
+                                if($subformControl['type'] == '--group'){
+
+                                } else{
                                     if($subformControl['type']=='--checkbox'){
                                         $checkBoxValue = $formData[$subformControl['column']];
                                         if($checkBoxValue == 1)
@@ -549,30 +555,30 @@ class Tp
                                 }
 
                             }
+                        }else{
+                            if($ifUpdateDisabledCanEditColumn == $formControl['column']){
+
+                                if($formControl['type']=='--checkbox'){
+                                    $checkBoxValue = $formData[$formControl['column']];
+                                    if($checkBoxValue == 1)
+                                        $checkBoxValue = 1;
+                                    else
+                                        $checkBoxValue = 0;
+                                    $insertQuery[$formControl['column']] = $checkBoxValue;
+
+                                } else
+                                    $insertQuery[$formControl['column']] = $formData[$formControl['column']];
+                            }
                         }
-
-
-
                     }
                 }
 
             } else {
-
-                if($formControl['type'] != '--group') {
-                    if ($formControl['type'] == '--checkbox') {
-                        $checkBoxValue = $formData[$formControl['column']];
-                        if ($checkBoxValue == 1)
-                            $checkBoxValue = 1;
-                        else
-                            $checkBoxValue = 0;
-                        $insertQuery[$formControl['column']] = $checkBoxValue;
-
-                    } else
-                        $insertQuery[$formControl['column']] = $formData[$formControl['column']];
-
-                } else {
+                if($formControl['type'] == '--group'){
                     foreach($formControl['controls'] as $subformControl){
-                        if($subformControl['type'] != '--group'){
+                        if($subformControl['type'] == '--group'){
+
+                        }else{
                             if($subformControl['type']=='--checkbox'){
                                 $checkBoxValue = $formData[$subformControl['column']];
                                 if($checkBoxValue == 1)
@@ -586,7 +592,20 @@ class Tp
                         }
 
                     }
+                }else{
+                    if ($formControl['type'] == '--checkbox') {
+                        $checkBoxValue = $formData[$formControl['column']];
+                        if ($checkBoxValue == 1)
+                            $checkBoxValue = 1;
+                        else
+                            $checkBoxValue = 0;
+                        $insertQuery[$formControl['column']] = $checkBoxValue;
+
+                    } else
+                        $insertQuery[$formControl['column']] = $formData[$formControl['column']];
+
                 }
+
 
 
             }
@@ -1005,21 +1024,11 @@ class Tp
                 $table = $formControl['options']['table'];
 
                 foreach($form_input_control as $formControl2){
-                    if($formControl2['type'] != '--group') {
-                        if ($formControl2['type'] == '--checkbox') {
-                            $checkBoxValue = $formData[$formControl2['column']];
-                            if ($checkBoxValue == 1)
-                                $checkBoxValue = 1;
-                            else
-                                $checkBoxValue = 0;
-                            $insertQuery[$formControl2['column']] = $checkBoxValue;
-
-                        } else
-                            $insertQuery[$formControl2['column']] = $formData[$formControl2['column']];
-
-                    } else {
+                    if($formControl2['type'] == '--group'){
                         foreach($formControl2['controls'] as $subformControl){
-                            if($subformControl['type'] != '--group'){
+                            if($subformControl['type'] == '--group'){
+
+                            }else{
                                 if($subformControl['type']=='--checkbox'){
                                     $checkBoxValue = $formData[$subformControl['column']];
                                     if($checkBoxValue == 1)
@@ -1033,7 +1042,20 @@ class Tp
                             }
 
                         }
+                    }else{
+                        if ($formControl2['type'] == '--checkbox') {
+                            $checkBoxValue = $formData[$formControl2['column']];
+                            if ($checkBoxValue == 1)
+                                $checkBoxValue = 1;
+                            else
+                                $checkBoxValue = 0;
+                            $insertQuery[$formControl2['column']] = $checkBoxValue;
+
+                        } else
+                            $insertQuery[$formControl2['column']] = $formData[$formControl2['column']];
                     }
+
+
                 }
 
             }
@@ -1158,18 +1180,7 @@ class Tp
                             $table = $subItem['table'];
                             $formData = $item;
                             foreach($subItem['form_input_control'] as $formControl){
-                                if($formControl['type'] != '--group'){
-                                    if($formControl['type']=='--checkbox'){
-                                        $checkBoxValue = $formData[$formControl['column']];
-                                        if($checkBoxValue == 1)
-                                            $checkBoxValue = 1;
-                                        else
-                                            $checkBoxValue = 0;
-                                        $insertQuery[$formControl['column']] = $checkBoxValue;
-
-                                    } else
-                                        $insertQuery[$formControl['column']] = $formData[$formControl['column']];
-                                } else {
+                                if($formControl['type'] == '--group'){
                                     foreach($formControl['controls'] as $sformControl){
                                         if($sformControl['type']=='--checkbox'){
                                             $checkBoxValue = $formData[$sformControl['column']];
@@ -1182,7 +1193,19 @@ class Tp
                                         } else
                                             $insertQuery[$sformControl['column']] = $formData[$sformControl['column']];
                                     }
+                                }else{
+                                    if($formControl['type']=='--checkbox'){
+                                        $checkBoxValue = $formData[$formControl['column']];
+                                        if($checkBoxValue == 1)
+                                            $checkBoxValue = 1;
+                                        else
+                                            $checkBoxValue = 0;
+                                        $insertQuery[$formControl['column']] = $checkBoxValue;
+
+                                    } else
+                                        $insertQuery[$formControl['column']] = $formData[$formControl['column']];
                                 }
+
 
                             }
 
@@ -1361,4 +1384,97 @@ class Tp
 
         return $count;
     }
+
+    //upload
+    public function uploadImage(){
+        $file = Request::file('file');
+
+        $rules = [
+            'file' => $this->image_upload_allow_list
+        ];
+
+        $validator = Validator::make(Request::all(), $rules);
+
+        if ($validator->passes()) {
+
+
+            //paths
+            $destinationPath = base_path() . DIRECTORY_SEPARATOR .'public'. DIRECTORY_SEPARATOR .$this->base_folder. DIRECTORY_SEPARATOR . $this->destination_folder . DIRECTORY_SEPARATOR;
+
+
+            $thumbPath = $destinationPath . $this->thumb_folder . DIRECTORY_SEPARATOR;
+            if (!is_dir($destinationPath)) {
+                mkdir($destinationPath, 0755, true);
+            }
+            if (!is_dir($thumbPath)) {
+                mkdir($thumbPath, 0755, true);
+            }
+//            $destinationUrl = url('/') . "/".$this->base_folder."/" . $this->destination_folder . '/';
+            $destinationUrl = "/".$this->base_folder."/" . $this->destination_folder . '/';
+            $thumbUrl = $destinationUrl . $this->thumb_folder.'/';
+
+            //property
+            $fileOrigName = $file->getClientOriginalName();
+
+            $fileUniqueName = date("YmdHis") . "_" . str_random(25) . '.' . $file->getClientOriginalExtension();
+
+
+            while (File::exists($destinationPath . $fileUniqueName)) {
+
+                $fileUniqueName = uniqid() . "_" . $fileUniqueName;
+            }
+
+            $uploadSuccess = Image::make($file->getRealPath());
+            $bigImage = $uploadSuccess->resize(1600, null, function ($constraint) {
+                $constraint->aspectRatio();
+            });
+            $bigImage->save($destinationPath . $fileUniqueName, 100);
+
+            $thum_iamge = $uploadSuccess->resize(364, null, function ($constraint) {
+                $constraint->aspectRatio();
+            });
+            $thum_iamge->save($thumbPath . $fileUniqueName);
+
+
+
+            $result = [
+                'destinationUrl' => $destinationUrl,
+                'thumbUrl' => $thumbUrl,
+                'origName' => $fileOrigName,
+                'uniqueName' => $fileUniqueName
+            ];
+
+
+            if($uploadSuccess) {
+
+                return Response::json($result, 200); // or do a redirect with some message that file was uploaded
+
+            } else {
+
+                return Response::json('error', 400);
+            }
+        } else {
+
+            return Response::json('error. Invalid file format or size >5Mb', 400);
+        }
+
+
+    }
+
+    public function deleteFile(){
+        $filename = Request::input('filename');
+
+        $destinationPath = base_path() . DIRECTORY_SEPARATOR .'public'. DIRECTORY_SEPARATOR .$this->base_folder. DIRECTORY_SEPARATOR . $this->destination_folder . DIRECTORY_SEPARATOR;
+
+
+        $thumbPath = $destinationPath . $this->thumb_folder . DIRECTORY_SEPARATOR;
+
+        unlink($destinationPath.$filename);
+        unlink($thumbPath.$filename);
+
+        return Response::json('success', 200);
+    }
+
+
+
 }

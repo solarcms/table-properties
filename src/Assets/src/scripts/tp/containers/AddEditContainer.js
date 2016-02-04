@@ -298,8 +298,8 @@ class AddEditContainer extends Component {
 
         const gridId = 'grid_table'
 
-        const addFrom = this.props.params.id ? false : true;
 
+        const edit_parent_id = this.props.params.id ? this.props.params.id : false
         const containerForm = showAddEditForm === true
             ?
             <Form
@@ -312,7 +312,7 @@ class AddEditContainer extends Component {
                 gridId={gridId}
                 ifUpdateDisabledCanEditColumns={ifUpdateDisabledCanEditColumns}
                 permission={permission}
-                addFrom={addFrom}
+                edit_parent_id={edit_parent_id}
                 changeHandler={this.changeValues.bind(this)}
                 translateChangeHandler={this.translateChangeHandler.bind(this)}
 
@@ -323,7 +323,7 @@ class AddEditContainer extends Component {
                 <br/>
                 Ачааллаж байна
             </div>
-        const edit_parent_id = this.props.params.id ? this.props.params.id : false
+
         const formSubItmes = subItems.size >= 1 ?
             <SubItemsContainer formData={formData} subItems={subItems} edit_parent_id={edit_parent_id}
                                ifUpdateDisabledCanEditColumns={ifUpdateDisabledCanEditColumns}

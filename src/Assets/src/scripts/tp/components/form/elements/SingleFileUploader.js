@@ -2,18 +2,31 @@ import React, { Component, PropTypes }  from 'react';
 import DropzoneComponent from "react-dropzone-component";
 import $ from 'jquery'
 
+import {deleteFile} from '../../../api/upload'
+
+var myDropzone;
+
 export default class SingleFileUploader extends Component {
+
     uploadSuccess(e, responsejson){
 
         if(e.status == 'success')
-            this.props.changeHandler('{"size":'+e.size+',"originalName":"'+e.name+'","path": "/uploads/'+responsejson+'", "thumbPath":"/uploads/thumbs/'+responsejson+'"}');
+            this.props.changeHandler('{"size":'+e.size+',"origName":"'+e.name+'","destinationUrl": "'+responsejson.destinationUrl+'", "thumbUrl":"'+responsejson.thumbUrl+'", "uniqueName":"'+responsejson.uniqueName+'"}');
         else
             alert('error please try again')
     }
 
-    removeImage(e, dropzone){
-        console.log(dropzone);
-        console.log(e);
+    removeImage(e){
+
+        if(e.uniqueName)
+        deleteFile(e.uniqueName).then((data)=>{
+            if(data == 'success'){
+                myDropzone.options.maxFiles = myDropzone.options.maxFiles + 1;
+                this.props.changeHandler(null)
+            }
+            else
+                alert('Алдаа гарлаа дахин оролдоно уу')
+        });
 
     }
     initCallback(dropzone){
@@ -27,14 +40,15 @@ export default class SingleFileUploader extends Component {
             let image = JSON.parse(mainValue)
 
 
-            let mockFile = { name: image.originalName, size: image.size };
+            let mockFile = { name: image.origName, size: image.size, uniqueName: image.uniqueName };
 
-            let myDropzone = dropzone;
+            myDropzone = dropzone;
+
 
             myDropzone.emit("addedfile", mockFile);
 
 
-            myDropzone.emit("thumbnail", mockFile, image.thumbPath);
+            myDropzone.emit("thumbnail", mockFile, image.thumbUrl+image.uniqueName);
 
             // myDropzone.createThumbnailFromUrl(file, imageUrl, callback, crossOrigin);
 
@@ -55,12 +69,15 @@ export default class SingleFileUploader extends Component {
     render() {
         const { mainValue, fieldClass, placeholder, errorText, disabled } = this.props;
 
+        const protcol = window.location.protocol !== 'https:' ? 'http://' :  'https://';
+        const baseUrl = protcol+window.location.hostname + window.location.pathname+'/upload-image';
+
 
         const componentConfig = {
             iconFiletypes: ['.jpg', '.png', '.gif'],
             showFiletypeIcon: true,
 
-            postUrl: '/solar/tp/single-upload'
+            postUrl: baseUrl
         };
         const djsConfig = {
             addRemoveLinks: true,
