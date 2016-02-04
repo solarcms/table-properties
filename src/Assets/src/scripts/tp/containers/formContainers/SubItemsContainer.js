@@ -93,6 +93,23 @@ class SubItemsContainer extends Component {
         this.props.actions.editSubItem(CAIndex, FD, savedIndex);
         this.showModal(connect_column)
     }
+    changeChildValue(CAcolumn, CAIndex, realDataIndex){
+
+
+        let childIndex = realDataIndex;
+
+        childIndex[childIndex.length-1] = childIndex[childIndex.length-1]+1;
+
+        const childField = this.props.subItems.getIn([CAIndex, 'form_input_control']).getIn(childIndex);
+
+
+        this.props.actions.chagenValue(CAcolumn, CAIndex, childIndex, null)
+
+        if(childField.getIn(['options', 'child'])){
+            this.changeChildValue(CAcolumn, CAIndex, childIndex);
+        }
+
+    }
     changeValues(CAcolumn, CAIndex, dataIndex, value){
 
         let realDataIndex = [];
@@ -122,6 +139,9 @@ class SubItemsContainer extends Component {
         /// cascad call
         if(field.get('type') == '--combobox'){
             if(field.getIn(['options', 'child'])){
+
+                this.changeChildValue(CAcolumn, CAIndex, realDataIndex);
+
                 getCascadeChild(field.getIn(['options', 'child']), value).then((data)=>{
                     this.props.actions.changeFormData(field.getIn(['options', 'child']), data);
                 })

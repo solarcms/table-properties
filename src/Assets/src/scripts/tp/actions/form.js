@@ -74,7 +74,11 @@ export function clearTranslationFromValidation() {
 
 ///
 export function changeFormData(column, data) {
+    if(data instanceof Array){
 
+    } else {
+        data = [];
+    }
     return {
         type: types.CHANGE_FORM_DATA,
         column: column,

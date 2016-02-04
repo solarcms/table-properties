@@ -129,7 +129,22 @@ class AddEditContainer extends Component {
 
 
     }
+    changeChildValue(realDataIndex){
 
+
+        let childIndex = realDataIndex;
+
+        childIndex[childIndex.length-1] = childIndex[childIndex.length-1]+1;
+
+        const childField = this.props.formControls.getIn(childIndex);
+
+        this.props.actions.changeValue(childIndex, null);
+
+        if(childField.getIn(['options', 'child'])){
+            this.changeChildValue(childIndex);
+        }
+
+    }
     changeValues(dataIndex, value) {
 
 
@@ -158,6 +173,9 @@ class AddEditContainer extends Component {
         /// cascad call
         if(field.get('type') == '--combobox'){
             if(field.getIn(['options', 'child'])){
+
+                this.changeChildValue(realDataIndex);
+
                 getCascadeChild(field.getIn(['options', 'child']), value).then((data)=>{
                     this.props.actions.changeFormData(field.getIn(['options', 'child']), data);
                 })
