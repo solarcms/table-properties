@@ -164,6 +164,7 @@
 
 .table_header {
   top: 0;
+  display: none;
   border-bottom: 1px solid #ccc;
   background: #fff;
   width: 100%;

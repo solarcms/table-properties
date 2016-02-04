@@ -336,8 +336,8 @@ class Tp
 
         /// saijruulah
 
-        $table_data = DB::table($this->table)->where($this->table.".id", '=', $id);
-        $table_data->select('id');
+        $table_data = DB::table($this->table)->where($this->table.".".$this->identity_name, '=', $id);
+        $table_data->select("$this->identity_name");
 
         if($this->translation_table != ""){
             $default_language_id = Session::get('locale_id');
@@ -628,7 +628,7 @@ class Tp
         }
 
 
-        $saved = DB::table($this->table)->where('id', '=', $id)->update($insertQuery);
+        $saved = DB::table($this->table)->where("$this->identity_name", '=', $id)->update($insertQuery);
 
         // transltation table update action
         if(!empty($this->translate_form_input_control)){
@@ -684,7 +684,7 @@ class Tp
 
         $id = Request::input('id');
 
-        $deleted = DB::table($this->table)->where('id', '=', $id)->delete();
+        $deleted = DB::table($this->table)->where("$this->identity_name", '=', $id)->delete();
 
         if ($deleted)
             return 'success';
