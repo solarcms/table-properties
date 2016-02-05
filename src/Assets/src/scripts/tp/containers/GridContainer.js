@@ -287,7 +287,7 @@ class GridContainer extends Component {
             permission,
             ifUpdateDisabledCanEditColumns
             } = this.props;
-        
+
         if (permission.r === false && permission.c === true) {
 
             window.location.replace('#/add');

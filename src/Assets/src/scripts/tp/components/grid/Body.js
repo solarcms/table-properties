@@ -277,7 +277,15 @@ export default class Body extends Component {
                                     />
                                     :
                                     <span>
-                                        {data[grid.column]}
+                                        {grid.change_value ?
+                                            data[grid.column] == '1'
+                                            ? 'Тийм'
+                                                :
+
+                                            'Үгүй'
+
+                                        :
+                                            data[grid.column]}
                                         </span>
                                 }
 

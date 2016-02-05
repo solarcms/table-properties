@@ -110,7 +110,7 @@ export default class Form extends Component {
                     {field.get('controls').map((control, subindex)=>{
 
                         let thisSubDisabled = true;
-                        if(this.props.permission.u !== true && this.props.edit_parent_id == false){
+                        if(this.props.permission.u !== true && this.props.edit_parent_id !== false){
                             this.props.ifUpdateDisabledCanEditColumns.map((ifUpdateDisabledCanEditColumn)=>{
                                 if(field.get('column') == ifUpdateDisabledCanEditColumn)
                                     thisSubDisabled = false;
@@ -469,7 +469,7 @@ export default class Form extends Component {
     getTranslationForm(formControls, locale_id, locale_code, locale_index){
         return formControls.map((field, index) => {
             let thisDisabled = true;
-            if(this.props.permission.u !== true && edit_parent_id == false){
+            if(this.props.permission.u !== true && this.props.edit_parent_id !== false){
                 this.props.ifUpdateDisabledCanEditColumns.map((ifUpdateDisabledCanEditColumn)=>{
                     if(field.get('column') == ifUpdateDisabledCanEditColumn)
                         thisDisabled = false;
@@ -522,7 +522,8 @@ export default class Form extends Component {
 
         let formFields = formControls.size >= 1 ? formControls.map((field, index) => {
             let thisDisabled = true;
-            if(permission.u !== true && edit_parent_id == false){
+
+            if(permission.u !== true && this.props.edit_parent_id !== false){
                 ifUpdateDisabledCanEditColumns.map((ifUpdateDisabledCanEditColumn)=>{
                     if(field.get('column') == ifUpdateDisabledCanEditColumn)
                         thisDisabled = false;
