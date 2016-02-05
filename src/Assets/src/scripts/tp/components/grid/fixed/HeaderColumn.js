@@ -105,5 +105,5 @@ export function fixRowHeigth(gridId) {
 }
 
 export function getWidth(td) {
-    return $(td).outerWidth()-24;
+    return $(td).outerWidth()-26;
 };
