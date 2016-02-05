@@ -7,16 +7,30 @@ import {setUpForm, setFormData} from './form'
 
 
 //init action
+//old setup with ajax request
+//export function getSetupData() {
+//    return dispatch => {
+//        setupPage().then((data)=>{
+//            dispatch(receiveSetupData(data))
+//            dispatch(setSubItems(data.subItems))
+//            dispatch(setUpForm(data))
+//        });
+//        getFormData().then((data)=>{
+//            dispatch(setFormData(data))
+//        });
+//    }
+//}
 export function getSetupData() {
+    const setup = window.setup;
+
     return dispatch => {
-        setupPage().then((data)=>{
-            dispatch(receiveSetupData(data))
-            dispatch(setSubItems(data.subItems))
-            dispatch(setUpForm(data))
-        });
-        getFormData().then((data)=>{
-            dispatch(setFormData(data))
-        });
+
+        dispatch(receiveSetupData(setup))
+        dispatch(setSubItems(setup.subItems))
+        dispatch(setUpForm(setup))
+
+        dispatch(setFormData(setup.form_datas))
+
     }
 }
 

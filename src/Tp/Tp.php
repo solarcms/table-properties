@@ -78,6 +78,11 @@ class Tp
     public $save_sub_items_count = []; // parent columns :"id", "active", "name" "total_childs", child columns:'id', 'parent_id',  #['child_connect_column'=>'parent_id', 'parent_column'=>'total_childs']
 
 
+    //Buttons
+    public $save_button_text = 'Хадгалах';
+    public $cancel_button_text = 'Болих';
+
+
     function __construct(){
 
     }
@@ -137,6 +142,58 @@ class Tp
             default:              return $this->index($this->viewName);
         }
 
+    }
+
+    public function index($viewName){
+
+
+        $page_name = $this->page_name;
+
+        $setup = [];
+
+        $buttons = ['save_text'=>$this->save_button_text, 'cancel_text'=>$this->cancel_button_text];
+
+
+
+        //// setup
+
+        $subItems = [];
+        foreach($this->subItems as $subItem){
+            $subItem['items']=[];
+            $subItems[] = $subItem;
+        }
+        if($this->translation_table !== ''){
+            if (Session::has('locale_id')) {
+
+            } else {
+                Session::set('locale_id', $this->default_locale_id);
+            }
+
+            $locales = DB::table($this->locales_table)->select('id', 'code')->orderBy('id', 'ASC')->get();
+        }
+
+        else
+            $locales = [];
+        $setup = [
+            'buttons'=>$buttons,
+            'locales'=>$locales,
+            'form_input_control'=>$this->form_input_control,
+            'translate_form_input_control'=>$this->translate_form_input_control,
+            'grid_output_control'=>$this->grid_output_control,
+            'page_name'=>$this->page_name,
+            'pagination_position'=>$this->pagination_position,
+            'formType'=>$this->formType,
+            'pageLimit'=>$this->pageLimit,
+            'subItems'=>$subItems,
+            'permission'=>$this->permission,
+            'ifUpdateDisabledCanEditColumns'=>$this->ifUpdateDisabledCanEditColumns,
+            'form_datas'=>$this->get_form_datas()
+        ];
+
+        ////
+
+
+        return view($viewName, compact('page_name', 'setup'));
     }
 
     public function gridList(){
@@ -298,7 +355,8 @@ class Tp
     }
     public function get_form_datas(){
         if($this->permission['r'] != true && $this->permission['c'] === false)
-            return Response::json('permission denied', 400);
+            return [];
+//            return Response::json('permission denied', 400);
 
 
         $FormData = [];
@@ -693,12 +751,7 @@ class Tp
 
     }
 
-    public function index($viewName){
 
-
-        $page_name = $this->page_name;
-        return view($viewName, compact('page_name'));
-    }
 
 
     public function setup(){
