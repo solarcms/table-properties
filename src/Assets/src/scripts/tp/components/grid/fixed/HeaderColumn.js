@@ -43,6 +43,7 @@ export function fixRowHeigth(gridId) {
     $("#"+gridId+"-left").css("width", (leftTableWidth))
 
     $("#"+gridId+"-wrapper").css('width', $("#"+gridId+"-wrapper").parent().outerWidth() - 103 - leftTableWidth);
+    $("#virtual_table").css('width', $("#"+gridId+"-wrapper > table").outerWidth());
 
     $(".virtual_scroll").css('width', $(".virtual_scroll").parent().outerWidth() - 103 - leftTableWidth);
     $(".virtual_scroll").css('margin-left', leftTableWidth+2);

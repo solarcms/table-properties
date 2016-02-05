@@ -240,7 +240,8 @@ class SubItemsContainer extends Component {
 
         const {subItems, formData, modals, showAddEditForm,
             ifUpdateDisabledCanEditColumns,
-            permission
+            permission,
+            button_texts
             } = this.props;
 
 
@@ -280,6 +281,8 @@ class SubItemsContainer extends Component {
                     <i className="material-icons">&#xE145;</i>
                 </button>
 
+                <p >{subItem.get('description')}</p>
+
                 <Window key={index}
                         id={`sub-items-${subItem.get('connect_column')}`}
                         formControls={subItem.get('form_input_control')}
@@ -293,6 +296,7 @@ class SubItemsContainer extends Component {
                         permission={{c:true, r:true, u:true, d:true}}
                         ifUpdateDisabledCanEditColumns={[]}
                         showDelete={showDelete}
+                        button_texts={button_texts}
                 />
 
                     </div>
@@ -326,6 +330,7 @@ function mapStateToProps(state) {
         modals: Modal.get('modals'),
         editIndex: SubItems.get('editIndex'),
         permission: Grid.get('setup').toJS().permission,
+        button_texts: Grid.get('button_texts'),
     }
 }
 // Which action creators does it want to receive by props?

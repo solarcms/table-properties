@@ -474,7 +474,7 @@ export default class Body extends Component {
 
             </div>
             <div className="virtual_scroll">
-                <div className="virtual_table">
+                <div className="virtual_table" id="virtual_table">
                 </div>
             </div>
         </div>)

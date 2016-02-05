@@ -20,7 +20,8 @@ const initialState = {
         currentPage:1,
     },
     comboBoxAddAble: {},
-    translateFormControls:{}
+    translateFormControls:{},
+    button_texts:{}
 };
 
 export default createReducer(initialState, {
@@ -31,6 +32,8 @@ export default createReducer(initialState, {
         state = state.set('setup', data);
 
         state = state.set('pageLimit', setupData.pageLimit);
+
+        state = state.set('button_texts', setupData.button_texts);
 
 
         return state;

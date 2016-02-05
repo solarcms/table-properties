@@ -14,10 +14,10 @@ export default class Window extends Component {
 
     }
     render() {
-        const { pageName, formControls, formData, changeHandler, saveForm, hideModal, id, show, permission, ifUpdateDisabledCanEditColumns } = this.props;
+        const { pageName, formControls, formData, changeHandler, saveForm, hideModal, id, show, permission, ifUpdateDisabledCanEditColumns, button_texts } = this.props;
 
         const deleteButton = this.props.showDelete == true ? <button type="button" className="btn btn-fw btn-danger p-h-lg" onClick={this.props.delete}>
-                                                        <i className="material-icons">&#xE872;</i>
+                                                        <i className="material-icons">&#xE872;</i> {button_texts ? button_texts.delete_text : null}
                                                     </button> : null
 
 
@@ -40,19 +40,19 @@ export default class Window extends Component {
                     <Modal.Footer>
                         {this.props.edit
                             ? <button type="button" className="btn btn-fw btn-success p-h-lg" onClick="">
-                            <i className="material-icons">&#xE2C3;</i>
+                            <i className="material-icons">&#xE2C3;</i> {button_texts ? button_texts.save_text : null}
 
                         </button>
                             :
                             <button type="button" className="btn btn-fw btn-success p-h-lg" onClick={saveForm}>
-                                <i className="material-icons">&#xE2C3;</i>
+                                <i className="material-icons">&#xE2C3;</i> {button_texts ? button_texts.save_text : null}
 
                             </button>
                         }
 
                         &nbsp;
                         <a href="javascript:void(0)" className="btn btn-fw danger p-h-lg" onClick={hideModal}>
-                            <i className="material-icons">&#xE5CD;</i>
+                            <i className="material-icons">&#xE5CD;</i> {button_texts ? button_texts.cancel_text : null}
                         </a>
 
                         {deleteButton}

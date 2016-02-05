@@ -81,6 +81,7 @@ class Tp
     //Buttons
     public $save_button_text = 'Хадгалах';
     public $cancel_button_text = 'Болих';
+    public $delete_button_text = 'Устгах';
 
 
     function __construct(){
@@ -151,7 +152,11 @@ class Tp
 
         $setup = [];
 
-        $buttons = ['save_text'=>$this->save_button_text, 'cancel_text'=>$this->cancel_button_text];
+        $buttons = [
+            'save_text'=>$this->save_button_text,
+            'cancel_text'=>$this->cancel_button_text,
+            'delete_text'=>$this->delete_button_text
+        ];
 
 
 
@@ -175,7 +180,7 @@ class Tp
         else
             $locales = [];
         $setup = [
-            'buttons'=>$buttons,
+            'button_texts'=>$buttons,
             'locales'=>$locales,
             'form_input_control'=>$this->form_input_control,
             'translate_form_input_control'=>$this->translate_form_input_control,

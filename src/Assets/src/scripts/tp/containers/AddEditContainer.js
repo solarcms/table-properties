@@ -290,8 +290,10 @@ class AddEditContainer extends Component {
             subItems,
             ifUpdateDisabledCanEditColumns,
             permission,
-            locales
+            locales,
+            button_texts
             } = this.props;
+
 
 
 
@@ -348,17 +350,17 @@ class AddEditContainer extends Component {
                                 {this.props.params.id
                                     ? <button type="button" className="btn btn-fw btn-success p-h-lg"
                                               onClick={this.updateForm.bind(this)}>
-                                    <i className="material-icons">&#xE2C3;</i>
+                                    <i className="material-icons">&#xE2C3;</i> {button_texts.save_text}
                                 </button>
                                     :
                                     <button type="button" className="btn btn-fw btn-success p-h-lg"
                                             onClick={this.saveForm.bind(this)}>
-                                        <i className="material-icons">&#xE2C3;</i>
+                                        <i className="material-icons">&#xE2C3;</i> {button_texts.save_text}
                                     </button>
                                 }
                                 &nbsp;
                                 <a href="#/" className="btn btn-fw danger p-h-lg">
-                                    <i className="material-icons">&#xE5CD;</i>
+                                    <i className="material-icons">&#xE5CD;</i> {button_texts.cancel_text}
                                 </a>
 
                             </div>
@@ -396,6 +398,7 @@ function mapStateToProps(state) {
         focusIndex: Form.get('focusIndex'),
         formData: Form.get('formData'),
         subItems: SubItems.get('subItems'),
+        button_texts: Grid.get('button_texts'),
         permission: Grid.get('setup').toJS().permission,
         ifUpdateDisabledCanEditColumns: Grid.get('setup').toJS().ifUpdateDisabledCanEditColumns,
     }

@@ -160,7 +160,7 @@ class ComboBoxAddAbleContainer extends Component {
 
     render() {
 
-        const {disabled, modals, fieldClass, formData, column, fieldOptions, value, changeHandler, errorText, formType, placeholder, pageName, name, formControls, showAddModal, comboBoxs } = this.props;
+        const {button_texts, disabled, modals, fieldClass, formData, column, fieldOptions, value, changeHandler, errorText, formType, placeholder, pageName, name, formControls, showAddModal, comboBoxs } = this.props;
 
         let options = [];
 
@@ -232,6 +232,7 @@ class ComboBoxAddAbleContainer extends Component {
                             value={value}
                             options={options}
                             onChange={changeHandler}
+                            button_texts={button_texts}
                             placeholder={`Сонгох`}
                     />
                     :
@@ -263,11 +264,13 @@ function mapStateToProps(state) {
 
     const ComboBoxAddAble = state.ComboBoxAddAble;
     const Modal = state.Modal;
+    const Grid = state.Grid;
 
     return {
 
         modals: Modal.get('modals'),
-        comboBoxs: ComboBoxAddAble.get('comboBoxs')
+        comboBoxs: ComboBoxAddAble.get('comboBoxs'),
+        button_texts: Grid.get('button_texts'),
     }
 }
 // Which action creators does it want to receive by props?
