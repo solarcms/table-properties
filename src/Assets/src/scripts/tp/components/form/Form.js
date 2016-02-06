@@ -515,17 +515,10 @@ export default class Form extends Component {
     }
 
     componentWillUnmount(){
-        this.unmountSubComponent();
-        console.log("componentWillUnmount");
+
     }
 
-    unmountSubComponent(){
-        var node = ReactDOM.findDOMNode(this);
-        console.log(node)
-        var container = node.parentNode;
-        //ReactDOM.unmountComponentAtNode(container);
-        container.parentNode.removeChild(container)
-    }
+
 
 
     render() {
@@ -584,13 +577,15 @@ export default class Form extends Component {
 
         return (
             <div className="add-edit-form">
-                <Tabs defaultActiveKey={0} animation={false}>
-                    {translateForm}
-                </Tabs>
+
                 <div className="none-translate-form">
                     {formFields}
                     <div style={{clear:'both'}}></div>
                 </div>
+                <br/>
+                <Tabs defaultActiveKey={0} animation={false}>
+                    {translateForm}
+                </Tabs>
             </div>
         )
     }

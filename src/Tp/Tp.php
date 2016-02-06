@@ -295,7 +295,10 @@ class Tp
 
                 $options = $formControl['options'];
                 $order = explode(" ", $options['grid_default_order_by']);
-                $data = DB::table($options['table'])->select($options['grid_columns'])->orderBy($order[0], $order[1])->paginate(20);
+                $data = DB::table($options['table'])->select($options['grid_columns'])->orderBy($order[0], $order[1]);
+
+
+                $data->paginate(20);
 
                 $data = $data->toArray();
 
@@ -313,7 +316,18 @@ class Tp
 
                 } else{
                     $order = explode(" ", $options['grid_default_order_by']);
-                    $data['data'] = DB::table($options['table'])->select($options['grid_columns'])->orderBy($order[0], $order[1])->get();
+                    $pre_data = DB::table($options['table'])->select($options['grid_columns'])->orderBy($order[0], $order[1]);
+
+                    if(isset($options['condition'])){
+                        foreach($options['condition'] as $condition_column=>$condition_value){
+                            $pre_data->where("$condition_column", '=', $condition_value);
+
+                        }
+                    }
+
+
+                    $data['data'] = $pre_data->get();
+
 
 
                     $FormData[$formControl['column']] = ['data'=>$data];
