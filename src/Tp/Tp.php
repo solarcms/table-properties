@@ -400,7 +400,7 @@ class Tp
         /// saijruulah
 
         $table_data = DB::table($this->table)->where($this->table.".".$this->identity_name, '=', $id);
-        $table_data->select("$this->identity_name");
+        $table_data->select($this->table.".".$this->identity_name);
 
         if($this->translation_table != ""){
             $default_language_id = Session::get('locale_id');
@@ -484,7 +484,7 @@ class Tp
             $this->setup();
         }
 
-        $insertQuery = [];
+        $insertQuery = ["$this->identity_name"=>null];
         foreach($this->form_input_control as $formControl){
 
             if($formControl['type'] == '--group'){
