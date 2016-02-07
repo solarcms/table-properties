@@ -123,7 +123,7 @@ export default createReducer(initialState, {
     [types.CLEAR_TRANSLATION_FORM_VALIDATION](state, {}) {
 
         const translate_form_input_control = state.getIn(['setup', 'translate_form_input_control']).toJS()
-        const locales = state.getIn(['setup', 'locales']);
+        const locales = state.getIn(['setup', 'locales']).toJS();
 
         const translateFormControls = [];
         locales.map((locale)=>{
@@ -137,6 +137,8 @@ export default createReducer(initialState, {
             )
 
         });
+
+
         const translateFormControls_im = Immutable.fromJS(translateFormControls);
         state = state.set('translateFormControls', translateFormControls_im);
 

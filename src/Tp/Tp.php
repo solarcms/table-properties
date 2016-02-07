@@ -44,7 +44,7 @@ class Tp
 
     //file upload
     public $file_upload_allow_list = 'mimes:mp3,jpg,jpeg,png,gif,doc,docx,xls,xlsx,txt,pdf|max:80000';
-    public $image_upload_allow_list = 'mimes:png,gif,jpeg,jpg|max:80000';
+    public $image_upload_allow_list = 'mimes:JPG,PNG,GIF,JPEG,png,gif,jpeg,jpg|max:80000';
 
     public $base_folder = 'uploaded';
     public $destination_folder = 'common';
@@ -226,7 +226,17 @@ class Tp
                 } {
                     $options = $formControl['options'];
 
-                    $table_data->join($options['table'], "$this->table." . $formControl['column'], '=', $options['table']. "." .$options['valueField']);
+                    if(isset($options['join']) && $options['join'] == false){
+
+                    } else {
+                        $table_data->join($options['table'], "$this->table." . $formControl['column'], '=', $options['table']. "." .$options['valueField']);
+                    }
+
+                    if(isset($options['with_translation']) && $options['with_translation'] == true){
+                        $table_data->where($options['table'].".".$this->locale_connector, "=", $default_language_id);
+                    }
+
+
                 }
 
             }
@@ -240,7 +250,15 @@ class Tp
 
                             $suboptions = $subformControl['options'];
 
+                            if(isset($suboptions['join']) && $suboptions['join'] == false){
+
+                            } else
                             $table_data->join($suboptions['table'], "$this->table." . $subformControl['column'], '=', $suboptions['table']. "." .$suboptions['valueField']);
+
+                            if(isset($options['with_translation']) && $options['with_translation'] == true){
+                                $table_data->where($suboptions['table'].".".$this->locale_connector, "=", $default_language_id);
+                            }
+
                         }
 
                     }
@@ -277,7 +295,6 @@ class Tp
             $table_data->orderBy($order[0], $order[1]);
         }
 
-//        dd($table_data->toSql());
 
 
         return  $table_data->paginate($pageLimit);
@@ -295,7 +312,10 @@ class Tp
 
                 $options = $formControl['options'];
                 $order = explode(" ", $options['grid_default_order_by']);
-                $data = DB::table($options['table'])->select($options['grid_columns'])->orderBy($order[0], $order[1])->paginate(20);
+                $data = DB::table($options['table'])->select($options['grid_columns'])->orderBy($order[0], $order[1]);
+
+
+                $data->paginate(20);
 
                 $data = $data->toArray();
 
@@ -313,7 +333,18 @@ class Tp
 
                 } else{
                     $order = explode(" ", $options['grid_default_order_by']);
-                    $data['data'] = DB::table($options['table'])->select($options['grid_columns'])->orderBy($order[0], $order[1])->get();
+                    $pre_data = DB::table($options['table'])->select($options['grid_columns'])->orderBy($order[0], $order[1]);
+
+                    if(isset($options['condition'])){
+                        foreach($options['condition'] as $condition_column=>$condition_value){
+                            $pre_data->where("$condition_column", '=', $condition_value);
+
+                        }
+                    }
+
+
+                    $data['data'] = $pre_data->get();
+
 
 
                     $FormData[$formControl['column']] = ['data'=>$data];
@@ -400,7 +431,7 @@ class Tp
         /// saijruulah
 
         $table_data = DB::table($this->table)->where($this->table.".".$this->identity_name, '=', $id);
-        $table_data->select("$this->identity_name");
+        $table_data->select($this->table.".".$this->identity_name);
 
         if($this->translation_table != ""){
             $default_language_id = Session::get('locale_id');
@@ -484,7 +515,7 @@ class Tp
             $this->setup();
         }
 
-        $insertQuery = [];
+        $insertQuery = ["$this->identity_name"=>null];
         foreach($this->form_input_control as $formControl){
 
             if($formControl['type'] == '--group'){
@@ -1352,8 +1383,16 @@ class Tp
                 $order = explode(" ", $options['grid_default_order_by']);
                 $data = DB::table($options['table'])->select($options['grid_columns'])
                     ->where($options['parent'], '=',$parent)
-                    ->orderBy($order[0], $order[1])->get();
-                return $data;
+                    ->orderBy($order[0], $order[1]);
+
+                     if(isset($options['condition'])){
+                         foreach($options['condition'] as $condition_column=>$condition_value){
+                             $data->where("$condition_column", '=', $condition_value);
+
+                         }
+                     }
+                $data_return = $data->get();
+                return $data_return;
 
             }
 
@@ -1445,7 +1484,9 @@ class Tp
 
     //upload
     public function uploadImage(){
+
         $file = Request::file('file');
+
 
         $rules = [
             'file' => $this->image_upload_allow_list
@@ -1453,68 +1494,149 @@ class Tp
 
         $validator = Validator::make(Request::all(), $rules);
 
-        if ($validator->passes()) {
 
 
-            //paths
-            $destinationPath = base_path() . DIRECTORY_SEPARATOR .'public'. DIRECTORY_SEPARATOR .$this->base_folder. DIRECTORY_SEPARATOR . $this->destination_folder . DIRECTORY_SEPARATOR;
+        if(is_array($file)){
+            $response = [];
+            foreach($file as $mfile){
+                $validator2 = Validator::make(
+                    ['file' => $mfile],
+                    ['file' => $this->image_upload_allow_list]
+                );
+
+                if ($validator2->passes()) {
 
 
-            $thumbPath = $destinationPath . $this->thumb_folder . DIRECTORY_SEPARATOR;
-            if (!is_dir($destinationPath)) {
-                mkdir($destinationPath, 0755, true);
-            }
-            if (!is_dir($thumbPath)) {
-                mkdir($thumbPath, 0755, true);
-            }
+                    //paths
+                    $destinationPath = public_path(). DIRECTORY_SEPARATOR .$this->base_folder. DIRECTORY_SEPARATOR . $this->destination_folder . DIRECTORY_SEPARATOR;
+
+//                    dd($destinationPath);
+
+                    $thumbPath = $destinationPath . $this->thumb_folder . DIRECTORY_SEPARATOR;
+                    if (!is_dir($destinationPath)) {
+                        mkdir($destinationPath, 0755, true);
+                    }
+                    if (!is_dir($thumbPath)) {
+                        mkdir($thumbPath, 0755, true);
+                    }
 //            $destinationUrl = url('/') . "/".$this->base_folder."/" . $this->destination_folder . '/';
-            $destinationUrl = "/".$this->base_folder."/" . $this->destination_folder . '/';
-            $thumbUrl = $destinationUrl . $this->thumb_folder.'/';
+                    $destinationUrl = "/".$this->base_folder."/" . $this->destination_folder . '/';
+                    $thumbUrl = $destinationUrl . $this->thumb_folder.'/';
 
-            //property
-            $fileOrigName = $file->getClientOriginalName();
+                    //property
+                    $fileOrigName = $mfile->getClientOriginalName();
 
-            $fileUniqueName = date("YmdHis") . "_" . str_random(25) . '.' . $file->getClientOriginalExtension();
+                    $fileUniqueName = date("YmdHis") . "_" . str_random(25) . '.' . $mfile->getClientOriginalExtension();
 
 
-            while (File::exists($destinationPath . $fileUniqueName)) {
+                    while (File::exists($destinationPath . $fileUniqueName)) {
 
-                $fileUniqueName = uniqid() . "_" . $fileUniqueName;
+                        $fileUniqueName = uniqid() . "_" . $fileUniqueName;
+                    }
+
+                    $uploadSuccess = Image::make($mfile->getRealPath());
+                    $bigImage = $uploadSuccess->save($destinationPath . $fileUniqueName, 100);
+
+                    $thum_iamge = $uploadSuccess->resize(364, null, function ($constraint) {
+                        $constraint->aspectRatio();
+                    });
+                    $thum_iamge->save($thumbPath . $fileUniqueName);
+
+
+
+                    $result = [
+                        'destinationUrl' => $destinationUrl,
+                        'thumbUrl' => $thumbUrl,
+                        'origName' => $fileOrigName,
+                        'uniqueName' => $fileUniqueName
+                    ];
+
+
+                    if($uploadSuccess) {
+
+                        $response[]= $result;
+
+                    } else {
+
+                        return Response::json('error', 400);
+                    }
+                } else {
+
+                    return Response::json('error. Invalid file format or size >5Mb', 400);
+                }
             }
 
-            $uploadSuccess = Image::make($file->getRealPath());
-            $bigImage = $uploadSuccess->resize(1600, null, function ($constraint) {
-                $constraint->aspectRatio();
-            });
-            $bigImage->save($destinationPath . $fileUniqueName, 100);
-
-            $thum_iamge = $uploadSuccess->resize(364, null, function ($constraint) {
-                $constraint->aspectRatio();
-            });
-            $thum_iamge->save($thumbPath . $fileUniqueName);
+            return Response::json($response, 200);
 
 
-
-            $result = [
-                'destinationUrl' => $destinationUrl,
-                'thumbUrl' => $thumbUrl,
-                'origName' => $fileOrigName,
-                'uniqueName' => $fileUniqueName
-            ];
+        } else {
+            if ($validator->passes()) {
 
 
-            if($uploadSuccess) {
+                //paths
+                $destinationPath =  public_path(). DIRECTORY_SEPARATOR .$this->base_folder. DIRECTORY_SEPARATOR . $this->destination_folder . DIRECTORY_SEPARATOR;
 
-                return Response::json($result, 200); // or do a redirect with some message that file was uploaded
 
+                $thumbPath = $destinationPath . $this->thumb_folder . DIRECTORY_SEPARATOR;
+                if (!is_dir($destinationPath)) {
+                    mkdir($destinationPath, 0755, true);
+                }
+                if (!is_dir($thumbPath)) {
+                    mkdir($thumbPath, 0755, true);
+                }
+//            $destinationUrl = url('/') . "/".$this->base_folder."/" . $this->destination_folder . '/';
+                $destinationUrl = "/".$this->base_folder."/" . $this->destination_folder . '/';
+                $thumbUrl = $destinationUrl . $this->thumb_folder.'/';
+
+                //property
+                $fileOrigName = $file->getClientOriginalName();
+
+                $fileUniqueName = date("YmdHis") . "_" . str_random(25) . '.' . $file->getClientOriginalExtension();
+
+
+                while (File::exists($destinationPath . $fileUniqueName)) {
+
+                    $fileUniqueName = uniqid() . "_" . $fileUniqueName;
+                }
+
+                $uploadSuccess = Image::make($file->getRealPath());
+//                $bigImage = $uploadSuccess->resize(1600, null, function ($constraint) {
+//                    $constraint->aspectRatio();
+//                });
+//                $bigImage->save($destinationPath . $fileUniqueName, 100);
+
+                $bigImage = $uploadSuccess->save($destinationPath . $fileUniqueName, 100);
+
+                $thum_iamge = $uploadSuccess->resize(364, null, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+                $thum_iamge->save($thumbPath . $fileUniqueName, 100);
+
+
+
+                $result = [
+                    'destinationUrl' => $destinationUrl,
+                    'thumbUrl' => $thumbUrl,
+                    'origName' => $fileOrigName,
+                    'uniqueName' => $fileUniqueName
+                ];
+
+
+                if($uploadSuccess) {
+
+                    return Response::json($result, 200); // or do a redirect with some message that file was uploaded
+
+                } else {
+
+                    return Response::json('error', 400);
+                }
             } else {
 
-                return Response::json('error', 400);
+                return Response::json('error. Invalid file format or size >5Mb', 400);
             }
-        } else {
-
-            return Response::json('error. Invalid file format or size >5Mb', 400);
         }
+
+
 
 
     }
@@ -1522,7 +1644,7 @@ class Tp
     public function deleteFile(){
         $filename = Request::input('filename');
 
-        $destinationPath = base_path() . DIRECTORY_SEPARATOR .'public'. DIRECTORY_SEPARATOR .$this->base_folder. DIRECTORY_SEPARATOR . $this->destination_folder . DIRECTORY_SEPARATOR;
+        $destinationPath = public_path(). DIRECTORY_SEPARATOR .$this->base_folder. DIRECTORY_SEPARATOR . $this->destination_folder . DIRECTORY_SEPARATOR;
 
 
         $thumbPath = $destinationPath . $this->thumb_folder . DIRECTORY_SEPARATOR;

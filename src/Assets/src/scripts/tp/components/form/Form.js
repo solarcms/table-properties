@@ -1,4 +1,5 @@
 import React, { Component, PropTypes }  from 'react';
+import ReactDOM from 'react-dom';
 import Combogrid from './elements/ComboGrid';
 import CK from './elements/CK';
 import DragMap from './elements/DragMap';
@@ -513,9 +514,12 @@ export default class Form extends Component {
 
     }
 
-    componentWillUnmount() {
+    componentWillUnmount(){
 
     }
+
+
+
 
     render() {
         const { formControls, translateFormControls, changeHandler, formData, formType, formValue, focusIndex, gridIndex, gridId, ifUpdateDisabledCanEditColumns, permission, edit_parent_id  } = this.props;
@@ -565,27 +569,25 @@ export default class Form extends Component {
             : null
 
         const translateForm = translateFormControls && translateFormControls.size >= 1 ? translateFormControls.map((translateFormControl, locale_index)=>{
-
             return <Tab eventKey={locale_index} title={translateFormControl.get('locale_code')} key={locale_index}>
-                {this.getTranslationForm(translateFormControl.get('translate_form_input_control'), translateFormControl.get('locale_id'), translateFormControl.get('locale_code'), locale_index)}
-            </Tab>
+                        {this.getTranslationForm(translateFormControl.get('translate_form_input_control'), translateFormControl.get('locale_id'), translateFormControl.get('locale_code'), locale_index)}
+                    </Tab>
         }) : null
+
 
         return (
             <div className="add-edit-form">
-                <Tabs defaultActiveKey={0} animation={false}>
-                    {translateForm}
-                </Tabs>
 
                 <div className="none-translate-form">
-
                     {formFields}
                     <div style={{clear:'both'}}></div>
                 </div>
-
-
-            </div>)
-
+                <br/>
+                <Tabs defaultActiveKey={0} animation={false}>
+                    {translateForm}
+                </Tabs>
+            </div>
+        )
     }
 }
 Form.defaultProps = {
