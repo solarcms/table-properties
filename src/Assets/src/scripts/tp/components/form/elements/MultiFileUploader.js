@@ -11,20 +11,33 @@ export default class MultiFileUploader extends Component {
 
     uploadSuccess(e, responsejson){
 
-        uploadedFiles.push({
-            size: e.size,
-            origName: e.name,
-            destinationUrl:responsejson.destinationUrl,
-            thumbUrl:responsejson.thumbUrl,
-            uniqueName:responsejson.uniqueName
-        });
+        if(e.status == 'success'){
+            responsejson.map((response)=>{
+                let duplicated = false;
+                uploadedFiles.map((uploadedFile)=>{
+                    if(uploadedFile.uniqueName == response.uniqueName)
+                        duplicated = true
+                })
+                if(duplicated === false)
+                    uploadedFiles.push({
+                        size: e.size,
+                        origName: e.name,
+                        destinationUrl:response.destinationUrl,
+                        thumbUrl:response.thumbUrl,
+                        uniqueName:response.uniqueName
+                    });
 
-        let uploadedFilesString = JSON.stringify(uploadedFiles);
+            })
 
-        if(e.status == 'success')
+            let uploadedFilesString = JSON.stringify(uploadedFiles);
+
             this.props.changeHandler(uploadedFilesString);
+        }
+
         else
             alert('error please try again')
+
+
     }
 
     removeImage(e){
@@ -128,10 +141,10 @@ export default class MultiFileUploader extends Component {
         } else{
             djsConfig = {
                 addRemoveLinks: true,
-                uploadMultiple:false,
+                uploadMultiple:true,
                 dictRemoveFile: 'Remove/Устгах',
                 params: {
-                    test: "test 2"
+
 
                 },
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}

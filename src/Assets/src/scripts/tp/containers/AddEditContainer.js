@@ -207,8 +207,26 @@ class AddEditContainer extends Component {
                         //
                         //    this.props.actions.setComboGridText(formControl.column, data[0][formControl.column + "_" + formControl.options['textField']]);
                         //}
-                        if (formControl.get('type') !== '--hidden' && formControl.get('type') !== '--group')
-                            this.props.actions.changeValue([index], data[0][formControl.get('column')])
+                        if (formControl.get('type') !== '--hidden' && formControl.get('type') !== '--group'){
+                            if(formControl.get('type') == '--combobox'){
+
+                                if(formControl.getIn(['options', 'child'])){
+
+                                    getCascadeChild(formControl.getIn(['options', 'child']), data[0][formControl.get('column')]).then((dataChild)=>{
+                                        this.props.actions.changeFormData(formControl.getIn(['options', 'child']), dataChild);
+
+                                        this.props.actions.changeValue([index], data[0][formControl.get('column')])
+                                    })
+                                    
+                                } else
+                                    this.props.actions.changeValue([index], data[0][formControl.get('column')])
+                            } else{
+
+                                this.props.actions.changeValue([index], data[0][formControl.get('column')])
+                            }
+
+                        }
+
 
                         if (formControl.get('type') == '--group'){
 
@@ -216,7 +234,9 @@ class AddEditContainer extends Component {
 
                                 if (control.get('type') !== '--hidden' && control.get('type') !== '--group'){
                                     if(control.get('type') == '--combobox'){
+
                                         if(control.getIn(['options', 'child'])){
+
                                             getCascadeChild(control.getIn(['options', 'child']), data[0][control.get('column')]).then((dataChild)=>{
                                                 this.props.actions.changeFormData(control.getIn(['options', 'child']), dataChild);
 
