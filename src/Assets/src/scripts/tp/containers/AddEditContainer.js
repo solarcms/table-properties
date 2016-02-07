@@ -217,7 +217,7 @@ class AddEditContainer extends Component {
 
                                         this.props.actions.changeValue([index], data[0][formControl.get('column')])
                                     })
-                                    
+
                                 } else
                                     this.props.actions.changeValue([index], data[0][formControl.get('column')])
                             } else{

@@ -295,7 +295,6 @@ class Tp
             $table_data->orderBy($order[0], $order[1]);
         }
 
-//        dd($table_data->toSql());
 
 
         return  $table_data->paginate($pageLimit);
@@ -1488,26 +1487,30 @@ class Tp
 
         $file = Request::file('file');
 
+
         $rules = [
             'file' => $this->image_upload_allow_list
         ];
 
         $validator = Validator::make(Request::all(), $rules);
 
+
+
         if(is_array($file)){
             $response = [];
             foreach($file as $mfile){
-                $validator = Validator::make(
+                $validator2 = Validator::make(
                     ['file' => $mfile],
                     ['file' => $this->image_upload_allow_list]
                 );
 
-                if ($validator->passes()) {
+                if ($validator2->passes()) {
 
 
                     //paths
-                    $destinationPath = base_path() . DIRECTORY_SEPARATOR .'public'. DIRECTORY_SEPARATOR .$this->base_folder. DIRECTORY_SEPARATOR . $this->destination_folder . DIRECTORY_SEPARATOR;
+                    $destinationPath = public_path(). DIRECTORY_SEPARATOR .$this->base_folder. DIRECTORY_SEPARATOR . $this->destination_folder . DIRECTORY_SEPARATOR;
 
+//                    dd($destinationPath);
 
                     $thumbPath = $destinationPath . $this->thumb_folder . DIRECTORY_SEPARATOR;
                     if (!is_dir($destinationPath)) {
@@ -1532,10 +1535,7 @@ class Tp
                     }
 
                     $uploadSuccess = Image::make($mfile->getRealPath());
-                    $bigImage = $uploadSuccess->resize(1600, null, function ($constraint) {
-                        $constraint->aspectRatio();
-                    });
-                    $bigImage->save($destinationPath . $fileUniqueName, 100);
+                    $bigImage = $uploadSuccess->save($destinationPath . $fileUniqueName, 100);
 
                     $thum_iamge = $uploadSuccess->resize(364, null, function ($constraint) {
                         $constraint->aspectRatio();
@@ -1567,70 +1567,76 @@ class Tp
             }
 
             return Response::json($response, 200);
-        }
-
-        if ($validator->passes()) {
 
 
-            //paths
-            $destinationPath = base_path() . DIRECTORY_SEPARATOR .'public'. DIRECTORY_SEPARATOR .$this->base_folder. DIRECTORY_SEPARATOR . $this->destination_folder . DIRECTORY_SEPARATOR;
+        } else {
+            if ($validator->passes()) {
 
 
-            $thumbPath = $destinationPath . $this->thumb_folder . DIRECTORY_SEPARATOR;
-            if (!is_dir($destinationPath)) {
-                mkdir($destinationPath, 0755, true);
-            }
-            if (!is_dir($thumbPath)) {
-                mkdir($thumbPath, 0755, true);
-            }
+                //paths
+                $destinationPath =  public_path(). DIRECTORY_SEPARATOR .$this->base_folder. DIRECTORY_SEPARATOR . $this->destination_folder . DIRECTORY_SEPARATOR;
+
+
+                $thumbPath = $destinationPath . $this->thumb_folder . DIRECTORY_SEPARATOR;
+                if (!is_dir($destinationPath)) {
+                    mkdir($destinationPath, 0755, true);
+                }
+                if (!is_dir($thumbPath)) {
+                    mkdir($thumbPath, 0755, true);
+                }
 //            $destinationUrl = url('/') . "/".$this->base_folder."/" . $this->destination_folder . '/';
-            $destinationUrl = "/".$this->base_folder."/" . $this->destination_folder . '/';
-            $thumbUrl = $destinationUrl . $this->thumb_folder.'/';
+                $destinationUrl = "/".$this->base_folder."/" . $this->destination_folder . '/';
+                $thumbUrl = $destinationUrl . $this->thumb_folder.'/';
 
-            //property
-            $fileOrigName = $file->getClientOriginalName();
+                //property
+                $fileOrigName = $file->getClientOriginalName();
 
-            $fileUniqueName = date("YmdHis") . "_" . str_random(25) . '.' . $file->getClientOriginalExtension();
-
-
-            while (File::exists($destinationPath . $fileUniqueName)) {
-
-                $fileUniqueName = uniqid() . "_" . $fileUniqueName;
-            }
-
-            $uploadSuccess = Image::make($file->getRealPath());
-            $bigImage = $uploadSuccess->resize(1600, null, function ($constraint) {
-                $constraint->aspectRatio();
-            });
-            $bigImage->save($destinationPath . $fileUniqueName, 100);
-
-            $thum_iamge = $uploadSuccess->resize(364, null, function ($constraint) {
-                $constraint->aspectRatio();
-            });
-            $thum_iamge->save($thumbPath . $fileUniqueName);
+                $fileUniqueName = date("YmdHis") . "_" . str_random(25) . '.' . $file->getClientOriginalExtension();
 
 
+                while (File::exists($destinationPath . $fileUniqueName)) {
 
-            $result = [
-                'destinationUrl' => $destinationUrl,
-                'thumbUrl' => $thumbUrl,
-                'origName' => $fileOrigName,
-                'uniqueName' => $fileUniqueName
-            ];
+                    $fileUniqueName = uniqid() . "_" . $fileUniqueName;
+                }
+
+                $uploadSuccess = Image::make($file->getRealPath());
+//                $bigImage = $uploadSuccess->resize(1600, null, function ($constraint) {
+//                    $constraint->aspectRatio();
+//                });
+//                $bigImage->save($destinationPath . $fileUniqueName, 100);
+
+                $bigImage = $uploadSuccess->save($destinationPath . $fileUniqueName, 100);
+
+                $thum_iamge = $uploadSuccess->resize(364, null, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+                $thum_iamge->save($thumbPath . $fileUniqueName, 100);
 
 
-            if($uploadSuccess) {
 
-                return Response::json($result, 200); // or do a redirect with some message that file was uploaded
+                $result = [
+                    'destinationUrl' => $destinationUrl,
+                    'thumbUrl' => $thumbUrl,
+                    'origName' => $fileOrigName,
+                    'uniqueName' => $fileUniqueName
+                ];
 
+
+                if($uploadSuccess) {
+
+                    return Response::json($result, 200); // or do a redirect with some message that file was uploaded
+
+                } else {
+
+                    return Response::json('error', 400);
+                }
             } else {
 
-                return Response::json('error', 400);
+                return Response::json('error. Invalid file format or size >5Mb', 400);
             }
-        } else {
-
-            return Response::json('error. Invalid file format or size >5Mb', 400);
         }
+
+
 
 
     }
@@ -1638,7 +1644,7 @@ class Tp
     public function deleteFile(){
         $filename = Request::input('filename');
 
-        $destinationPath = base_path() . DIRECTORY_SEPARATOR .'public'. DIRECTORY_SEPARATOR .$this->base_folder. DIRECTORY_SEPARATOR . $this->destination_folder . DIRECTORY_SEPARATOR;
+        $destinationPath = public_path(). DIRECTORY_SEPARATOR .$this->base_folder. DIRECTORY_SEPARATOR . $this->destination_folder . DIRECTORY_SEPARATOR;
 
 
         $thumbPath = $destinationPath . $this->thumb_folder . DIRECTORY_SEPARATOR;

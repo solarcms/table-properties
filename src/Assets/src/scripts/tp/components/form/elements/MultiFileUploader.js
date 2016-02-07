@@ -45,7 +45,9 @@ export default class MultiFileUploader extends Component {
         if(e.uniqueName){
             deleteFile(e.uniqueName).then((data)=>{
                 if(data == 'success'){
-                    myDropzone.options.maxFiles = myDropzone.options.maxFiles + 1;
+                    if(this.props.max !== false) {
+                        myDropzone.options.maxFiles = myDropzone.options.maxFiles + 1;
+                    }
 
                 }
                 else
@@ -101,9 +103,10 @@ export default class MultiFileUploader extends Component {
 
                 // If you use the maxFiles option, make sure you adjust it to the
                 // correct amount:
-
-                let existingFileCount = 1; // The number of files already uploaded
-                myDropzone.options.maxFiles = myDropzone.options.maxFiles - existingFileCount;
+                if(this.props.max !== false) {
+                    let existingFileCount = 1; // The number of files already uploaded
+                    myDropzone.options.maxFiles = myDropzone.options.maxFiles - existingFileCount;
+                }
             })
 
 
@@ -127,6 +130,7 @@ export default class MultiFileUploader extends Component {
 
 
         if(this.props.max !== false){
+
             djsConfig = {
                 addRemoveLinks: true,
                 uploadMultiple:false,
@@ -139,6 +143,7 @@ export default class MultiFileUploader extends Component {
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
             };
         } else{
+
             djsConfig = {
                 addRemoveLinks: true,
                 uploadMultiple:true,
