@@ -14,7 +14,7 @@ export default class Body extends Component {
             () => {
                 fixRowHeigth(this.props.gridId)
             },
-            100
+            50
         );
 
 
@@ -52,15 +52,14 @@ export default class Body extends Component {
         const {gridId } = this.props
 
         $(".virtual_scroll").scroll(function () {
-            $("#" + gridId + "-wrapper")
+            $(".tp-table-wrapper")
                 .scrollLeft($(".virtual_scroll").scrollLeft());
-            $("#" + gridId + "-wrapper0")
-                .scrollLeft($(".virtual_scroll").scrollLeft());
+
         });
 
-        document.querySelector("#" + gridId + "-header").parentElement.addEventListener("scroll", function () {
-            document.querySelector("#" + gridId + "-header").style.transform = "translateY(" + this.scrollTop + "px)";
-        });
+        //document.querySelector("#" + gridId + "-header").parentElement.addEventListener("scroll", function () {
+        //    document.querySelector("#" + gridId + "-header").style.transform = "translateY(" + this.scrollTop + "px)";
+        //});
 
         fixRowHeigth(this.props.gridId)
 
@@ -403,38 +402,13 @@ export default class Body extends Component {
         </tr> : null
         return (<div className="white">
 
+            <div id="fixed_header" className="">
+
+            </div>
+
             <div id="gridBody" className="handsontable">
 
-                <div id={`${gridId}-header`} className="table_header">
-                    <table id={`${gridId}-left0`}
-                           className="tp-table-left0">
-                        <thead>
-                        <tr>
-                        </tr>
-                        </thead>
 
-                    </table>
-                    <div id={`${gridId}-wrapper0`} className="tp-table-wrapper0">
-                        <table id={`${gridId}0`} className="tp-table0"
-                               width="100%">
-                            <thead>
-                            <tr className="solar-grid-header">
-
-
-                            </tr>
-                            </thead>
-
-                        </table>
-                    </div>
-                    <table id={`${gridId}-rigth0`}
-                           className="tp-table-rigth0">
-                        <thead>
-                        <tr>
-                            <th className="solar-grid-actions"><i className="material-icons">&#xE5D3;</i></th>
-                        </tr>
-                        </thead>
-                    </table>
-                </div>
 
                 <table id={`${gridId}-left`} className="tp-table-left">
                     <thead>

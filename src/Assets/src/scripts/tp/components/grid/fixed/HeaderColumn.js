@@ -1,7 +1,7 @@
 import $ from "jquery"
 export function fixRowHeigth(gridId) {
 
-
+    $("#clone").remove();
 
     let aRowHeights = [];
     // Loop through the tables
@@ -53,52 +53,66 @@ export function fixRowHeigth(gridId) {
     ///////////////////////////////////
 
 
-    $("#"+gridId+"-wrapper0").css('width', $("#"+gridId+"-wrapper").outerWidth());
-    $("#"+gridId+"-left0").css("width", (leftTableWidth));
-    $("#"+gridId+"-left0 > thead > tr").empty();
-    $("#"+gridId+"-left > thead > tr").find("th").each(function (indx, td) {
-
-        let numberOfindex = indx + 1;
-
-        let realWidth = $("#"+gridId+"-left > tbody tr:last-child td:nth-child("+numberOfindex+")").innerWidth();
-
-        if(gridId == 'grid_table')
-
-
-            if(indx == 0)
-                var copy = "<th style='width: " + realWidth + "px; height: " + $(td).height() + "px' >" + $(td).html() + "</th>";
-            else
-                var copy = "<th style='width: " + realWidth + "px; height: " + $(td).height() + "px' class='sorting'>" + $(td).html() + "</th>";
-        $("#"+gridId+"-left0 > thead > tr").append(copy);
-
-    });
-
-
-    $("#"+gridId+"0 > thead > tr").empty();
-
-    //$("#"+gridId+" thead  tr").clone().appendTo($("#"+gridId+"0 thead")) ;
-    $("#"+gridId+" > thead > tr").find("th").each(function (indx, th) {
-        let numberOfindex = indx + 1;
+    var clone_table = $("#gridBody").clone();
+    var anchor_top = $("#gridBody").offset().top;
+    clone_table.attr('id', 'clone');
+    clone_table.css({position:'fixed',
+        top:anchor_top});
+    clone_table.width($("#gridBody").width());
+    $("#fixed_header").append(clone_table);
+    $("#fixed_header").css({visibility:'hidden'});
+    $("#fixed_header thead").css({visibility:'visible'});
 
 
 
-        let realWidth = getWidth(th);
 
 
-
-        var copy = "<th style='width: " + realWidth + "px; height: " + $(th).height() + "px' class='sorting'>" + $(th).html() + "</th>";
-        $("#"+gridId+"0 > thead > tr").append(copy);
-
-    });
-
-    $("#"+gridId+"-rigth0").css("width", 80);
-    $("#"+gridId+"-rigth0 > thead > tr").empty();
-    $("#"+gridId+"-rigth > thead > tr").find("th").each(function (indx, td) {
-
-        var copy = "<th style='width: 80px; height: " + $(td).height() + "px' >" + $(td).html() + "</th>";
-        $("#"+gridId+"-rigth0 > thead > tr").append(copy);
-
-    });
+    //$("#"+gridId+"-wrapper0").css('width', $("#"+gridId+"-wrapper").outerWidth());
+    //$("#"+gridId+"-left0").css("width", (leftTableWidth));
+    //$("#"+gridId+"-left0 > thead > tr").empty();
+    //$("#"+gridId+"-left > thead > tr").find("th").each(function (indx, td) {
+    //
+    //    let numberOfindex = indx + 1;
+    //
+    //    let realWidth = $("#"+gridId+"-left > tbody tr:last-child td:nth-child("+numberOfindex+")").innerWidth();
+    //
+    //    if(gridId == 'grid_table')
+    //
+    //
+    //        if(indx == 0)
+    //            var copy = "<th style='width: " + realWidth + "px; height: " + $(td).height() + "px' >" + $(td).html() + "</th>";
+    //        else
+    //            var copy = "<th style='width: " + realWidth + "px; height: " + $(td).height() + "px' class='sorting'>" + $(td).html() + "</th>";
+    //    $("#"+gridId+"-left0 > thead > tr").append(copy);
+    //
+    //});
+    //
+    //
+    //$("#"+gridId+"0 > thead > tr").empty();
+    //
+    ////$("#"+gridId+" thead  tr").clone().appendTo($("#"+gridId+"0 thead")) ;
+    //$("#"+gridId+" > thead > tr").find("th").each(function (indx, th) {
+    //    let numberOfindex = indx + 1;
+    //
+    //
+    //
+    //    let realWidth = getWidth(th);
+    //
+    //
+    //
+    //    var copy = "<th style='width: " + realWidth + "px; height: " + $(th).height() + "px' class='sorting'>" + $(th).html() + "</th>";
+    //    $("#"+gridId+"0 > thead > tr").append(copy);
+    //
+    //});
+    //
+    //$("#"+gridId+"-rigth0").css("width", 80);
+    //$("#"+gridId+"-rigth0 > thead > tr").empty();
+    //$("#"+gridId+"-rigth > thead > tr").find("th").each(function (indx, td) {
+    //
+    //    var copy = "<th style='width: 80px; height: " + $(td).height() + "px' >" + $(td).html() + "</th>";
+    //    $("#"+gridId+"-rigth0 > thead > tr").append(copy);
+    //
+    //});
 
 
 

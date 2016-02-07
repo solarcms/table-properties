@@ -118,18 +118,19 @@
     }
 
 }
+#fixed_header{
+  #clone{
 
-.table_header{
-  top: 0;
-  display: none;
-  table{background: #fff}
-  border-bottom: 1px solid #ccc;
-  background: #fff;
-  width: 100%;
-  position: absolute;
-  //display: none;
+    z-index: 100;
 
+    thead{
+      background: #ccc;
+      border-bottom: 1px solid #ccc !important;
+    }
+
+  }
 }
+
 .handsontable {
   position: relative;
 }
