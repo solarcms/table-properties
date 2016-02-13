@@ -1,4 +1,5 @@
 src/Assets/node_modules
+src/Assets/dist
 npm-debug.log
 src/Assets/npm-debug.log
 .idea
