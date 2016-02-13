@@ -9,7 +9,7 @@ export default class ComboBox extends Component {
 
         let options = [];
 
-
+console.log(formData)
         if(formData.get(column))
 
             formData.getIn([column, 'data', 'data']).map((data, sindex)=>{

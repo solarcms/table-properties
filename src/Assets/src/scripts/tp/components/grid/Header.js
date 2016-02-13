@@ -108,6 +108,13 @@ export default class Header extends Component {
             <div className="">
                 <div className="white box-shadow-z0 b-b">
                     <div className="navbar">
+                        <ul className="nav navbar-nav pull-left hidden-lg-up">
+                            <li className="nav-item">
+                                <a data-toggle="modal" data-target="#aside" className="nav-link p-r b-r">
+                                    <i className="material-icons">menu</i>
+                                </a>
+                            </li>
+                        </ul>
 
                         <div className="navbar-item pull-left h6 p-l" id="pageTitle" >{this.props.pageName}</div>
 

@@ -10,7 +10,7 @@ export default class Body extends Component {
 
 
     resizeHandler() {
-        console.log('ttt')
+
 
         setTimeout(
             () => {
@@ -372,8 +372,9 @@ export default class Body extends Component {
                 } else {
 
                     if (formControls.getIn([columnIndex])){
+
                         const cellformControls = Immutable.fromJS(cellformControl);
-                        return <td key={columnIndex}>
+                        return <td key={columnIndex} className="inline_form_td">
 
                             <Form formControls={cellformControls}
                                   formData={formData}

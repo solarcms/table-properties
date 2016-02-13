@@ -426,7 +426,7 @@ function mapStateToProps(state) {
     return {
         setup: Grid.get('setup').toJS(),
         locales: Grid.get('setup').toJS().locales,
-        formData: Form.get('formData').toJS(),
+        formData: Form.get('formData'),
         editID: Grid.get('editID'),
         showInlineForm: Grid.get('showInlineForm'),
         showGird: Grid.get('showGird'),

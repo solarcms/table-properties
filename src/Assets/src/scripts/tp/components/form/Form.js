@@ -434,13 +434,13 @@ export default class Form extends Component {
                 return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass} `}>
                     <div className="radio">
 
-                        <label>
+                        <label >
 
                             {title}
                         </label> <br/>
 
                         {field.get('choices').map((choice, cindex)=>
-                            <label key={cindex}>
+                            <label key={cindex} className="radio_label">
                                 <input type="radio"
                                        disabled={thisDisabled}
                                        name={name}
