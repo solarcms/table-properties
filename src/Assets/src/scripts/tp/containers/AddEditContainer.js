@@ -91,8 +91,13 @@ class AddEditContainer extends Component {
             update(FD, this.props.translateFormControls, this.props.params.id, this.props.subItems).done((data)=> {
 
                 if (data == 'success' || 'none') {
+                    if (this.props.permission.r === false && this.props.permission.c === false && this.props.permission.d === false && this.props.setup.update_row !== null) {
 
-                    window.location.replace('#/');
+                        alert("Амжилттай хадгаллаа")
+
+                    } else
+                        window.location.replace('#/');
+
                 }
 
             }).fail(()=> {

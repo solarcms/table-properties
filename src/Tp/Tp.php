@@ -25,6 +25,7 @@ class Tp
     public $ifUpdateDisabledCanEditColumnsByValue = [];  //[['acitve'=>1]]
     public $read_condition = [];  //[['active'=>0], ['user_id'=>21]]
     public $search_columns = [];
+    public $update_row = null;
 
 
     public $exclude_field = array();        // don't allow users to update or insert into these fields, even if data is posted. place the field name in the key of the array. example: $lm->exclude_field['is_admin'] = '';
@@ -192,7 +193,8 @@ class Tp
             'subItems'=>$subItems,
             'permission'=>$this->permission,
             'ifUpdateDisabledCanEditColumns'=>$this->ifUpdateDisabledCanEditColumns,
-            'form_datas'=>$this->get_form_datas()
+            'form_datas'=>$this->get_form_datas(),
+            'update_row'=>$this->update_row,
         ];
 
         ////

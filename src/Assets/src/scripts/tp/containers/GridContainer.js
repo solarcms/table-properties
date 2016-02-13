@@ -294,6 +294,12 @@ class GridContainer extends Component {
 
         }
 
+        if (permission.r === false && permission.c === false && permission.d === false && setup.update_row !== null) {
+
+            window.location.replace('#/edit/'+setup.update_row);
+
+        }
+
 
         const gridId = 'grid_table'
         const topPagination = paginationPosition == 'top' || paginationPosition == 'both' ?
