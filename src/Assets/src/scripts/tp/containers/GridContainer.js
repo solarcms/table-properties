@@ -289,7 +289,7 @@ class GridContainer extends Component {
             gridHeight,
             showGird,
             permission,
-            ifUpdateDisabledCanEditColumns
+            ifUpdateDisabledCanEditColumns,
             } = this.props;
 
         if (permission.r === false && permission.c === true) {
