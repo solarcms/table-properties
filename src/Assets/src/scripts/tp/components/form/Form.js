@@ -582,10 +582,17 @@ export default class Form extends Component {
                     {formFields}
                     <div style={{clear:'both'}}></div>
                 </div>
-                <br/>
-                <Tabs defaultActiveKey={0} animation={false}>
-                    {translateForm}
-                </Tabs>
+
+                {translateForm !== null
+                    ? <br/>
+                    : null}
+
+                {translateForm !== null
+                    ? <Tabs defaultActiveKey={0} animation={false}>
+                        {translateForm}
+                        </Tabs>
+                    : null}
+
             </div>
         )
     }
