@@ -64,7 +64,7 @@ export default class Header extends Component {
                         <a className="dropdown-item" href="javascript:void(0)">Тохиргоо</a>
 
                         {this.props.locales.map((locale)=>
-                            <a className="dropdown-item" href="javascript:void(0)" key={locale.code} onClick={this.changeLanguage.bind(this, locale.id)}>
+                            <a className="dropdown-item" href="javascript:void(0)" key={locale.code} onClick={this.changeLanguage.bind(this, locale.code)}>
                                 <i className="material-icons">&#xE894;</i> {locale.code}
                             </a>
                         )}

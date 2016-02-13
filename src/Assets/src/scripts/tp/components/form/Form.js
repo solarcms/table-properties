@@ -354,6 +354,7 @@ export default class Form extends Component {
                     formData={formData}
                     value={mainValue}
                     multi={false}
+                    defaultLocale={this.props.defaultLocale}
                     fieldOptions={field.get('options')}
                     changeHandler={this.manualeChangeHandler.bind(this, locale_index, `${index}`)}
                     errorText={field.get('error')}
@@ -372,6 +373,7 @@ export default class Form extends Component {
                     formType={formType}
                     formData={formData}
                     value={mainValue}
+                    defaultLocale={this.props.defaultLocale}
                     fieldOptions={field.get('options')}
                     formControls={field.getIn(['options', 'form_input_control'])}
                     changeHandler={this.manualeChangeHandler.bind(this, locale_index, `${index}`)}
@@ -390,6 +392,7 @@ export default class Form extends Component {
                     formData={formData}
                     value={mainValue}
                     multi={true}
+                    defaultLocale={this.props.defaultLocale}
                     fieldOptions={field.get('options')}
                     changeHandler={this.manualeChangeHandler.bind(this, locale_index, `${index}`)}
                     errorText={field.get('error')}

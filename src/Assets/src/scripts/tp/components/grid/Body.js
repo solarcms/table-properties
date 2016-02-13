@@ -106,7 +106,8 @@ export default class Body extends Component {
             removeInlineForm,
             gridId,
             permission,
-            ifUpdateDisabledCanEditColumns
+            ifUpdateDisabledCanEditColumns,
+            defaultLocale
             } = this.props;
 
 
@@ -262,6 +263,19 @@ export default class Body extends Component {
                     } else {
                         const rowClickAction = comboGridSelection === true ? this.selectRow.bind(this, data) : this.setRowEdit.bind(this, data.id, columnIndex)
                         if(grid.type !== '--internal-link'){
+                            let show_value = null;
+
+
+                            if(grid.translate && grid.translate === true){
+                                let json_translations =  JSON.parse(data[grid.column]);
+                                json_translations.map(json_translation =>{
+                                    if(json_translation.locale == defaultLocale)
+                                        show_value = json_translation.value
+                                })
+
+                            } else
+                                show_value =data[grid.column];
+
                             return <td key={columnIndex} onClick={rowClickAction}>
                                 {formType == 'inline' && editID == data.id ?
                                     <Form formControls={cellformControl}
@@ -283,9 +297,10 @@ export default class Body extends Component {
 
                                             'Үгүй'
 
-                                        :
-                                            data[grid.column]}
-                                        </span>
+                                        : show_value
+                                        }
+
+                                            </span>
                                 }
 
                             </td>

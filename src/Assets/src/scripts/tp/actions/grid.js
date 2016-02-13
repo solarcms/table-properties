@@ -53,6 +53,12 @@ export function setCurrentPage(page) {
         page
     }
 }
+export function setLocale(locale) {
+    return {
+        type: types.SET_LOCALE,
+        locale
+    }
+}
 export function setPageLimit(limit) {
     return {
         type: types.SET_PAGE_LIMIT,

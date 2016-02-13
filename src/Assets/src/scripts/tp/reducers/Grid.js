@@ -21,7 +21,8 @@ const initialState = {
     },
     comboBoxAddAble: {},
     translateFormControls:{},
-    button_texts:{}
+    button_texts:{},
+    defaultLocale:null
 };
 
 export default createReducer(initialState, {
@@ -29,13 +30,23 @@ export default createReducer(initialState, {
 
         const data = Immutable.fromJS(setupData);
 
+
+
         state = state.set('setup', data);
+        state = state.set('defaultLocale', setupData.default_locale);
 
         state = state.set('pageLimit', setupData.pageLimit);
 
         state = state.set('button_texts', setupData.button_texts);
 
 
+        return state;
+    },
+    [types.SET_LOCALE](state, { locale }) {
+
+
+
+        state = state.set('defaultLocale', locale);
         return state;
     },
     [types.SET_LIST](state, { listData }) {

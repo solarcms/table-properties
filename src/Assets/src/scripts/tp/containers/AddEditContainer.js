@@ -5,7 +5,7 @@ import * as DataActions from '../actions/form'
 import Header from '../components/grid/Header'
 import Form from "../components/form/Form"
 import validation from "../components/form/validation/"
-import {save, edit, update, editTranslation, getCascadeChild} from "../api/"
+import {save, edit, update, getCascadeChild} from "../api/"
 import Window from "../components/window/"
 import SubItemsContainer from "./formContainers/SubItemsContainer"
 
@@ -201,7 +201,7 @@ class AddEditContainer extends Component {
                     window.location.replace('#/');
 
             edit(this.props.params.id).then((data)=> {
-                if (data.length >= 1)
+                if (data.length >= 1){
                     this.props.formControls.map((formControl, index)=> {
                         //if (formControl.type === '--combogrid') {
                         //
@@ -254,6 +254,27 @@ class AddEditContainer extends Component {
                         }
 
                     })
+                    this.props.translateFormControls.map((translateFormControl, l_index)=> {
+
+                        translateFormControl.get('translate_form_input_control').map((formControl, index)=> {
+
+                            let json_translations =  JSON.parse(data[0][formControl.get('column')]);
+
+                            json_translations.map((json_translation) =>{
+                                if(json_translation.locale == translateFormControl.get('locale_code')){
+                                    if (formControl.get('type') !== '--hidden')
+                                        this.props.actions.changeTranslationValue(l_index, [index], json_translation.value)
+                                }
+
+                            })
+
+
+                        })
+
+
+                    })
+                }
+
                 else
                     alert('please try agian')
 
@@ -261,25 +282,6 @@ class AddEditContainer extends Component {
             });
 
 
-            editTranslation(this.props.params.id).then((data)=> {
-                if (data.length >= 1)
-                    this.props.translateFormControls.map((translateFormControl, locale_index)=> {
-                        data.map((tdata)=> {
-
-                            if (tdata.locale_id == translateFormControl.get('locale_id')) {
-                                translateFormControl.get('translate_form_input_control').map((formControl, index)=> {
-
-                                    if (formControl.get('type') !== '--hidden')
-                                        this.props.actions.changeTranslationValue(locale_index, [index], tdata[formControl.get('column')])
-
-                                })
-
-                            }
-                        })
-
-                    })
-
-            })
 
 
         } else {
@@ -311,7 +313,8 @@ class AddEditContainer extends Component {
             ifUpdateDisabledCanEditColumns,
             permission,
             locales,
-            button_texts
+            button_texts,
+            defaultLocale
             } = this.props;
 
 
@@ -328,6 +331,7 @@ class AddEditContainer extends Component {
                 translateFormControls={translateFormControls}
                 formControls={formControls}
                 formData={formData}
+                defaultLocale={defaultLocale}
                 ref="fromRefs"
                 locales={locales}
                 focusIndex={focusIndex}
@@ -412,6 +416,7 @@ function mapStateToProps(state) {
     return {
         setup: Grid.get('setup').toJS(),
         locales: Grid.get('setup').toJS().locales,
+        defaultLocale: Grid.get('defaultLocale'),
         formControls: Form.get('form_input_control'),
         translateFormControls: Form.get('translateFormControls'),
         showAddEditForm: Form.get('showAddEditForm'),

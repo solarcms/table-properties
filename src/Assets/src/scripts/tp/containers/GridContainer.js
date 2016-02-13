@@ -29,9 +29,12 @@ class GridContainer extends Component {
     }
     //export
     //translation
-    changeLanguage(id){
-        changeLanguage(id).then(()=>{
-            this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
+    changeLanguage(locale){
+        changeLanguage(locale).then(()=>{
+
+            this.props.actions.setLocale(locale);
+
+
         })
 
     }
@@ -267,6 +270,7 @@ class GridContainer extends Component {
 
         const {
             setup,
+            defaultLocale,
             locales,
             listData,
             gridHeader,
@@ -324,6 +328,7 @@ class GridContainer extends Component {
         const gridBody = permission.r === true ? showGird === true ? listData.length >= 1 ?
             <Body
                 gridId={gridId}
+                defaultLocale={defaultLocale}
                 bodyData={listData}
                 bodyHeader={gridHeader}
                 setRowEdit={this.setRowEdit.bind(this)}
@@ -426,6 +431,7 @@ function mapStateToProps(state) {
     return {
         setup: Grid.get('setup').toJS(),
         locales: Grid.get('setup').toJS().locales,
+        defaultLocale: Grid.get('defaultLocale'),
         formData: Form.get('formData').toJS(),
         editID: Grid.get('editID'),
         showInlineForm: Form.get('showInlineForm'),

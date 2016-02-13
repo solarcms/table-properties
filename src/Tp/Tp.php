@@ -63,11 +63,9 @@ class Tp
     public $subItems = [];
 
     //translation
-    public $translation_table = "";
-    public $translation_connector = "";
     public $locales_table = "locales";
     public $locale_connector = "locale_id"; // same on all translate able tables
-    public $default_locale_id = 1; // EN;
+    public $default_locale = 'EN'; // EN;
     public $translate_form_input_control = []; // EN;
 
 
@@ -127,7 +125,7 @@ class Tp
 
             // translation
             case "change-language":     return $this->changeLangauge();    break;
-            case "edit-translation":     return $this->editTranslation();    break;
+
 
             // cascade
             case "get-cascade-child": return $this->getCascadeChild(); break;
@@ -167,11 +165,11 @@ class Tp
             $subItem['items']=[];
             $subItems[] = $subItem;
         }
-        if($this->translation_table !== ''){
-            if (Session::has('locale_id')) {
+        if(count($this->translate_form_input_control) >= 1){
+            if (Session::has('locale')) {
 
             } else {
-                Session::set('locale_id', $this->default_locale_id);
+                Session::set('locale', $this->default_locale);
             }
 
             $locales = DB::table($this->locales_table)->select('id', 'code')->orderBy('id', 'ASC')->get();
@@ -192,7 +190,8 @@ class Tp
             'subItems'=>$subItems,
             'permission'=>$this->permission,
             'ifUpdateDisabledCanEditColumns'=>$this->ifUpdateDisabledCanEditColumns,
-            'form_datas'=>$this->get_form_datas()
+            'form_datas'=>$this->get_form_datas(),
+            'default_locale'=>Session::get('locale')
         ];
 
         ////
@@ -211,11 +210,6 @@ class Tp
 
         $table_data = DB::table($this->table)->select($this->grid_columns);
 
-        if($this->translation_table != ""){
-            $default_language_id = Session::get('locale_id');
-            $table_data->join($this->translation_table, "$this->table." . $this->identity_name, '=', $this->translation_table. "." .$this->translation_connector);
-            $table_data->where($this->translation_table.".".$this->locale_connector, "=", $default_language_id);
-        }
 
 
         foreach($this->form_input_control as $formControl){
@@ -232,9 +226,7 @@ class Tp
                         $table_data->join($options['table'], "$this->table." . $formControl['column'], '=', $options['table']. "." .$options['valueField']);
                     }
 
-                    if(isset($options['with_translation']) && $options['with_translation'] == true){
-                        $table_data->where($options['table'].".".$this->locale_connector, "=", $default_language_id);
-                    }
+
 
 
                 }
@@ -433,11 +425,7 @@ class Tp
         $table_data = DB::table($this->table)->where($this->table.".".$this->identity_name, '=', $id);
         $table_data->select($this->table.".".$this->identity_name);
 
-        if($this->translation_table != ""){
-            $default_language_id = Session::get('locale_id');
-            $table_data->join($this->translation_table, "$this->table." . $this->identity_name, '=', $this->translation_table. "." .$this->translation_connector);
-            $table_data->where($this->translation_table.".".$this->locale_connector, "=", $default_language_id);
-        }
+
 
         $options = null;
         foreach($this->form_input_control as $formControl){
@@ -475,29 +463,23 @@ class Tp
 
                 }
             }
-        }
+
+            }
+
+
+
+            foreach($this->translate_form_input_control as $t_f_c){
+                $table_data->addSelect("$this->table." . $t_f_c['column']);
+            }
+
+
 
 
         return  $table_data->get();
 
     }
 
-    public function editTranslation(){
-        if(empty($this->ifUpdateDisabledCanEditColumns))
-            if($this->permission['u'] != true)
-                return Response::json('permission denied', 400);
 
-        if($this->translation_table !== ''){
-            $id = Request::input('id');
-
-            $translation_datas = DB::table($this->translation_table)->where($this->translation_connector, "=", $id)->get();
-
-            return $translation_datas;
-        } else {
-            return [];
-        }
-
-    }
 
     public function insert(){
 
@@ -552,6 +534,45 @@ class Tp
 
         }
 
+        // transltation table save action
+        if(!empty($this->translate_form_input_control)){
+
+            foreach($this->translate_form_input_control as $translationformControl){
+                $translationformControl['trans_value'] = [];
+                foreach($translateData as $translate){
+                    $translate_value = [];
+
+                    $translate_value['locale'] = $translate['locale'];
+
+
+
+                    if($translationformControl['type']=='--checkbox'){
+                        $checkBoxValue = $formData[$translationformControl['column']];
+                        if($checkBoxValue == 1)
+                            $checkBoxValue = 1;
+                        else
+                            $checkBoxValue = 0;
+
+
+                        $translate_value['value'] = $checkBoxValue;
+
+                    } else
+                        $translate_value['value'] = $translate['data'][$translationformControl['column']];
+
+                    $translationformControl['trans_value'][] = $translate_value;
+                }
+
+
+                $insertQuery[$translationformControl['column']] = json_encode($translationformControl['trans_value']);
+
+
+            }
+
+
+        }
+
+
+
         if(!empty($this->save_sub_items_count)){
             $posted_sub_items = Request::input('subItems');
 
@@ -570,32 +591,7 @@ class Tp
         $insertedId = DB::getPdo()->lastInsertId();
 
 
-        // transltation table save action
-        if(!empty($this->translate_form_input_control)){
 
-            foreach($translateData as $translate){
-                $translationInsertQuery = [];
-                $translationInsertQuery[$this->locale_connector] = $translate['locale_id'];
-                $translationInsertQuery[$this->translation_connector] = $insertedId;
-
-                foreach($this->translate_form_input_control as $translationformControl){
-                    if($translationformControl['type']=='--checkbox'){
-                        $checkBoxValue = $formData[$translationformControl['column']];
-                        if($checkBoxValue == 1)
-                            $checkBoxValue = 1;
-                        else
-                            $checkBoxValue = 0;
-                        $translationInsertQuery[$translationformControl['column']] = $checkBoxValue;
-
-                    } else
-                        $translationInsertQuery[$translationformControl['column']] = $translate['data'][$translationformControl['column']];
-                }
-
-                DB::table($this->translation_table)->insert($translationInsertQuery);
-            }
-
-
-        }
 
         if(count($this->subItems) >= 1)
             $this->saveSubItems($insertedId, $this->subItems, Request::input('subItems'));
@@ -706,7 +702,42 @@ class Tp
 
         }
 
+        // transltation table save action
+        if(!empty($this->translate_form_input_control)){
 
+            foreach($this->translate_form_input_control as $translationformControl){
+                $translationformControl['trans_value'] = [];
+                foreach($translateData as $translate){
+                    $translate_value = [];
+
+                    $translate_value['locale'] = $translate['locale'];
+
+
+
+                    if($translationformControl['type']=='--checkbox'){
+                        $checkBoxValue = $formData[$translationformControl['column']];
+                        if($checkBoxValue == 1)
+                            $checkBoxValue = 1;
+                        else
+                            $checkBoxValue = 0;
+
+
+                        $translate_value['value'] = $checkBoxValue;
+
+                    } else
+                        $translate_value['value'] = $translate['data'][$translationformControl['column']];
+
+                    $translationformControl['trans_value'][] = $translate_value;
+                }
+
+
+                $insertQuery[$translationformControl['column']] = json_encode($translationformControl['trans_value']);
+
+
+            }
+
+
+        }
 
         if(!empty($this->save_sub_items_count)){
             $posted_sub_items = Request::input('subItems');
@@ -724,35 +755,7 @@ class Tp
 
         $saved = DB::table($this->table)->where("$this->identity_name", '=', $id)->update($insertQuery);
 
-        // transltation table update action
-        if(!empty($this->translate_form_input_control)){
 
-            foreach($translateData as $translate){
-                $translationInsertQuery = [];
-                //$translationInsertQuery[$this->locale_connector] = $translate['locale_id'];
-                //$translationInsertQuery[$this->translation_connector] = $insertedId;
-
-                foreach($this->translate_form_input_control as $translationformControl){
-                    if($translationformControl['type']=='--checkbox'){
-                        $checkBoxValue = $formData[$translationformControl['column']];
-                        if($checkBoxValue == 1)
-                            $checkBoxValue = 1;
-                        else
-                            $checkBoxValue = 0;
-                        $translationInsertQuery[$translationformControl['column']] = $checkBoxValue;
-
-                    } else
-                        $translationInsertQuery[$translationformControl['column']] = $translate['data'][$translationformControl['column']];
-                }
-
-                DB::table($this->translation_table)
-                    ->where("$this->translation_connector", "=", $id)
-                    ->where("$this->locale_connector", "=", $translate['locale_id'])
-                    ->update($translationInsertQuery);
-            }
-
-
-        }
 
         if(count($this->subItems) >= 1)
             $this->saveSubItems($id, $this->subItems, Request::input('subItems'));
@@ -817,11 +820,11 @@ class Tp
             $subItem['items']=[];
             $subItems[] = $subItem;
         }
-        if($this->translation_table !== ''){
-            if (Session::has('locale_id')) {
+        if(count($this->translate_form_input_control) >= 1){
+            if (Session::has('locale')) {
 
             } else {
-                Session::set('locale_id', $this->default_locale_id);
+                Session::set('locale', $this->default_locale);
             }
 
             $locales = DB::table($this->locales_table)->select('id', 'code')->orderBy('id', 'ASC')->get();
@@ -1360,12 +1363,12 @@ class Tp
 
     /*translation*/
     public function changeLangauge(){
-        $locale_id = Request::input('locale_id');
+        $locale = Request::input('locale');
 
-        if (Session::has('locale_id')) {
-            Session::set('locale_id', $locale_id);
+        if (Session::has('locale')) {
+            Session::set('locale', $locale);
         } else {
-            Session::set('locale_id', $this->default_locale_id);
+            Session::set('locale', $this->default_locale);
         }
 
     }

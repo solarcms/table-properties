@@ -3,6 +3,22 @@ import Select from 'react-select';
 
 export default class ComboBox extends Component {
 
+    getTranlate(translations){
+        if(this.props.fieldOptions.get('with_translation')){
+
+            let json_translations =  JSON.parse(translations);
+            let translated_value = null;
+            json_translations.map(tranlation =>{
+                if(tranlation.locale == this.props.defaultLocale)
+                    translated_value = tranlation.value;
+            })
+
+            return translated_value;
+        } else {
+            return translations;
+        }
+
+    }
 
     render() {
         const { fieldClass, formData, column, fieldOptions, value, changeHandler, errorText, formType, placeholder, name, disabled, multi } = this.props;
@@ -20,16 +36,16 @@ export default class ComboBox extends Component {
 
                     for (var i = 0; i < fieldOptions.get('textField').size; ++i) {
                         if(i == 0)
-                            arrayLabel = data.get(fieldOptions.getIn(['textField', i]))
+                            arrayLabel = this.getTranlate(data.get(fieldOptions.getIn(['textField', i])))
                         else
-                            arrayLabel = arrayLabel +", "+ data.get(fieldOptions.getIn(['textField', i]))
+                            arrayLabel = arrayLabel +", "+ this.getTranlate(data.get(fieldOptions.getIn(['textField', i])))
                     }
 
                     options.push({value: data.get(fieldOptions.get('valueField')), label: arrayLabel})
                 }
                 else {
 
-                    options.push({value: data.get(fieldOptions.get('valueField')), label: data.get(fieldOptions.get('textField'))})
+                    options.push({value: data.get(fieldOptions.get('valueField')), label: this.getTranlate(data.get(fieldOptions.get('textField')))})
                 }
         })
 
@@ -37,6 +53,8 @@ export default class ComboBox extends Component {
         return (
             <div className={`form-group ${fieldClass}  `}>
                 {formType == 'inline' ? '' : <label className="control-label">{placeholder}</label>}
+
+
 
                 {formData.get(column) ?
 

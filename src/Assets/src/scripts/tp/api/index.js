@@ -5,9 +5,9 @@ export function setupPage() {
 
     return postResuest(`setup`, {});
 }
-export function changeLanguage(locale_id) {
+export function changeLanguage(locale) {
 
-    return postResuest(`change-language`, {locale_id: locale_id});
+    return postResuest(`change-language`, {locale: locale});
 }
 
 export function deleteItem(id) {
@@ -54,7 +54,7 @@ export function save(formData, translateFormControls, subItems) {
 
         })
         let FTData = {
-            locale_id: translateFormControl.get('locale_id'),
+            locale: translateFormControl.get('locale_code'),
             data: data
         }
 
@@ -106,10 +106,7 @@ export function edit(id) {
 
     return postResuest(`edit`, {id: id});
 }
-export function editTranslation(id) {
 
-    return postResuest(`edit-translation`, {id: id});
-}
 export function editComboGrid(column, id) {
 
     return postResuest(`edit-combo-grid`, {column: column, id: id});
@@ -141,7 +138,7 @@ export function update(formData, translateFormControls, id, subItems) {
 
         })
         let FTData = {
-            locale_id: translateFormControl.get('locale_id'),
+            locale: translateFormControl.get('locale_code'),
             data: data
         }
 

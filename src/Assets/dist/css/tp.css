@@ -162,15 +162,11 @@
     .tp-table-rigth0 td .btn-sm, .tp-table-rigth td .btn-sm {
       padding: 0 5px; }
 
-.table_header {
-  top: 0;
-  display: none;
-  border-bottom: 1px solid #ccc;
-  background: #fff;
-  width: 100%;
-  position: absolute; }
-  .table_header table {
-    background: #fff; }
+#fixed_header #clone {
+  z-index: 100; }
+  #fixed_header #clone thead {
+    background: #ccc;
+    border-bottom: 1px solid #ccc !important; }
 
 .handsontable {
   position: relative; }
