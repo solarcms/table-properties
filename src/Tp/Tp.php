@@ -23,7 +23,7 @@ class Tp
     public $permission = ['c'=>true, 'r'=>true, 'u'=>true, 'd'=>true]; // Create, Read, Update, Delete CRUD default is all true
     public $ifUpdateDisabledCanEditColumns = []; //['acitve', 'name']
     public $ifUpdateDisabledCanEditColumnsByValue = [];  //[['acitve'=>1]]
-    public $read_condition = [];  //[['active'=>0], ['user_id'=>21]]
+    public $where_condition = [];  //[['active'=>0], ['user_id'=>21]]
     public $search_columns = [];
 
 
@@ -89,9 +89,9 @@ class Tp
     public function run($action){
 
 
-        if(count($this->read_condition) >= 1 && count($this->ifUpdateDisabledCanEditColumnsByValue))
-            foreach($this->read_condition as $read_condition){
-                if (in_array($read_condition, $this->ifUpdateDisabledCanEditColumnsByValue)) {
+        if(count($this->where_condition) >= 1 && count($this->ifUpdateDisabledCanEditColumnsByValue))
+            foreach($this->where_condition as $where_condition){
+                if (in_array($where_condition, $this->ifUpdateDisabledCanEditColumnsByValue)) {
                     $this->permission['u'] = true;
                 }
             }
@@ -272,13 +272,12 @@ class Tp
 
 
         // read condition
-        if(count($this->read_condition) >= 1){
-            foreach($this->read_condition as $read_condition){
+        if(count($this->where_condition) >= 1){
+            foreach($this->where_condition as $where_condition){
 
-                foreach($read_condition as $column=>$value){
 
-                    $table_data->where($column, '=', $value);
-                }
+                    $table_data->where($where_condition[0], $where_condition[1], $where_condition[2]);
+
             }
         }
 
