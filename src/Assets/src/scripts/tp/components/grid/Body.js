@@ -3,18 +3,20 @@ import Form from "../form/Form"
 import $ from "jquery"
 
 import {fixRowHeigth} from './fixed/HeaderColumn'
+import Immutable from 'immutable';
 
 
 export default class Body extends Component {
 
 
     resizeHandler() {
+        console.log('ttt')
 
         setTimeout(
             () => {
                 fixRowHeigth(this.props.gridId)
             },
-            50
+           50
         );
 
 
@@ -61,7 +63,10 @@ export default class Body extends Component {
         //    document.querySelector("#" + gridId + "-header").style.transform = "translateY(" + this.scrollTop + "px)";
         //});
 
+
+
         fixRowHeigth(this.props.gridId)
+        //this.resizeHandler()
 
 
 
@@ -108,6 +113,8 @@ export default class Body extends Component {
             permission,
             ifUpdateDisabledCanEditColumns
             } = this.props;
+
+
 
 
 
@@ -278,10 +285,10 @@ export default class Body extends Component {
                                     <span>
                                         {grid.change_value ?
                                             data[grid.column] == '1'
-                                            ? 'Тийм'
+                                            ? grid.change_value[0]
                                                 :
 
-                                            'Үгүй'
+                                                grid.change_value[1]
 
                                         :
                                             data[grid.column]}
@@ -334,6 +341,7 @@ export default class Body extends Component {
                               formValue={formControls.getIn([columnIndex, 'value'])}
                               focusIndex={focusIndex}
                               gridIndex={columnIndex}
+                              permission={permission}
 
                               changeHandler={this.changeValues.bind(this)}
                         />
@@ -355,7 +363,7 @@ export default class Body extends Component {
 
                 if (formControls.size >= 1)
                     formControls.map((formControl)=> {
-                        if (formControl.column == grid.column)
+                        if (formControl.get('column') == grid.column)
                             cellformControl.push(formControl)
                     })
 
@@ -363,22 +371,26 @@ export default class Body extends Component {
 
                 } else {
 
-                    if (formControls[columnIndex])
+                    if (formControls.getIn([columnIndex])){
+                        const cellformControls = Immutable.fromJS(cellformControl);
                         return <td key={columnIndex}>
 
-                            <Form formControls={cellformControl}
+                            <Form formControls={cellformControls}
                                   formData={formData}
                                   formType={formType}
                                   gridId={gridId}
                                   formValue={formControls.getIn([columnIndex, 'value'])}
                                   focusIndex={focusIndex}
                                   gridIndex={columnIndex}
+                                  permission={permission}
 
                                   changeHandler={this.changeValues.bind(this)}
                             />
 
 
                         </td>
+                    }
+
                 }
 
 
