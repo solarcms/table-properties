@@ -90,11 +90,11 @@ class Tp
 
 
         if(count($this->read_condition) >= 1 && count($this->ifUpdateDisabledCanEditColumnsByValue))
-        foreach($this->read_condition as $read_condition){
-            if (in_array($read_condition, $this->ifUpdateDisabledCanEditColumnsByValue)) {
-                $this->permission['u'] = true;
+            foreach($this->read_condition as $read_condition){
+                if (in_array($read_condition, $this->ifUpdateDisabledCanEditColumnsByValue)) {
+                    $this->permission['u'] = true;
+                }
             }
-        }
 
         // purpose: built-in controller
         switch($action){
@@ -245,7 +245,7 @@ class Tp
                             if(isset($suboptions['join']) && $suboptions['join'] == false){
 
                             } else
-                            $table_data->join($suboptions['table'], "$this->table." . $subformControl['column'], '=', $suboptions['table']. "." .$suboptions['valueField']);
+                                $table_data->join($suboptions['table'], "$this->table." . $subformControl['column'], '=', $suboptions['table']. "." .$suboptions['valueField']);
 
                             if(isset($options['with_translation']) && $options['with_translation'] == true){
                                 $table_data->where($suboptions['table'].".".$this->locale_connector, "=", $default_language_id);
@@ -277,7 +277,7 @@ class Tp
 
                 foreach($read_condition as $column=>$value){
 
-                        $table_data->where($column, '=', $value);
+                    $table_data->where($column, '=', $value);
                 }
             }
         }
@@ -352,13 +352,13 @@ class Tp
                 $options = $formControl['options'];
 
 
-                    $comboAddAbleFC = $options['form_input_control'];
+                $comboAddAbleFC = $options['form_input_control'];
 
 
-                    $FormData_pre = $this->get_data($comboAddAbleFC);
+                $FormData_pre = $this->get_data($comboAddAbleFC);
 
 
-                    $FormData = array_merge($FormData, $FormData_pre);
+                $FormData = array_merge($FormData, $FormData_pre);
 
 
 
@@ -431,7 +431,7 @@ class Tp
         foreach($this->form_input_control as $formControl){
 
             if(isset($formControl['column']))
-            $table_data->addSelect("$this->table." . $formControl['column']);
+                $table_data->addSelect("$this->table." . $formControl['column']);
 
 //            if($formControl['type'] == '--combogrid' || $formControl['type'] == '--combobox' || $formControl['type'] == '--tag' || $formControl['type'] == '--combobox-addable' || $formControl['type'] == '--combobox-hidden'){
 //
@@ -464,13 +464,13 @@ class Tp
                 }
             }
 
-            }
+        }
 
 
 
-            foreach($this->translate_form_input_control as $t_f_c){
-                $table_data->addSelect("$this->table." . $t_f_c['column']);
-            }
+        foreach($this->translate_form_input_control as $t_f_c){
+            $table_data->addSelect("$this->table." . $t_f_c['column']);
+        }
 
 
 
@@ -859,30 +859,30 @@ class Tp
 
 
 
-                    if($type == 'date'){
-                        $this->form_input_control[] = ['column'=> $column_name, 'title'=> $column_name, 'type'=>'--date', 'validate'=> ''];
-                        $this->grid_output_control[] = ['column'=> $column_name, 'title'=> $column_name, 'type'=>'--date'];
-                    }
-                    elseif($type == 'datetime' || $type == 'timestamp'){
-                        $this->form_input_control[] = ['column'=> $column_name, 'title'=> $column_name, 'type'=>'--datetime', 'validate'=> ''];
-                        $this->grid_output_control[] = ['column'=> $column_name, 'title'=> $column_name, 'type'=>'--datetime'];
-                    }
-                    elseif($type == 'blob')
-                        $this->form_input_control[] = ['column'=> $column_name, 'title'=> $column_name, 'type'=>'--textarea', 'validate'=> ''];
-                    elseif($type == 'tinyint(1)'){
-                        $this->form_input_control[] = ['column'=> $column_name, 'title'=> $column_name, 'type'=>'--checkbox', 'value'=>false, 'validate'=> ''];
-                        $this->grid_output_control[] = ['column'=> $column_name, 'title'=> $column_name, 'type'=>'--checkbox'];
-                    }
-                    elseif(mb_strstr($type, 'short') || mb_strstr($type, 'int') || mb_strstr($type, 'long') || mb_strstr($type, 'float') || mb_strstr($type, 'double') || mb_strstr($type, 'decimal'))
-                    {
-                        $this->grid_output_control[] = ['column'=> $column_name, 'title'=> $column_name, 'type'=>'--number', 'validate'=> ''];
-                        $this->form_input_control[] = ['column'=> $column_name, 'title'=> $column_name, 'type'=>'--number', 'value'=>null];
-                    }
-                    elseif(mb_strstr($type, 'varchar')){
+                if($type == 'date'){
+                    $this->form_input_control[] = ['column'=> $column_name, 'title'=> $column_name, 'type'=>'--date', 'validate'=> ''];
+                    $this->grid_output_control[] = ['column'=> $column_name, 'title'=> $column_name, 'type'=>'--date'];
+                }
+                elseif($type == 'datetime' || $type == 'timestamp'){
+                    $this->form_input_control[] = ['column'=> $column_name, 'title'=> $column_name, 'type'=>'--datetime', 'validate'=> ''];
+                    $this->grid_output_control[] = ['column'=> $column_name, 'title'=> $column_name, 'type'=>'--datetime'];
+                }
+                elseif($type == 'blob')
+                    $this->form_input_control[] = ['column'=> $column_name, 'title'=> $column_name, 'type'=>'--textarea', 'validate'=> ''];
+                elseif($type == 'tinyint(1)'){
+                    $this->form_input_control[] = ['column'=> $column_name, 'title'=> $column_name, 'type'=>'--checkbox', 'value'=>false, 'validate'=> ''];
+                    $this->grid_output_control[] = ['column'=> $column_name, 'title'=> $column_name, 'type'=>'--checkbox'];
+                }
+                elseif(mb_strstr($type, 'short') || mb_strstr($type, 'int') || mb_strstr($type, 'long') || mb_strstr($type, 'float') || mb_strstr($type, 'double') || mb_strstr($type, 'decimal'))
+                {
+                    $this->grid_output_control[] = ['column'=> $column_name, 'title'=> $column_name, 'type'=>'--number', 'validate'=> ''];
+                    $this->form_input_control[] = ['column'=> $column_name, 'title'=> $column_name, 'type'=>'--number', 'value'=>null];
+                }
+                elseif(mb_strstr($type, 'varchar')){
 
-                        $this->form_input_control[] = ['column'=> $column_name, 'title'=> $column_name, 'type'=>'--text', 'value'=>'', 'validate'=> ''];
-                        $this->grid_output_control[] = ['column'=> $column_name, 'title'=> $column_name, 'type'=>'--text'];
-                    }
+                    $this->form_input_control[] = ['column'=> $column_name, 'title'=> $column_name, 'type'=>'--text', 'value'=>'', 'validate'=> ''];
+                    $this->grid_output_control[] = ['column'=> $column_name, 'title'=> $column_name, 'type'=>'--text'];
+                }
 
 
             }
@@ -893,17 +893,17 @@ class Tp
                 $type = $column['type'];
 
 
-                    if($type == 'date')
-                        $this->grid_output_control[] = ['column'=> $column_name, 'title'=> $column_name, 'type'=>'--date'];
+                if($type == 'date')
+                    $this->grid_output_control[] = ['column'=> $column_name, 'title'=> $column_name, 'type'=>'--date'];
 
-                    elseif($type == 'datetime' || $type == 'timestamp')
-                        $this->grid_output_control[] = ['column'=> $column_name, 'title'=> $column_name, 'type'=>'--datetime'];
-                    elseif($type == 'tinyint(1)')
-                        $this->grid_output_control[] = ['column'=> $column_name, 'title'=> $column_name, 'type'=>'--checkbox'];
-                    elseif(mb_strstr($type, 'short') || mb_strstr($type, 'int') || mb_strstr($type, 'long') || mb_strstr($type, 'float') || mb_strstr($type, 'double') || mb_strstr($type, 'decimal'))
-                        $this->grid_output_control[] = ['column'=> $column_name, 'title'=> $column_name, 'type'=>'--number'];
-                    elseif(mb_strstr($type, 'varchar'))
-                        $this->grid_output_control[] = ['column'=> $column_name, 'title'=> $column_name, 'type'=>'--text'];
+                elseif($type == 'datetime' || $type == 'timestamp')
+                    $this->grid_output_control[] = ['column'=> $column_name, 'title'=> $column_name, 'type'=>'--datetime'];
+                elseif($type == 'tinyint(1)')
+                    $this->grid_output_control[] = ['column'=> $column_name, 'title'=> $column_name, 'type'=>'--checkbox'];
+                elseif(mb_strstr($type, 'short') || mb_strstr($type, 'int') || mb_strstr($type, 'long') || mb_strstr($type, 'float') || mb_strstr($type, 'double') || mb_strstr($type, 'decimal'))
+                    $this->grid_output_control[] = ['column'=> $column_name, 'title'=> $column_name, 'type'=>'--number'];
+                elseif(mb_strstr($type, 'varchar'))
+                    $this->grid_output_control[] = ['column'=> $column_name, 'title'=> $column_name, 'type'=>'--text'];
 
 
             }
@@ -921,7 +921,7 @@ class Tp
     }
 
 
-/* combo grid*/
+    /* combo grid*/
     public function gridComboGrid(){
 
         $column = Request::input('column');
@@ -1388,12 +1388,12 @@ class Tp
                     ->where($options['parent'], '=',$parent)
                     ->orderBy($order[0], $order[1]);
 
-                     if(isset($options['condition'])){
-                         foreach($options['condition'] as $condition_column=>$condition_value){
-                             $data->where("$condition_column", '=', $condition_value);
+                if(isset($options['condition'])){
+                    foreach($options['condition'] as $condition_column=>$condition_value){
+                        $data->where("$condition_column", '=', $condition_value);
 
-                         }
-                     }
+                    }
+                }
                 $data_return = $data->get();
                 return $data_return;
 

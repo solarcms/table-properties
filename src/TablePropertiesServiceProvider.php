@@ -16,9 +16,6 @@ class TablePropertiesServiceProvider extends ServiceProvider
     public function boot()
     {
 
-        // Route
-        include __DIR__ . DIRECTORY_SEPARATOR .'routes.php';
-
 
         // For publishing configuration file
         $this->publishes([

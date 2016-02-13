@@ -298,6 +298,12 @@ class GridContainer extends Component {
 
         }
 
+        if (permission.r === false && permission.c === false && permission.d === false && setup.update_row !== null) {
+
+            window.location.replace('#/edit/'+setup.update_row);
+
+        }
+
 
         const gridId = 'grid_table'
         const topPagination = paginationPosition == 'top' || paginationPosition == 'both' ?
@@ -432,9 +438,9 @@ function mapStateToProps(state) {
         setup: Grid.get('setup').toJS(),
         locales: Grid.get('setup').toJS().locales,
         defaultLocale: Grid.get('defaultLocale'),
-        formData: Form.get('formData').toJS(),
+        formData: Form.get('formData'),
         editID: Grid.get('editID'),
-        showInlineForm: Form.get('showInlineForm'),
+        showInlineForm: Grid.get('showInlineForm'),
         showGird: Grid.get('showGird'),
         focusIndex: Grid.get('focusIndex'),
         formControls: Form.get('form_input_control'),

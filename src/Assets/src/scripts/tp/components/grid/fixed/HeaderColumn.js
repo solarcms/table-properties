@@ -1,6 +1,26 @@
 import $ from "jquery"
 export function fixRowHeigth(gridId) {
 
+    let leftTableWidth = $("#"+gridId+"-left > thead").outerWidth();
+
+
+
+    /////////////// fixed table column
+
+    $("#"+gridId+"-left").css("width", (leftTableWidth))
+
+    $("#"+gridId+"-wrapper").css('width', $("#"+gridId+"-wrapper").parent().outerWidth() - 103 - leftTableWidth);
+    $("#virtual_table").css('width', $("#"+gridId+"-wrapper > table").outerWidth());
+
+    $(".virtual_scroll").css('width', $(".virtual_scroll").parent().outerWidth() - 103 - leftTableWidth);
+    $(".virtual_scroll").css('margin-left', leftTableWidth+2);
+
+
+    //// column
+
+
+
+
     $("#clone").remove();
 
     let aRowHeights = [];
@@ -34,19 +54,7 @@ export function fixRowHeigth(gridId) {
 
 
 
-    let leftTableWidth = $("#"+gridId+"-left > thead").outerWidth();
 
-
-
-    /////////////// fixed table header
-
-    $("#"+gridId+"-left").css("width", (leftTableWidth))
-
-    $("#"+gridId+"-wrapper").css('width', $("#"+gridId+"-wrapper").parent().outerWidth() - 103 - leftTableWidth);
-    $("#virtual_table").css('width', $("#"+gridId+"-wrapper > table").outerWidth());
-
-    $(".virtual_scroll").css('width', $(".virtual_scroll").parent().outerWidth() - 103 - leftTableWidth);
-    $(".virtual_scroll").css('margin-left', leftTableWidth+2);
 
 
 
@@ -118,6 +126,3 @@ export function fixRowHeigth(gridId) {
 
 }
 
-export function getWidth(td) {
-    return $(td).outerWidth()-26;
-};

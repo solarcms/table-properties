@@ -6,7 +6,6 @@ var Path = require('path');
 var Webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var CopyPlugin = require('copy-webpack-plugin');
-var TimestampWebpackPlugin = require('timestamp-webpack-plugin');
 
 var webpackDirs = {
     contextDir: Path.resolve(__dirname, './src/scripts'),
@@ -62,11 +61,7 @@ module.exports = {
             //{from: '../../dist/js/tp.js', to: '../../../../../public/shared/table-properties/js/tp.js', toType: 'file'},
         ]),
 
-        //Timestamp for webpack
-        new TimestampWebpackPlugin({
-            path: webpackDirs.logsDir,
-            filename: 'webpack.timestamp.log'
-        }),
+
 
         new Webpack.BannerPlugin("*************************************\n   Solar Content Management System \n*************************************\n")
     ],

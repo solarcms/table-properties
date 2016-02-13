@@ -437,13 +437,13 @@ export default class Form extends Component {
                 return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass} `}>
                     <div className="radio">
 
-                        <label>
+                        <label >
 
                             {title}
                         </label> <br/>
 
                         {field.get('choices').map((choice, cindex)=>
-                            <label key={cindex}>
+                            <label key={cindex} className="radio_label">
                                 <input type="radio"
                                        disabled={thisDisabled}
                                        name={name}
@@ -585,10 +585,17 @@ export default class Form extends Component {
                     {formFields}
                     <div style={{clear:'both'}}></div>
                 </div>
-                <br/>
-                <Tabs defaultActiveKey={0} animation={false}>
-                    {translateForm}
-                </Tabs>
+
+                {translateForm !== null
+                    ? <br/>
+                    : null}
+
+                {translateForm !== null
+                    ? <Tabs defaultActiveKey={0} animation={false}>
+                        {translateForm}
+                        </Tabs>
+                    : null}
+
             </div>
         )
     }

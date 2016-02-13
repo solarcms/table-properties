@@ -22,6 +22,7 @@
     margin-bottom: 0;
   }
 
+
 }
 
 .tp-table-left0, .tp-table-left{
@@ -43,9 +44,9 @@
   }
 
   td, th{
-      padding: 3px 4px!important;
+
       text-align: center;
-      height: 25px;
+      height: 20px;
 
   }
 
@@ -67,9 +68,9 @@
     min-width: 800px!important;
     tr{
       td{
-        padding: 3px 4px;
 
-        height: 25px;
+
+        height: 20px;
 
       }
     }
@@ -108,12 +109,13 @@
   }
 
     td{
-      padding: 3px!important;
+
       text-align: center;
-      height: 25px;
+      height: 20px;
       width: 80px!important;
       .btn-sm{
         padding: 0 5px;
+        font-size: .84rem
       }
     }
 
@@ -133,6 +135,51 @@
 
 .handsontable {
   position: relative;
+
+  td{
+    padding: 0;
+  }
+    .add-edit-form{
+      padding: 0;
+      label{
+        display: none;
+      }
+      .radio_label{
+        display: inline-block;
+      }
+      .form-control {
+        min-height: 20px;
+        padding: 0;
+        border: none;
+
+      }
+      .none-translate-form{
+        padding: 0;
+        background: transparent;
+      }
+      .form-group{
+        margin-bottom: 0;
+      }
+      .radio, .checkbox {
+        margin-bottom: 0;
+      }
+      .help-block{
+        margin: 0;
+      }
+      .Select-placeholder, :not(.Select--multi) > .Select-control .Select-value{
+        line-height: 20px;
+      }
+      .Select-control{
+        height: 20px;
+        border: 0;
+      }
+      .Select-input{
+        height: 20px;
+      }
+
+
+    }
+
 }
 
 .handsontable.htAutoColumnSize {
@@ -187,9 +234,8 @@
 .handsontable td {
   border-right: 1px solid #CCC;
   border-bottom: 1px solid #CCC;
-  height: 22px;
+  height: 20px;
   empty-cells: show;
-  line-height: 21px;
   padding: 0 4px 0 4px;
   /* top, bottom padding different than 0 is handled poorly by FF with HTML5 doctype */
   background-color: #FFF;
@@ -269,7 +315,7 @@
   top: 0;
   background-color: transparent;
   width: 5px;
-  height: 25px;
+  height: 20px;
   z-index: 999;
   cursor: move;
 }
@@ -288,7 +334,7 @@
 .handsontable .manualColumnResizerHandle {
   background-color: transparent;
   width: 5px;
-  height: 25px;
+  height: 20px;
 }
 
 .handsontable .manualColumnResizer:hover .manualColumnResizerHandle,
@@ -622,6 +668,13 @@ tr:hover td {
 }
 
 .handsontable tbody td {
-  margin:0; padding:0;
-  padding-right:12px;
+  margin:0;
+  padding:0;
+
+}
+
+
+.handsontable tbody td > span{
+
+    margin: 2px;
 }
