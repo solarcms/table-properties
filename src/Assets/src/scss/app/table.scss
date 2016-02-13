@@ -148,8 +148,10 @@
         display: inline-block;
       }
       .form-control {
-       min-height: 20px;
-        padding: 2px;
+        min-height: 20px;
+        padding: 0;
+        border: none;
+
       }
       .none-translate-form{
         padding: 0;
@@ -164,6 +166,18 @@
       .help-block{
         margin: 0;
       }
+      .Select-placeholder, :not(.Select--multi) > .Select-control .Select-value{
+        line-height: 20px;
+      }
+      .Select-control{
+        height: 20px;
+        border: 0;
+      }
+      .Select-input{
+        height: 20px;
+      }
+
+
     }
 
 }

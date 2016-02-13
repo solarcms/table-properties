@@ -399,7 +399,7 @@ export default class Body extends Component {
 
         </tr> : null
         const inlineAddFormRight = formType == 'inline' ? <tr  >
-            <td style={{width: '87px', padding: '3px'}}>
+            <td style={{width: '87px'}}>
 
                             <span>
                                 <a className="btn btn-sm btn-success" onClick={this.saveInlineForm.bind(this)}>

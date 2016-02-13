@@ -61,7 +61,7 @@ module.exports = {
             //{from: '../../dist/js/tp.js', to: '../../../../../public/shared/table-properties/js/tp.js', toType: 'file'},
         ]),
 
-        
+
 
         new Webpack.BannerPlugin("*************************************\n   Solar Content Management System \n*************************************\n")
     ],
