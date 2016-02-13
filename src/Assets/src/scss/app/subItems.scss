@@ -1,0 +1,30 @@
+.sub-items{
+  border: 1px solid #ccc;
+  background: #fff;
+  padding: 20px;
+  width: 800px;
+
+  .btn{
+    margin: 3px;
+  }
+  .savedIems{
+    padding-right: 6px;
+    .done{
+      display: block;
+    }
+    .edit{
+      display: none;
+    }
+    .btn{
+      &:hover{
+        .done{
+          display: none;
+        }
+        .edit{
+          display: block;
+        }
+      }
+    }
+  }
+
+}

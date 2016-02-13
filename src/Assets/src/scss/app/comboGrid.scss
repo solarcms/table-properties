@@ -1,0 +1,204 @@
+.combo-grid {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 13px;
+  zoom: 1;
+  *display: inline;
+  width: 100%;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  a.dropdown-toggle {
+    border-radius: 0;
+    line-height: 28px;
+    box-shadow: none;
+    background: #ffffff;
+    position: relative;
+    display: block;
+    overflow: hidden;
+    padding: 0 0 0 8px;
+    border: 1px solid #aaa;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    color: #888;
+    width: 220px;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 30px;
+  }
+  .small {
+    width: 104px!important;
+  }
+  .medium {
+    width: 164px!important;
+  }
+  .large {
+    width: 300px!important;
+  }
+
+  .xlarge {
+    width: 380px!important;
+  }
+  .realLarge {
+    width: 100%!important;
+  }
+  select {
+    display: none !important;
+  }
+  a.dropdown-toggle.disabled,
+  a.dropdown-toggle.disabled:hover {
+    cursor: not-allowed;
+    color: #aaa;
+    background: #eee;
+  }
+  a.dropdown-toggle:hover, a.dropdown-toggle {
+    color: #333;
+  }
+  .open > a.dropdown-toggle {
+    border-bottom: 0;
+    line-height: 29px;
+  }
+
+  a.dropdown-toggle > span {
+    display: block;
+    overflow: hidden;
+    margin-right: 26px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  a.dropdown-toggle > b {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: block;
+    width: 18px;
+    height: 100%;
+  }
+  a.dropdown-toggle > b:before {
+
+    display: inline-block;
+    font-family: FontAwesome;
+    font-size: 12px;
+    position: relative;
+    top: -1px;
+    left: 1px;
+  }
+  .open > a.dropdown-toggle > b:before {
+    content: "\f0d8";
+  }
+  .dropdown-menu {
+    margin-top: 0;
+    border-color: #aaa;
+    border-top: 0;
+    padding-bottom: 0;
+    width: auto;
+    min-width: 100%;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    border-radius: 0;
+  }
+  .dropdown-menu > .combo-grid-search {
+    position: relative;
+    z-index: 1010;
+    margin: 0;
+    padding: 0 4px;
+    white-space: nowrap;
+  }
+  .combo-grid > .dropdown-menu > .combo-grid-search > input {
+    width: 100%;
+    height: 30px;
+    margin: 0;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 4px 20px 4px 5px;
+    border-radius: 0;
+  }
+  .dropdown-menu > .combo-grid-search:after {
+    content: "\f002";
+    display: inline-block;
+    color: #888;
+    font-family: FontAwesome;
+    font-size: 14px;
+    position: absolute;
+    top: 4px;
+    right: 10px;
+  }
+  .dropdown-menu > ul {
+    border-color: #aaa;
+    border-top: 0;
+    margin: 4px 0;
+    padding: 0;
+    list-style: none;
+    background-color: #fff;
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 240px;
+    padding-right: 14px;
+  }
+  .dropdown-menu > ul > li > a {
+    font-size: 13px;
+    margin-bottom: 1px;
+    margin-top: 1px;
+    display: block;
+    padding: 3px 8px;
+    clear: both;
+    font-weight: normal;
+    line-height: 20px;
+    color: #333;
+    cursor: pointer;
+    width: 100%;
+  }
+  .dropdown-menu > ul > li > a:hover,
+  .dropdown-menu > ul > li > a:focus {
+    color: #fff;
+    text-decoration: none;
+    background-repeat: repeat-x;
+  }
+  .dropdown-menu > ul > li > a:hover {
+    background: #4f99c6;
+  }
+  .dropdown-menu > ul > li > a:focus {
+    background: #2283c5;
+  }
+  .dropdown-menu > ul > li.empty-result > em {
+    text-align: center;
+    padding: 4px 8px;
+    display: block;
+  }
+  .dropdown-menu > .combo-grid-action > button {
+    border-radius: 0;
+    background-image: none;
+  }
+}
+
+.control-group.error .combo-grid > a.dropdown-toggle {
+  border-color: #f09784;
+  color: #d68273;
+}
+
+.combo-grid{
+  .dropdown-menu {
+    border-top: 2px solid #666;
+    margin-top: -1px;
+    min-width: 600px;
+    min-height: 550px;
+  }
+  .m-a-sm{
+    margin: 0;
+  }
+  #gridBody{
+    height: 400px;
+    width:100%;
+    overflow-y: scroll;
+    border: none;
+    position: relative;
+    //background: green;
+  }
+  .page-limit{
+    display: none!important;
+  }
+}

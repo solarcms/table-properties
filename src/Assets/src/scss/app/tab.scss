@@ -1,0 +1,41 @@
+.nav-tabs>li {
+  float: left;
+
+}
+.nav-tabs>li>a {
+  margin-right: 2px;
+  line-height: 1.42857143;
+  border: 1px solid transparent;
+  border-radius: 4px 4px 0 0;
+  position: relative;
+  display: block;
+  padding: 10px 15px;
+}
+/* Tab Navigation */
+.nav-tabs {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.nav-tabs > li > a {
+  background: #ccc;
+  border-radius: 0;
+
+  &:hover {
+    background: #fff;
+
+  }
+}
+.nav-tabs > li.active > a {
+  background: #fff;
+
+}
+
+/* Tab Content */
+.tab-pane {
+  background: #fff;
+
+  border-radius: 0;
+
+  padding: 10px;
+}
