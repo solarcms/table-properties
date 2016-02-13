@@ -261,17 +261,20 @@ class AddEditContainer extends Component {
                     })
                     this.props.translateFormControls.map((translateFormControl, l_index)=> {
 
+
                         translateFormControl.get('translate_form_input_control').map((formControl, index)=> {
+                            if(data[0][formControl.get('column')] !== null && data[0][formControl.get('column')] != ''){
+                                let json_translations =  JSON.parse(data[0][formControl.get('column')]);
 
-                            let json_translations =  JSON.parse(data[0][formControl.get('column')]);
+                                json_translations.map((json_translation) =>{
+                                    if(json_translation.locale == translateFormControl.get('locale_code')){
+                                        if (formControl.get('type') !== '--hidden')
+                                            this.props.actions.changeTranslationValue(l_index, [index], json_translation.value)
+                                    }
 
-                            json_translations.map((json_translation) =>{
-                                if(json_translation.locale == translateFormControl.get('locale_code')){
-                                    if (formControl.get('type') !== '--hidden')
-                                        this.props.actions.changeTranslationValue(l_index, [index], json_translation.value)
-                                }
+                                })
+                            }
 
-                            })
 
 
                         })
