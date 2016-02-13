@@ -3,7 +3,6 @@ src/Assets/dist
 npm-debug.log
 src/Assets/npm-debug.log
 .idea
-.git
 src/Assets/logs/
 src/Assets/logs/webpack.timestamp.log
 
