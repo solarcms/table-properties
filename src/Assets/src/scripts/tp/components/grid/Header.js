@@ -5,6 +5,10 @@ export default class Header extends Component {
     changeLanguage(id){
         this.props.changeLanguage(id)
     }
+    hideShowColumn(index, e){
+
+        this.props.hideShowColumn(e.target.checked, index)
+    }
 
 
     render() {
@@ -23,7 +27,11 @@ export default class Header extends Component {
             else
                 addButton = <a href={this.props.link} className="nav-link"><i className="material-icons">&#xE145;</i> Нэмэх</a>
         }
-
+        let hideshow = this.props.gridHeader.map((header, index)=>
+            <li key={index}>
+                <label> <input type="checkbox" onChange={this.hideShowColumn.bind(this, index)} /> {header.title}</label>
+            </li>
+        )
 
         let actionControls = this.props.type == 'list'?
             <ul className="nav navbar-nav pull-right hidden-md-down">
@@ -34,10 +42,7 @@ export default class Header extends Component {
                     </a>
                     <div className="dropdown-menu dropdown-menu-scale pull-right text-color"
                          role="menu">
-                        <a className="dropdown-item" onClick={this.props.exportPDF}>
-                            <i className="material-icons">&#xE415;</i>
-                            &nbsp;&nbsp;PDF
-                        </a>
+
                         <a className="dropdown-item" onClick={this.props.exportEXCEL}>
                             <i className="material-icons">&#xE3EC;</i>
                             &nbsp;&nbsp;Excel
@@ -61,7 +66,10 @@ export default class Header extends Component {
                     </a>
                     <div className="dropdown-menu dropdown-menu-scale pull-right text-color"
                          role="menu">
-                        <a className="dropdown-item" href="javascript:void(0)">Тохиргоо</a>
+                        <h6 style={{paddingLeft:'20px'}}>Нуух багана</h6>
+                        <ul id="tp_column_option">
+                            {hideshow}
+                        </ul>
 
                         {this.props.locales.map((locale)=>
                             <a className="dropdown-item" href="javascript:void(0)" key={locale.code} onClick={this.changeLanguage.bind(this, locale.code)}>

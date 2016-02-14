@@ -12,17 +12,44 @@ import Body from "../components/grid/Body"
 import Pagination from "../components/grid/Paginator"
 import validation from "../components/form/validation/"
 import Window from "../components/window/"
-
+var tp_handSonTable = null
+var exportPlugin = null
 class GridContainer extends Component {
     //export
     exportPDF(){
-        $('#tp-table').tableExport({type:'csv'});
+        //$('#tp-table').tableExport({type:'csv'});
+    }
+    hideShowColumn(show, columnIndex){
+
+        this.props.actions.setShowHideColumn(show, columnIndex)
+
+        setTimeout(
+            () => {
+                this.setUpHandsonTable()
+            },
+            100
+        );
+
+
     }
     exportEXCEL(){
-        //$('#tp-table').tableExport({type:'pdf'});
-        //$('#tp-table').tableExport({type:'json'});
-        $('#grid_table').tableExport({type:'csv'});
-        //$('#tp-table').tableExport({type:'sql'});
+        var date;
+        date = new Date();
+        date = date.getUTCFullYear() + '-' +
+            ('00' + (date.getUTCMonth()+1)).slice(-2) + '-' +
+            ('00' + date.getUTCDate()).slice(-2) + ' ' +
+            ('00' + date.getUTCHours()).slice(-2) + ':' +
+            ('00' + date.getUTCMinutes()).slice(-2) + ':' +
+            ('00' + date.getUTCSeconds()).slice(-2);
+
+
+        exportPlugin.downloadFile('csv', {
+            filename: this.props.setup.page_name+'-'+date,
+            exportHiddenRows: true,     // default false, exports the hidden rows
+            exportHiddenColumns: true,  // default false, exports the hidden columns
+            columnHeaders: true,        // default false, exports the column headers
+            rowHeaders: true,           // default false, exports the row headers
+        });
     }
     selectRow(row){
         return false;
@@ -52,6 +79,8 @@ class GridContainer extends Component {
         }).then((data)=> {
             this.props.actions.receiveListData(data);
            this.props.actions.setShowGrid(true);
+
+            this.setUpHandsonTable()
         });
     }
     hangePageLimitChange(e) {
@@ -121,99 +150,7 @@ class GridContainer extends Component {
     removeInlineForm(){
         this.props.actions.setInlineFrom(false);
     }
-    saveForm(id){
 
-        const FD = this.props.formControls;
-
-        let foundError = false;
-
-        FD.map((fromColumn, index) => {
-
-            const error = (validation(fromColumn.value, fromColumn.validate));
-            if(error){
-                this.props.actions.setError(index, error);
-                foundError = true;
-            }
-        })
-        if(foundError === false)
-            if(isNaN(id) === false && id != 0){
-                if(this.props.permission.u !== true)
-                    return false;
-                    update(FD, id).done((data)=> {
-
-                        if (data == 'success' || 'none') {
-                            this.props.actions.clearFromValidation();
-                            this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
-
-                            if (this.props.formType == 'inline')
-                                this.setRowEdit(0, 0);
-                            else if (this.props.formType == 'window')
-                                this.hideModal();
-                        }
-
-                    }).fail(()=> {
-                        alert("Уучлаарай алдаа гарлаа дахин оролдоно уу")
-                    })
-
-            } else {
-
-                if(this.props.permission.c !== true)
-                    return false;
-
-                save(FD).done((data)=>{
-
-                    if(data == 'success'){
-                        this.props.actions.clearFromValidation();
-                        this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
-
-                        if(this.props.formType == 'inline')
-                            this.removeInlineForm();
-                        else if(this.props.formType == 'window')
-                            this.hideModal();
-                    }
-
-                }).fail(()=>{
-                    alert("Уучлаарай алдаа гарлаа дахин оролдоно уу")
-                })
-            }
-
-    }
-    ChangeValues(e){
-
-        const index = e.target.name.replace("grid_table-solar-input", "");
-
-
-        let value = null
-
-        if(e.target.type == 'checkbox'){
-            if(e.target.checked === true)
-                value = 1;
-            else
-                value = 0;
-
-        } else{
-            value = e.target.value;
-        }
-
-        const FD = this.props.formControls;
-
-
-        this.props.actions.chagenValue(index, value)
-
-
-
-        // check validation with on change
-        const error = (validation(value, FD[index].validate));
-        this.props.actions.setError(index, error);
-
-        if(e.target.type == 'text' || e.target.type == 'textarea'){
-            var valueLenght=e.target.value.length;
-            e.target.setSelectionRange(valueLenght,valueLenght);
-        }
-
-
-
-    }
 
     /*
      * Grid Inline from ending
@@ -255,8 +192,74 @@ class GridContainer extends Component {
     componentWillMount() {
 
     }
+    setUpHandsonTable(){
+
+        const {gridHeader, listData} = this.props;
+
+        if(tp_handSonTable !== null){
+            tp_handSonTable.destroy()
+        }
+
+
+        let tp_colHeader = [];
+        let tp_columns = [];
+        let fixedColumnsLeft = 0;
+
+        gridHeader.map((header, h_index)=>{
+            if(header.hidden){
+
+            } else {
+                tp_colHeader.push(header.title)
+                tp_columns.push({data: header.column})
+            }
+
+            if(header.fixed)
+                fixedColumnsLeft++;
+
+        })
+
+
+        var container = document.getElementById('tp_grid');
+        tp_handSonTable = new Handsontable(container, {
+            stretchH: 'all',
+            data: listData,
+            rowHeaders: true,
+            colHeaders: tp_colHeader,
+            columns: tp_columns,
+            manualColumnResize: true,
+            manualRowResize: true,
+            fixedColumnsLeft: fixedColumnsLeft,
+            readOnly: true,
+            //fixedRowsBottom: 1,
+            //columnSummary: [
+            //    {
+            //        "destinationColumn": 0,
+            //        "destinationRow": 49,
+            //        "type": "average",
+            //        "forceNumeric": true,
+            //        "suppressDataTypeErrors": false,
+            //        "readOnly": true
+            //    }
+            //],
+
+        });
+
+        exportPlugin = tp_handSonTable.getPlugin('exportFile');
+        exportPlugin.exportAsString('csv', {
+            exportHiddenRows: true, // default false
+            exportHiddenColumns: true, // default false
+            columnHeaders: true, // default false
+            rowHeaders: true, // default false
+            columnDelimiter: ';', // default ','
+
+        });
+    }
     componentDidMount() {
         this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
+
+
+
+
     }
     componentDidUpdate(prevProps) {
 
@@ -305,22 +308,7 @@ class GridContainer extends Component {
         }
 
 
-        const gridId = 'grid_table'
-        const topPagination = paginationPosition == 'top' || paginationPosition == 'both' ?
-            <Pagination
-                totalItems={totalItems}
-                totalPages={totalPages}
-                currentPage={currentPage}
-                pageLimit={pageLimit}
-                handler={this.hangePageLimitChange.bind(this)}
-                handlerPage={this.handlePageChange.bind(this)}
-                paginationMarg=""
-            />
-            :
-            null
-
-        const BottomPagination = paginationPosition == 'bottom' || paginationPosition == 'both' ?
-            <Pagination
+        const BottomPagination = <Pagination
                 totalItems={totalItems}
                 totalPages={totalPages}
                 currentPage={currentPage}
@@ -329,55 +317,9 @@ class GridContainer extends Component {
                 handlerPage={this.handlePageChange.bind(this)}
                 paginationMarg="paginationBottom"
             />
-            :
-            null
-        const gridBody = permission.r === true ? showGird === true ? listData.length >= 1 ?
-            <Body
-                gridId={gridId}
-                defaultLocale={defaultLocale}
-                bodyData={listData}
-                bodyHeader={gridHeader}
-                setRowEdit={this.setRowEdit.bind(this)}
-                formType={formType}
-                selectRow={this.selectRow.bind(this)}
-                editID={editID}
-                showInlineForm={showInlineForm}
-                removeInlineForm={this.removeInlineForm.bind(this)}
-                formData={formData}
-                formControls={formControls}
-                focusIndex={focusIndex}
-                handleDeleteItem={this.handleDeleteItem.bind(this)}
-                inlineChangeValues={this.ChangeValues.bind(this)}
-                callWindowEdit={this.callWindowEdit.bind(this)}
-                saveInlineForm={this.saveForm.bind(this)}
-                permission={permission}
-                ifUpdateDisabledCanEditColumns={ifUpdateDisabledCanEditColumns}
 
-            />
-            :
-            <div className="tp-laoder">
-               <h5>Мэдээлэл хадаглагдаагүй байна</h5>
-            </div>
-            :
-            <div className="tp-laoder">
-                <img src="/shared/table-properties/img/loader.gif" alt="Loading"/>
-                <br/>
-                Ачааллаж байна
-            </div>
-            :
-            <div className="tp-laoder">
-                <h5>Уучлаарай таньд хандах эрх байхгүй байна !!!</h5>
-            </div>
 
-        /*
-         <Window
-         formControls={formControls}
-         formData={formData}
-         pageName={setup.page_name}
-         changeHandler={this.ChangeValues.bind(this)}
-         saveForm={this.saveForm.bind(this, editID)}
-         hideModal={this.hideModal.bind(this)}
-         />*/
+
 
         return (
             <div >
@@ -395,11 +337,13 @@ class GridContainer extends Component {
                         exportPDF={this.exportPDF.bind(this)}
                         exportEXCEL={this.exportEXCEL.bind(this)}
                         permission={permission}
+                        gridHeader={gridHeader}
+                        hideShowColumn={this.hideShowColumn.bind(this)}
                 />
 
-                {topPagination}
+                <div id="tp_grid">
 
-                {gridBody}
+                </div>
 
                 {BottomPagination}
 

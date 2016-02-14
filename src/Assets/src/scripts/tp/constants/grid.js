@@ -10,6 +10,7 @@ export const SET_SHOW_GRID = 'SET_SHOW_GRID';
 export const SET_EDIT_ROW = 'SET_EDIT_ROW';
 export const SET_INLINE_FORM = 'SET_INLINE_FORM';
 export const SET_LOCALE = 'SET_LOCALE';
+export const SET_SHOW_HIDE_COLUMN = 'SET_SHOW_HIDE_COLUMN';
 
 
 

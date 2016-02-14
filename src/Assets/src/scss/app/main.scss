@@ -43,6 +43,22 @@
     position: relative;
     //background: green;
   }
+  #tp_grid{
+    height: -moz-calc(100vh - 108px);
+    height: -webkit-calc(100vh - 108px);
+    height: calc(100vh - 108px);
+    width:100%;
+    overflow-y: hidden;
+    border: none;
+
+    position: relative;
+    //background: green;
+    font-size: 10pt;
+    color: #000;
+    *{
+      color: #333;
+    }
+  }
 
   .paginationBottom{
     bottom: 0;
@@ -122,3 +138,6 @@
   }
 }
 
+#tp_column_option{
+  list-style: none;
+}

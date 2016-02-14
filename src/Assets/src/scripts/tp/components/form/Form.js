@@ -103,6 +103,21 @@ export default class Form extends Component {
 
                 />
                 break;
+            case "--password":
+                return <Input
+                    disabled={thisDisabled}
+                    key={keyIndex} dataIndex={index}
+                    fieldClass={fieldClass}
+                    value={mainValue}
+                    type="text"
+                    autoFocus={focus}
+                    placeholder={title}
+                    name={name}
+                    changeHandler={this.changeHandler.bind(this, locale_index)}
+                    errorText={field.get('error')}
+
+                />
+                break;
             case "--group":
                 return <fieldset className="field_set" key={keyIndex}>
                             <legend className="legendStyle">

@@ -1,5 +1,5 @@
 //VENDOR SCSS
-//require('../scss/vendor');
+//require('../vendor/ha');
 
 //VENDOR SCRIPTS
 //require('../vendor/tableExport.jquery.plugin-master/libs/FileSaver/FileSaver.js');
@@ -12,6 +12,6 @@
 //require('../vendor/jquery-resizable-columns-gh-pages/dist/jquery.resizableColumns.js');
 
 require('../vendor/autoNumberic')
-//require('../vendor/fixedtable')
+require('../vendor/handsontable-master/dist/handsontable.full.js')
 //require('../vendor/bootstrap/js/bootstrap.js');
 
