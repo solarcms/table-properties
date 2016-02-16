@@ -367,7 +367,7 @@ class AddEditContainer extends Component {
 
         return (
             <div className="">
-                <Header pageName={setup.page_name} icon="fa fa-chevron-left" link="#/" type="addEdit"/>
+                <Header pageName={setup.page_name} gridHeader={this.props.gridHeader} icon="fa fa-chevron-left" link="#/" type="addEdit"/>
                 <div className="p-y-sm">
                     <div className="row  m-x-sm">
                         <div className="form-horizontal solar-form">
@@ -424,6 +424,7 @@ function mapStateToProps(state) {
     return {
         setup: Grid.get('setup').toJS(),
         locales: Grid.get('setup').toJS().locales,
+        gridHeader: Grid.get('setup').toJS().grid_output_control,
         defaultLocale: Grid.get('defaultLocale'),
         formControls: Form.get('form_input_control'),
         translateFormControls: Form.get('translateFormControls'),

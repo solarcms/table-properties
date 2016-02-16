@@ -13,5 +13,18 @@
 
 require('../vendor/autoNumberic')
 require('../vendor/handsontable-master/dist/handsontable.full.js')
+//formula
+//require('../vendor/handsontable-ruleJS-gh-pages/lib/RuleJS/lib/lodash/lodash.js')
+//    require('../vendor/handsontable-ruleJS-gh-pages/lib/RuleJS/lib/underscore.string/underscore.string.js')
+//    require('../vendor/handsontable-ruleJS-gh-pages/lib/RuleJS/lib/moment/moment.js')
+//    require('../vendor/handsontable-ruleJS-gh-pages/lib/RuleJS/lib/numeral/numeral.js')
+//    require('../vendor/handsontable-ruleJS-gh-pages/lib/RuleJS/lib/numericjs/numeric.js')
+//    require('../vendor/handsontable-ruleJS-gh-pages/lib/RuleJS/lib/js-md5/md5.js')
+//    require('../vendor/handsontable-ruleJS-gh-pages/lib/RuleJS/lib/jstat/jstat.js')
+//    require('../vendor/handsontable-ruleJS-gh-pages/lib/RuleJS/lib/formulajs/formula.js')
+//    require('../vendor/handsontable-ruleJS-gh-pages/lib/RuleJS/js/parser.js')
+//    require('../vendor/handsontable-ruleJS-gh-pages/lib/RuleJS/js/ruleJS.js')
+//    require('../vendor/handsontable-ruleJS-gh-pages/lib/handsontable/handsontable.formula.js')
+
 //require('../vendor/bootstrap/js/bootstrap.js');
 

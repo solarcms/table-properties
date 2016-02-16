@@ -113,7 +113,7 @@ export default class Header extends Component {
             :
             null
         return (
-            <div className="">
+            <div className="tp_header">
                 <div className="white box-shadow-z0 b-b">
                     <div className="navbar">
                         <ul className="nav navbar-nav pull-left hidden-lg-up">

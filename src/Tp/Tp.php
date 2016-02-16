@@ -609,6 +609,7 @@ class Tp
 
         $saved = DB::table($this->table)->insert($insertQuery);
 
+
         $insertedId = DB::getPdo()->lastInsertId();
 
 

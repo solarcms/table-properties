@@ -13,9 +13,7 @@ export default class Page extends Component {
 
         let text = this.props.pageText || this.props.pageNumber;
 
-        if (React.isValidElement(text)) {
-            el = text;
-        } else {
+
             el = (
                 <li className={className}>
                     <a onClick={this.props.onClick.bind(this, this.props.pageNumber)} href="javascript:void(0)">
@@ -23,7 +21,7 @@ export default class Page extends Component {
                     </a>
                 </li>
             );
-        }
+
 
         return el;
     }

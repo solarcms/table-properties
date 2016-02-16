@@ -42,6 +42,16 @@ export default class Form extends Component {
         value = Moment(value).format("YYYY.MM.DD");
         this.manualeChangeHandler(locale_index, dIndex, value);
     }
+    getValueByColumn(column){
+        let value = null
+        this.props.formControls.map((fcontrol, findex)=>{
+            if(fcontrol.get('column') == column){
+                value = fcontrol.get('value')
+            }
+        })
+
+        return value;
+    }
     changeHandler(locale_index, e){
 
         let value  = null;
@@ -58,8 +68,9 @@ export default class Form extends Component {
         dataIndexs.map((key)=>{
             dataIndex.push(key*1);
         });
-        if(locale_index === false)
+        if(locale_index === false){
             this.props.changeHandler(dataIndex, value);
+        }
         else
             this.props.translateChangeHandler(locale_index, dataIndex, value);
 
@@ -114,6 +125,21 @@ export default class Form extends Component {
                     placeholder={title}
                     name={name}
                     changeHandler={this.changeHandler.bind(this, locale_index)}
+                    errorText={field.get('error')}
+
+                />
+                break;
+            case "--auto-calculate":
+                return <Input
+                    disabled={true}
+                    key={keyIndex} dataIndex={index}
+                    fieldClass={fieldClass}
+                    value={mainValue}
+                    type="number"
+                    autoFocus={focus}
+                    placeholder={title}
+                    name={name}
+                    //changeHandler={this.changeHandler.bind(this, locale_index)}
                     errorText={field.get('error')}
 
                 />
@@ -529,6 +555,72 @@ export default class Form extends Component {
     }
 
     componentDidUpdate() {
+        ///auto-calculate
+        let calculate_columns = []
+
+        this.props.formControls.map((fcontrol, findex)=>{
+            if(fcontrol.get('type') == '--auto-calculate'){
+
+
+                let calculate_type = fcontrol.getIn(['options', 'calculate_type']);
+                let calculate_column = fcontrol.get('column');
+
+                let columns = [];
+
+                fcontrol.getIn(['options', 'calculate_columns']).map((calculate_column, cal_index)=>{
+
+
+                    columns.push(
+                        {column: calculate_column, value: this.getValueByColumn(calculate_column)}
+                    );
+                })
+                calculate_columns.push(
+                    {
+                        column:calculate_column,
+                        type:calculate_type,
+                        columns:columns,
+                        dataIndex:findex
+                    }
+                )
+            }
+        })
+
+        calculate_columns.map((calculate_column, index)=>{
+            let checkAllValue = true;
+            calculate_column.columns.map((cal_column)=>{
+                if(cal_column.value === null)
+                    checkAllValue = false
+            })
+            let calculate_result = null;
+            if(checkAllValue === true){
+                if(calculate_column.type == '--multiply'){
+                    calculate_column.columns.map((cal_column, calIndex)=>{
+                        if(calIndex == 0)
+                            calculate_result = cal_column.value;
+                        else
+                            calculate_result = calculate_result * cal_column.value
+                    })
+                }else if((calculate_column.type == '--sum')){
+                    calculate_column.columns.map((cal_column, calIndex)=>{
+                        if(calIndex == 0)
+                            calculate_result = cal_column.value;
+                        else
+                            calculate_result = calculate_result + cal_column.value
+                    })
+                } else if(calculate_column.type == '--average'){
+                    calculate_column.columns.map((cal_column, calIndex)=>{
+                        if(calIndex == 0)
+                            calculate_result = cal_column.value;
+                        else
+                            calculate_result = calculate_result + cal_column.value
+                    })
+                    calculate_result = calculate_result/calculate_column.columns.length;
+                }
+                if(calculate_result !== null){
+                    this.props.changeHandler([calculate_column.dataIndex], calculate_result);
+                }
+            }
+        });
 
     }
 
