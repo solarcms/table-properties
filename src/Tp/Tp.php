@@ -81,6 +81,9 @@ class Tp
     public $cancel_button_text = 'Болих';
     public $delete_button_text = 'Устгах';
 
+    //genrate locales json
+    public $genrateLocale = false;
+
 
     function __construct(){
 
@@ -1657,6 +1660,38 @@ class Tp
         return Response::json('success', 200);
     }
 
+    function generateLocale()
+    {
+        $words = DB::table('static_words')->get();
+        $locales = DB::table('locales')->get();
+        $i18Path = base_path() . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'i18' . DIRECTORY_SEPARATOR;
+        $localeArr = [];
+
+        if (!is_dir($i18Path)) {
+            mkdir($i18Path, 0755, true);
+        }
+
+        foreach ($locales as $l) {
+            $localeArr[$l->code] = [];
+        }
+
+        foreach ($words as $w) {
+            $translation = json_decode($w->translation);
+            $key = $w->key;
+            foreach ($translation as $t) {
+                if (array_key_exists($t->locale, $localeArr)) {
+                    $arr = [];
+                    $arr[$key] = $t->value;
+                    $localeArr[$t->locale][$key] = $t->value;
+                }
+            }
+        }
+
+        foreach ($localeArr as $key => $value) {
+            $file = $i18Path . strtolower($key) . ".json";
+            file_put_contents($file, json_encode($value, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE));
+        }
+    }
 
 
 }
