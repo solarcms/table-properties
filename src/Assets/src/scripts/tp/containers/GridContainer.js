@@ -34,25 +34,25 @@ class GridContainer extends Component {
 
     }
     exportEXCEL(){
-        //console.log(tp_handSonTable.getDataAtRow(0));
-        var date;
-        date = new Date();
-        date = date.getUTCFullYear() + '-' +
-            ('00' + (date.getUTCMonth()+1)).slice(-2) + '-' +
-            ('00' + date.getUTCDate()).slice(-2) + ' ' +
-            ('00' + date.getUTCHours()).slice(-2) + ':' +
-            ('00' + date.getUTCMinutes()).slice(-2) + ':' +
-            ('00' + date.getUTCSeconds()).slice(-2);
-
-
-        exportPlugin.downloadFile('csv', {
-            filename: this.props.setup.page_name+'-'+date,
-            exportHiddenRows: true,     // default false, exports the hidden rows
-            exportHiddenColumns: true,  // default false, exports the hidden columns
-            columnHeaders: true,        // default false, exports the column headers
-            rowHeaders: true,           // default false, exports the row headers\
-            range: [null, null, this.props.gridHeader.length-1, this.props.gridHeader.length-1]
-        });
+        console.log(tp_handSonTable.getDataAtRow(0));
+        //var date;
+        //date = new Date();
+        //date = date.getUTCFullYear() + '-' +
+        //    ('00' + (date.getUTCMonth()+1)).slice(-2) + '-' +
+        //    ('00' + date.getUTCDate()).slice(-2) + ' ' +
+        //    ('00' + date.getUTCHours()).slice(-2) + ':' +
+        //    ('00' + date.getUTCMinutes()).slice(-2) + ':' +
+        //    ('00' + date.getUTCSeconds()).slice(-2);
+        //
+        //
+        //exportPlugin.downloadFile('csv', {
+        //    filename: this.props.setup.page_name+'-'+date,
+        //    exportHiddenRows: true,     // default false, exports the hidden rows
+        //    exportHiddenColumns: true,  // default false, exports the hidden columns
+        //    columnHeaders: true,        // default false, exports the column headers
+        //    rowHeaders: true,           // default false, exports the row headers\
+        //    range: [null, null, this.props.gridHeader.length-1, this.props.gridHeader.length-1]
+        //});
     }
     selectRow(row){
         return false;
@@ -161,6 +161,24 @@ class GridContainer extends Component {
         }
 
     }
+    afterChange(changes, source, isValid){
+        console.log(changes, source, isValid)
+        if(changes)
+        console.log(changes[0][3]);
+        //if(changes)
+
+        if(changes){
+            if(changes[0][0] == 0 && changes[0][1] != 'niit_dun'){
+                if((tp_handSonTable.getDataAtCell(0, 1) !== null && tp_handSonTable.getDataAtCell(0, 1) != '') || (tp_handSonTable.getDataAtCell(0, 2) !== null && tp_handSonTable.getDataAtCell(0, 2) != '')){
+                    let newValue = (tp_handSonTable.getDataAtCell(0, 1)) * (tp_handSonTable.getDataAtCell(0, 2) *1);
+                    tp_handSonTable.setDataAtCell(0, 3, newValue);
+                }
+
+            }
+
+        }
+
+    }
     setUpHandsonTable(){
 
 
@@ -210,13 +228,13 @@ class GridContainer extends Component {
                             format: '0,0.00',
                         }
                         break;
-                    case "--formula":
+                    case "--auto-calculate":
                         gridColumn =
                         {
                             data: header.column,
-                            //type: 'numeric',
-                            //format: '0,0.00',
-                            //readOnly:true,
+                            type: 'numeric',
+                            format: '0,0.00',
+                            readOnly:true,
 
                         }
                         break;
@@ -231,7 +249,7 @@ class GridContainer extends Component {
                 tp_columns.push(gridColumn);
 
                 //shema
-                if(header.type == '--formula'){
+                if(header.type == '--auto-calculate'){
                     let formula = '=';
                     if(header.options.calculate_type == '--multiply'){
                         header.options.calculate_columns.map((calculate_column, cal_index)=>{
@@ -270,10 +288,14 @@ class GridContainer extends Component {
         let readOnly = true
         if(this.props.formType == 'inline'){
             readOnly =false
-            gridData.unshift(
-                tp_dataSchema
-            )
-            console.log('test test  ')
+
+            //gridData.unshift(
+            //    tp_dataSchema
+            //)
+            //gridData.unshift(
+            //    {}
+            //)
+
         }
         if(this.props.formType == 'inline' && this.props.showInlineForm === false)
             trimRows =[0]
@@ -299,8 +321,9 @@ class GridContainer extends Component {
             readOnly: readOnly,
             columnSorting: true,
             sortIndicator: true,
-            trimRows: trimRows,
-            maxRows:maxRows
+            //trimRows: trimRows,
+            maxRows:maxRows,
+            afterChange:this.afterChange.bind(this)
 
 
             //columnSorting: {
@@ -331,13 +354,17 @@ class GridContainer extends Component {
             columnDelimiter: ';', // default ','
 
         });
+
+
     }
     addInlineForm(){
         this.props.actions.setInlineFrom(true);
-        //if(this.props.showInlineForm === false)
-        //    tp_handSonTable.alter(tp_dataSchema, 0, 1);
-        //else
-        //alert("Эхний өгөгдлөө хадгалана уу")
+
+
+        if(this.props.showInlineForm === false)
+            tp_handSonTable.alter('insert_row', 0);
+        else
+            alert("Эхний өгөгдлөө хадгалана уу")
 
     }
     setRowEdit(editId, focusIndex){
@@ -474,7 +501,7 @@ class GridContainer extends Component {
             this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
         }
         if(this.props.showInlineForm === true){
-            this.setUpHandsonTable()
+            //this.setUpHandsonTable()
 
         }
 
