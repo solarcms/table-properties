@@ -10,7 +10,7 @@ export default class Paginator extends Component {
         const { totalItems, totalPages, pageLimits, handler, currentPage, pageLimit, handlerPage, paginationMarg } = this.props;
 
         return (
-            <div className={`p-a-sm white  with-3d-shadow ${paginationMarg}`}>
+            <div className={`white  with-3d-shadow ${paginationMarg}`}>
                 <div className="row">
                     <div className="col-md-12 solar-pagination" >
                         <div className="pull-left ">
@@ -25,12 +25,12 @@ export default class Paginator extends Component {
                                     selected={pageLimit}
                                     datas={pageLimits}
                                     label="Хуудсанд харагдах тоо"
-                                    style={{width:'80px'}}
+                                    style={{width:'58px'}}
                                 />
                             </div>
                         </div>
 
-                        <div className="pull-right" style={{height: '32px'}}>
+                        <div className="pull-right" style={{height:'20px'}}>
                             <Pagination
                                 activePage={currentPage}
                                 totalItemsCount={totalItems}

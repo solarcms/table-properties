@@ -3,9 +3,9 @@ import pagiator from "paginator";
 import classNames from "classnames";
 import Page from "./Page";
 
-const lt = "⟨";
+const lt = <i className="material-icons">&#xE5CB;</i>;
 const Lt = "«";
-const gt = "⟩";
+const gt = <i className="material-icons">&#xE5CC;</i>;
 const Gt = "»";
 
 const prevPageText = lt;

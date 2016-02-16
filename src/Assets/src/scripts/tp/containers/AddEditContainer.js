@@ -261,17 +261,20 @@ class AddEditContainer extends Component {
                     })
                     this.props.translateFormControls.map((translateFormControl, l_index)=> {
 
+
                         translateFormControl.get('translate_form_input_control').map((formControl, index)=> {
+                            if(data[0][formControl.get('column')] !== null && data[0][formControl.get('column')] != ''){
+                                let json_translations =  JSON.parse(data[0][formControl.get('column')]);
 
-                            let json_translations =  JSON.parse(data[0][formControl.get('column')]);
+                                json_translations.map((json_translation) =>{
+                                    if(json_translation.locale == translateFormControl.get('locale_code')){
+                                        if (formControl.get('type') !== '--hidden')
+                                            this.props.actions.changeTranslationValue(l_index, [index], json_translation.value)
+                                    }
 
-                            json_translations.map((json_translation) =>{
-                                if(json_translation.locale == translateFormControl.get('locale_code')){
-                                    if (formControl.get('type') !== '--hidden')
-                                        this.props.actions.changeTranslationValue(l_index, [index], json_translation.value)
-                                }
+                                })
+                            }
 
-                            })
 
 
                         })
@@ -364,7 +367,7 @@ class AddEditContainer extends Component {
 
         return (
             <div className="">
-                <Header pageName={setup.page_name} icon="fa fa-chevron-left" link="#/" type="addEdit"/>
+                <Header pageName={setup.page_name} gridHeader={this.props.gridHeader} icon="fa fa-chevron-left" link="#/" type="addEdit"/>
                 <div className="p-y-sm">
                     <div className="row  m-x-sm">
                         <div className="form-horizontal solar-form">
@@ -421,6 +424,7 @@ function mapStateToProps(state) {
     return {
         setup: Grid.get('setup').toJS(),
         locales: Grid.get('setup').toJS().locales,
+        gridHeader: Grid.get('setup').toJS().grid_output_control,
         defaultLocale: Grid.get('defaultLocale'),
         formControls: Form.get('form_input_control'),
         translateFormControls: Form.get('translateFormControls'),

@@ -65,6 +65,7 @@
     "jquery": "^2.1.4",
     "jquery-ui": "^1.10.5",
     "moment": "^2.11.1",
+    "numeral": "^1.5.3",
     "react": "^0.14.6",
     "react-bootstrap": "^0.28.2",
     "react-draggable": "^1.1.3",

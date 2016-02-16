@@ -23,8 +23,9 @@ class Tp
     public $permission = ['c'=>true, 'r'=>true, 'u'=>true, 'd'=>true]; // Create, Read, Update, Delete CRUD default is all true
     public $ifUpdateDisabledCanEditColumns = []; //['acitve', 'name']
     public $ifUpdateDisabledCanEditColumnsByValue = [];  //[['acitve'=>1]]
-    public $where_condition = [];  //[['active'=>0], ['user_id'=>21]]
+    public $where_condition = [];  //[['id', '=', 1]]
     public $search_columns = [];
+    public $update_row = null;
 
 
     public $exclude_field = array();        // don't allow users to update or insert into these fields, even if data is posted. place the field name in the key of the array. example: $lm->exclude_field['is_admin'] = '';
@@ -53,8 +54,8 @@ class Tp
 
 
     // time stamp
-    public $created_at = false;
-    public $updated_at = false;
+    public $created_at = null;
+    public $updated_at = null;
 
     //form types
     public $formType = 'page'; // page, inline, window
@@ -81,8 +82,8 @@ class Tp
     public $cancel_button_text = 'Болих';
     public $delete_button_text = 'Устгах';
 
-    //genrate locales json
-    public $genrateLocale = false;
+    public $generateLocaleFile = false;
+
 
 
     function __construct(){
@@ -177,9 +178,11 @@ class Tp
 
             $locales = DB::table($this->locales_table)->select('id', 'code')->orderBy('id', 'ASC')->get();
         }
-
-        else
+        else{
             $locales = [];
+            Session::set('locale', $this->default_locale);
+        }
+
         $setup = [
             'button_texts'=>$buttons,
             'locales'=>$locales,
@@ -194,7 +197,8 @@ class Tp
             'permission'=>$this->permission,
             'ifUpdateDisabledCanEditColumns'=>$this->ifUpdateDisabledCanEditColumns,
             'form_datas'=>$this->get_form_datas(),
-            'default_locale'=>Session::get('locale')
+            'default_locale'=>Session::get('locale'),
+            'update_row'=>$this->update_row,
         ];
 
         ////
@@ -329,10 +333,16 @@ class Tp
                     $order = explode(" ", $options['grid_default_order_by']);
                     $pre_data = DB::table($options['table'])->select($options['grid_columns'])->orderBy($order[0], $order[1]);
 
-                    if(isset($options['condition'])){
-                        foreach($options['condition'] as $condition_column=>$condition_value){
-                            $pre_data->where("$condition_column", '=', $condition_value);
+                    if(isset($options['where_condition'])){
+                        $cond = 0;
+                        foreach($options['where_condition'] as $where_condition){
 
+                            if($cond == 0){
+                                $pre_data->where($where_condition[0], $where_condition[1], $where_condition[2]);
+                            } else {
+                                $pre_data->orWhere($where_condition[0], $where_condition[1], $where_condition[2]);
+                            }
+                            $cond++;
                         }
                     }
 
@@ -499,7 +509,7 @@ class Tp
             $this->setup();
         }
 
-        $insertQuery = ["$this->identity_name"=>null];
+//        $insertQuery = ["$this->identity_name"=>null];
         foreach($this->form_input_control as $formControl){
 
             if($formControl['type'] == '--group'){
@@ -530,7 +540,9 @@ class Tp
                         $checkBoxValue = 0;
                     $insertQuery[$formControl['column']] = $checkBoxValue;
 
-                } else
+                } elseif($formControl['type']=='--password'){
+                    $insertQuery[$formControl['column']] = bcrypt($formData[$formControl['column']]);
+                }else
                     $insertQuery[$formControl['column']] = $formData[$formControl['column']];
             }
 
@@ -574,7 +586,7 @@ class Tp
         }
 
 
-
+        //subitems count
         if(!empty($this->save_sub_items_count)){
             $posted_sub_items = Request::input('subItems');
 
@@ -588,7 +600,16 @@ class Tp
 
         }
 
+        //timestamp
+        if($this->created_at != null)
+            $insertQuery[$this->created_at] =  \Carbon\Carbon::now();
+        if($this->updated_at != null)
+            $insertQuery[$this->updated_at] =  \Carbon\Carbon::now();
+
+
+
         $saved = DB::table($this->table)->insert($insertQuery);
+
 
         $insertedId = DB::getPdo()->lastInsertId();
 
@@ -597,6 +618,10 @@ class Tp
 
         if(count($this->subItems) >= 1)
             $this->saveSubItems($insertedId, $this->subItems, Request::input('subItems'));
+
+        if($this->generateLocaleFile == true){
+            $this->generateLocale();
+        }
 
         $response = null;
         if($saved){
@@ -658,7 +683,9 @@ class Tp
                                         $checkBoxValue = 0;
                                     $insertQuery[$formControl['column']] = $checkBoxValue;
 
-                                } else
+                                } elseif($formControl['type']=='--password'){
+                                    $insertQuery[$formControl['column']] = bcrypt($formData[$formControl['column']]);
+                                }else
                                     $insertQuery[$formControl['column']] = $formData[$formControl['column']];
                             }
                         }
@@ -693,7 +720,9 @@ class Tp
                             $checkBoxValue = 0;
                         $insertQuery[$formControl['column']] = $checkBoxValue;
 
-                    } else
+                    } elseif($formControl['type']=='--password'){
+                        $insertQuery[$formControl['column']] = bcrypt($formData[$formControl['column']]);
+                    }else
                         $insertQuery[$formControl['column']] = $formData[$formControl['column']];
 
                 }
@@ -754,6 +783,11 @@ class Tp
 
         }
 
+        // timestamp
+        if($this->updated_at != null)
+            $insertQuery[$this->updated_at] =  \Carbon\Carbon::now();
+
+
 
         $saved = DB::table($this->table)->where("$this->identity_name", '=', $id)->update($insertQuery);
 
@@ -761,6 +795,11 @@ class Tp
 
         if(count($this->subItems) >= 1)
             $this->saveSubItems($id, $this->subItems, Request::input('subItems'));
+
+        if($this->generateLocaleFile == true){
+            $this->generateLocale();
+        }
+
 
         $response = null;
         if($saved){
@@ -1660,21 +1699,18 @@ class Tp
         return Response::json('success', 200);
     }
 
-    function generateLocale()
+    public function generateLocale()
     {
         $words = DB::table('static_words')->get();
         $locales = DB::table('locales')->get();
-        $i18Path = base_path() . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'i18' . DIRECTORY_SEPARATOR;
+        $i18Path =  public_path('i18').DIRECTORY_SEPARATOR;
         $localeArr = [];
-
         if (!is_dir($i18Path)) {
             mkdir($i18Path, 0755, true);
         }
-
         foreach ($locales as $l) {
             $localeArr[$l->code] = [];
         }
-
         foreach ($words as $w) {
             $translation = json_decode($w->translation);
             $key = $w->key;
@@ -1686,12 +1722,10 @@ class Tp
                 }
             }
         }
-
+        //dd($localeArr);
         foreach ($localeArr as $key => $value) {
             $file = $i18Path . strtolower($key) . ".json";
             file_put_contents($file, json_encode($value, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE));
         }
     }
-
-
 }

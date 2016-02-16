@@ -42,6 +42,12 @@ export default createReducer(initialState, {
 
         return state;
     },
+    [types.SET_SHOW_HIDE_COLUMN](state, { value, index }) {
+
+        state = state.setIn(['setup', 'grid_output_control', index, 'hidden'], value);
+
+        return state;
+    },
     [types.SET_LOCALE](state, { locale }) {
 
 

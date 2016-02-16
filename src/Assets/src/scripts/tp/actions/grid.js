@@ -97,6 +97,16 @@ export function setInlineFrom(value) {
 }
 
 
+export function setShowHideColumn(value, index) {
+
+    return {
+        type: types.SET_SHOW_HIDE_COLUMN,
+        value: value,
+        index: index
+    }
+}
+
+
 
 
 
