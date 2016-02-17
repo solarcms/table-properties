@@ -90,6 +90,14 @@ export function save(formData, translateFormControls, subItems) {
 
     return postResuest(`insert`, {data: data, translateData: translateData, subItems: realSubItems});
 }
+
+export function inlineSave(data){
+    return postResuest(`insert`, {data: data, translateData: [], subItems: []});
+}
+export function inlineSaveUpdate(id, data){
+    return postResuest(`update`, {id: id, data: data, translateData: [], subItems: []});
+}
+
 export function saveComboGrid(column, formData) {
 
 

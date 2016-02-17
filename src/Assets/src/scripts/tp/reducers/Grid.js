@@ -30,8 +30,6 @@ export default createReducer(initialState, {
 
         const data = Immutable.fromJS(setupData);
 
-
-
         state = state.set('setup', data);
         state = state.set('defaultLocale', setupData.default_locale);
 

@@ -1,91 +1,99 @@
 import React, { Component, PropTypes } from "react"
-import $ from "jquery"
-
-//import {modal} from 'bootstrap'
 import * as DataActions from "../actions/grid"
 import { bindActionCreators } from "redux"
 import { connect } from "react-redux"
 
-import { getList, setupPage, deleteItem, save, update, edit, changeLanguage } from "../api/"
+import { getList, setupPage, deleteItem, save, update, edit, changeLanguage, inlineSave, inlineSaveUpdate } from "../api/"
+
 import Header from "../components/grid/Header"
-import Body from "../components/grid/Body"
+
 import Pagination from "../components/grid/Paginator"
-import validation from "../components/form/validation/"
+
 import Window from "../components/window/"
+
+import validation from "../components/grid/validation/"
+
+/*for handson table*/
 var tp_handSonTable = null
 var exportPlugin = null
 var tp_dataSchema = {};
+var maxRows = 0;
+
 class GridContainer extends Component {
-    //export
-    exportPDF(){
-        //$('#tp-table').tableExport({type:'csv'});
+
+    /* component life cycle ----------------------------------------- */
+    componentWillMount() {
+
+    }
+    componentDidMount() {
+        this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
+
+
+
+
+    }
+    componentDidUpdate(prevProps) {
+
+        if(prevProps.permission.r == false && this.props.permission.r == true){
+            this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
+        }
+        if(this.props.showInlineForm === true){
+            //this.setUpHandsonTable()
+
+        }
+
+    }
+    componentWillUnmount() {
+        tp_handSonTable.destroy()
+    }
+
+
+    /* header functions ----------------------------------------- */
+    changeLanguage(locale){
+        changeLanguage(locale).then(()=>{
+            this.props.actions.setLocale(locale);
+
+        })
+
+    }
+    exportEXCEL(){
+
+        var date;
+        date = new Date();
+        date = date.getUTCFullYear() + '-' +
+            ('00' + (date.getUTCMonth()+1)).slice(-2) + '-' +
+            ('00' + date.getUTCDate()).slice(-2) + ' ' +
+            ('00' + date.getUTCHours()).slice(-2) + ':' +
+            ('00' + date.getUTCMinutes()).slice(-2) + ':' +
+            ('00' + date.getUTCSeconds()).slice(-2);
+
+
+        exportPlugin.downloadFile('csv', {
+            filename: this.props.setup.page_name+'-'+date,
+            exportHiddenRows: true,     // default false, exports the hidden rows
+            exportHiddenColumns: true,  // default false, exports the hidden columns
+            columnHeaders: true,        // default false, exports the column headers
+            rowHeaders: true,           // default false, exports the row headers\
+            range: [null, null, this.props.gridHeader.length-1, this.props.gridHeader.length-1]
+        });
     }
     hideShowColumn(show, columnIndex){
-
         this.props.actions.setShowHideColumn(show, columnIndex)
-
         setTimeout(
             () => {
                 this.setUpHandsonTable()
             },
             100
         );
-
-
     }
-    exportEXCEL(){
-        console.log(tp_handSonTable.getDataAtRow(0));
-        //var date;
-        //date = new Date();
-        //date = date.getUTCFullYear() + '-' +
-        //    ('00' + (date.getUTCMonth()+1)).slice(-2) + '-' +
-        //    ('00' + date.getUTCDate()).slice(-2) + ' ' +
-        //    ('00' + date.getUTCHours()).slice(-2) + ':' +
-        //    ('00' + date.getUTCMinutes()).slice(-2) + ':' +
-        //    ('00' + date.getUTCSeconds()).slice(-2);
-        //
-        //
-        //exportPlugin.downloadFile('csv', {
-        //    filename: this.props.setup.page_name+'-'+date,
-        //    exportHiddenRows: true,     // default false, exports the hidden rows
-        //    exportHiddenColumns: true,  // default false, exports the hidden columns
-        //    columnHeaders: true,        // default false, exports the column headers
-        //    rowHeaders: true,           // default false, exports the row headers\
-        //    range: [null, null, this.props.gridHeader.length-1, this.props.gridHeader.length-1]
-        //});
+    handleSearch() {
+        let sword = this.refs.search.refs.searchWord.value
+        this.props.actions.setSearch(sword)
+        this.callPageDatas(1, this.props.pageLimit, sword)
     }
-    selectRow(row){
-        return false;
-    }
-    //export
-    //translation
-    changeLanguage(locale){
-        changeLanguage(locale).then(()=>{
-
-            this.props.actions.setLocale(locale);
 
 
-        })
-
-    }
-    /*
-     * Grid main actions starting
-     * */
-    callPageDatas(page, pageLimit, searchValue) {
-        if(this.props.permission.r !== true)
-            return false;
-
-         this.props.actions.setShowGrid(false);
-        getList(page, {
-            pageLimit: pageLimit,
-            searchValue: searchValue
-        }).then((data)=> {
-            this.props.actions.receiveListData(data);
-           this.props.actions.setShowGrid(true);
-
-            this.setUpHandsonTable()
-        });
-    }
+    /* pagination */
     hangePageLimitChange(e) {
         this.props.actions.setPageLimit(e.target.value*1)
         this.props.actions.setCurrentPage(1)
@@ -96,92 +104,271 @@ class GridContainer extends Component {
 
         this.callPageDatas(pageNumber, this.props.pageLimit, this.props.searchValue)
     }
-    handleSearch() {
-        let sword = this.refs.search.refs.searchWord.value
-        this.props.actions.setSearch(sword)
-        this.callPageDatas(1, this.props.pageLimit, sword)
+
+
+    /* Window form*/
+    callWindowEdit(id){
+        if(this.props.permission.u !== true)
+            return false;
+
+
+            this.props.actions.setRowEdit(id, 0)
+            edit(id).then((data)=> {
+                if(data.length >= 1)
+                    this.props.formControls.map((formControl, index)=>{
+                        this.props.actions.chagenValue(index, data[0][formControl.column])
+                    })
+                else
+                    alert('please try agian')
+            });
+            //$('#windowForm').modal({'backdrop': false}, 'show');
+
+
+    }
+    showModal(){
+        if(this.props.permission.c !== true)
+           return false;
+        //$('#windowForm').modal({'backdrop': false}, 'show');
+    }
+    hideModal(){
+        //$('#windowForm').modal('hide');
+        this.props.actions.clearFromValidation();
+    }
+
+
+    /* Grid */
+    getColumnIndex(column){
+        //return _.findIndex(this.props.gridHeader, { column: column })
+        return this.props.gridHeader.findIndex(x => x.column == column );
+    }
+    getColumnValdation(column){
+        //return _.findIndex(this.props.gridHeader, { column: column })
+        if(this.props.gridHeader[column].validate)
+        return this.props.gridHeader[column].validate;
+        else
+            return ''
+    }
+    getColumnType(column){
+
+
+        return this.props.gridHeader[column].type;
+
+    }
+    callPageDatas(page, pageLimit, searchValue) {
+        if(this.props.permission.r !== true)
+            return false;
+
+        this.props.actions.setShowGrid(false);
+        getList(page, {
+            pageLimit: pageLimit,
+            searchValue: searchValue
+        }).then((data)=> {
+            this.props.actions.receiveListData(data);
+            this.props.actions.setShowGrid(true);
+            this.setUpHandsonTable()
+        });
     }
     handleDeleteItem(id) {
 
         if(this.props.permission.d == true) {
 
-                if (!confirm('Delete this record?')) {
-                    return;
-                }
-                else{
-                    deleteItem(id).then((data)=> {
+            if (!confirm('Delete this record?')) {
+                return;
+            }
+            else{
+                deleteItem(id).then((data)=> {
 
-                        if (data == 'success')
-                            this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
-                        else
-                            alert("Please try agian")
-                    });
-                }
+                    if (data == 'success')
+                        this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
+                    else
+                        alert("Please try agian")
+                });
+            }
 
 
         }
     }
-    /*
-     * Grid main actions starting
-     * */
+    addInlineForm(){
+        this.props.actions.setInlineFrom(true);
 
-    /*
-    * Grid Inline from starting
-    * */
-    getColumnIndex(column){
-        //return _.findIndex(this.props.gridHeader, { column: column })
-        return this.props.gridHeader.findIndex(x => x.column == column );
+
+        if(this.props.showInlineForm === false){
+
+
+            tp_handSonTable.alter('insert_row', 0, 1);
+
+        }
+
+        else
+            alert("Эхний өгөгдлөө хадгалана уу")
+
     }
-    columnToLetter(column) {
-            var temp, letter = '';
-            while (column > 0)
-            {
-                temp = (column - 1) % 26;
-                letter = String.fromCharCode(temp + 65) + letter;
-                column = (column - temp - 1) / 26;
-            }
-            return letter;
-        }
+    removeInlineForm(){
 
-    letterToColumn(letter) {
-            var column = 0, length = letter.length;
-            for (var i = 0; i < length; i++)
-            {
-                column += (letter.charCodeAt(i) - 64) * Math.pow(26, length - i - 1);
-            }
-            return column;
-        }
-    checkNull(value, callback) {
+        this.props.actions.setInlineFrom(false);
+    }
+    getData(row){
+        return tp_handSonTable.getDataAtRow(row);
+    }
+    editDeleteRender(instance, td, row, col, prop, value, cellProperties) {
 
-        if (!value || value == '') {
-            callback(false);
-        }
-        else {
-            callback(true);
-        }
+
+
+        if(!td.hasChildNodes()){
+
+            if(value != -1){
+                var self = this;
+
+                let pre_del =  document.createElement('a');
+                let pre_editBtn =  document.createElement('a');
+                let pre =  document.createElement('span');
+
+                td.appendChild(pre)
+
+                if(this.props.formType != 'inline'){
+                    ///EDIT BUTTTON
+                    pre_editBtn.href = "#edit/"+value;
+                    pre_editBtn.innerHTML = "<i class=\"material-icons\">&#xE254;</i>&nbsp;";
+
+                    if(this.props.permission.u == true || this.props.ifUpdateDisabledCanEditColumns.length >=1)
+                        pre.appendChild(pre_editBtn);
+                }
+
+
+
+
+
+
+                // DELETE BUTTON
+                pre_del.addEventListener("click", function(){
+
+                    self.handleDeleteItem(value)
+
+                });
+
+
+
+                pre_del.innerHTML = "<i class=\"material-icons\">&#xE872;</i> "+value;
+                if(this.props.permission.d == true)
+                    pre.appendChild(pre_del);
+
+
+
+
+                return td;
+            }
+
+
+        } else
+            return
+
+
+
+
 
     }
     afterChange(changes, source, isValid){
-        console.log(changes, source, isValid)
-        if(changes)
-        console.log(changes[0][3]);
-        //if(changes)
+
 
         if(changes){
-            if(changes[0][0] == 0 && changes[0][1] != 'niit_dun'){
-                if((tp_handSonTable.getDataAtCell(0, 1) !== null && tp_handSonTable.getDataAtCell(0, 1) != '') || (tp_handSonTable.getDataAtCell(0, 2) !== null && tp_handSonTable.getDataAtCell(0, 2) != '')){
-                    let newValue = (tp_handSonTable.getDataAtCell(0, 1)) * (tp_handSonTable.getDataAtCell(0, 2) *1);
-                    tp_handSonTable.setDataAtCell(0, 3, newValue);
+            if(changes[0][1] != 'id' && changes[0][1] != 'niit_dun'){
+                if((tp_handSonTable.getDataAtCell(changes[0][0], 1) !== null && tp_handSonTable.getDataAtCell(changes[0][0], 1) != '') || (tp_handSonTable.getDataAtCell(changes[0][0], 2) !== null && tp_handSonTable.getDataAtCell(changes[0][0], 2) != '')){
+
+                    if((tp_handSonTable.getDataAtCell(changes[0][0], 1) === null) || (tp_handSonTable.getDataAtCell(changes[0][0], 2) === null)){
+
+                    }else {
+                        let newValue = (tp_handSonTable.getDataAtCell(changes[0][0], 1)) * (tp_handSonTable.getDataAtCell(changes[0][0], 2) *1);
+                        tp_handSonTable.setDataAtCell(changes[0][0], 3, newValue);
+                    }
+
+
                 }
 
             }
 
+            if(changes[0][1] != 'id') {
+
+                let colIndex = this.getColumnIndex(changes[0][1]);
+
+                let rowDatas = this.getData(changes[0][0]);
+
+                let error_not_found = true;
+
+                let data = {};
+
+                let edit_id = null;
+                rowDatas.map((rowData, index)=> {
+                    if (index <= this.props.gridHeader.length - 1) {
+                        let row = changes[0][0];
+                        let col = index;
+
+                        tp_handSonTable.getCellValidator(row, col)(rowData, function (isValid) {
+
+                            if (!isValid)
+                                error_not_found = false
+                        });
+
+                        data[this.props.gridHeader[index].column] = rowData;
+                    }
+                    if (index == this.props.gridHeader.length) {
+
+                        edit_id = rowData;
+                    }
+                })
+
+
+                if (error_not_found && edit_id === -1) {
+
+                    inlineSave(data).then((data)=> {
+
+                        this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
+
+                        this.removeInlineForm()
+
+                    });
+
+                }
+
+                if (error_not_found && edit_id >= 1) {
+
+                    inlineSaveUpdate(edit_id, data).then((data)=> {
+                        this.removeInlineForm()
+                    });
+
+                }
+
+
+            }
+
+
+
+
+            //tp_handSonTable.getCellValidator(row, col)(newValue, function(isValid) {
+            //    if (!isValid) {
+            //        hot.setDataAtCell(row, col, null);
+            //    }
+            //});
         }
 
+
+
+
     }
+    validationCaller(validateData, value, callback){
+
+        return validation(validateData, value, callback);
+    }
+    afterValidater(isValid, value, row, prop, source){
+
+        //let ColIndex = this.getColumnIndex(prop);
+        //if(isValid)
+        //    return true;
+        //else
+        //    return false;
+
+    }
+
     setUpHandsonTable(){
-
-
 
         const {gridHeader, listData} = this.props;
 
@@ -207,7 +394,8 @@ class GridContainer extends Component {
                             data: header.column,
                             editor: 'text',
                             type: 'text',
-                            validator: this.checkNull.bind(this), allowInvalid: false
+                            validator: this.validationCaller.bind(this, header.validate),
+                            //allowInvalid: false
                         }
 
                         break;
@@ -216,7 +404,8 @@ class GridContainer extends Component {
                         {
                             data: header.column,
                             type: 'numeric',
-                            editor: 'numeric'
+                            editor: 'numeric',
+                            validator: this.validationCaller.bind(this, header.validate),
                         }
 
                         break;
@@ -226,6 +415,7 @@ class GridContainer extends Component {
                             data: header.column,
                             type: 'numeric',
                             format: '0,0.00',
+                            validator: this.validationCaller.bind(this, header.validate),
                         }
                         break;
                     case "--auto-calculate":
@@ -235,7 +425,7 @@ class GridContainer extends Component {
                             type: 'numeric',
                             format: '0,0.00',
                             readOnly:true,
-
+                            validator: this.validationCaller.bind(this, header.validate),
                         }
                         break;
                     default:
@@ -248,29 +438,16 @@ class GridContainer extends Component {
 
                 tp_columns.push(gridColumn);
 
-                //shema
-                if(header.type == '--auto-calculate'){
-                    let formula = '=';
-                    if(header.options.calculate_type == '--multiply'){
-                        header.options.calculate_columns.map((calculate_column, cal_index)=>{
-                            let col_index = this.getColumnIndex(calculate_column)
-                            let col_letter = this.columnToLetter(col_index+1)
 
-                            if(cal_index == 0)
-                                formula = formula+col_letter+'1';
-                            else
-                                formula = formula+'*'+col_letter+'1';
-                        })
-                    }
-                    tp_dataSchema[header.column] = formula;
-                }else
-                tp_dataSchema[header.column] = header.value;
             }
 
             if(header.fixed)
                 fixedColumnsLeft++;
 
+            tp_dataSchema[header.column] = null;
         })
+
+        tp_dataSchema['id'] = -1;
 
         tp_colHeader.push('Засах')
         tp_columns.push({
@@ -300,17 +477,17 @@ class GridContainer extends Component {
         if(this.props.formType == 'inline' && this.props.showInlineForm === false)
             trimRows =[0]
 
-        let maxRows = gridData.length;
-        if(this.props.formType == 'inline' && this.props.showInlineForm === false)
-            maxRows = gridData.length+1;
+        maxRows = gridData.length;
+        //if(this.props.formType == 'inline' && this.props.showInlineForm === false)
+        //    maxRows = gridData.length+1;
 
-
-
+    console.log(tp_dataSchema);
+        var self = this;
         var container = document.getElementById('tp_grid');
         tp_handSonTable = new Handsontable(container, {
             stretchH: 'all',
             data: gridData,
-            //dataSchema: tp_dataSchema,
+            dataSchema: tp_dataSchema,
             rowHeaders: true,
             //formulas: true,
             colHeaders: tp_colHeader,
@@ -322,8 +499,39 @@ class GridContainer extends Component {
             columnSorting: true,
             sortIndicator: true,
             //trimRows: trimRows,
-            maxRows:maxRows,
-            afterChange:this.afterChange.bind(this)
+            //maxRows:maxRows,
+            afterChange:this.afterChange.bind(this),
+            afterCreateRow: function(index, amount){
+                if(index >= 1){
+                    gridData.splice(index, amount)
+                }
+
+
+            },
+            cells: function (row, col, prop) {
+                var cellProperties = {};
+
+                if (col === this.instance.countCols() - 1) {
+                    cellProperties.renderer = function (instance, td, row, col, prop, value, cellProperties) {
+                        Handsontable.cellTypes[cellProperties.type].renderer.apply(this, arguments);
+
+                        if (parseFloat(value) > 0) {
+
+                        } else if (parseFloat(value) < 0) {
+                            td.innerHTML = '';
+
+                        } else {
+
+                        }
+                    }
+                }
+                return cellProperties;
+
+            },
+
+
+            //afterValidate:this.afterValidater.bind(this),
+            //comments: true,
 
 
             //columnSorting: {
@@ -354,157 +562,6 @@ class GridContainer extends Component {
             columnDelimiter: ';', // default ','
 
         });
-
-
-    }
-    addInlineForm(){
-        this.props.actions.setInlineFrom(true);
-
-
-        if(this.props.showInlineForm === false)
-            tp_handSonTable.alter('insert_row', 0);
-        else
-            alert("Эхний өгөгдлөө хадгалана уу")
-
-    }
-    setRowEdit(editId, focusIndex){
-
-
-        if(this.props.permission.u !== true)
-            return false;
-
-            const FC = this.props.formControls;
-
-            if (FC.length >= 1)
-                this.props.actions.clearFromValidation();
-
-            if (editId === this.props.editID)
-                return false;
-
-            this.props.actions.setRowEdit(editId, focusIndex)
-            if (editId >= 1)
-                edit(editId).then((data)=> {
-                    if (data.length >= 1)
-                        this.props.formControls.map((formControl, index)=> {
-
-                            this.props.actions.chagenValue(index, data[0][formControl.column])
-                        })
-                    else
-                        alert('please try agian')
-
-                });
-
-
-    }
-    removeInlineForm(){
-        this.props.actions.setInlineFrom(false);
-    }
-
-
-    /*
-     * Grid Inline from ending
-     * */
-
-    /*
-    * Window form
-    * */
-    callWindowEdit(id){
-        if(this.props.permission.u !== true)
-            return false;
-
-
-            this.props.actions.setRowEdit(id, 0)
-            edit(id).then((data)=> {
-                if(data.length >= 1)
-                    this.props.formControls.map((formControl, index)=>{
-                        this.props.actions.chagenValue(index, data[0][formControl.column])
-                    })
-                else
-                    alert('please try agian')
-            });
-            $('#windowForm').modal({'backdrop': false}, 'show');
-
-
-    }
-    showModal(){
-        if(this.props.permission.c !== true)
-           return false;
-        $('#windowForm').modal({'backdrop': false}, 'show');
-    }
-    hideModal(){
-        $('#windowForm').modal('hide');
-        this.props.actions.clearFromValidation();
-    }
-    /*
-    * Component life circyle
-    * */
-    componentWillMount() {
-
-    }
-    editDeleteRender(instance, td, row, col, prop, value, cellProperties) {
-
-        if(!td.hasChildNodes()){
-            if(!value)
-                return
-            var self = this;
-
-            let pre_del =  document.createElement('a');
-            let pre_editBtn =  document.createElement('a');
-            let pre =  document.createElement('span');
-
-
-            ///EDIT BUTTTON
-            pre_editBtn.href = "#edit/"+value;
-            pre_editBtn.innerHTML = "<i class=\"material-icons\">&#xE254;</i>&nbsp;";
-
-            if(this.props.permission.u == true || this.props.ifUpdateDisabledCanEditColumns.length >=1)
-                pre.appendChild(pre_editBtn);
-
-            td.appendChild(pre)
-
-
-            // DELETE BUTTON
-            pre_del.addEventListener("click", function(){
-
-                self.handleDeleteItem(value)
-            });
-
-            pre_del.innerHTML = "<i class=\"material-icons\">&#xE872;</i>";
-            if(this.props.permission.d == true)
-                pre.appendChild(pre_del);
-
-
-
-
-            return td;
-        } else
-            return
-
-
-
-
-
-    }
-
-
-
-    componentDidMount() {
-        this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
-
-
-
-
-    }
-    componentDidUpdate(prevProps) {
-
-        if(prevProps.permission.r == false && this.props.permission.r == true){
-            this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
-        }
-        if(this.props.showInlineForm === true){
-            //this.setUpHandsonTable()
-
-        }
-
     }
 
     render() {
@@ -572,7 +629,7 @@ class GridContainer extends Component {
                         handlerSearch={this.handleSearch.bind(this)}
                         showModal={this.showModal.bind(this)}
                         handlerReload={this.callPageDatas.bind(this, this.props.currentPage, this.props.pageLimit, this.props.searchValue)}
-                        exportPDF={this.exportPDF.bind(this)}
+
                         exportEXCEL={this.exportEXCEL.bind(this)}
                         permission={permission}
                         gridHeader={gridHeader}
@@ -607,8 +664,7 @@ GridContainer.defaultProps = {
 
 }
 GridContainer.propTypes = {
-    //setup: PropTypes.object.isRequired,
-    //listData: PropTypes.object.isRequired,
+
 }
 
 function mapStateToProps(state) {

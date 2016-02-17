@@ -10,7 +10,7 @@ import { connect } from "react-redux"
 import Header from "../../../components/grid/Header"
 import validation from "../../../components/form/validation/"
 
-import {fixRowHeigth} from '../../grid/fixed/HeaderColumn'
+//import {fixRowHeigth} from '../../grid/fixed/HeaderColumn'
 
 
 export default class ComboGrid extends Component {
