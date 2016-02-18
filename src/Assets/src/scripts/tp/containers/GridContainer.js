@@ -213,6 +213,7 @@ class GridContainer extends Component {
         return tp_handSonTable.getDataAtRow(row);
     }
     editDeleteRender(instance, td, row, col, prop, value, cellProperties) {
+
         while (td.firstChild) {
             td.removeChild(td.firstChild);
         }
@@ -270,7 +271,12 @@ class GridContainer extends Component {
 
         if(changes){
 
-            let colIndex = this.getColumnIndex(changes[0][1]);
+            let colIndex = 0;
+
+            if (changes[0][1] === parseInt(changes[0][1], 10)){
+                colIndex = changes[0][1]
+            }else
+            colIndex = this.getColumnIndex(changes[0][1]);
 
             let colType = this.props.gridHeader[colIndex].type
 
@@ -355,7 +361,7 @@ class GridContainer extends Component {
 
 
 
-            if(changes[0][1] != 'id') {
+            if(changes[0][1] != 'id' && colType != '--combobox' && colType != '--tag') {
 
 
                 let rowDatas = this.getData(changes[0][0]);
@@ -435,6 +441,31 @@ class GridContainer extends Component {
         //    return false;
 
     }
+    customDropdownRenderer(instance, td, row, col, prop, value, cellProperties) {
+
+        while (td.firstChild) {
+            td.removeChild(td.firstChild);
+        }
+
+        var selectedId;
+        var optionsList = cellProperties.chosenOptions.data;
+
+        var values = (value + "").split(",");
+        var value = [];
+        for (var index = 0; index < optionsList.length; index++) {
+            if (values.indexOf(optionsList[index].id + "") > -1) {
+                selectedId = optionsList[index].id;
+                value.push(optionsList[index].label);
+            }
+        }
+        value = value.join(", ");
+
+
+        let pre =  document.createElement('span');
+        pre.innerHTML = value
+        td.appendChild(pre)
+        return td;
+    }
 
     setUpHandsonTable(){
 
@@ -463,6 +494,45 @@ class GridContainer extends Component {
                             editor: 'text',
                             type: 'text',
                             validator: this.validationCaller.bind(this, header.validate),
+                            //allowInvalid: false
+                        }
+                        break;
+                    case "--combobox":
+
+                        gridColumn = {
+                            data: header.column,
+                            editor: "chosen",
+
+                            chosenOptions: {
+                                multiple: false,
+                                data: this.props.formData[header.column].data.data
+                            },
+                            validator: this.validationCaller.bind(this, header.validate),
+                            renderer: this.customDropdownRenderer.bind(this),
+                        }
+
+                        break;
+                    case "--tag":
+
+                        gridColumn = {
+                            data: header.column,
+                            editor: "chosen",
+
+                            chosenOptions: {
+                                multiple: true,
+                                data: this.props.formData[header.column].data.data
+                            },
+                            validator: this.validationCaller.bind(this, header.validate),
+                            renderer: this.customDropdownRenderer.bind(this),
+                        }
+
+                        break;
+                    case "--date":
+                        gridColumn ={
+                            data: header.column,
+                            type: 'date',
+                            validator: this.validationCaller.bind(this, header.validate),
+                            dateFormat: "YYYY.MM.DD"
                             //allowInvalid: false
                         }
 
@@ -743,7 +813,7 @@ function mapStateToProps(state) {
         setup: Grid.get('setup').toJS(),
         locales: Grid.get('setup').toJS().locales,
         defaultLocale: Grid.get('defaultLocale'),
-        formData: Form.get('formData'),
+        formData: Form.get('formData').toJS(),
         editID: Grid.get('editID'),
         showInlineForm: Grid.get('showInlineForm'),
         showGird: Grid.get('showGird'),

@@ -401,7 +401,10 @@ class Tp
 
         $FormData = [];
 
-        $FormData_pre = $this->get_data($this->form_input_control);
+        if($this->formType == 'inline')
+            $FormData_pre = $this->get_data($this->grid_output_control);
+        else
+            $FormData_pre = $this->get_data($this->form_input_control);
 
 
         $FormData = array_merge($FormData,$FormData_pre);

@@ -13,6 +13,7 @@
 
 //require('../vendor/autoNumberic')
 require('../vendor/handsontable-master/dist/handsontable.full.js')
+
 //formula
 //require('../vendor/handsontable-ruleJS-gh-pages/lib/RuleJS/lib/lodash/lodash.js')
 //    require('../vendor/handsontable-ruleJS-gh-pages/lib/RuleJS/lib/underscore.string/underscore.string.js')
