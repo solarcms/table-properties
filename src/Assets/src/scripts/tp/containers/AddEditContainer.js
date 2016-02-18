@@ -5,11 +5,18 @@ import * as DataActions from '../actions/form'
 import Header from '../components/grid/Header'
 import Form from "../components/form/Form"
 import validation from "../components/form/validation/"
-import {save, edit, update, getCascadeChild} from "../api/"
+import validationGrid from "../components/grid/validation/"
+import {save, edit, update, getCascadeChild, callMultiItems, deleteItem} from "../api/"
 import Window from "../components/window/"
 import SubItemsContainer from "./formContainers/SubItemsContainer"
 
-
+/*for handson table*/
+var tp_handSonTable = null
+var exportPlugin = null
+var tp_dataSchema = {};
+var maxRows = 0;
+var listData = []
+var save_first_id_column_ = 0
 class AddEditContainer extends Component {
 
     checkValidate() {
@@ -58,7 +65,52 @@ class AddEditContainer extends Component {
         return foundError;
     }
 
+    getDataTpMultiItem(){
+        let multiItems = [];
+        let multiItems_pre = tp_handSonTable.getData();
+
+        for (var i = 0; i < multiItems_pre.length; ++i) {
+
+            if(tp_handSonTable.isEmptyRow(i) === false){
+                let row = {}
+                multiItems_pre[i].map((Item_pre, index)=>{
+
+
+
+                    if(index >= this.props.multi_items_form_input_control.length){
+                        row['id'] = Item_pre;
+                    } else
+                    {
+
+                        row[this.props.multi_items_form_input_control[index].column] = Item_pre
+                    }
+
+                })
+
+                multiItems.push(row)
+
+
+            }
+
+
+        }
+
+        return multiItems;
+
+    }
+
     saveForm() {
+        let multiItems = [];
+        if(this.props.multi_items_form_input_control.length >=1 ){
+            multiItems = this.getDataTpMultiItem()
+            if(multiItems.length <= 0){
+                alert('Бүх хэсгийг бүрэн бөглөнө үү')
+                return false;
+            }
+
+        }
+
+
         if (this.props.permission.c !== true)
             return false;
         const FD = this.props.formControls;
@@ -66,7 +118,7 @@ class AddEditContainer extends Component {
         let foundError = this.checkValidate();
 
         if (foundError === false)
-            save(FD, this.props.translateFormControls, this.props.subItems).done((data)=> {
+            save(FD, this.props.translateFormControls, this.props.subItems, multiItems).done((data)=> {
                 if (data == 'success') {
 
                     window.location.replace('#/');
@@ -78,6 +130,18 @@ class AddEditContainer extends Component {
     }
 
     updateForm() {
+        let multiItems = [];
+        if(this.props.multi_items_form_input_control.length >=1 ){
+            multiItems = this.getDataTpMultiItem()
+            if(multiItems.length <= 0){
+                alert('Бүх хэсгийг бүрэн бөглөнө үү')
+                return false;
+            }
+
+        }
+
+
+
         if (this.props.ifUpdateDisabledCanEditColumns.length <= 0)
             if (this.props.permission.u !== true)
                 return false;
@@ -88,7 +152,7 @@ class AddEditContainer extends Component {
         let foundError = this.checkValidate();
 
         if (foundError === false)
-            update(FD, this.props.translateFormControls, this.props.params.id, this.props.subItems).done((data)=> {
+            update(FD, this.props.translateFormControls, this.props.params.id, this.props.subItems, multiItems).done((data)=> {
 
                 if (data == 'success' || 'none') {
                     if (this.props.permission.r === false && this.props.permission.c === false && this.props.permission.d === false && this.props.setup.update_row !== null) {
@@ -281,6 +345,15 @@ class AddEditContainer extends Component {
 
 
                     })
+
+
+                    if(data[0][this.props.save_first_id_column] === null){
+                        save_first_id_column_ = data[0][this.props.identity_name]
+                    } else {
+                        save_first_id_column_ = data[0][this.props.save_first_id_column]
+                    }
+
+                    this.callMultiItemsDatas(save_first_id_column_)
                 }
 
                 else
@@ -305,6 +378,508 @@ class AddEditContainer extends Component {
         this.props.actions.clearFromValidation();
         this.props.actions.clearTranslationFromValidation();
         this.props.actions.setShowAddEditForm(false)
+    }
+
+    componentDidMount(){
+        if(this.props.multi_items_form_input_control.length >=1 )
+         this.setUpHandsonTable();
+
+
+    }
+
+    /* muli items form */
+    getColumnIndex(column){
+        //return _.findIndex(this.props.gridHeader, { column: column })
+        return this.props.multi_items_form_input_control.findIndex(x => x.column == column );
+    }
+    getColumnValdation(column){
+        //return _.findIndex(this.props.gridHeader, { column: column })
+        if(this.props.multi_items_form_input_control[column].validate)
+            return this.props.multi_items_form_input_control[column].validate;
+        else
+            return ''
+    }
+    getColumnType(column){
+
+
+        return this.props.gridmulti_items_form_input_controlHeader[column].type;
+
+    }
+    callMultiItemsDatas(save_first_id_column) {
+
+
+
+        if(this.props.permission.u !== true)
+            return false;
+
+        callMultiItems(save_first_id_column).then((data)=> {
+            if(data.length <= 0)
+                window.location.replace('#/');
+
+            listData = data;
+            this.setUpHandsonTable()
+        });
+    }
+    handleDeleteItem(id) {
+
+        if(id == -1){
+            this.callMultiItemsDatas(save_first_id_column_)
+
+        } else if(this.props.permission.d == true) {
+
+            if (!confirm('Delete this record?')) {
+                return;
+            }
+            else{
+                deleteItem(id).then((data)=> {
+
+
+                    if (data == 'success')
+                        this.callMultiItemsDatas(save_first_id_column_)
+                    else
+                        alert("Please try agian")
+                });
+            }
+
+
+        }
+    }
+    editDeleteRender(instance, td, row, col, prop, value, cellProperties) {
+
+        while (td.firstChild) {
+            td.removeChild(td.firstChild);
+        }
+        var self = this;
+
+        let pre_del =  document.createElement('a');
+        let pre_editBtn =  document.createElement('a');
+        let pre =  document.createElement('span');
+
+        td.appendChild(pre)
+
+        //if(this.props.formType != 'inline'){
+        //    ///EDIT BUTTTON
+        //    pre_editBtn.href = "#edit/"+value;
+        //    pre_editBtn.innerHTML = "<i class=\"material-icons\">&#xE254;</i>&nbsp;";
+        //
+        //    if(this.props.permission.u == true || this.props.ifUpdateDisabledCanEditColumns.length >=1)
+        //        pre.appendChild(pre_editBtn);
+        //}
+        //
+        //
+        //
+
+
+
+        // DELETE BUTTON
+        pre_del.addEventListener("click", function(){
+
+            self.handleDeleteItem(value)
+
+        });
+
+
+
+        pre_del.innerHTML = "<i class=\"material-icons\">&#xE872;</i> ";
+        if(this.props.permission.d == true)
+            pre.appendChild(pre_del);
+
+
+
+
+        return td;
+
+
+
+
+
+
+
+
+
+
+    }
+
+
+    getData(row){
+        return tp_handSonTable.getDataAtRow(row);
+    }
+    afterChange(changes, source, isValid){
+
+        if(changes && changes[0][1] != 'id'){
+
+
+
+            let colIndex = 0;
+
+            if (changes[0][1] === parseInt(changes[0][1], 10)){
+                colIndex = changes[0][1]
+            }else
+                colIndex = this.getColumnIndex(changes[0][1]);
+
+            let colType = this.props.multi_items_form_input_control[colIndex].type
+
+            let row = changes[0][0];
+
+            if(colType != '--auto-calculate'){
+
+                ///auto-calculate
+                let calculate_columns = []
+
+                this.props.multi_items_form_input_control.map((fcontrol, findex)=>{
+                    if(fcontrol.type == '--auto-calculate'){
+
+
+                        let calculate_type = fcontrol.options.calculate_type;
+                        let calculate_column = fcontrol.column;
+
+                        let columns = [];
+
+                        fcontrol.options.calculate_columns.map((calculate_column, cal_index)=>{
+
+                            let colIndex_ = this.getColumnIndex(calculate_column)
+
+
+
+                            columns.push(
+                                {column: calculate_column, value: tp_handSonTable.getDataAtCell(row, colIndex_)}
+                            );
+                        })
+
+                        calculate_columns.push(
+                            {
+                                column:calculate_column,
+                                type:calculate_type,
+                                columns:columns,
+                                dataIndex:findex
+                            }
+                        )
+                    }
+                })
+
+                calculate_columns.map((calculate_column, index)=>{
+                    let checkAllValue = true;
+                    calculate_column.columns.map((cal_column)=>{
+                        if(cal_column.value === null)
+                            checkAllValue = false
+                    })
+                    let calculate_result = null;
+                    if(checkAllValue === true){
+                        if(calculate_column.type == '--multiply'){
+                            calculate_column.columns.map((cal_column, calIndex)=>{
+                                if(calIndex == 0)
+                                    calculate_result = cal_column.value;
+                                else
+                                    calculate_result = calculate_result * cal_column.value
+                            })
+                        }else if((calculate_column.type == '--sum')){
+                            calculate_column.columns.map((cal_column, calIndex)=>{
+                                if(calIndex == 0)
+                                    calculate_result = cal_column.value;
+                                else
+                                    calculate_result = calculate_result + cal_column.value
+                            })
+                        } else if(calculate_column.type == '--average'){
+                            calculate_column.columns.map((cal_column, calIndex)=>{
+                                if(calIndex == 0)
+                                    calculate_result = cal_column.value;
+                                else
+                                    calculate_result = calculate_result + cal_column.value
+                            })
+                            calculate_result = calculate_result/calculate_column.columns.length;
+                        }
+                        if(calculate_result !== null){
+
+                            tp_handSonTable.setDataAtCell(row, calculate_column.dataIndex, calculate_result);
+                        }
+                    }
+                });
+            }
+
+
+
+
+
+            if(changes[0][1] != 'id' && colType != '--combobox' && colType != '--tag') {
+
+
+                let rowDatas = this.getData(changes[0][0]);
+
+                let error_not_found = true;
+
+                let data = {};
+
+                let edit_id = null;
+                rowDatas.map((rowData, index)=> {
+                    if (index <= this.props.multi_items_form_input_control.length - 1) {
+
+                        let col = index;
+
+                        tp_handSonTable.getCellValidator(row, col)(rowData, function (isValid) {
+
+                            if (!isValid)
+                                error_not_found = false
+                        });
+
+                        data[this.props.multi_items_form_input_control[index].column] = rowData;
+                    }
+                    if (index == this.props.multi_items_form_input_control.length) {
+
+                        edit_id = rowData;
+                    }
+                })
+
+
+                if (error_not_found && edit_id === -1) {
+
+                    //inlineSave(data).then((data)=> {
+                    //
+                    //    this.callMultiItemsDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
+                    //
+                    //    this.removeInlineForm()
+                    //
+                    //});
+
+                 //   console.log(this.callMultiItemsDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue))
+
+                }
+
+                if (error_not_found) {
+
+                  //  console.log(this.callMultiItemsDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue))
+                    //inlineSaveUpdate(edit_id, data).then((data)=> {
+                    //    this.removeInlineForm()
+                    //});
+
+                }
+
+
+            }
+
+        }
+
+
+
+
+    }
+
+
+    validationCaller(validateData, value, callback){
+
+        return validationGrid(validateData, value, callback);
+    }
+    afterValidater(isValid, value, row, prop, source){
+
+        //let ColIndex = this.getColumnIndex(prop);
+        //if(isValid)
+        //    return true;
+        //else
+        //    return false;
+
+    }
+    customDropdownRenderer(instance, td, row, col, prop, value, cellProperties) {
+
+        while (td.firstChild) {
+            td.removeChild(td.firstChild);
+        }
+
+        var selectedId;
+        var optionsList = cellProperties.chosenOptions.data;
+
+        var values = (value + "").split(",");
+        var value = [];
+        for (var index = 0; index < optionsList.length; index++) {
+            if (values.indexOf(optionsList[index].id + "") > -1) {
+                selectedId = optionsList[index].id;
+                value.push(optionsList[index].label);
+            }
+        }
+        value = value.join(", ");
+
+
+        let pre =  document.createElement('span');
+        pre.innerHTML = value
+        td.appendChild(pre)
+        return td;
+    }
+
+    setUpHandsonTable(){
+
+        const { multi_items_form_input_control} = this.props;
+
+        const gridHeader = multi_items_form_input_control;
+
+        if(tp_handSonTable !== null){
+            tp_handSonTable.destroy()
+        }
+
+
+        let tp_colHeader = [];
+
+        let tp_columns = [];
+        let fixedColumnsLeft = 0;
+
+        gridHeader.map((header, h_index)=>{
+            if(header.hidden){
+
+            } else {
+                tp_colHeader.push(header.title)
+                let gridColumn = {}
+                switch (header.type) {
+                    case "--text":
+                        gridColumn ={
+                            data: header.column,
+                            editor: 'text',
+                            type: 'text',
+                            validator: this.validationCaller.bind(this, header.validate),
+                            //allowInvalid: false
+                        }
+                        break;
+                    case "--combobox":
+
+                        gridColumn = {
+                            data: header.column,
+                            editor: "chosen",
+
+                            chosenOptions: {
+                                multiple: false,
+                                data: this.props.formData.toJS()[header.column].data.data
+                            },
+                            validator: this.validationCaller.bind(this, header.validate),
+                            renderer: this.customDropdownRenderer.bind(this),
+                        }
+
+                        break;
+                    case "--tag":
+
+                        gridColumn = {
+                            data: header.column,
+                            editor: "chosen",
+
+                            chosenOptions: {
+                                multiple: true,
+                                data: this.props.formData.toJS()[header.column].data.data
+                            },
+                            validator: this.validationCaller.bind(this, header.validate),
+                            renderer: this.customDropdownRenderer.bind(this),
+                        }
+
+                        break;
+                    case "--date":
+                        gridColumn ={
+                            data: header.column,
+                            type: 'date',
+                            validator: this.validationCaller.bind(this, header.validate),
+                            dateFormat: "YYYY.MM.DD"
+                            //allowInvalid: false
+                        }
+
+                        break;
+                    case "--number":
+                        gridColumn =
+                        {
+                            data: header.column,
+                            type: 'numeric',
+                            editor: 'numeric',
+                            validator: this.validationCaller.bind(this, header.validate),
+                        }
+
+                        break;
+                    case "--money":
+                        gridColumn =
+                        {
+                            data: header.column,
+                            type: 'numeric',
+                            format: '0,0.00',
+                            validator: this.validationCaller.bind(this, header.validate),
+                        }
+                        break;
+                    case "--auto-calculate":
+                        gridColumn =
+                        {
+                            data: header.column,
+                            type: 'numeric',
+                            format: '0,0.00',
+                            readOnly:true,
+                            validator: this.validationCaller.bind(this, header.validate),
+                        }
+                        break;
+                    default:
+
+                        gridColumn ={
+                            data: header.column,
+                        }
+
+                }
+
+                tp_columns.push(gridColumn);
+
+
+            }
+
+            if(header.fixed)
+                fixedColumnsLeft++;
+
+            tp_dataSchema[header.column] = null;
+        })
+
+        tp_dataSchema['id'] = -1;
+
+        tp_colHeader.push('Засах')
+        tp_columns.push({
+            data: this.props.identity_name,
+            width: 40,
+
+            renderer: this.editDeleteRender.bind(this),
+            editor: false
+        })
+
+
+        let gridData = listData;
+
+        //inline form add
+        let trimRows = null
+        let readOnly = false
+
+        if(this.props.formType == 'inline' && this.props.showInlineForm === false)
+            trimRows =[0]
+
+        maxRows = gridData.length;
+
+        var self = this;
+        var container = document.getElementById('multi_items');
+
+        //add empty 3 items
+        //listData.push(tp_dataSchema);
+
+        tp_handSonTable = new Handsontable(container, {
+            stretchH: 'all',
+            data: gridData,
+            rowHeaders: true,
+            //formulas: true,
+            colHeaders: tp_colHeader,
+            columns: tp_columns,
+            manualColumnResize: true,
+            manualRowResize: true,
+            fixedColumnsLeft: fixedColumnsLeft,
+            readOnly: readOnly,
+            columnSorting: true,
+            sortIndicator: true,
+            afterChange:this.afterChange.bind(this),
+            height: 320,
+            minSpareRows:1,
+            startRows: 1,
+        });
+
+        exportPlugin = tp_handSonTable.getPlugin('exportFile');
+        exportPlugin.exportAsString('csv', {
+            exportHiddenRows: true, // default false
+            exportHiddenColumns: true, // default false
+            columnHeaders: true, // default false
+            rowHeaders: true, // default false
+            columnDelimiter: ';', // default ','
+
+        });
     }
 
     render() {
@@ -365,6 +940,8 @@ class AddEditContainer extends Component {
                                showAddEditForm={showAddEditForm}/> : null
 
 
+
+
         return (
             <div className="">
                 <Header pageName={setup.page_name} gridHeader={this.props.gridHeader} icon="fa fa-chevron-left" link="#/" type="addEdit"/>
@@ -378,6 +955,9 @@ class AddEditContainer extends Component {
                                 {formSubItmes}
                             </div>
                             <hr/>
+                            <div id="multi_items">
+
+                            </div>
                             <div>
                                 {this.props.params.id
                                     ? <button type="button" className="btn btn-fw btn-success p-h-lg"
@@ -428,6 +1008,9 @@ function mapStateToProps(state) {
         defaultLocale: Grid.get('defaultLocale'),
         formControls: Form.get('form_input_control'),
         translateFormControls: Form.get('translateFormControls'),
+        identity_name: Form.get('identity_name'),
+        save_first_id_column: Form.get('save_first_id_column'),
+        multi_items_form_input_control: Form.get('multi_items_form_input_control').toJS(),
         showAddEditForm: Form.get('showAddEditForm'),
         focusIndex: Form.get('focusIndex'),
         formData: Form.get('formData'),

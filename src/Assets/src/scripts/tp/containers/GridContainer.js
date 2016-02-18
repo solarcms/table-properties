@@ -11,7 +11,7 @@ import Pagination from "../components/grid/Paginator"
 
 import Window from "../components/window/"
 
-import validation from "../components/grid/validation/"
+import validationGrid from "../components/grid/validation/"
 
 /*for handson table*/
 var tp_handSonTable = null
@@ -44,7 +44,7 @@ class GridContainer extends Component {
 
     }
     componentWillUnmount() {
-        tp_handSonTable.destroy()
+        //tp_handSonTable.destroy()
     }
 
 
@@ -172,6 +172,8 @@ class GridContainer extends Component {
 
         if(id == -1){
             this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
+
+            this.removeInlineForm()
         } else if(this.props.permission.d == true) {
 
             if (!confirm('Delete this record?')) {
@@ -180,6 +182,7 @@ class GridContainer extends Component {
             else{
                 deleteItem(id).then((data)=> {
 
+                    this.removeInlineForm()
                     if (data == 'success')
                         this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
                     else
@@ -430,7 +433,7 @@ class GridContainer extends Component {
     }
     validationCaller(validateData, value, callback){
 
-        return validation(validateData, value, callback);
+        return validationGrid(validateData, value, callback);
     }
     afterValidater(isValid, value, row, prop, source){
 

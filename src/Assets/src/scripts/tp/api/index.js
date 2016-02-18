@@ -24,8 +24,11 @@ export function getComboList(page, data) {
 export function getFormData() {
     return postResuest(`get_form_datas`, {});
 }
+export function callMultiItems(save_first_id_column) {
+    return postResuest(`call-multi-items`, {save_first_id_column:save_first_id_column});
+}
 
-export function save(formData, translateFormControls, subItems) {
+export function save(formData, translateFormControls, subItems, multiItems) {
 
     let data = {};
     formData.map((fData) => {
@@ -88,7 +91,7 @@ export function save(formData, translateFormControls, subItems) {
         })
     }
 
-    return postResuest(`insert`, {data: data, translateData: translateData, subItems: realSubItems});
+    return postResuest(`insert`, {data: data, translateData: translateData, subItems: realSubItems, multiItems:multiItems});
 }
 
 export function inlineSave(data){
@@ -120,7 +123,7 @@ export function editComboGrid(column, id) {
     return postResuest(`edit-combo-grid`, {column: column, id: id});
 }
 
-export function update(formData, translateFormControls, id, subItems) {
+export function update(formData, translateFormControls, id, subItems, multiItems) {
 
     let data = {};
     formData.map((fData) => {
@@ -180,7 +183,7 @@ export function update(formData, translateFormControls, id, subItems) {
         })
     }
 
-    return postResuest(`update`, {id: id, translateData: translateData, data: data, subItems: realSubItems});
+    return postResuest(`update`, {id: id, translateData: translateData, data: data, subItems: realSubItems, multiItems:multiItems});
 }
 export function updateComboGrid(column, formData, id) {
 

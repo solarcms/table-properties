@@ -82,8 +82,13 @@ class Tp
     public $cancel_button_text = 'Болих';
     public $delete_button_text = 'Устгах';
 
+    // generate locale's files
     public $generateLocaleFile = false;
 
+
+    //multi items
+    public $multi_items_form_input_control = [];
+    public $save_first_id_column = null;
 
 
     function __construct(){
@@ -141,6 +146,7 @@ class Tp
             case "upload-image": return $this->uploadImage(); break;
             case "delete-file": return $this->deleteFile(); break;
             case "get-extra-images": return $this->getExtraImages(); break;
+            case "call-multi-items": return $this->callMultImtems(); break;
 
             default:              return $this->index($this->viewName);
         }
@@ -188,6 +194,8 @@ class Tp
             'locales'=>$locales,
             'form_input_control'=>$this->form_input_control,
             'translate_form_input_control'=>$this->translate_form_input_control,
+            'save_first_id_column'=>$this->save_first_id_column,
+            'multi_items_form_input_control'=>$this->multi_items_form_input_control,
             'grid_output_control'=>$this->grid_output_control,
             'page_name'=>$this->page_name,
             'pagination_position'=>$this->pagination_position,
@@ -199,6 +207,7 @@ class Tp
             'form_datas'=>$this->get_form_datas(),
             'default_locale'=>Session::get('locale'),
             'update_row'=>$this->update_row,
+            'identity_name'=>$this->identity_name,
         ];
 
         ////
@@ -265,6 +274,37 @@ class Tp
                 }
             }
         }
+
+        if(count($this->multi_items_form_input_control) >= 1){
+
+            foreach($this->multi_items_form_input_control as $multiFormControl) {
+
+                if($multiFormControl['type'] == '--combogrid'
+                    || $multiFormControl['type'] == '--combobox'
+                    || $multiFormControl['type'] == '--tag'
+                    || $multiFormControl['type'] == '--combobox-addable'
+                    || $multiFormControl['type'] == '--combobox-hidden'){
+
+                    if(isset($multiFormControl['save']) && $multiFormControl['save'] == false){
+
+                    } {
+                        $options = $multiFormControl['options'];
+
+                        if(isset($options['join']) && $options['join'] == false){
+
+                        } else {
+                            $table_data->join($options['table'], "$this->table." . $multiFormControl['column'], '=', $options['table']. "." .$options['valueField']);
+                        }
+
+
+
+
+                    }
+
+                }
+            }
+        }
+
 
         if($searchValue != '') {
             $loop = 0;
@@ -409,6 +449,16 @@ class Tp
 
         $FormData = array_merge($FormData,$FormData_pre);
 
+
+
+        if(count($this->multi_items_form_input_control) >= 1){
+
+            $FormData_pre_multi = $this->get_data($this->multi_items_form_input_control);
+
+            $FormData = array_merge($FormData,$FormData_pre_multi);
+        }
+
+
         if(count($this->subItems) >= 1){
             foreach($this->subItems as $subItem){
 
@@ -440,6 +490,9 @@ class Tp
         $table_data = DB::table($this->table)->where($this->table.".".$this->identity_name, '=', $id);
         $table_data->select($this->table.".".$this->identity_name);
 
+        if(count($this->multi_items_form_input_control) >=1){
+            $table_data->addSelect($this->table.".".$this->save_first_id_column);
+        }
 
 
         $options = null;
@@ -498,19 +551,22 @@ class Tp
 
     public function insert(){
 
+
+
         if($this->permission['c'] != true)
             return Response::json('permission denied', 400);
 
 
         $formData = Request::input('data');
         $translateData = Request::input('translateData');
+        $multiItems = Request::input('multiItems');
 
 
 
 
-        if(count($this->form_input_control) <= 0){
-            $this->setup();
-        }
+//        if(count($this->form_input_control) <= 0){
+//            $this->setup();
+//        }
 
 //        $insertQuery = ["$this->identity_name"=>null];
         foreach($this->form_input_control as $formControl){
@@ -609,13 +665,79 @@ class Tp
         if($this->updated_at != null)
             $insertQuery[$this->updated_at] =  \Carbon\Carbon::now();
 
+        $response = null;
+        //multi items
+        if(!empty($this->multi_items_form_input_control)){
+
+            $checkFirst = 0;
+            $insertedId = null;
+
+            foreach($multiItems as $multiItem){
 
 
-        $saved = DB::table($this->table)->insert($insertQuery);
+
+                foreach($this->multi_items_form_input_control as $formControl){
+
+                    if($formControl['type'] == '--group'){
+                        foreach($formControl['controls'] as $subformControl){
+                            if($subformControl['type'] == '--group'){
+
+                            }else{
+                                if($subformControl['type']=='--checkbox'){
+                                    $checkBoxValue = $multiItem[$subformControl['column']];
+                                    if($checkBoxValue == 1)
+                                        $checkBoxValue = 1;
+                                    else
+                                        $checkBoxValue = 0;
+                                    $insertQuery[$subformControl['column']] = $checkBoxValue;
+
+                                } else
+                                    $insertQuery[$subformControl['column']] = $multiItem[$subformControl['column']];
+                            }
 
 
-        $insertedId = DB::getPdo()->lastInsertId();
+                        }
+                    }else{
+                        if($formControl['type']=='--checkbox'){
+                            $checkBoxValue = $multiItem[$formControl['column']];
+                            if($checkBoxValue == 1)
+                                $checkBoxValue = 1;
+                            else
+                                $checkBoxValue = 0;
+                            $insertQuery[$formControl['column']] = $checkBoxValue;
 
+                        } elseif($formControl['type']=='--password'){
+                            $insertQuery[$formControl['column']] = bcrypt($multiItem[$formControl['column']]);
+                        }else
+                            $insertQuery[$formControl['column']] = $multiItem[$formControl['column']];
+                    }
+
+                }
+
+                if($checkFirst == 0){
+                    $saved = DB::table($this->table)->insert($insertQuery);
+                    $insertedId = DB::getPdo()->lastInsertId();
+
+                    $firstItem[$this->save_first_id_column] = $insertedId;
+
+                    DB::table($this->table)->where($this->identity_name, '=', $insertedId)->update($firstItem);
+
+                } else {
+                    $insertQuery[$this->save_first_id_column] = $insertedId;
+                    $saved = DB::table($this->table)->insert($insertQuery);
+                }
+
+                $checkFirst++;
+            }
+
+            $saved = true;
+
+        } else {
+
+            $saved = DB::table($this->table)->insert($insertQuery);
+            $insertedId = DB::getPdo()->lastInsertId();
+
+        }
 
 
 
@@ -626,7 +748,7 @@ class Tp
             $this->generateLocale();
         }
 
-        $response = null;
+
         if($saved){
             $response = 'success';
         } else {
@@ -645,6 +767,7 @@ class Tp
         $formData = Request::input('data');
         $id = Request::input('id');
         $translateData = Request::input('translateData');
+        $multiItems = Request::input('multiItems');
 
         if(count($this->form_input_control) <= 0){
             $this->setup();
@@ -791,8 +914,76 @@ class Tp
             $insertQuery[$this->updated_at] =  \Carbon\Carbon::now();
 
 
+        $response = null;
+        //multi items
+        if(!empty($this->multi_items_form_input_control)){
+            $checkFirst = 0;
+            $insertedId = null;
 
-        $saved = DB::table($this->table)->where("$this->identity_name", '=', $id)->update($insertQuery);
+            foreach($multiItems as $multiItem){
+
+                foreach($this->multi_items_form_input_control as $formControl){
+
+                    if($formControl['type'] == '--group'){
+                        foreach($formControl['controls'] as $subformControl){
+                            if($subformControl['type'] == '--group'){
+
+                            }else{
+                                if($subformControl['type']=='--checkbox'){
+                                    $checkBoxValue = $multiItem[$subformControl['column']];
+                                    if($checkBoxValue == 1)
+                                        $checkBoxValue = 1;
+                                    else
+                                        $checkBoxValue = 0;
+                                    $insertQuery[$subformControl['column']] = $checkBoxValue;
+
+                                } else
+                                    $insertQuery[$subformControl['column']] = $multiItem[$subformControl['column']];
+                            }
+
+                        }
+                    } else {
+                        if($formControl['type']=='--checkbox'){
+                            $checkBoxValue = $multiItem[$formControl['column']];
+                            if($checkBoxValue == 1)
+                                $checkBoxValue = 1;
+                            else
+                                $checkBoxValue = 0;
+                            $insertQuery[$formControl['column']] = $checkBoxValue;
+
+                        } elseif($formControl['type']=='--password'){
+                            $insertQuery[$formControl['column']] = bcrypt($multiItem[$formControl['column']]);
+                        }else
+                            $insertQuery[$formControl['column']] = $multiItem[$formControl['column']];
+                    }
+
+                }
+
+
+
+                if(!$multiItem[$this->identity_name]){
+
+                    $insertQuery[$this->save_first_id_column] = $id;
+                    $saved = DB::table($this->table)->insert($insertQuery);
+
+
+                } else {
+
+                    $insertQuery[$this->save_first_id_column] = $id;
+
+                    $saved = DB::table($this->table)->where("$this->identity_name", '=', $multiItem[$this->identity_name])->update($insertQuery);
+                }
+
+                $checkFirst++;
+            }
+
+            $saved = true;
+        } else {
+
+            $saved = DB::table($this->table)->where("$this->identity_name", '=', $id)->update($insertQuery);
+        }
+
+
 
 
 
@@ -804,7 +995,7 @@ class Tp
         }
 
 
-        $response = null;
+
         if($saved){
             $response = 'success';
         } else {
@@ -1730,5 +1921,74 @@ class Tp
             $file = $i18Path . strtolower($key) . ".json";
             file_put_contents($file, json_encode($value, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE));
         }
+    }
+    public function callMultImtems()
+    {
+
+        if(empty($this->ifUpdateDisabledCanEditColumns))
+            if($this->permission['u'] != true)
+                return Response::json('permission denied', 400);
+
+        $save_first_id_column = Request::input('save_first_id_column');
+
+        /// saijruulah
+
+        $table_data = DB::table($this->table)->where($this->table.".".$this->save_first_id_column, '=', $save_first_id_column);
+        $table_data->select($this->table.".".$this->identity_name);
+
+        if(count($this->multi_items_form_input_control) >=1){
+            $table_data->addSelect($this->table.".".$this->save_first_id_column);
+        }
+
+
+        $options = null;
+        foreach($this->multi_items_form_input_control as $formControl){
+
+            if(isset($formControl['column']))
+                $table_data->addSelect("$this->table." . $formControl['column']);
+
+//            if($formControl['type'] == '--combogrid' || $formControl['type'] == '--combobox' || $formControl['type'] == '--tag' || $formControl['type'] == '--combobox-addable' || $formControl['type'] == '--combobox-hidden'){
+//
+//                $options = $formControl['options'];
+//
+//                $table_data->join($options['table'], "$this->table." . $formControl['column'], '=', $options['table']. "." .$options['valueField']);
+//
+//
+//            }
+
+            if($formControl['type'] == '--group'){
+                foreach($formControl['controls'] as $subformControl){
+
+                    if(isset($subformControl['column']))
+                        $table_data->addSelect("$this->table." . $subformControl['column']);
+
+//                    if($subformControl['type'] == '--combogrid' || $subformControl['type'] == '--combobox' || $subformControl['type'] == '--tag' || $subformControl['type'] == '--combobox-addable' || $subformControl['type'] == '--combobox-hidden'){
+//
+//                        if(isset($subformControl['save']) && $subformControl['save'] == false){
+//
+//                        } {
+//
+//                            $suboptions = $subformControl['options'];
+//
+//                            $table_data->join($suboptions['table'], "$this->table." . $subformControl['column'], '=', $suboptions['table']. "." .$suboptions['valueField']);
+//                        }
+//
+//                    }
+
+                }
+            }
+
+        }
+
+
+
+        foreach($this->translate_form_input_control as $t_f_c){
+            $table_data->addSelect("$this->table." . $t_f_c['column']);
+        }
+
+
+
+
+        return  $table_data->get();
     }
 }

@@ -91,7 +91,7 @@ export function unique(rule, value) {
 
 }
 
-export default function validation(validationData, value, callback){
+export default function validationGrid(validationData, value, callback){
 
 
     let rules = validationData.split('|');

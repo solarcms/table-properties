@@ -8,6 +8,9 @@ const initialState = {
     setup: {},
     form_input_control:{},
     translateFormControls:{},
+    multi_items_form_input_control:{},
+    save_first_id_column:null,
+    identity_name:null,
     formData:{},
     showAddEditForm:false,
     focusIndex:0,
@@ -36,9 +39,14 @@ export default createReducer(initialState, {
         const form_input_control = Immutable.fromJS(setupData.form_input_control);
         const setUp = Immutable.fromJS(setupData);
 
+        const multi_items_form_input_control = Immutable.fromJS(setupData.multi_items_form_input_control)
+
+        state = state.set('multi_items_form_input_control', multi_items_form_input_control);
         state = state.set('translateFormControls', translateFormControls_im);
         state = state.set('setup', setUp);
         state = state.set('form_input_control', form_input_control);
+        state = state.set('save_first_id_column', setupData.save_first_id_column);
+        state = state.set('identity_name', setupData.identity_name);
 
         return state;
     },
