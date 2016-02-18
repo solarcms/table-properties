@@ -170,7 +170,9 @@ class GridContainer extends Component {
     }
     handleDeleteItem(id) {
 
-        if(this.props.permission.d == true) {
+        if(id == -1){
+            this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
+        } else if(this.props.permission.d == true) {
 
             if (!confirm('Delete this record?')) {
                 return;
@@ -211,56 +213,53 @@ class GridContainer extends Component {
         return tp_handSonTable.getDataAtRow(row);
     }
     editDeleteRender(instance, td, row, col, prop, value, cellProperties) {
+        while (td.firstChild) {
+            td.removeChild(td.firstChild);
+        }
+                    var self = this;
 
+                    let pre_del =  document.createElement('a');
+                    let pre_editBtn =  document.createElement('a');
+                    let pre =  document.createElement('span');
 
+                    td.appendChild(pre)
 
-        if(!td.hasChildNodes()){
+                    if(this.props.formType != 'inline'){
+                        ///EDIT BUTTTON
+                        pre_editBtn.href = "#edit/"+value;
+                        pre_editBtn.innerHTML = "<i class=\"material-icons\">&#xE254;</i>&nbsp;";
 
-            if(value != -1){
-                var self = this;
-
-                let pre_del =  document.createElement('a');
-                let pre_editBtn =  document.createElement('a');
-                let pre =  document.createElement('span');
-
-                td.appendChild(pre)
-
-                if(this.props.formType != 'inline'){
-                    ///EDIT BUTTTON
-                    pre_editBtn.href = "#edit/"+value;
-                    pre_editBtn.innerHTML = "<i class=\"material-icons\">&#xE254;</i>&nbsp;";
-
-                    if(this.props.permission.u == true || this.props.ifUpdateDisabledCanEditColumns.length >=1)
-                        pre.appendChild(pre_editBtn);
-                }
+                        if(this.props.permission.u == true || this.props.ifUpdateDisabledCanEditColumns.length >=1)
+                            pre.appendChild(pre_editBtn);
+                    }
 
 
 
 
 
 
-                // DELETE BUTTON
-                pre_del.addEventListener("click", function(){
+                    // DELETE BUTTON
+                    pre_del.addEventListener("click", function(){
 
-                    self.handleDeleteItem(value)
+                        self.handleDeleteItem(value)
 
-                });
-
-
-
-                pre_del.innerHTML = "<i class=\"material-icons\">&#xE872;</i> "+value;
-                if(this.props.permission.d == true)
-                    pre.appendChild(pre_del);
+                    });
 
 
 
+                    pre_del.innerHTML = "<i class=\"material-icons\">&#xE872;</i> ";
+                    if(this.props.permission.d == true)
+                        pre.appendChild(pre_del);
 
-                return td;
-            }
 
 
-        } else
-            return
+
+                    return td;
+
+
+
+
+
 
 
 
@@ -269,26 +268,95 @@ class GridContainer extends Component {
     }
     afterChange(changes, source, isValid){
 
-
         if(changes){
-            if(changes[0][1] != 'id' && changes[0][1] != 'niit_dun'){
-                if((tp_handSonTable.getDataAtCell(changes[0][0], 1) !== null && tp_handSonTable.getDataAtCell(changes[0][0], 1) != '') || (tp_handSonTable.getDataAtCell(changes[0][0], 2) !== null && tp_handSonTable.getDataAtCell(changes[0][0], 2) != '')){
 
-                    if((tp_handSonTable.getDataAtCell(changes[0][0], 1) === null) || (tp_handSonTable.getDataAtCell(changes[0][0], 2) === null)){
+            let colIndex = this.getColumnIndex(changes[0][1]);
 
-                    }else {
-                        let newValue = (tp_handSonTable.getDataAtCell(changes[0][0], 1)) * (tp_handSonTable.getDataAtCell(changes[0][0], 2) *1);
-                        tp_handSonTable.setDataAtCell(changes[0][0], 3, newValue);
+            let colType = this.props.gridHeader[colIndex].type
+
+            let row = changes[0][0];
+
+            if(colType != '--auto-calculate'){
+
+                ///auto-calculate
+                let calculate_columns = []
+
+                this.props.gridHeader.map((fcontrol, findex)=>{
+                    if(fcontrol.type == '--auto-calculate'){
+
+
+                        let calculate_type = fcontrol.options.calculate_type;
+                        let calculate_column = fcontrol.column;
+
+                        let columns = [];
+
+                        fcontrol.options.calculate_columns.map((calculate_column, cal_index)=>{
+
+                            let colIndex_ = this.getColumnIndex(calculate_column)
+
+
+
+                            columns.push(
+                                {column: calculate_column, value: tp_handSonTable.getDataAtCell(row, colIndex_)}
+                            );
+                        })
+
+                        calculate_columns.push(
+                            {
+                                column:calculate_column,
+                                type:calculate_type,
+                                columns:columns,
+                                dataIndex:findex
+                            }
+                        )
                     }
+                })
 
+                calculate_columns.map((calculate_column, index)=>{
+                    let checkAllValue = true;
+                    calculate_column.columns.map((cal_column)=>{
+                        if(cal_column.value === null)
+                            checkAllValue = false
+                    })
+                    let calculate_result = null;
+                    if(checkAllValue === true){
+                        if(calculate_column.type == '--multiply'){
+                            calculate_column.columns.map((cal_column, calIndex)=>{
+                                if(calIndex == 0)
+                                    calculate_result = cal_column.value;
+                                else
+                                    calculate_result = calculate_result * cal_column.value
+                            })
+                        }else if((calculate_column.type == '--sum')){
+                            calculate_column.columns.map((cal_column, calIndex)=>{
+                                if(calIndex == 0)
+                                    calculate_result = cal_column.value;
+                                else
+                                    calculate_result = calculate_result + cal_column.value
+                            })
+                        } else if(calculate_column.type == '--average'){
+                            calculate_column.columns.map((cal_column, calIndex)=>{
+                                if(calIndex == 0)
+                                    calculate_result = cal_column.value;
+                                else
+                                    calculate_result = calculate_result + cal_column.value
+                            })
+                            calculate_result = calculate_result/calculate_column.columns.length;
+                        }
+                        if(calculate_result !== null){
 
-                }
-
+                            tp_handSonTable.setDataAtCell(row, calculate_column.dataIndex, calculate_result);
+                        }
+                    }
+                });
             }
+
+
+
+
 
             if(changes[0][1] != 'id') {
 
-                let colIndex = this.getColumnIndex(changes[0][1]);
 
                 let rowDatas = this.getData(changes[0][0]);
 
@@ -299,7 +367,7 @@ class GridContainer extends Component {
                 let edit_id = null;
                 rowDatas.map((rowData, index)=> {
                     if (index <= this.props.gridHeader.length - 1) {
-                        let row = changes[0][0];
+
                         let col = index;
 
                         tp_handSonTable.getCellValidator(row, col)(rowData, function (isValid) {
@@ -481,7 +549,6 @@ class GridContainer extends Component {
         //if(this.props.formType == 'inline' && this.props.showInlineForm === false)
         //    maxRows = gridData.length+1;
 
-    console.log(tp_dataSchema);
         var self = this;
         var container = document.getElementById('tp_grid');
         tp_handSonTable = new Handsontable(container, {
@@ -508,26 +575,26 @@ class GridContainer extends Component {
 
 
             },
-            cells: function (row, col, prop) {
-                var cellProperties = {};
-
-                if (col === this.instance.countCols() - 1) {
-                    cellProperties.renderer = function (instance, td, row, col, prop, value, cellProperties) {
-                        Handsontable.cellTypes[cellProperties.type].renderer.apply(this, arguments);
-
-                        if (parseFloat(value) > 0) {
-
-                        } else if (parseFloat(value) < 0) {
-                            td.innerHTML = '';
-
-                        } else {
-
-                        }
-                    }
-                }
-                return cellProperties;
-
-            },
+            //cells: function (row, col, prop) {
+            //    var cellProperties = {};
+            //
+            //    if (col === this.instance.countCols() - 1) {
+            //        cellProperties.renderer = function (instance, td, row, col, prop, value, cellProperties) {
+            //            Handsontable.cellTypes[cellProperties.type].renderer.apply(this, arguments);
+            //
+            //            if (parseFloat(value) > 0) {
+            //
+            //            } else if (parseFloat(value) < 0) {
+            //                td.innerHTML = '';
+            //
+            //            } else {
+            //
+            //            }
+            //        }
+            //    }
+            //    return cellProperties;
+            //
+            //},
 
 
             //afterValidate:this.afterValidater.bind(this),
