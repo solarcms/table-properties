@@ -353,7 +353,9 @@ class AddEditContainer extends Component {
                         save_first_id_column_ = data[0][this.props.save_first_id_column]
                     }
 
-                    this.callMultiItemsDatas(save_first_id_column_)
+
+                    if(this.props.multi_items_form_input_control.length >= 1)
+                        this.callMultiItemsDatas(save_first_id_column_)
                 }
 
                 else

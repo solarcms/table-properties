@@ -34,6 +34,10 @@ class GridContainer extends Component {
     }
     componentDidUpdate(prevProps) {
 
+        if(prevProps.defaultLocale != this.props.defaultLocale){
+            this.setUpHandsonTable()
+        }
+
         if(prevProps.permission.r == false && this.props.permission.r == true){
             this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
         }
@@ -147,6 +151,13 @@ class GridContainer extends Component {
         return this.props.gridHeader[column].validate;
         else
             return ''
+    }
+    getColumnTranslate(column){
+        //return _.findIndex(this.props.gridHeader, { column: column })
+        if(this.props.gridHeader[column] && this.props.gridHeader[column].translate)
+            return this.props.gridHeader[column].translate;
+        else
+            return false
     }
     getColumnType(column){
 
@@ -668,26 +679,41 @@ class GridContainer extends Component {
 
 
             },
-            //cells: function (row, col, prop) {
-            //    var cellProperties = {};
-            //
-            //    if (col === this.instance.countCols() - 1) {
-            //        cellProperties.renderer = function (instance, td, row, col, prop, value, cellProperties) {
-            //            Handsontable.cellTypes[cellProperties.type].renderer.apply(this, arguments);
-            //
-            //            if (parseFloat(value) > 0) {
-            //
-            //            } else if (parseFloat(value) < 0) {
-            //                td.innerHTML = '';
-            //
-            //            } else {
-            //
-            //            }
-            //        }
-            //    }
-            //    return cellProperties;
-            //
-            //},
+            cells: function (row, col, prop) {
+
+                var cellProperties = {};
+
+                var translate = self.getColumnTranslate(col)
+
+                if(prop != self.props.identity_name){
+                    cellProperties.renderer = function (instance, td, row, col, prop, value, cellProperties) {
+                        Handsontable.cellTypes[cellProperties.type].renderer.apply(this, arguments);
+                        if (translate) {
+                            while (td.firstChild) {
+                                td.removeChild(td.firstChild);
+                            }
+                            let json_translations =  JSON.parse(value);
+                            json_translations.map(json_translation =>{
+                                if(json_translation.locale == self.props.defaultLocale){
+                                    var textNode = document.createElement('span');
+                                    textNode.innerHTML = json_translation.value;
+                                    td.appendChild(textNode);
+                                }
+
+                            })
+
+                        } else {
+
+                        }
+
+                    }
+
+
+                    return cellProperties;
+                }
+
+
+            },
 
 
             //afterValidate:this.afterValidater.bind(this),
@@ -833,6 +859,7 @@ function mapStateToProps(state) {
     const Form = state.Form;
 
     return {
+        identity_name: Form.get('identity_name'),
         setup: Grid.get('setup').toJS(),
         locales: Grid.get('setup').toJS().locales,
         defaultLocale: Grid.get('defaultLocale'),
