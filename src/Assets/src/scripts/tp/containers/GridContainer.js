@@ -323,10 +323,12 @@ class GridContainer extends Component {
 
 
         if(value){
+            let colIndex = this.getColumnIndex(prop)
             let pre_link =  document.createElement('a');
 
-            let colOption = this.props.gridHeader[col];
+            let colOption = this.props.gridHeader[colIndex];
             pre_link.setAttribute('target', '_blank');
+            td.setAttribute('class', 'htCenter htMiddle');
             pre_link.setAttribute('href', colOption.link+value);
 
 
@@ -631,6 +633,7 @@ class GridContainer extends Component {
                             data: header.column,
                             validator: this.validationCaller.bind(this, header.validate),
                             renderer: this.internalLink.bind(this),
+                            className: "htCenter htMiddle"
                         }
 
                         break;
@@ -756,16 +759,18 @@ class GridContainer extends Component {
 
                 var cellProperties = {};
 
-                var translate = self.getColumnTranslate(col)
+                var conIndex = self.getColumnIndex(prop)
+                var translate = self.getColumnTranslate(conIndex)
+
 
 
                 if(prop != self.props.identity_name){
-                    var type_col = self.getColumnType(col)
+                    var type_col = self.getColumnType(conIndex)
                     if(type_col != '--image' && type_col != '--internal-link'){
                         cellProperties.renderer = function (instance, td, row, col, prop, value, cellProperties) {
-                            console.log(value, type_col)
+
                             Handsontable.cellTypes[cellProperties.type].renderer.apply(this, arguments);
-                            if (translate) {
+                            if (translate === true) {
                                 while (td.firstChild) {
                                     td.removeChild(td.firstChild);
                                 }
