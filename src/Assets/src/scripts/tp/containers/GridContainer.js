@@ -161,7 +161,6 @@ class GridContainer extends Component {
     }
     getColumnType(column){
 
-
         return this.props.gridHeader[column].type;
 
     }
@@ -278,6 +277,42 @@ class GridContainer extends Component {
 
 
 
+
+
+    }
+    gridImage(instance, td, row, col, prop, value, cellProperties) {
+
+        while (td.firstChild) {
+            td.removeChild(td.firstChild);
+        }
+
+
+        if(value){
+            let pre_link =  document.createElement('a');
+
+
+
+            let value_image =  JSON.parse(value);
+
+            let image_thum_url = value_image.thumbUrl+value_image.uniqueName
+            let image_url = value_image.destinationUrl+value_image.uniqueName
+
+            pre_link.setAttribute('target', '_blank');
+            pre_link.setAttribute('href', image_url);
+
+            let image =  document.createElement('img');
+            image.setAttribute('class', 'grid-thumb');
+            image.setAttribute('src', image_thum_url);
+
+            pre_link.appendChild(image)
+
+
+
+            td.appendChild(pre_link);
+
+
+            return td;
+        }
 
 
     }
@@ -559,6 +594,12 @@ class GridContainer extends Component {
                             validator: this.validationCaller.bind(this, header.validate),
                             renderer: this.customDropdownRenderer.bind(this),
                         }
+                        break;
+                    case "--image":
+                        gridColumn = {
+                            data: header.column,
+                            renderer: this.gridImage.bind(this),
+                        }
 
                         break;
                     case "--date":
@@ -685,31 +726,34 @@ class GridContainer extends Component {
 
                 var translate = self.getColumnTranslate(col)
 
+
                 if(prop != self.props.identity_name){
-                    cellProperties.renderer = function (instance, td, row, col, prop, value, cellProperties) {
-                        Handsontable.cellTypes[cellProperties.type].renderer.apply(this, arguments);
-                        if (translate) {
-                            while (td.firstChild) {
-                                td.removeChild(td.firstChild);
-                            }
-                            let json_translations =  JSON.parse(value);
-                            json_translations.map(json_translation =>{
-                                if(json_translation.locale == self.props.defaultLocale){
-                                    var textNode = document.createElement('span');
-                                    textNode.innerHTML = json_translation.value;
-                                    td.appendChild(textNode);
+                    var type_col = self.getColumnType(col)
+                    if(type_col != '--image'){
+                        cellProperties.renderer = function (instance, td, row, col, prop, value, cellProperties) {
+                            Handsontable.cellTypes[cellProperties.type].renderer.apply(this, arguments);
+                            if (translate) {
+                                while (td.firstChild) {
+                                    td.removeChild(td.firstChild);
                                 }
+                                let json_translations =  JSON.parse(value);
+                                json_translations.map(json_translation =>{
+                                    if(json_translation.locale == self.props.defaultLocale){
+                                        var textNode = document.createElement('span');
+                                        textNode.innerHTML = json_translation.value;
+                                        td.appendChild(textNode);
+                                    }
 
-                            })
+                                })
 
-                        } else {
+                            } else {
 
+                            }
                         }
+                        return cellProperties;
 
                     }
 
-
-                    return cellProperties;
                 }
 
 
