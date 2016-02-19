@@ -316,6 +316,30 @@ class GridContainer extends Component {
 
 
     }
+    internalLink(instance, td, row, col, prop, value, cellProperties) {
+        while (td.firstChild) {
+            td.removeChild(td.firstChild);
+        }
+
+
+        if(value){
+            let pre_link =  document.createElement('a');
+
+            let colOption = this.props.gridHeader[col];
+            pre_link.setAttribute('target', '_blank');
+            pre_link.setAttribute('href', colOption.link+value);
+
+
+            pre_link.innerHTML = colOption.icon
+
+
+
+            td.appendChild(pre_link);
+
+
+            return td;
+        }
+    }
     afterChange(changes, source, isValid){
 
         if(changes){
@@ -602,6 +626,14 @@ class GridContainer extends Component {
                         }
 
                         break;
+                    case "--internal-link":
+                        gridColumn = {
+                            data: header.column,
+                            validator: this.validationCaller.bind(this, header.validate),
+                            renderer: this.internalLink.bind(this),
+                        }
+
+                        break;
                     case "--date":
                         gridColumn ={
                             data: header.column,
@@ -729,8 +761,9 @@ class GridContainer extends Component {
 
                 if(prop != self.props.identity_name){
                     var type_col = self.getColumnType(col)
-                    if(type_col != '--image'){
+                    if(type_col != '--image' && type_col != '--internal-link'){
                         cellProperties.renderer = function (instance, td, row, col, prop, value, cellProperties) {
+                            console.log(value, type_col)
                             Handsontable.cellTypes[cellProperties.type].renderer.apply(this, arguments);
                             if (translate) {
                                 while (td.firstChild) {
