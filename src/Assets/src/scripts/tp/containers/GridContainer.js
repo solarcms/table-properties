@@ -273,7 +273,7 @@ class GridContainer extends Component {
     afterChange(changes, source, isValid){
 
         if(changes){
-
+            console.log(changes)
             let colIndex = 0;
 
             if (changes[0][1] === parseInt(changes[0][1], 10)){
@@ -281,8 +281,10 @@ class GridContainer extends Component {
             }else
             colIndex = this.getColumnIndex(changes[0][1]);
 
-            let colType = this.props.gridHeader[colIndex].type
 
+
+            let colType = this.props.gridHeader[colIndex].type
+            console.log(colType, colIndex)
             let row = changes[0][0];
 
             if(colType != '--auto-calculate'){
@@ -498,6 +500,24 @@ class GridContainer extends Component {
                             type: 'text',
                             validator: this.validationCaller.bind(this, header.validate),
                             //allowInvalid: false
+                        }
+                        break;
+                    case "--textarea":
+                        gridColumn ={
+                            data: header.column,
+                            editor: 'text',
+                            type: 'text',
+                            validator: this.validationCaller.bind(this, header.validate),
+                            //allowInvalid: false
+                        }
+                        break;
+                    case "--checkbox":
+                        gridColumn ={
+                            data: header.column,
+                            type: 'checkbox',
+                            checkedTemplate: 1,
+                            uncheckedTemplate: 0,
+                            validator: this.validationCaller.bind(this, header.validate),
                         }
                         break;
                     case "--combobox":

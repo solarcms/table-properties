@@ -90,6 +90,8 @@ class Tp
     public $multi_items_form_input_control = [];
     public $save_first_id_column = null;
 
+    //public hidden value
+    public $hidden_values = [];
 
     function __construct(){
 
@@ -243,8 +245,6 @@ class Tp
                     }
 
 
-
-
                 }
 
             }
@@ -333,7 +333,7 @@ class Tp
             $table_data->orderBy($order[0], $order[1]);
         }
 
-
+//        dd($table_data->toSql());
 
         return  $table_data->paginate($pageLimit);
 
@@ -568,7 +568,7 @@ class Tp
 //            $this->setup();
 //        }
 
-//        $insertQuery = ["$this->identity_name"=>null];
+        $insertQuery = $this->hidden_values;
         foreach($this->form_input_control as $formControl){
 
             if($formControl['type'] == '--group'){
@@ -773,7 +773,7 @@ class Tp
             $this->setup();
         }
 
-        $insertQuery = [];
+        $insertQuery = $this->hidden_values;
         foreach($this->form_input_control as $formControl){
             if($this->permission['u'] != true){
                 if(count($this->ifUpdateDisabledCanEditColumns) >= 1){
@@ -1009,7 +1009,6 @@ class Tp
         return 'update_grid';
     }
 
-
     public function delete(){
         if($this->permission['d'] != true)
             return Response::json('permission denied', 400);
@@ -1024,9 +1023,6 @@ class Tp
             return 'error';
 
     }
-
-
-
 
     public function setup(){
         $columns = [];
