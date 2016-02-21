@@ -27,10 +27,6 @@ class GridContainer extends Component {
     }
     componentDidMount() {
         this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
-
-
-
-
     }
     componentDidUpdate(prevProps) {
 
@@ -345,7 +341,7 @@ class GridContainer extends Component {
     afterChange(changes, source, isValid){
 
         if(changes){
-            console.log(changes)
+
             let colIndex = 0;
 
             if (changes[0][1] === parseInt(changes[0][1], 10)){
@@ -356,7 +352,7 @@ class GridContainer extends Component {
 
 
             let colType = this.props.gridHeader[colIndex].type
-            console.log(colType, colIndex)
+          
             let row = changes[0][0];
 
             if(colType != '--auto-calculate'){
@@ -766,7 +762,7 @@ class GridContainer extends Component {
 
                 if(prop != self.props.identity_name){
                     var type_col = self.getColumnType(conIndex)
-                    if(type_col != '--image' && type_col != '--internal-link'){
+                    if(type_col != '--image' && type_col != '--internal-link' && type_col != '--combobox' && type_col != '--tag'){
                         cellProperties.renderer = function (instance, td, row, col, prop, value, cellProperties) {
 
                             Handsontable.cellTypes[cellProperties.type].renderer.apply(this, arguments);

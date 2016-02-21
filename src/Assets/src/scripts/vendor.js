@@ -12,7 +12,9 @@
 //require('../vendor/jquery-resizable-columns-gh-pages/dist/jquery.resizableColumns.js');
 
 //require('../vendor/autoNumberic')
+require('../vendor/chosen.jquery.js')
 require('../vendor/handsontable-master/dist/handsontable.full.js')
+require('../vendor/handsontable-chosen-editor.js')
 
 //formula
 //require('../vendor/handsontable-ruleJS-gh-pages/lib/RuleJS/lib/lodash/lodash.js')
