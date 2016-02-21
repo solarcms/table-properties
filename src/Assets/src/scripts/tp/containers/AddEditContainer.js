@@ -19,6 +19,13 @@ var maxRows = 0;
 var listData = []
 var save_first_id_column_ = 0
 class AddEditContainer extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            sending: false
+        };
+    }
 
     checkValidate() {
         const FD = this.props.formControls;
@@ -118,15 +125,19 @@ class AddEditContainer extends Component {
 
         let foundError = this.checkValidate();
 
-        if (foundError === false)
+        if (foundError === false){
+            this.setState({sending: true});
             save(FD, this.props.translateFormControls, this.props.subItems, multiItems).done((data)=> {
                 if (data == 'success') {
 
+                    this.setState({sending: false});
                     window.location.replace('#/');
                 }
             }).fail(()=> {
                 alert("Уучлаарай алдаа гарлаа дахин оролдоно уу")
             })
+        }
+
 
     }
 
@@ -152,8 +163,11 @@ class AddEditContainer extends Component {
 
         let foundError = this.checkValidate();
 
-        if (foundError === false)
+        if (foundError === false){
+            this.setState({sending: true});
             update(FD, this.props.translateFormControls, this.props.params.id, this.props.subItems, multiItems).done((data)=> {
+
+                this.setState({sending: false});
 
                 if (data == 'success' || 'none') {
                     if (this.props.permission.r === false && this.props.permission.c === false && this.props.permission.d === false && this.props.setup.update_row !== null) {
@@ -168,6 +182,8 @@ class AddEditContainer extends Component {
             }).fail(()=> {
                 alert("Уучлаарай алдаа гарлаа дахин оролдоно уу")
             })
+        }
+
 
 
     }
@@ -910,7 +926,7 @@ class AddEditContainer extends Component {
 
 
 
-
+        const sending = this.state.sending;
 
         const gridId = 'grid_table'
 
@@ -949,7 +965,7 @@ class AddEditContainer extends Component {
                                showAddEditForm={showAddEditForm}/> : null
 
 
-
+        const sendingClass = sending === true ? 'form-sending' : null;
 
         return (
             <div className="">
@@ -958,7 +974,7 @@ class AddEditContainer extends Component {
                     <div className="row  m-x-sm">
                         <div className="form-horizontal solar-form">
 
-                            <div className="row">
+                            <div className={`row ${sendingClass}`}>
                                 {containerForm}
 
                                 {formSubItmes}
@@ -967,24 +983,34 @@ class AddEditContainer extends Component {
                             <div id="multi_items">
 
                             </div>
-                            <div>
-                                {this.props.params.id
-                                    ? <button type="button" className="btn btn-fw btn-success p-h-lg"
-                                              onClick={this.updateForm.bind(this)}>
-                                    <i className="material-icons">&#xE2C3;</i> {button_texts.save_text}
-                                </button>
-                                    :
-                                    <button type="button" className="btn btn-fw btn-success p-h-lg"
-                                            onClick={this.saveForm.bind(this)}>
-                                        <i className="material-icons">&#xE2C3;</i> {button_texts.save_text}
-                                    </button>
-                                }
-                                &nbsp;
-                                <a href="#/" className="btn btn-fw danger p-h-lg">
-                                    <i className="material-icons">&#xE5CD;</i> {button_texts.cancel_text}
-                                </a>
+                            {sending === true
+                                ?<div className="sending spinner">
+                                    <div className="bounce1"></div>
+                                    <div className="bounce2"></div>
+                                    <div className="bounce3"></div>
+                                </div>
 
+                                : <div>
+                                    {this.props.params.id
+                                        ? <button type="button" className="btn btn-fw btn-success p-h-lg"
+                                                  onClick={this.updateForm.bind(this)}>
+                                        <i className="material-icons">&#xE2C3;</i> {button_texts.save_text}
+
+                                    </button>
+                                        :
+                                        <button type="button" className="btn btn-fw btn-success p-h-lg"
+                                                onClick={this.saveForm.bind(this)}>
+                                            <i className="material-icons">&#xE2C3;</i> {button_texts.save_text}
+
+                                        </button>
+                                    }
+                                    &nbsp;
+                                    <a href="#/" className="btn btn-fw danger p-h-lg">
+                                        <i className="material-icons">&#xE5CD;</i> {button_texts.cancel_text}
+                                    </a>
                             </div>
+                            }
+
                         </div>
                     </div>
                 </div>

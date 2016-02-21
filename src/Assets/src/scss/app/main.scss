@@ -110,3 +110,9 @@
   height: 44px;
   padding: 2px;
 }
+.form-sending{
+  *{
+    pointer-events: none!important;
+    opacity: 0.8!important;
+  }
+}
