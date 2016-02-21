@@ -1,6 +1,6 @@
 import React, { Component, PropTypes }  from 'react';
 import DropzoneComponent from "react-dropzone-component";
-import $ from 'jquery'
+import getMeta from '../../../lib/getMeta'
 
 import {deleteFile, getExtraImages} from '../../../api/upload'
 
@@ -12,25 +12,41 @@ export default class MultiFileUploader extends Component {
     uploadSuccess(e, responsejson){
 
         if(e.status == 'success'){
-            responsejson.map((response)=>{
+            if (responsejson instanceof Array) {
+
+                responsejson.map((response)=>{
+                    let duplicated = false;
+                    uploadedFiles.map((uploadedFile)=>{
+                        if(uploadedFile.uniqueName == response.uniqueName)
+                            duplicated = true
+                    })
+                    if(duplicated === false)
+                        uploadedFiles.push({
+                            size: e.size,
+                            origName: e.name,
+                            destinationUrl:response.destinationUrl,
+                            thumbUrl:response.thumbUrl,
+                            uniqueName:response.uniqueName
+                        });
+                })
+            } else {
                 let duplicated = false;
                 uploadedFiles.map((uploadedFile)=>{
-                    if(uploadedFile.uniqueName == response.uniqueName)
+                    if(uploadedFile.uniqueName == responsejson.uniqueName)
                         duplicated = true
                 })
                 if(duplicated === false)
                     uploadedFiles.push({
                         size: e.size,
                         origName: e.name,
-                        destinationUrl:response.destinationUrl,
-                        thumbUrl:response.thumbUrl,
-                        uniqueName:response.uniqueName
+                        destinationUrl:responsejson.destinationUrl,
+                        thumbUrl:responsejson.thumbUrl,
+                        uniqueName:responsejson.uniqueName
                     });
 
-            })
+            }
 
             let uploadedFilesString = JSON.stringify(uploadedFiles);
-
             this.props.changeHandler(uploadedFilesString);
         }
 
@@ -89,11 +105,7 @@ export default class MultiFileUploader extends Component {
 
                 let mockFile = { name: ex_image.origName, size: ex_image.size, uniqueName: ex_image.uniqueName };
 
-
-
-
                 myDropzone.emit("addedfile", mockFile);
-
 
                 myDropzone.emit("thumbnail", mockFile, ex_image.thumbUrl+ex_image.uniqueName);
 
@@ -137,10 +149,8 @@ export default class MultiFileUploader extends Component {
                 maxFiles:this.props.max,
                 dictRemoveFile: 'Remove/Устгах',
                 params: {
-                    test: "test 2"
-
                 },
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+                headers: {'X-CSRF-TOKEN': getMeta('csrf-token')}
             };
         } else{
 
@@ -149,10 +159,8 @@ export default class MultiFileUploader extends Component {
                 uploadMultiple:true,
                 dictRemoveFile: 'Remove/Устгах',
                 params: {
-
-
                 },
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+                headers: {'X-CSRF-TOKEN': getMeta('csrf-token')}
             };
         }
 

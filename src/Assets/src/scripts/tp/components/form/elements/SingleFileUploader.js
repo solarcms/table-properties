@@ -1,6 +1,6 @@
 import React, { Component, PropTypes }  from 'react';
 import DropzoneComponent from "react-dropzone-component";
-import $ from 'jquery'
+import getMeta from '../../../lib/getMeta'
 
 import {deleteFile} from '../../../api/upload'
 
@@ -88,7 +88,7 @@ export default class SingleFileUploader extends Component {
                 test: "test 2"
 
             },
-            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+            headers: {'X-CSRF-TOKEN':  getMeta('csrf-token')}
         };
 
         const eventHandlers = {

@@ -1,5 +1,5 @@
 import React, { Component, PropTypes }  from 'react';
-import $ from 'jquery'
+
 
 import Draggable from 'react-draggable';
 

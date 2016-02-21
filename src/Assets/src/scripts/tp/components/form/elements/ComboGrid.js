@@ -1,7 +1,6 @@
 import React, { Component, PropTypes }  from 'react';
-import Body from '../../grid/Body'
+//import Body from '../../grid/Body'
 import Pagination from "../../grid/Paginator"
-import $ from "jquery"
 import { getComboList, deleteItemComboGrid, saveComboGrid, updateComboGrid, editComboGrid } from "../../../api/"
 import * as DataActions from "../../../actions/grid"
 import { bindActionCreators } from "redux"
@@ -213,22 +212,7 @@ export default class ComboGrid extends Component {
                                     handlerReload={this.callPageDatas.bind(this, this.props.currentPage, this.props.searchValue)}
 
                             />
-                            <Body
-                                bodyData={listData}
-                                bodyHeader={gridHeader}
-                                formControls={formControls}
-                                gridId={gridId}
-                                formType={`inline`}
-                                setRowEdit={this.setRowEdit.bind(this)}
-                                handleDeleteItem={this.handleDeleteItem.bind(this)}
 
-                                editID={editID}
-                                selectRow={this.selectRow.bind(this)}
-                                showInlineForm={showInlineForm}
-                                inlineChangeValues={this.ChangeValues.bind(this)}
-
-                                saveInlineForm={this.saveForm.bind(this)}
-                            />
 
 
                         </div>
@@ -283,3 +267,20 @@ export default connect(
     mapStateToProps,
     mapDispatchToProps
 )(ComboGrid)
+
+//<Body
+//bodyData={listData}
+//bodyHeader={gridHeader}
+//formControls={formControls}
+//gridId={gridId}
+//formType={`inline`}
+//setRowEdit={this.setRowEdit.bind(this)}
+//handleDeleteItem={this.handleDeleteItem.bind(this)}
+//
+//editID={editID}
+//selectRow={this.selectRow.bind(this)}
+//showInlineForm={showInlineForm}
+//inlineChangeValues={this.ChangeValues.bind(this)}
+//
+//saveInlineForm={this.saveForm.bind(this)}
+///>

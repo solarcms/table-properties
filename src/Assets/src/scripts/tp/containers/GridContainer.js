@@ -352,7 +352,7 @@ class GridContainer extends Component {
 
 
             let colType = this.props.gridHeader[colIndex].type
-          
+
             let row = changes[0][0];
 
             if(colType != '--auto-calculate'){
