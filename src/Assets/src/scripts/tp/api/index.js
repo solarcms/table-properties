@@ -209,6 +209,6 @@ export function getCascadeChild(child, parent) {
 
 // check unique
 
-export function checkUnique(table, column, value){
-    return postResuest(`check-unique`, {table:table, column: column, value: value});
+export function checkUnique(table, table_colummn, value, row_id, row_id_field){
+    return postResuest(`check-unique`, {table:table, column: table_colummn, value: value, row_id_field:row_id_field, row_id:row_id });
 }

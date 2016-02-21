@@ -547,7 +547,30 @@ class Tp
 
     }
 
+    public function getRule($form_input_control){
+        $rules = [];
 
+        foreach($form_input_control as $form_control){
+            if(isset($form_control['validate'])){
+                $validation = str_replace("number","numeric",$form_control['validate']);
+                $rules[$form_control['column']]=$validation;
+            }
+        }
+
+        return $rules;
+
+    }
+    public function checkValidation($save_query, $rules){
+        $validator = Validator::make($save_query, $rules);
+        if ( $validator->fails())
+        {
+            return ([
+                'errors' => [
+                    $validator->messages()
+                ]
+            ]);
+        }
+    }
 
     public function insert(){
 
@@ -561,17 +584,14 @@ class Tp
         $translateData = Request::input('translateData');
         $multiItems = Request::input('multiItems');
 
-
-
-
-//        if(count($this->form_input_control) <= 0){
-//            $this->setup();
-//        }
+        $rules = [];
 
         $insertQuery = $this->hidden_values;
         foreach($this->form_input_control as $formControl){
 
             if($formControl['type'] == '--group'){
+                $rules_pre = $this->getRule($formControl['controls']);
+                $rules = array_merge($rules, $rules_pre);
                 foreach($formControl['controls'] as $subformControl){
                     if($subformControl['type'] == '--group'){
 
@@ -607,8 +627,15 @@ class Tp
 
         }
 
+        $rules_pre = $this->getRule($this->form_input_control);
+        $rules = array_merge($rules, $rules_pre);
+
+
         // transltation table save action
         if(!empty($this->translate_form_input_control)){
+
+            $rules_pre = $this->getRule($this->translate_form_input_control);
+            $rules = array_merge($rules, $rules_pre);
 
             foreach($this->translate_form_input_control as $translationformControl){
                 $translationformControl['trans_value'] = [];
@@ -668,7 +695,8 @@ class Tp
         $response = null;
         //multi items
         if(!empty($this->multi_items_form_input_control)){
-
+            $rules_pre = $this->getRule($this->multi_items_form_input_control);
+            $rules = array_merge($rules, $rules_pre);
             $checkFirst = 0;
             $insertedId = null;
 
@@ -715,6 +743,7 @@ class Tp
                 }
 
                 if($checkFirst == 0){
+                    $this->checkValidation($insertQuery, $rules);
                     $saved = DB::table($this->table)->insert($insertQuery);
                     $insertedId = DB::getPdo()->lastInsertId();
 
@@ -724,6 +753,7 @@ class Tp
 
                 } else {
                     $insertQuery[$this->save_first_id_column] = $insertedId;
+                    $this->checkValidation($insertQuery, $rules);
                     $saved = DB::table($this->table)->insert($insertQuery);
                 }
 
@@ -733,7 +763,7 @@ class Tp
             $saved = true;
 
         } else {
-
+            $this->checkValidation($insertQuery, $rules);
             $saved = DB::table($this->table)->insert($insertQuery);
             $insertedId = DB::getPdo()->lastInsertId();
 
@@ -1710,8 +1740,10 @@ class Tp
         $table = Request::input('table');
         $column = Request::input('column');
         $value = Request::input('value');
+        $row_id_field = Request::input('row_id_field');
+        $row_id = Request::input('row_id');
 
-        $count = DB::table($table)->where($column, '=', $value)->count();
+        $count = DB::table($table)->where($column, '=', $value)->where($row_id_field, '!=', $row_id)->count();
 
         return $count;
     }

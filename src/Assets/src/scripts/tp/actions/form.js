@@ -26,6 +26,7 @@ export function changeValue(index, value) {
         value: value
     }
 }
+
 export function setFormData(data) {
 
     return {
@@ -33,7 +34,9 @@ export function setFormData(data) {
         data: data
     }
 }
+
 export function setError(index, error) {
+
     return {
         type: types.SET_ERROR,
         index: index,

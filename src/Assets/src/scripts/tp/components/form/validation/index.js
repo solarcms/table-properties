@@ -65,23 +65,6 @@ export function match(field) {
     };
 }
 
-export function unique(rule, value) {
-
-        let unique = rule.split(':');
-        let table_colummn = unique[1].split(',');
-
-        let return_error = '';
-
-        checkUnique(table_colummn[0], table_colummn[1], value).then((count)=>{
-            if(count >= 1){
-                console.log(count)
-                return_error = 'Өгөдөл давцаж байна'
-            }
-        })
-
-    return return_error;
-
-}
 
 export default function validation(value, validationData){
 
@@ -124,16 +107,6 @@ export default function validation(value, validationData){
                 else
                     errors = error;
             }
-        }else if(rule.indexOf('unique:') >= 0){
-
-            const error = unique(rule, value);
-            if (error) {
-                if(errors !== null)
-                    errors = errors+", "+error;
-                else
-                    errors = error;
-            }
-
         }
     })
 

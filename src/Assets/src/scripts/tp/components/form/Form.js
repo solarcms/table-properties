@@ -110,6 +110,9 @@ export default class Form extends Component {
                     autoFocus={focus}
                     placeholder={title}
                     name={name}
+                    validation={field.get('validate')}
+                    setErrorManuale={this.props.setErrorManuale}
+                    edit_parent_id={this.props.edit_parent_id}
                     changeHandler={this.changeHandler.bind(this, locale_index)}
                     errorText={field.get('error')}
 
@@ -125,6 +128,9 @@ export default class Form extends Component {
                     autoFocus={focus}
                     placeholder={title}
                     name={name}
+                    validation={field.get('validate')}
+                    setErrorManuale={this.props.setErrorManuale}
+                    edit_parent_id={this.props.edit_parent_id}
                     changeHandler={this.changeHandler.bind(this, locale_index)}
                     errorText={field.get('error')}
 
@@ -143,6 +149,9 @@ export default class Form extends Component {
                     autoFocus={focus}
                     placeholder={title}
                     name={name}
+                    validation={field.get('validate')}
+                    setErrorManuale={this.props.setErrorManuale}
+                    edit_parent_id={this.props.edit_parent_id}
                     //changeHandler={this.changeHandler.bind(this, locale_index)}
                     errorText={field.get('error')}
 
@@ -197,6 +206,10 @@ export default class Form extends Component {
                     autoFocus={focus}
                     placeholder={title}
                     name={name}
+                    validation={field.get('validate')}
+                    setErrorManuale={this.props.setErrorManuale}
+                    edit_parent_id={this.props.edit_parent_id}
+
                     changeHandler={this.changeHandler.bind(this, locale_index)}
                     errorText={field.get('error')}
 
@@ -211,6 +224,9 @@ export default class Form extends Component {
                     type="money"
                     autoFocus={focus}
                     placeholder={title}
+                    validation={field.get('validate')}
+                    setErrorManuale={this.props.setErrorManuale}
+                    edit_parent_id={this.props.edit_parent_id}
                     name={name}
                     changeHandler={this.manualeChangeHandler.bind(this, locale_index, `${index}`)}
                     errorText={field.get('error')}
@@ -227,6 +243,9 @@ export default class Form extends Component {
                     autoFocus={focus}
                     placeholder={title}
                     name={name}
+                    validation={field.get('validate')}
+                    setErrorManuale={this.props.setErrorManuale}
+                    edit_parent_id={this.props.edit_parent_id}
                     changeHandler={this.changeHandler.bind(this, locale_index)}
                     errorText={field.get('error')}
 
@@ -242,6 +261,9 @@ export default class Form extends Component {
                     autoFocus={focus}
                     placeholder={title}
                     name={name}
+                    validation={field.get('validate')}
+                    setErrorManuale={this.props.setErrorManuale}
+                    edit_parent_id={this.props.edit_parent_id}
                     changeHandler={this.changeHandler.bind(this, locale_index)}
                     errorText={field.get('error')}
 
@@ -257,6 +279,9 @@ export default class Form extends Component {
                     autoFocus={focus}
                     placeholder={title}
                     name={name}
+                    validation={field.get('validate')}
+                    setErrorManuale={this.props.setErrorManuale}
+                    edit_parent_id={this.props.edit_parent_id}
                     changeHandler={this.changeHandler.bind(this, locale_index)}
                     errorText={field.get('error')}
 

@@ -3,14 +3,47 @@ import React, { Component, PropTypes }  from 'react';
 import {moveCursorToEnd} from '../helpers/'
 
 import numeral from 'numeral';
+import {checkUnique} from "../../../api/"
+
 
 export default class Input extends Component {
+
     constructor(props) {
         super(props);
 
         this.state = {
             focused: false
         };
+    }
+    unique(value, rule, dataIndex, edit_parent_id, errorText) {
+
+
+        let unique = rule.split('unique:');
+        let uniqueConditions = unique[1].split(',');
+        let table = uniqueConditions[0];
+        let table_colummn = uniqueConditions[1];
+        let row_id = edit_parent_id ? edit_parent_id : uniqueConditions[2];
+        let row_id_field = uniqueConditions[3];
+
+
+        //console.log(table, table_colummn, value, row_id, row_id_field)
+
+        let dataIndexnew = ''+dataIndex
+
+        let dataIndexs  =  dataIndexnew.split('-');
+
+        if(value !== null && value != '')
+        checkUnique(table, table_colummn, value, row_id, row_id_field).then((count)=>{
+            if(count >= 1){
+
+                if(errorText !== null)
+                    this.props.setErrorManuale(dataIndexs, errorText+' Өгөдөл давцаж байна')
+                else
+                    this.props.setErrorManuale(dataIndexs, 'Өгөдөл давцаж байна')
+            }
+
+        })
+
     }
 
     changeHandler(e){
@@ -32,6 +65,15 @@ export default class Input extends Component {
         var number = numeral(value);
         var string = number.format('0,0.00');
         this.props.changeHandler(string)
+
+    }
+    blurFunction(e){
+        let value = e.target.value;
+
+        if(this.props.validation.includes('unique')){
+
+           this.unique(value, this.props.validation, this.props.dataIndex, this.props.edit_parent_id, this.props.errorText);
+        }
 
     }
 
@@ -112,6 +154,7 @@ export default class Input extends Component {
                         placeholder={placeholder}
                         onChange={changeHandler}
                         onFocus={focusHandler}
+                        onBlur={this.blurFunction.bind(this)}
                         type={realType}/>
 
         }

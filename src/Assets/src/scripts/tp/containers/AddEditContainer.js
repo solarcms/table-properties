@@ -7,6 +7,7 @@ import Form from "../components/form/Form"
 import validation from "../components/form/validation/"
 import validationGrid from "../components/grid/validation/"
 import {save, edit, update, getCascadeChild, callMultiItems, deleteItem} from "../api/"
+
 import Window from "../components/window/"
 import SubItemsContainer from "./formContainers/SubItemsContainer"
 
@@ -213,6 +214,9 @@ class AddEditContainer extends Component {
             this.changeChildValue(childIndex);
         }
 
+    }
+    setErrorManuale(index, error){
+        this.props.actions.setError(index, error)
     }
     changeValues(dataIndex, value) {
 
@@ -926,6 +930,7 @@ class AddEditContainer extends Component {
                 ifUpdateDisabledCanEditColumns={ifUpdateDisabledCanEditColumns}
                 permission={permission}
                 edit_parent_id={edit_parent_id}
+                setErrorManuale={this.setErrorManuale.bind(this)}
                 changeHandler={this.changeValues.bind(this)}
                 translateChangeHandler={this.translateChangeHandler.bind(this)}
 
