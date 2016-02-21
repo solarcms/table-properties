@@ -37,9 +37,9 @@ export default class Input extends Component {
             if(count >= 1){
 
                 if(errorText !== null)
-                    this.props.setErrorManuale(dataIndexs, errorText+' Өгөдөл давцаж байна')
+                    this.props.setErrorManuale(dataIndexs, errorText+' Өгөгдөл давахцаж байна')
                 else
-                    this.props.setErrorManuale(dataIndexs, 'Өгөдөл давцаж байна')
+                    this.props.setErrorManuale(dataIndexs, 'Өгөгдөл давахцаж байна')
             }
 
         })

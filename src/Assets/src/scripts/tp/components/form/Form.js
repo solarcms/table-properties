@@ -389,6 +389,28 @@ export default class Form extends Component {
                                 </span>
                 </div>
                 break;
+            case "--time":
+                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass}  `}>
+                    <label>
+
+                        {title}
+                    </label>
+                    <DateTimePicker
+                        disabled={thisDisabled}
+                        name={name}
+                        calendar={false}
+                        defaultValue={mainValue === null ? null : new Date(mainValue)}
+                        value={mainValue === null ? null : new Date(mainValue)}
+                        format={"HH:mm"}
+                        placeholder={title}
+                        onChange={this.dateTimeChange.bind(this, locale_index, `${index}`)}
+                    />
+                                <span className="help-block">
+
+                                    {field.error}
+                                </span>
+                </div>
+                break;
             case "--combogrid":
                 return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass}  `}>
                     {formType == 'inline' ? '' : <label className="control-label">{title}</label>}

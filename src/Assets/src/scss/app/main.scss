@@ -1,8 +1,8 @@
 #solar-tp{
 
-  height: -moz-calc(100vh - 2px);
-  height: -webkit-calc(100vh - 2px);
-  height: calc(100vh - 2px);
+  min-height: -moz-calc(100vh - 2px);
+  min-height: -webkit-calc(100vh - 2px);
+  min-height: calc(100vh - 2px);
   position: relative;
   background: transparent!important;
   margin: 0;
