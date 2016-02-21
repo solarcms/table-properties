@@ -11,6 +11,7 @@ use Illuminate\Routing\ResponseFactory as Resp;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
+use App;
 
 class Tp
 {
@@ -75,7 +76,7 @@ class Tp
     //TRIGGER
     public $save_from_parent = []; // parent columns :"id", "active", "name", child columns:'id', 'parent_id', 'parent_name'(NULL ABLE)  #['child_column'=>'parent_name', 'parent_column'=>'name']
     public $save_sub_items_count = []; // parent columns :"id", "active", "name" "total_childs", child columns:'id', 'parent_id',  #['child_connect_column'=>'parent_id', 'parent_column'=>'total_childs']
-
+    public $before_insert = null;
 
     //Buttons
     public $save_button_text = 'Хадгалах';
@@ -569,9 +570,22 @@ class Tp
 
     }
 
+    public function beforeInsertCaller($before_insert, $insertQuery){
 
+        $controller = $before_insert['controller'];
+        $function = $before_insert['function'];
+        $arguments = $before_insert['arguments'];
+        $arguments['insert_values'] = $insertQuery;
+
+        return app($controller)->$function($arguments);
+
+//        $controller = App::make($controller);
+//
+//        return  App::call([$controller, $function], $arguments);
+    }
 
     public function insert(){
+
 
 
 
@@ -786,6 +800,12 @@ class Tp
                   return Response::json(
                       ['errors' => [$validator->messages()]
                       ], 400);
+            }
+
+            if($this->before_insert != null){
+               $pre_values =  $this->beforeInsertCaller($this->before_insert, $insertQuery);
+
+                $insertQuery = array_merge($insertQuery, $pre_values);
             }
 
             $saved = DB::table($this->table)->insert($insertQuery);
