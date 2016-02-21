@@ -83,6 +83,11 @@ class Tp
     public $cancel_button_text = 'Болих';
     public $delete_button_text = 'Устгах';
 
+    //action words
+    public $save_alert_word = 'Saved';
+    public $show_saved_alert= false;
+
+
     // generate locale's files
     public $generateLocaleFile = false;
 
@@ -211,6 +216,8 @@ class Tp
             'default_locale'=>Session::get('locale'),
             'update_row'=>$this->update_row,
             'identity_name'=>$this->identity_name,
+            'show_saved_alert'=>$this->show_saved_alert,
+            'save_alert_word'=>$this->save_alert_word,
         ];
 
         ////

@@ -47,6 +47,8 @@ export default createReducer(initialState, {
         state = state.set('form_input_control', form_input_control);
         state = state.set('save_first_id_column', setupData.save_first_id_column);
         state = state.set('identity_name', setupData.identity_name);
+        state = state.set('show_saved_alert', setupData.show_saved_alert);
+        state = state.set('save_alert_word', setupData.save_alert_word);
 
         return state;
     },

@@ -10,7 +10,7 @@ import {save, edit, update, getCascadeChild, callMultiItems, deleteItem} from ".
 
 import Window from "../components/window/"
 import SubItemsContainer from "./formContainers/SubItemsContainer"
-
+import { Modal, Button } from 'react-bootstrap';
 /*for handson table*/
 var tp_handSonTable = null
 var exportPlugin = null
@@ -23,7 +23,8 @@ class AddEditContainer extends Component {
         super(props);
 
         this.state = {
-            sending: false
+            sending: false,
+            savedAlertShow: false,
         };
     }
 
@@ -131,7 +132,18 @@ class AddEditContainer extends Component {
                 if (data == 'success') {
 
                     this.setState({sending: false});
-                    window.location.replace('#/');
+
+                    if(this.props.show_saved_alert === true){
+                        this.setState({savedAlertShow: true});
+
+                        if(this.state.savedAlertShow === false)
+                            window.location.replace('#/');
+                    } else {
+                        window.location.replace('#/');
+                    }
+
+
+
                 }
             }).fail(()=> {
                 alert("Уучлаарай алдаа гарлаа дахин оролдоно уу")
@@ -927,6 +939,8 @@ class AddEditContainer extends Component {
 
 
         const sending = this.state.sending;
+        const savedAlertShow = this.state.savedAlertShow;
+        let hideSaveModal = () => this.setState({ savedAlertShow: false });
 
         const gridId = 'grid_table'
 
@@ -1014,6 +1028,20 @@ class AddEditContainer extends Component {
                         </div>
                     </div>
                 </div>
+                <Modal aria-labelledby="contained-modal-title-sm" className="modal-shadowed" show={savedAlertShow} onHide={hideSaveModal} >
+
+                    <Modal.Body>
+                        <h5 style={{color:'green'}}>
+                            {this.props.save_alert_word}
+                        </h5>
+                        <Button onClick={hideSaveModal}>Хаах</Button>
+                    </Modal.Body>
+
+
+
+
+
+                </Modal>
             </div>
 
         )
@@ -1051,6 +1079,8 @@ function mapStateToProps(state) {
         formData: Form.get('formData'),
         subItems: SubItems.get('subItems'),
         button_texts: Grid.get('button_texts'),
+        show_saved_alert: Form.get('show_saved_alert'),
+        save_alert_word: Form.get('save_alert_word'),
         permission: Grid.get('setup').toJS().permission,
         ifUpdateDisabledCanEditColumns: Grid.get('setup').toJS().ifUpdateDisabledCanEditColumns,
     }
