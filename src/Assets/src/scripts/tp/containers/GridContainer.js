@@ -693,14 +693,17 @@ class GridContainer extends Component {
 
         tp_dataSchema['id'] = -1;
 
-        tp_colHeader.push('Засах')
-        tp_columns.push({
-            data: 'id',
-            width: 40,
+        if(this.props.permission.u == true || this.props.ifUpdateDisabledCanEditColumns.length >=1){
+            tp_colHeader.push('Засах')
+            tp_columns.push({
+                data: 'id',
+                width: 40,
 
-            renderer: this.editDeleteRender.bind(this),
-            editor: false
-        })
+                renderer: this.editDeleteRender.bind(this),
+                editor: false
+            })
+        }
+
 
         let gridData = listData;
 
@@ -781,7 +784,25 @@ class GridContainer extends Component {
                                 })
 
                             } else {
+                                /* chnage 0,1 value to string*/
+                                let change_value = self.props.gridHeader[conIndex].change_value;
+                               if(change_value){
 
+                                   while (td.firstChild) {
+                                       td.removeChild(td.firstChild);
+                                   }
+
+                                   var textNode = document.createElement('span');
+                                   textNode.innerHTML =   value == '1'
+                                       ?
+                                       self.props.gridHeader[conIndex].change_value[0]
+                                       :
+                                       self.props.gridHeader[conIndex].change_value[1]
+
+                                   td.appendChild(textNode);
+
+
+                               }
                             }
                         }
                         return cellProperties;
