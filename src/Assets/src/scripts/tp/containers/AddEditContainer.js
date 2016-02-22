@@ -136,8 +136,8 @@ class AddEditContainer extends Component {
                     if(this.props.show_saved_alert === true){
                         this.setState({savedAlertShow: true});
 
-                        if(this.state.savedAlertShow === false)
-                            window.location.replace('#/');
+
+
                     } else {
                         window.location.replace('#/');
                     }
@@ -940,7 +940,10 @@ class AddEditContainer extends Component {
 
         const sending = this.state.sending;
         const savedAlertShow = this.state.savedAlertShow;
-        let hideSaveModal = () => this.setState({ savedAlertShow: false });
+        let hideSaveModal = () => {
+            this.setState({ savedAlertShow: false });
+            window.location.replace('#/');
+        }
 
         const gridId = 'grid_table'
 

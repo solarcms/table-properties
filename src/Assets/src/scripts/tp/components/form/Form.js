@@ -286,6 +286,23 @@ export default class Form extends Component {
                     errorText={field.get('error')}
 
                 />
+            case "--disabled":
+                return <Input
+                    disabled={true}
+                    key={keyIndex} dataIndex={index}
+                    fieldClass={fieldClass}
+                    value={mainValue}
+                    type="textarea"
+                    autoFocus={focus}
+                    placeholder={title}
+                    name={name}
+                    validation={field.get('validate')}
+                    setErrorManuale={this.props.setErrorManuale}
+                    edit_parent_id={this.props.edit_parent_id}
+                    changeHandler={this.changeHandler.bind(this, locale_index)}
+                    errorText={field.get('error')}
+
+                />
                 break;
             case "--ckeditor":
                 return <CK
@@ -390,6 +407,14 @@ export default class Form extends Component {
                 </div>
                 break;
             case "--time":
+                let time_show = null;
+
+               if(mainValue && mainValue.length <= 8){
+                   time_show = new Date('1900.01.01 '+mainValue)
+
+               } else {
+                   time_show = new Date(mainValue)
+               }
                 return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass}  `}>
                     <label>
 
@@ -399,8 +424,8 @@ export default class Form extends Component {
                         disabled={thisDisabled}
                         name={name}
                         calendar={false}
-                        defaultValue={mainValue === null ? null : new Date(mainValue)}
-                        value={mainValue === null ? null : new Date(mainValue)}
+                        defaultValue={mainValue === null ? null : time_show}
+                        value={mainValue === null ? null : time_show }
                         format={"HH:mm"}
                         placeholder={title}
                         onChange={this.dateTimeChange.bind(this, locale_index, `${index}`)}

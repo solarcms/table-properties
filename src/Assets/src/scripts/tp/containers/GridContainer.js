@@ -793,11 +793,17 @@ class GridContainer extends Component {
                                    }
 
                                    var textNode = document.createElement('span');
-                                   textNode.innerHTML =   value == '1'
-                                       ?
-                                       self.props.gridHeader[conIndex].change_value[0]
-                                       :
-                                       self.props.gridHeader[conIndex].change_value[1]
+
+
+
+                                       if(value == '1'){
+                                           textNode.innerText = self.props.gridHeader[conIndex].change_value[0]
+
+                                       } else{
+                                           textNode.innerText = self.props.gridHeader[conIndex].change_value[1]
+
+                                       }
+
 
                                    td.appendChild(textNode);
 
