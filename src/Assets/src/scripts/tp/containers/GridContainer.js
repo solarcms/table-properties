@@ -763,7 +763,7 @@ class GridContainer extends Component {
 
 
 
-                if(prop != self.props.identity_name){
+                if(prop != self.props.identity_name && prop != 'id'){
                     var type_col = self.getColumnType(conIndex)
                     if(type_col != '--image' && type_col != '--internal-link' && type_col != '--combobox' && type_col != '--tag'){
                         cellProperties.renderer = function (instance, td, row, col, prop, value, cellProperties) {
