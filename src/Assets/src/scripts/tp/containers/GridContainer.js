@@ -744,16 +744,17 @@ class GridContainer extends Component {
             readOnly: readOnly,
             columnSorting: true,
             sortIndicator: true,
+            fillHandle: false, // drag change value and create row disable
             //trimRows: trimRows,
             //maxRows:maxRows,
             afterChange:this.afterChange.bind(this),
-            afterCreateRow: function(index, amount){
-                if(index >= 1){
-                    gridData.splice(index, amount)
-                }
-
-
-            },
+            //afterCreateRow: function(index, amount){
+            //    if(index >= 1){
+            //        gridData.splice(index, amount)
+            //    }
+            //
+            //
+            //},
             cells: function (row, col, prop) {
 
                 var cellProperties = {};
