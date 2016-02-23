@@ -772,6 +772,12 @@ class Tp
                             ], 400);
                     }
 
+                    if($this->before_insert != null){
+                        $pre_values =  $this->beforeInsertCaller($this->before_insert, $insertQuery);
+
+                        $insertQuery = array_merge($insertQuery, $pre_values);
+                    }
+
 
                     $saved = DB::table($this->table)->insert($insertQuery);
                     $insertedId = DB::getPdo()->lastInsertId();
@@ -789,6 +795,12 @@ class Tp
                         return Response::json(
                             ['errors' => [$validator->messages()]
                             ], 400);
+                    }
+
+                    if($this->before_insert != null){
+                        $pre_values =  $this->beforeInsertCaller($this->before_insert, $insertQuery);
+
+                        $insertQuery = array_merge($insertQuery, $pre_values);
                     }
 
                     $saved = DB::table($this->table)->insert($insertQuery);
