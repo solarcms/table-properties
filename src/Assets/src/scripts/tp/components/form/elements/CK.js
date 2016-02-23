@@ -7,6 +7,12 @@ export default class CK extends Component {
             language: 'EN',
             height: '200',
             width: 'auto',
+            filebrowserBrowseUrl: '/shared/ckeditor/ckfinder/ckfinder.html',
+            filebrowserImageBrowseUrl: '/shared/ckeditor/ckfinder/ckfinder.html?type=Images',
+            filebrowserFlashBrowseUrl: '/shared/ckeditor/ckfinder/ckfinder.html?type=Flash',
+            filebrowserUploadUrl: '/shared/ckeditor/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files',
+            filebrowserImageUploadUrl: '/shared/ckeditor/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images',
+            filebrowserFlashUploadUrl: '/shared/ckeditor/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Flash'
         });
 
         var self = this;
