@@ -374,10 +374,10 @@ class Tp
             if($formControl['type'] == '--combobox' || $formControl['type'] == '--tag' || $formControl['type'] == '--combobox-addable'){
 
                 $options = $formControl['options'];
-                if(isset($options['parent'])){
-                    $FormData[$formControl['column']] = ['data'=>['data'=>[]]];
-
-                } else{
+//                if(isset($options['parent'])){
+//                    $FormData[$formControl['column']] = ['data'=>['data'=>[]]];
+//
+//                } else{
                     $order = explode(" ", $options['grid_default_order_by']);
                     $pre_data = DB::table($options['table'])->select($options['grid_columns'])->orderBy($order[0], $order[1]);
 
@@ -399,8 +399,10 @@ class Tp
 
 
 
+
+
                     $FormData[$formControl['column']] = ['data'=>$data];
-                }
+//                }
 
 
 
@@ -479,6 +481,7 @@ class Tp
                 $FormData = array_merge($FormData,$FormData_pre_sub);
             }
         }
+
 
 
         return $FormData;
@@ -1017,6 +1020,8 @@ class Tp
 
 
         $response = null;
+
+
         //multi items
         if(!empty($this->multi_items_form_input_control)){
             $checkFirst = 0;
@@ -1102,6 +1107,9 @@ class Tp
             $saved = true;
         } else {
 
+
+
+
             $validator = Validator::make($insertQuery, $rules);
             if ( $validator->fails())
             {
@@ -1109,7 +1117,6 @@ class Tp
                     ['errors' => [$validator->messages()]
                     ], 400);
             }
-
 
 
             $saved = DB::table($this->table)->where("$this->identity_name", '=', $id)->update($insertQuery);

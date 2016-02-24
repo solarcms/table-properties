@@ -27,14 +27,51 @@ class AddEditContainer extends Component {
             savedAlertShow: false,
         };
     }
+    getValueByColumn(column){
+        let value = null
+        this.props.formControls.map((fcontrol, findex)=>{
+            if(fcontrol.get('column') == column){
+                value = fcontrol.get('value')
+            }
+        })
 
+        return value;
+    }
     checkValidate() {
         const FD = this.props.formControls;
         let foundError = false;
 
         FD.map((formColumn, index) => {
             if (formColumn.get('type') == '--group') {
+
                 formColumn.get('controls').map((formColumnSub, subIndex) => {
+
+                    if(formColumnSub.get('show')){
+
+                        let showCheckers = formColumnSub.get('show').toJS();
+                        let hideElement = true;
+                        showCheckers.map((showChecker)=>{
+
+                            Object.keys(showChecker).map(checker=>{
+                                //console.log(checker, showChecker[checker])
+
+                                let checkerValue = this.getValueByColumn(checker)
+
+
+                                if(checkerValue == showChecker[checker])
+                                    hideElement = false;
+
+
+                            })
+
+
+                        })
+                        if(hideElement === true){
+                            return false
+                        }
+                    }
+
+
                     const error = (validation(formColumnSub.get('value'), formColumnSub.get('validate')));
                     if (error) {
                         this.props.actions.setError([index, 'controls', subIndex], error);
@@ -42,11 +79,37 @@ class AddEditContainer extends Component {
                     }
                 })
             } else {
+                if(formColumn.get('show')){
+
+                    let showCheckers = formColumn.get('show').toJS();
+                    let hideElement = true;
+                    showCheckers.map((showChecker)=>{
+
+                        Object.keys(showChecker).map(checker=>{
+                            //console.log(checker, showChecker[checker])
+
+                            let checkerValue = this.getValueByColumn(checker)
+
+
+                            if(checkerValue == showChecker[checker])
+                                hideElement = false;
+
+
+                        })
+
+
+                    })
+                    if(hideElement === true){
+                       return false
+                    }
+                }
+
                 const error = (validation(formColumn.get('value'), formColumn.get('validate')));
                 if (error) {
                     this.props.actions.setError([index], error);
                     foundError = true;
                 }
+
             }
         })
         this.props.translateFormControls.map((locale, locale_index) => {

@@ -522,13 +522,27 @@ class GridContainer extends Component {
 
         var selectedId;
         var optionsList = cellProperties.chosenOptions.data;
+        var valueField = cellProperties.chosenOptions.valueField;
+        var textField = cellProperties.chosenOptions.textField;
+
+
+
 
         var values = (value + "").split(",");
         var value = [];
         for (var index = 0; index < optionsList.length; index++) {
-            if (values.indexOf(optionsList[index].id + "") > -1) {
-                selectedId = optionsList[index].id;
-                value.push(optionsList[index].label);
+            if (values.indexOf(optionsList[index][valueField] + "") > -1) {
+                selectedId = optionsList[index][valueField];
+
+                if (textField instanceof Array) {
+                    textField.map(tf=>{
+                        value.push(optionsList[index][tf]);
+                    })
+                }
+                else {
+                    value.push(optionsList[index][textField]);
+                }
+
             }
         }
         value = value.join(", ");
@@ -537,6 +551,8 @@ class GridContainer extends Component {
         let pre =  document.createElement('span');
         pre.innerHTML = value
         td.appendChild(pre)
+
+
         return td;
     }
 
@@ -590,13 +606,17 @@ class GridContainer extends Component {
                         break;
                     case "--combobox":
 
+
+
                         gridColumn = {
                             data: header.column,
                             editor: "chosen",
 
                             chosenOptions: {
                                 multiple: false,
-                                data: this.props.formData[header.column].data.data
+                                data: this.props.formData[header.column].data.data,
+                                valueField: header.options.valueField,
+                                textField: header.options.textField,
                             },
                             validator: this.validationCaller.bind(this, header.validate),
                             renderer: this.customDropdownRenderer.bind(this),

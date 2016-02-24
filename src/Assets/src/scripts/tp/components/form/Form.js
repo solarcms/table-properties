@@ -99,6 +99,33 @@ export default class Form extends Component {
 
         const keyIndex = locale_index === false ? index : `__local__${locale_index}-${index}`
 
+        if(field.get('show')){
+
+            let showCheckers = field.get('show').toJS();
+            let hideElement = true;
+            showCheckers.map((showChecker)=>{
+
+                Object.keys(showChecker).map(checker=>{
+                    //console.log(checker, showChecker[checker])
+
+                    let checkerValue = this.getValueByColumn(checker)
+
+
+                    if(checkerValue == showChecker[checker])
+                        hideElement = false;
+
+
+                })
+
+
+            })
+            if(hideElement === true){
+                return false
+            }
+
+        }
+
+
         switch (field.get('type')) {
             case "--text":
                 return <Input
