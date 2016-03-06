@@ -2020,8 +2020,15 @@ class Tp
 
         $thumbPath = $destinationPath . $this->thumb_folder . DIRECTORY_SEPARATOR;
 
-        unlink($destinationPath.$filename);
-        unlink($thumbPath.$filename);
+        if(file_exists($destinationPath.$filename)){
+            unlink($destinationPath.$filename);
+        }
+
+        if(file_exists($thumbPath.$filename)){
+            unlink($thumbPath.$filename);
+        }
+
+
 
         return Response::json('success', 200);
     }
