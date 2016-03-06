@@ -19,6 +19,13 @@ export function number(value) {
     }
 }
 
+export function password(value) {
+
+    if (!isEmpty(value) && !/(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z])/i.test(value)) {
+        return 'Нууц үг том үсэг, жижиг үсэг, тоо эсвэл тусгай тэмдэгт агуулсан байх ёстой';
+    }
+}
+
 export function required(value) {
     if (isEmpty(value)) {
         return 'Заавал бөглөх';
@@ -64,51 +71,79 @@ export function match(field) {
         }
     };
 }
+export function passConfirm(value, value2) {
+    if (isEmpty(value)) {
+        return 'Заавал бөглөх';
+    } else if(value != value2){
+        return 'Баталгаажуулалт таарсангүй';
+    }
+}
 
 
-export default function validation(value, validationData){
-
-    let rules = validationData.split('|');
+export default function validation(value, validationData, passConfirmValue){
     let errors = null;
-    rules.map((rule) => {
+    if(passConfirmValue){
+        const error = passConfirm(value, passConfirmValue);
+        if (error) {
+            if(errors !== null)
+                errors = errors+", "+error;
+            else
+                errors = error;
+        }
+    } else {
+        let rules = validationData.split('|');
 
-        if(rule == 'required'){
-            const error = required(value);
-            if (error) {
-                if(errors !== null)
-                    errors = errors+", "+error;
-                else
-                    errors = error;
+        rules.map((rule) => {
+
+            if(rule == 'required'){
+                const error = required(value);
+                if (error) {
+                    if(errors !== null)
+                        errors = errors+", "+error;
+                    else
+                        errors = error;
+                }
             }
-        }
-        else if(rule == 'email'){
-            const error = email(value);
-            if (error) {
-                if(errors !== null)
-                    errors = errors+", "+error;
-                else
-                    errors = error;
+            else if(rule == 'email'){
+                const error = email(value);
+                if (error) {
+                    if(errors !== null)
+                        errors = errors+", "+error;
+                    else
+                        errors = error;
+                }
             }
-        }
-        else if(rule == 'link'){
-            const error = link(value);
-            if (error) {
-                if(errors !== null)
-                    errors = errors+", "+error;
-                else
-                    errors = error;
+            else if(rule == 'link'){
+                const error = link(value);
+                if (error) {
+                    if(errors !== null)
+                        errors = errors+", "+error;
+                    else
+                        errors = error;
+                }
             }
-        }
-        else if(rule == 'number'){
-            const error = number(value);
-            if (error) {
-                if(errors !== null)
-                    errors = errors+", "+error;
-                else
-                    errors = error;
+            else if(rule == 'number'){
+                const error = number(value);
+                if (error) {
+                    if(errors !== null)
+                        errors = errors+", "+error;
+                    else
+                        errors = error;
+                }
             }
-        }
-    })
+            else if(rule == 'password'){
+                const error = password(value);
+                if (error) {
+                    if(errors !== null)
+                        errors = errors+", "+error;
+                    else
+                        errors = error;
+                }
+            }
+        })
+
+    }
+
 
     return errors;
 

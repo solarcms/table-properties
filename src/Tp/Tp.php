@@ -99,6 +99,9 @@ class Tp
     //public hidden value
     public $hidden_values = [];
 
+    //password change
+    public $password_change = false;
+
     function __construct(){
 
     }
@@ -218,6 +221,7 @@ class Tp
             'identity_name'=>$this->identity_name,
             'show_saved_alert'=>$this->show_saved_alert,
             'save_alert_word'=>$this->save_alert_word,
+            'password_change'=>$this->password_change,
         ];
 
         ////
@@ -909,6 +913,8 @@ class Tp
 
                                 } elseif($formControl['type']=='--password'){
                                     $insertQuery[$formControl['column']] = bcrypt($formData[$formControl['column']]);
+                                } elseif($formControl['type']=='--password-confirm'){
+//                          /  $insertQuery[$formControl['column']] = bcrypt($multiItem[$formControl['column']]);
                                 }else
                                     $insertQuery[$formControl['column']] = $formData[$formControl['column']];
                             }
@@ -948,6 +954,8 @@ class Tp
 
                     } elseif($formControl['type']=='--password'){
                         $insertQuery[$formControl['column']] = bcrypt($formData[$formControl['column']]);
+                    } elseif($formControl['type']=='--password-confirm'){
+//                          /  $insertQuery[$formControl['column']] = bcrypt($multiItem[$formControl['column']]);
                     }else
                         $insertQuery[$formControl['column']] = $formData[$formControl['column']];
 
@@ -1061,8 +1069,11 @@ class Tp
                                 $checkBoxValue = 0;
                             $insertQuery[$formControl['column']] = $checkBoxValue;
 
-                        } elseif($formControl['type']=='--password'){
+                        } elseif($formControl['type']=='--password') {
                             $insertQuery[$formControl['column']] = bcrypt($multiItem[$formControl['column']]);
+                        }
+                        elseif($formControl['type']=='--password-confirm'){
+//                          /  $insertQuery[$formControl['column']] = bcrypt($multiItem[$formControl['column']]);
                         }else
                             $insertQuery[$formControl['column']] = $multiItem[$formControl['column']];
                     }

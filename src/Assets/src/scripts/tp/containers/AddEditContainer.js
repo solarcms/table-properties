@@ -78,7 +78,8 @@ class AddEditContainer extends Component {
                         foundError = true;
                     }
                 })
-            } else {
+            } else
+            {
                 if(formColumn.get('show')){
 
                     let showCheckers = formColumn.get('show').toJS();
@@ -103,8 +104,16 @@ class AddEditContainer extends Component {
                        return false
                     }
                 }
+                let error = null;
+                if(formColumn.get('type') == '--password'){
+                    error = (validation(formColumn.get('value'), 'password|required'));
+                } else if(formColumn.get('type') == '--password-confirm'){
+                    error = (validation(formColumn.get('value'), 'password', this.getValueByColumn('password')))
+                } else {
+                    error = (validation(formColumn.get('value'), formColumn.get('validate')));
+                }
 
-                const error = (validation(formColumn.get('value'), formColumn.get('validate')));
+
                 if (error) {
                     this.props.actions.setError([index], error);
                     foundError = true;
@@ -329,8 +338,17 @@ class AddEditContainer extends Component {
 
         const field = this.props.formControls.getIn(realDataIndex);
 
+        let error = null;
 
-        const error = validation(value, field.get('validate'));
+        if(field.get('type') == '--password'){
+             error = validation(value, 'password|required');
+        }else if(field.get('type') == '--password-confirm'){
+            error = validation(value, 'password', this.getValueByColumn('password'));
+        } else {
+
+             error = validation(value, field.get('validate'));
+        }
+
 
         this.props.actions.setError(realDataIndex, error);
 
@@ -359,11 +377,11 @@ class AddEditContainer extends Component {
             this.props.actions.clearFromValidation();
 
         if (this.props.params.id) {
-
             if (this.props.ifUpdateDisabledCanEditColumns.length <= 0)
                 if (this.props.permission.u !== true)
                     window.location.replace('#/');
 
+            if(this.props.password_change === false)
             edit(this.props.params.id).then((data)=> {
                 if (data.length >= 1){
                     this.props.formControls.map((formControl, index)=> {
@@ -458,6 +476,8 @@ class AddEditContainer extends Component {
 
                 this.props.actions.setShowAddEditForm(true)
             });
+            else
+                this.props.actions.setShowAddEditForm(true)
 
 
 
@@ -1133,6 +1153,7 @@ function mapStateToProps(state) {
     return {
         setup: Grid.get('setup').toJS(),
         locales: Grid.get('setup').toJS().locales,
+        password_change: Grid.get('setup').toJS().password_change,
         gridHeader: Grid.get('setup').toJS().grid_output_control,
         defaultLocale: Grid.get('defaultLocale'),
         formControls: Form.get('form_input_control'),

@@ -142,6 +142,40 @@ export default class Input extends Component {
                         onFocus={moveCursorToEnd}
                         type={realType}/>
                 break;
+            case 'password':
+                input =
+                    <input
+                        disabled={disabled}
+                        autoFocus={autoFocus}
+                        className="form-control"
+                        data-index={dataIndex}
+                        name={name}
+                        value={value}
+                        defaultValue={value}
+                        placeholder={placeholder}
+                        onChange={changeHandler}
+                        onFocus={focusHandler}
+                        onBlur={this.blurFunction.bind(this)}
+                        type={realType}/>
+
+                break;
+            case 'password-confirm':
+                input =
+                    <input
+                        disabled={disabled}
+                        autoFocus={autoFocus}
+                        className="form-control"
+                        data-index={dataIndex}
+                        name={name}
+                        value={value}
+                        defaultValue={value}
+                        placeholder={placeholder}
+                        onChange={changeHandler}
+                        onFocus={focusHandler}
+                        onBlur={this.blurFunction.bind(this)}
+                        type='password'/>
+
+                break;
             default:
                 input = <input
                         disabled={disabled}

@@ -151,7 +151,25 @@ export default class Form extends Component {
                     key={keyIndex} dataIndex={index}
                     fieldClass={fieldClass}
                     value={mainValue}
-                    type="text"
+                    type="password"
+                    autoFocus={focus}
+                    placeholder={title}
+                    name={name}
+                    validation={field.get('validate')}
+                    setErrorManuale={this.props.setErrorManuale}
+                    edit_parent_id={this.props.edit_parent_id}
+                    changeHandler={this.changeHandler.bind(this, locale_index)}
+                    errorText={field.get('error')}
+
+                />
+                break;
+            case "--password-confirm":
+                return <Input
+                    disabled={thisDisabled}
+                    key={keyIndex} dataIndex={index}
+                    fieldClass={fieldClass}
+                    value={mainValue}
+                    type="password-confirm"
                     autoFocus={focus}
                     placeholder={title}
                     name={name}
