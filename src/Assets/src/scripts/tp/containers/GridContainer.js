@@ -73,8 +73,8 @@ class GridContainer extends Component {
             exportHiddenRows: true,     // default false, exports the hidden rows
             exportHiddenColumns: true,  // default false, exports the hidden columns
             columnHeaders: true,        // default false, exports the column headers
-            rowHeaders: true,           // default false, exports the row headers\
-            range: [null, null, this.props.gridHeader.length-1, this.props.gridHeader.length-1]
+            rowHeaders: true        // default false, exports the row headers\
+            //range: [null, null, this.props.gridHeader.length-1, this.props.gridHeader.length-1]
         });
     }
     hideShowColumn(show, columnIndex){
