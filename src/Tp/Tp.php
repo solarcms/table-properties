@@ -648,6 +648,8 @@ class Tp
 
                 } elseif($formControl['type']=='--password'){
                     $insertQuery[$formControl['column']] = bcrypt($formData[$formControl['column']]);
+                } elseif($formControl['type']=='--password-confirm'){
+//                          /  $insertQuery[$formControl['column']] = bcrypt($multiItem[$formControl['column']]);
                 }else
                     $insertQuery[$formControl['column']] = $formData[$formControl['column']];
             }
@@ -763,6 +765,8 @@ class Tp
 
                         } elseif($formControl['type']=='--password'){
                             $insertQuery[$formControl['column']] = bcrypt($multiItem[$formControl['column']]);
+                        } elseif($formControl['type']=='--password-confirm'){
+//                          /  $insertQuery[$formControl['column']] = bcrypt($multiItem[$formControl['column']]);
                         }else
                             $insertQuery[$formControl['column']] = $multiItem[$formControl['column']];
                     }
