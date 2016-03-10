@@ -65,10 +65,10 @@ class Tp
     public $subItems = [];
 
     //translation
-    public $locales_table = "locales";
+    public $locales_table = "solar_locales";
     public $locale_connector = "locale_id"; // same on all translate able tables
-    public $default_locale = 'EN'; // EN;
-    public $translate_form_input_control = []; // EN;
+    public $default_locale = 'MN'; // MN;
+    public $translate_form_input_control = [];
 
 
 
@@ -1791,7 +1791,6 @@ class Tp
         $data = [];
         $found = false;
 
-
         $data = $this->getCascade($parent, $child, $this->form_input_control);
 
         if(empty($data)){
@@ -1807,8 +1806,6 @@ class Tp
             foreach($this->form_input_control as $formControl) {
 
                 if($formControl['type'] == '--combobox-addable'){
-
-
 
                     $data = $this->getCascade($parent, $child, $formControl['options']['form_input_control']);
 
@@ -2043,15 +2040,13 @@ class Tp
             unlink($thumbPath.$filename);
         }
 
-
-
         return Response::json('success', 200);
     }
 
     public function generateLocale()
     {
-        $words = DB::table('static_words')->get();
-        $locales = DB::table('locales')->get();
+        $words = DB::table('solar_static_words')->get();
+        $locales = DB::table('solar_locales')->get();
         $i18Path =  public_path('i18').DIRECTORY_SEPARATOR;
         $localeArr = [];
         if (!is_dir($i18Path)) {
@@ -2071,7 +2066,7 @@ class Tp
                 }
             }
         }
-        //dd($localeArr);
+
         foreach ($localeArr as $key => $value) {
             $file = $i18Path . strtolower($key) . ".json";
             file_put_contents($file, json_encode($value, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE));
