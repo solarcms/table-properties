@@ -67,10 +67,6 @@ class Tp
     public $subItems = [];
 
 
-
-
-
-
     //TRIGGER
     public $save_from_parent = []; // parent columns :"id", "active", "name", child columns:'id', 'parent_id', 'parent_name'(NULL ABLE)  #['child_column'=>'parent_name', 'parent_column'=>'name']
     public $save_sub_items_count = []; // parent columns :"id", "active", "name" "total_childs", child columns:'id', 'parent_id',  #['child_connect_column'=>'parent_id', 'parent_column'=>'total_childs']
@@ -80,6 +76,7 @@ class Tp
     public $save_button_text = 'Хадгалах';
     public $cancel_button_text = 'Болих';
     public $delete_button_text = 'Устгах';
+    public $edit_delete_column_title = 'Харах';
 
     //action words
     public $save_alert_word = 'Saved';
@@ -114,9 +111,16 @@ class Tp
     function __construct(){
         $this->config = Config::get('tp_config');
 
+        //translation config
         $this->default_locale = $this->config['default_locale'];
         $this->static_words_table = $this->config['static_words_table'];
         $this->locales_table = $this->config['locales_table'];
+
+        //button's text config
+        $this->save_button_text = $this->config['save_button_text'];
+        $this->cancel_button_text = $this->config['cancel_button_text'];
+        $this->delete_button_text = $this->config['delete_button_text'];
+        $this->edit_delete_column_title = $this->config['edit_delete_column_title'];
 
 
     }
@@ -238,6 +242,7 @@ class Tp
             'show_saved_alert'=>$this->show_saved_alert,
             'save_alert_word'=>$this->save_alert_word,
             'password_change'=>$this->password_change,
+            'edit_delete_column_title'=>$this->edit_delete_column_title
         ];
 
         ////

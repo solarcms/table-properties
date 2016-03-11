@@ -714,7 +714,7 @@ class GridContainer extends Component {
         tp_dataSchema['id'] = -1;
 
         if(this.props.permission.u == true || this.props.ifUpdateDisabledCanEditColumns.length >=1){
-            tp_colHeader.push('Засах')
+            tp_colHeader.push(this.props.edit_delete_column_title)
             tp_columns.push({
                 data: 'id',
                 width: 40,
@@ -1006,6 +1006,7 @@ function mapStateToProps(state) {
         currentPage: Grid.get('currentPage'),
         pageLimit: Grid.get('pageLimit'),
         searchValue: Grid.get('searchValue'),
+        edit_delete_column_title: Grid.get('edit_delete_column_title'),
 
     }
 }

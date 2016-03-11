@@ -22,7 +22,8 @@ const initialState = {
     comboBoxAddAble: {},
     translateFormControls:{},
     button_texts:{},
-    defaultLocale:null
+    defaultLocale:null,
+    edit_delete_column_title:'Засах'
 };
 
 export default createReducer(initialState, {
@@ -36,6 +37,7 @@ export default createReducer(initialState, {
         state = state.set('pageLimit', setupData.pageLimit);
 
         state = state.set('button_texts', setupData.button_texts);
+        state = state.set('edit_delete_column_title', setupData.edit_delete_column_title);
 
 
         return state;
