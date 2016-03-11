@@ -10,7 +10,12 @@ var uploadedFiles = [];
 export default class MultiFileUploader extends Component {
 
     componentWillUnmount(){
+
         uploadedFiles = [];
+    }
+
+    componentWillMount(){
+
     }
 
 
