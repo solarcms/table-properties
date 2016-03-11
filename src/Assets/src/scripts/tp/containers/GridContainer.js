@@ -754,7 +754,7 @@ class GridContainer extends Component {
             stretchH: 'all',
             data: gridData,
             dataSchema: tp_dataSchema,
-            rowHeaders: false,
+            rowHeaders: true,
             colHeaders: tp_colHeader,
             columns: tp_columns,
             manualColumnResize: true,
