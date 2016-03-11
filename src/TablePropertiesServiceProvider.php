@@ -20,7 +20,7 @@ class TablePropertiesServiceProvider extends ServiceProvider
         // For publishing configuration file
         $this->publishes([
             __DIR__ . '/Config/tableproperties.php' => config_path('tp_config.php'),
-        ], 'tpconfig');
+        ], 'tp-config');
 
         // For publishing assets
         $this->publishes([

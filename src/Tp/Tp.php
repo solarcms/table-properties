@@ -12,9 +12,11 @@ use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use App;
+use Illuminate\Support\Facades\Config;
 
 class Tp
 {
+
 
     public $viewName = '';
     public $table = '';                     // required, table for use for sql_insert(), sql_update(), sql_update_grid() and sql_delete()
@@ -64,11 +66,7 @@ class Tp
     //subitems
     public $subItems = [];
 
-    //translation
-    public $locales_table = "solar_locales";
-    public $locale_connector = "locale_id"; // same on all translate able tables
-    public $default_locale = 'MN'; // MN;
-    public $translate_form_input_control = [];
+
 
 
 
@@ -102,9 +100,27 @@ class Tp
     //password change
     public $password_change = false;
 
+
+    public $confing = [];
+
+    //translation
+    public $locales_table = "solar_locales";
+    public $static_words_table = "solar_static_words";
+    public $locale_connector = "locale_id"; // same on all translate able tables
+    public $default_locale = "EN";
+    public $translate_form_input_control = [];
+
+
     function __construct(){
+        $this->config = Config::get('tp_config');
+
+        $this->default_locale = $this->config['default_locale'];
+        $this->static_words_table = $this->config['static_words_table'];
+        $this->locales_table = $this->config['locales_table'];
+
 
     }
+
 
     public function run($action){
 
@@ -2045,8 +2061,8 @@ class Tp
 
     public function generateLocale()
     {
-        $words = DB::table('solar_static_words')->get();
-        $locales = DB::table('solar_locales')->get();
+        $words = DB::table($this->static_words_table)->get();
+        $locales = DB::table($this->locales_table)->get();
         $i18Path =  public_path('i18').DIRECTORY_SEPARATOR;
         $localeArr = [];
         if (!is_dir($i18Path)) {
