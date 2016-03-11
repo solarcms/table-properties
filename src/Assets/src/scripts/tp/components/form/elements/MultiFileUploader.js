@@ -9,6 +9,11 @@ var uploadedFiles = [];
 
 export default class MultiFileUploader extends Component {
 
+    componentWillUnmount(){
+        uploadedFiles = [];
+    }
+
+
     uploadSuccess(e, responsejson){
 
         if(e.status == 'success'){
@@ -55,7 +60,6 @@ export default class MultiFileUploader extends Component {
 
 
     }
-
     removeImage(e){
         let delIndex = -1;
         if(e.uniqueName){
