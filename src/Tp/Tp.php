@@ -1164,6 +1164,7 @@ class Tp
 
         if($this->generateLocaleFile == true){
             $this->generateLocale();
+            $this->generateLocalePhp();
         }
 
         if($saved == true || $saved == 'none'){
@@ -2091,6 +2092,43 @@ class Tp
         foreach ($localeArr as $key => $value) {
             $file = $i18Path . strtolower($key) . ".json";
             file_put_contents($file, json_encode($value, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE));
+        }
+    }
+    function generateLocalePhp()
+    {
+        $words = DB::table('static_words')->get();
+        $locales = DB::table('locales')->get();
+        $i18Path = base_path('resources' . DIRECTORY_SEPARATOR . 'lang') . DIRECTORY_SEPARATOR;
+        $localeArr = [];
+
+        if (!is_dir($i18Path)) {
+            mkdir($i18Path, 0755, true);
+        }
+
+        foreach ($locales as $l) {
+            $localeArr[$l->code] = [];
+        }
+
+        foreach ($words as $w) {
+            $translation = json_decode($w->translation);
+            $key = $w->key;
+            foreach ($translation as $t) {
+                if (array_key_exists($t->locale, $localeArr)) {
+                    $arr = [];
+                    $arr[$key] = $t->value;
+                    $localeArr[$t->locale][$key] = $t->value;
+                }
+            }
+        }
+
+        foreach ($localeArr as $key => $value) {
+            $langFilePath = $i18Path . strtolower($key) . DIRECTORY_SEPARATOR;
+            if (!is_dir($langFilePath)) {
+                mkdir($langFilePath, 0755, true);
+            }
+            $file = $langFilePath . 'tr.php';
+            $str = '<?php return ' . var_export($value, true) . ';';
+            file_put_contents($file, $str);
         }
     }
     public function callMultImtems()
