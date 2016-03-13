@@ -18,7 +18,7 @@ var tp_handSonTable = null
 var exportPlugin = null
 var tp_dataSchema = {};
 var maxRows = 0;
-
+import Loading from '../components/loading/loading'
 class GridContainer extends Component {
 
     /* component life cycle ----------------------------------------- */
@@ -557,6 +557,7 @@ class GridContainer extends Component {
     }
 
     setUpHandsonTable(){
+        $('#tp_grid').empty();
 
         const {gridHeader, listData} = this.props;
 
@@ -873,6 +874,8 @@ class GridContainer extends Component {
             columnDelimiter: ';', // default ','
 
         });
+
+
     }
 
     render() {
@@ -948,7 +951,7 @@ class GridContainer extends Component {
                 />
 
                 <div id="tp_grid">
-
+                    <Loading />
                 </div>
 
                 {BottomPagination}
@@ -974,9 +977,7 @@ GridContainer.defaultProps = {
     ifUpdateDisabledCanEditColumns:[]
 
 }
-GridContainer.propTypes = {
 
-}
 
 function mapStateToProps(state) {
 

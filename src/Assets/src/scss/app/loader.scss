@@ -1,10 +1,117 @@
-.tp-laoder{
-  width: 100%;
-  height: 300px;
+.loading-bar{
+
+
   text-align: center;
-  padding: 100px 0;
-  img{
-    display: block;
-    margin: 0 auto;
+  position: fixed;
+  left: 50%;
+  top: 40%;
+  transform: translate(-50%, -50%);
+}
+
+.app-hint,
+.app-loading {
+  color: #eee;
+  background: rgba(49,51,61,0.7);
+  font: normal 12px/1.2em 'Lucida Grande', 'Lucida Sans Unicode', Verdana, 'Helvetica Neue', Arial, Helvetica, sans-serif;
+  text-decoration: none;
+  text-align: center;
+  direction: ltr;
+  display: inline-block;
+  margin: 0;
+  position: absolute;
+  z-index: 1000;
+  pointer-events: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-transition: opacity 0.25s ease;
+  transition: opacity 0.25s ease;
+}
+
+/* Loading indicator */
+.app-loading {
+  font-size: 0;
+  border-radius: 100%;
+  opacity: 0;
+  padding: 0;
+  width: 36px;
+  height: 36px;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+.app-loading:after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 0; right: 0;
+  width: 24px;
+  height: 24px;
+  margin: auto;
+  text-indent: -9999em;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 1);
+  border-top-color: transparent;
+  box-sizing: border-box;
+}
+.app-loading.shown {
+  opacity: 1;
+  z-index: 1;
+  -webkit-transition: opacity 0s;
+  transition: opacity 0s;
+}
+.app-loading.shown:after {
+  -webkit-animation: spin-loading .9s infinite linear;
+  animation: spin-loading .9s infinite linear;
+}
+
+@-webkit-keyframes spin-loading {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
   }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes spin-loading {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+.lt-ie10-magic .app-loading {
+  font-size: 12px;
+  padding: .7em 1.1em;
+  width: auto;
+  height: auto;
+}
+.lt-ie10-magic .app-loading:after {
+  content: 'Loading...';
+  text-indent: 0;
+  border: none;
+  position: relative;
+}
+
+.lt-ie9-magic .app-loading {
+  filter: alpha(opacity=0);
+  right: 0;
+  left:  0;
+  width: 126px;
+  margin: auto;
+}
+.lt-ie9-magic .app-hint-message,
+.lt-ie9-magic .app-loading.shown {
+  background: transparent !important;
+  filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#7c31333D', EndColorStr='#7c31333D');
+}
+.lt-ie9-magic .app-hint-hidden {
+  filter: alpha(opacity=0);
 }

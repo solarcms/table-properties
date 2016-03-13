@@ -18,6 +18,7 @@ var tp_dataSchema = {};
 var maxRows = 0;
 var listData = []
 var save_first_id_column_ = 0
+import Loading from '../components/loading/loading'
 class AddEditContainer extends Component {
     constructor(props) {
         super(props);
@@ -1052,11 +1053,7 @@ class AddEditContainer extends Component {
 
             />
             :
-            <div className="tp-laoder">
-                <img src="/shared/table-properties/img/loader.gif" alt="Loading"/>
-                <br/>
-                Ачааллаж байна
-            </div>
+            <Loading />
 
         const formSubItmes = subItems.size >= 1 ?
             <SubItemsContainer formData={formData} subItems={subItems} edit_parent_id={edit_parent_id}
