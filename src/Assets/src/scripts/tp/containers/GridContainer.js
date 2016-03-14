@@ -439,6 +439,8 @@ class GridContainer extends Component {
 
                 let rowDatas = this.getData(changes[0][0]);
 
+
+
                 let error_not_found = true;
 
                 let data = {};
@@ -521,29 +523,34 @@ class GridContainer extends Component {
         }
 
         var selectedId;
+        var multiple = cellProperties.chosenOptions.multiple;
         var optionsList = cellProperties.chosenOptions.data;
         var valueField = cellProperties.chosenOptions.valueField;
         var textField = cellProperties.chosenOptions.textField;
-
-
-
+        var valueReal = value;
 
         var values = (value + "").split(",");
+
+
         var value = [];
         for (var index = 0; index < optionsList.length; index++) {
-            if (values.indexOf(optionsList[index][valueField] + "") > -1) {
-                selectedId = optionsList[index][valueField];
 
-                if (textField instanceof Array) {
-                    textField.map(tf=>{
-                        value.push(optionsList[index][tf]);
+
+                if (multiple === true) {
+
+                    values.map(tagValue=>{
+
+                        if(tagValue == optionsList[index][valueField]){
+                            value.push(optionsList[index][textField]);
+                        }
                     })
                 }
                 else {
-                    value.push(optionsList[index][textField]);
-                }
+                    if(valueReal == optionsList[index][valueField]){
+                        value.push(optionsList[index][textField]);
+                    }
 
-            }
+                }
         }
         value = value.join(", ");
 
@@ -632,7 +639,9 @@ class GridContainer extends Component {
 
                             chosenOptions: {
                                 multiple: true,
-                                data: this.props.formData[header.column].data.data
+                                data: this.props.formData[header.column].data.data,
+                                valueField: header.options.valueField,
+                                textField: header.options.textField,
                             },
                             validator: this.validationCaller.bind(this, header.validate),
                             renderer: this.customDropdownRenderer.bind(this),
