@@ -541,12 +541,22 @@ class GridContainer extends Component {
                     values.map(tagValue=>{
 
                         if(tagValue == optionsList[index][valueField]){
+                            if (textField instanceof Array) {
+                                textField.map(tf=>{
+                                    value.push(optionsList[index][tf]);
+                                })
+                            } else
                             value.push(optionsList[index][textField]);
                         }
                     })
                 }
                 else {
                     if(valueReal == optionsList[index][valueField]){
+                        if (textField instanceof Array) {
+                            textField.map(tf=>{
+                                value.push(optionsList[index][tf]);
+                            })
+                        } else
                         value.push(optionsList[index][textField]);
                     }
 
