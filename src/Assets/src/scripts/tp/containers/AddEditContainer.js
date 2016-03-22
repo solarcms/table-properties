@@ -202,11 +202,13 @@ class AddEditContainer extends Component {
         if (foundError === false){
             this.setState({sending: true});
             save(FD, this.props.translateFormControls, this.props.subItems, multiItems).done((data)=> {
-                if (data == 'success') {
+                
 
                     this.setState({sending: false});
-
-                    if(this.props.show_saved_alert === true){
+                    if(this.props.showInsertResponse === true){
+                        alert(data);
+                        window.location.replace('#/');
+                    }else if(this.props.show_saved_alert === true){
                         this.setState({savedAlertShow: true});
 
 
@@ -217,7 +219,7 @@ class AddEditContainer extends Component {
 
 
 
-                }
+
             }).fail(()=> {
                 alert("Уучлаарай алдаа гарлаа дахин оролдоно уу")
             })
@@ -1165,6 +1167,7 @@ function mapStateToProps(state) {
         button_texts: Grid.get('button_texts'),
         show_saved_alert: Form.get('show_saved_alert'),
         save_alert_word: Form.get('save_alert_word'),
+        showInsertResponse: Form.get('showInsertResponse'),
         permission: Grid.get('setup').toJS().permission,
         ifUpdateDisabledCanEditColumns: Grid.get('setup').toJS().ifUpdateDisabledCanEditColumns,
     }

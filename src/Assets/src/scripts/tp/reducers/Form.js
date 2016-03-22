@@ -13,6 +13,7 @@ const initialState = {
     identity_name:null,
     formData:{},
     showAddEditForm:false,
+    showInsertResponse:false,
     focusIndex:0,
 
 };
@@ -49,6 +50,7 @@ export default createReducer(initialState, {
         state = state.set('identity_name', setupData.identity_name);
         state = state.set('show_saved_alert', setupData.show_saved_alert);
         state = state.set('save_alert_word', setupData.save_alert_word);
+        state = state.set('showInsertResponse', setupData.show_insert_response);
 
         return state;
     },

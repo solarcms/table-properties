@@ -81,6 +81,8 @@ class Tp
     //action words
     public $save_alert_word = 'Saved';
     public $show_saved_alert= false;
+    public $show_insert_response= false;
+    public $insert_response_function= null;
 
 
     // generate locale's files
@@ -240,6 +242,7 @@ class Tp
             'update_row'=>$this->update_row,
             'identity_name'=>$this->identity_name,
             'show_saved_alert'=>$this->show_saved_alert,
+            'show_insert_response'=>$this->show_insert_response,
             'save_alert_word'=>$this->save_alert_word,
             'password_change'=>$this->password_change,
             'edit_delete_column_title'=>$this->edit_delete_column_title
@@ -614,9 +617,14 @@ class Tp
 
         return app($controller)->$function($arguments);
 
-//        $controller = App::make($controller);
-//
-//        return  App::call([$controller, $function], $arguments);
+    }
+
+    public function responseCaller($insert_response_function, $insertQuery){
+
+        $controller = $insert_response_function['controller'];
+        $function = $insert_response_function['function'];
+        return app($controller)->$function($insertQuery);
+
     }
 
     public function insert(){
@@ -875,7 +883,11 @@ class Tp
 
 
         if($saved){
+            if($this->insert_response_function == null)
             return Response::json('success', 200);
+            else {
+                return  $this->responseCaller($this->insert_response_function, $insertQuery);
+            }
         } else {
             return Response::json('error', 400);;
         }
