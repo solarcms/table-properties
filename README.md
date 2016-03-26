@@ -1,28 +1,33 @@
-# Solar CMS table-properties module
+# Solar CMS Table-properties module
 
-Grid Features
-========
+#### Grid Features
+
 - Dynamic grid
 - Fixed Rom & Column in grid
-- Inline add & edit
 - Auto calculation like excel
 - Responsive
 - Grid permission CRUD
 - Grid column types image, link, internal link ...
 - [Change enum column's value in grid row] (https://github.com/solarcms/table-properties#change-enum-columns-value-in-grid-row)
+- Inline add & edit
+- translation
 
-Form Features
-========
+
+#### Form Features
+
 - Dynamic form
 - [Show and Hide by other element's value] (https://github.com/solarcms/table-properties#show-and-hide-by-other-elements-value--Өөр-элелентийн-утгаас-хамаарч-харуулах-нуух)
 - [Before insert] (https://github.com/solarcms/table-properties#before-insert)
 - [Support multi element types] (https://github.com/solarcms/table-properties#support-multi-element-types)
+- Translation
+
+
 
 
 # Grid Features
 
-Change enum column's value in grid row
-------------
+#### Change enum column's value in grid row
+
 Grid дээр харуулах мөр доторх баганыг утгаас нь хамаарч өөр текст харуулах бол хэргэлнэ.
 Жишээ:
 
@@ -36,9 +41,9 @@ $tp->form_input_control = [
 
 # Form Features
 
-Show and Hide by other element's value == Өөр элелентийн утгаас хамаарч харуулах, нуух
-------------
-   Энэ боломж нь аль нэг элементийн утгаас хамаарч тухайн элеметийг харуулах, нуух үйлдэл хийнэ.  Form-н column нь дотроо хийж өгөнө 'show'=>[['is_baiguullaga'=>0]]  хийж өгөхдөө ямар элеметийн утга ямар байхад харуулах аа бичиж өгнө.
+#### Show and Hide by other element's value
+
+Өөр элелентийн утгаас хамаарч харуулах, нуух. Энэ боломж нь аль нэг элементийн утгаас хамаарч тухайн элеметийг харуулах, нуух үйлдэл хийнэ.  Form-н column нь дотроо хийж өгөнө 'show'=>[['is_baiguullaga'=>0]]  хийж өгөхдөө ямар элеметийн утга ямар байхад харуулах аа бичиж өгнө.
 Жишээ:
 
 ```php
@@ -52,8 +57,8 @@ $tp->form_input_control = [
 ```
 
 
-Before insert
-------------
+#### Before insert
+
 Form-н мэдээллийг хадгалахаас өмнө мэдээллийг өөрчлөх эсвэл мэдээлэл нэмэх боломжтой, ямар нэгэн Conroller-н Function зааж өгнө.
 Жишээ:
 
@@ -85,8 +90,8 @@ $tp->before_insert = [
      }
 ```
 
-Support multi element types
-------------
+#### Support multi element types
+
 - --text
 - --number
 - --money
