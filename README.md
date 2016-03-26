@@ -25,7 +25,7 @@
 - [Change enum column's value in grid row] (https://github.com/solarcms/table-properties#change-enum-columns-value-in-grid-row)
 - Inline add & edit
 - translation
-- [CRUD permissio] (https://github.com/solarcms/table-properties#CRUD-permission)
+- [CRUD permission] (https://github.com/solarcms/table-properties#crud-permission)
 - Order
 - Page name
 - Created at
@@ -38,7 +38,11 @@
 - resize column & row
 - Sort
 - Search
-- inline form validation
+- Inline form validation
+- Pagination
+- Change per page items
+- Count total items
+- Count total pages
 
 
 #### Form Features
@@ -51,6 +55,13 @@
 - validation (required, max, min, number, email, unique, password confirm)
 - After save message
 - Custom After save message
+- group element
+- Disable element from grid permission
+- Sub items support
+- Multi insert once time
+- Focus index
+- if update disabled can edit columns by other element value
+- password change mode
 
 #### Installation guide
 1. create modules/core forlders in laravel projeect.
