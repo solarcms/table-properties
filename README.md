@@ -4,18 +4,19 @@ Grid Features
 ========
 - Dynamic grid
 - Fixed Rom & Column in grid
-- Inline edit
+- Inline add & edit
 - Auto calculation like excel
 - Responsive
 - Grid permission CRUD
 - Grid column types image, link, internal link ...
-- Change enum column's value in grid row
+- [Change enum column's value in grid row] (https://github.com/solarcms/table-properties#change-enum-columns-value-in-grid-row)
 
 Form Features
 ========
 - Dynamic form
 - [Show and Hide by other element's value] (https://github.com/solarcms/table-properties#show-and-hide-by-other-elements-value--Өөр-элелентийн-утгаас-хамаарч-харуулах-нуух)
 - [Before insert] (https://github.com/solarcms/table-properties#before-insert)
+- Support multi element types
 
 
 # Grid Features
@@ -83,3 +84,29 @@ $tp->before_insert = [
          return ['password'=>bcrypt($pass)];
      }
 ```
+
+Support multi element types
+------------
+- --text
+- --number
+- --money
+- --email
+- --link
+- --textarea
+- --disabled
+- --ckeditor
+- --drag-map (select location on google map by drag arrow)
+- --single-file
+- --multi-file
+- --date
+- --datetime
+- --time
+- --combogrid
+- --combobox
+- --combobox-addable
+- --tag
+- --checkbox
+- --radio
+- --password
+- --password-confirm
+- --auto-calculate (sum, multfly
