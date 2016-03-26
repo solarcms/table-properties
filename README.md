@@ -16,7 +16,7 @@ Form Features
 - Dynamic form
 - [Show and Hide by other element's value] (https://github.com/solarcms/table-properties#show-and-hide-by-other-elements-value--Өөр-элелентийн-утгаас-хамаарч-харуулах-нуух)
 - [Before insert] (https://github.com/solarcms/table-properties#before-insert)
-- Support multi element types
+- [Support multi element types] (https://github.com/solarcms/table-properties#support-multi-element-types)
 
 
 # Grid Features
