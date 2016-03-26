@@ -1,12 +1,19 @@
 # Solar CMS Table-properties module
 
 #### Installation
-[installation guide] (https://github.com/solarcms/table-properties#installation guide)
+[installation guide] (https://github.com/solarcms/table-properties#installation-guide)
+
+#### Examples
+[Sample example] ()
+
+[Sample example with translation] ()
+
+
 
 #### Main Features
 
 - [Configration] (https://github.com/solarcms/table-properties#configration)
-- [Translation & Static Words] (https://github.com/solarcms/table-properties#translation&static-words)
+- [Translation & Static Words] (https://github.com/solarcms/table-properties#translation--static-words)
 
 #### Grid Features
 
@@ -106,7 +113,7 @@ solar_locales table's columns (id, code, language, flag)
 
 Мөн хэрэглэгч талд зориулан i18 стандартын JSON болон laravel-д зориулсан орчуулгийн file үүсгэх боломж байгаа. solar_static_words table's columns (id, key, translation)
 
-Орчуулгийн хүснэгтийг удирдах жишээ
+[Орчуулгийн хүснэгтийг удирдах жишээ] (https://github.com/solarcms/table-properties#Орчуулгийн-хүснэгтийг-удирдах-жишээ)
 
 
 # Grid Features
@@ -201,8 +208,39 @@ $tp->before_insert = [
 - --password-confirm
 - --auto-calculate (sum, multfly, minus)
 
+#### Sample example, Хэлний хүснэгтийг удирдах жишээ
 
-#### Орчуулгийн хүснэгтийг удирдах жишээ
+```php
+    public function locales ($action){
+
+        $tp = new Tp();
+        $tp->viewName = 'admin._pages.options';
+        $tp->table = 'solar_locales';
+        $tp->page_name = 'Хэл';
+        $tp->identity_name = 'id';
+        $tp->grid_default_order_by = 'id DESC';
+        $tp->grid_columns = ['code', 'language', 'flag', 'id'];
+
+        $tp->grid_output_control = [
+            ['column'=>'code', 'title'=>'Улсын код', 'type'=>'--text'],
+            ['column'=>'language', 'title'=>'Хэл', 'type'=>'--text'],
+            ['column'=>'flag', 'title'=>'Туг', 'type'=>'--text'],
+        ];
+        $tp->form_input_control = [
+
+            ['column'=>'code', 'title'=>'Улсын код', 'type'=>'--text', 'value'=>null, 'validate'=>'required'],
+            ['column'=>'language', 'title'=>'Хэл', 'type'=>'--text', 'value'=>null, 'validate'=>'required'],
+            ['column'=>'flag', 'title'=>'Туг', 'type'=>'--text', 'value'=>null, 'validate'=>'required'],
+
+        ];
+        $tp->formType = 'page';
+        return $tp->run($action);
+
+
+    }
+```
+
+#### Sample example with transltation, Орчуулгийн хүснэгтийг удирдах жишээ
 
 ```php
    function staticWords($action){
