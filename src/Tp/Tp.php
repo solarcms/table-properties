@@ -105,7 +105,6 @@ class Tp
     //translation
     public $locales_table = "solar_locales";
     public $static_words_table = "solar_static_words";
-    public $locale_connector = "locale_id"; // same on all translate able tables
     public $default_locale = "EN";
     public $translate_form_input_control = [];
 

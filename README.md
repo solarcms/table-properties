@@ -1,5 +1,13 @@
 # Solar CMS Table-properties module
 
+#### Installation
+[installation guide] (https://github.com/solarcms/table-properties#installation guide)
+
+#### Main Features
+
+- [Configration] (https://github.com/solarcms/table-properties#configration)
+- [Translation & Static Words] (https://github.com/solarcms/table-properties#translation&static-words)
+
 #### Grid Features
 
 - Dynamic grid
@@ -16,12 +24,89 @@
 #### Form Features
 
 - Dynamic form
-- [Show and Hide by other element's value] (https://github.com/solarcms/table-properties#show-and-hide-by-other-elements-value--Өөр-элелентийн-утгаас-хамаарч-харуулах-нуух)
+- [Show and Hide by other element's value] (https://github.com/solarcms/table-properties#show-and-hide-by-other-elements-value)
 - [Before insert] (https://github.com/solarcms/table-properties#before-insert)
 - [Support multi element types] (https://github.com/solarcms/table-properties#support-multi-element-types)
 - Translation
 
+#### Installation guide
+1. create modules/core forlders in laravel projeect.
+2. download or git clone in modele/core
+3. add "Solarcms\\Core\\TableProperties\\": "modules/core/table-properties/src" to composer.json psr-4 section
+4. In the $providers array add the service providers for this package in config/app.php.
+```php
+Intervention\Image\ImageServiceProvider::class
+```
+5. Add the facade of this package to the $aliases array  in config/app.php.
+ ```php
+ 'Image' => Intervention\Image\Facades\Image::class
+ ```
+6. composer du
+7. publish table properteis
+```
+php artisan vendor:publish --tag=tp
+```
+8. publish config
+```
+php artisan vendor:publish --tag=tp-config
+```
+9. set your route
+```php
+Route::group([
+    'prefix' =>'admin',
+    'as' => 'Solar.TableProperties::'], function() {
 
+
+    Route::get('/', function(){
+        abort(503);
+    });
+
+    Route::get('/{slug}/', 'AdminController@TableProperties');
+    Route::post('/{slug}/{action}', 'AdminController@TableProperties');
+
+});
+```
+10. add module name in use section your controller
+```php
+use Solarcms\TableProperties\TableProperties;
+use Solarcms\Core\TableProperties\Tp\Tp;
+```
+11. Last add once funtion to your controller
+```php
+ public function TableProperties($slug, $action = 'index') {
+
+        if (!method_exists($this, $slug))
+        abort(503);
+         else
+            return $this->$slug($action);
+
+    }
+
+```
+
+
+#### Configration
+
+Module-г publish хийсэний дараа laravel framework-н "config" folder дотор "tp_config.php" гэсэн тохиргооны file хуулагдана.
+
+Configration list, Тохиргооны жагсаалт
+- form & grid buttons's text
+- debug mode controll
+- default locale
+- locale's table
+- static word's table
+
+
+
+#### Translation & Static Words
+
+Орчуулгийн боломжийг grid болон form дээр ашиглахын тулд хэлний хүснэгт өгөгдлийн сант үүссэн байх шаардлагатай
+
+solar_locales table's columns (id, code, language, flag)
+
+Мөн хэрэглэгч талд зориулан i18 стандартын JSON болон laravel-д зориулсан орчуулгийн file үүсгэх боломж байгаа. solar_static_words table's columns (id, key, translation)
+
+Орчуулгийн хүснэгтийг удирдах жишээ
 
 
 # Grid Features
@@ -114,4 +199,37 @@ $tp->before_insert = [
 - --radio
 - --password
 - --password-confirm
-- --auto-calculate (sum, multfly
+- --auto-calculate (sum, multfly, minus)
+
+
+#### Орчуулгийн хүснэгтийг удирдах жишээ
+
+```php
+   function staticWords($action){
+        $tp = new Tp();
+        $tp->viewName = 'admin._pages.options';;
+        $tp->table = 'solar_static_words';
+        $tp->page_name = 'Статик үгсийн сан';
+        $tp->identity_name = 'id';
+        $tp->grid_default_order_by = 'id DESC';
+        $tp->grid_columns = ['key', 'translation', 'id'];
+        $tp->generateLocaleFile = true;
+
+        $tp->grid_output_control = [
+            ['column' => 'key', 'title' => 'Түлхүүр үг', 'type' => '--text'],
+            ['column' => 'translation', 'title' => 'Орчуулга', 'type' => '--text', 'translate' =>true],
+        ];
+        $tp->form_input_control = [
+            ['column' => 'key', 'title' => 'Түлхүүр үг', 'type' => '--text', 'value' => null, 'validate' => 'required'],
+        ];
+
+        $tp->translate_form_input_control = [
+            ['column' => 'translation', 'title' => 'Орчуулга', 'type' => '--text', 'value' => null, 'validate' => 'required'],
+        ];
+
+        $tp->formType = 'page';
+        return $tp->run($action);
+
+    }
+
+```
