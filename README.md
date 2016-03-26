@@ -9,6 +9,7 @@ Grid Features
 - Responsive
 - Grid permission CRUD
 - Grid column types image, link, internal link ...
+- Change enum column's value in grid row
 
 Form Features
 ========
@@ -17,7 +18,18 @@ Form Features
 - [Before insert] (https://github.com/solarcms/table-properties#before-insert)
 
 
+# Grid Features
 
+Change enum column's value in grid row
+------------
+Grid дээр харуулах мөр доторх баганыг утгаас нь хамаарч өөр текст харуулах бол хэргэлнэ.
+Жишээ:
+
+```php
+$tp->form_input_control = [
+['column'=>'is_buleg', 'title'=>'Бүлэг эсэх', 'type'=>'--text', 'change_value'=>['1'=>'Тийм', '0'=>'Үгүй'], 'fixed'=>false],
+];
+```
 
 
 
