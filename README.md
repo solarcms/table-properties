@@ -4,9 +4,8 @@
 [installation guide] (https://github.com/solarcms/table-properties#installation-guide)
 
 #### Examples
-[Sample example] ()
-
-[Sample example with translation] ()
+[Sample example] (https://github.com/solarcms/table-properties#sample-example-Хэлний-хүснэгтийг-удирдах-жишээ)
+[Sample example with translation] (https://github.com/solarcms/table-properties#sample-example-with-transltation-Орчуулгийн-хүснэгтийг-удирдах-жишээ)
 
 
 
@@ -26,6 +25,20 @@
 - [Change enum column's value in grid row] (https://github.com/solarcms/table-properties#change-enum-columns-value-in-grid-row)
 - Inline add & edit
 - translation
+- [CRUD permissio] (https://github.com/solarcms/table-properties#CRUD-permission)
+- Order
+- Page name
+- Created at
+- Updated at
+- where condition
+- export CSV file (excel)
+- reload module
+- Change language
+- visbile & hide grid column's
+- resize column & row
+- Sort
+- Search
+- inline form validation
 
 
 #### Form Features
@@ -35,6 +48,9 @@
 - [Before insert] (https://github.com/solarcms/table-properties#before-insert)
 - [Support multi element types] (https://github.com/solarcms/table-properties#support-multi-element-types)
 - Translation
+- validation (required, max, min, number, email, unique, password confirm)
+- After save message
+- Custom After save message
 
 #### Installation guide
 1. create modules/core forlders in laravel projeect.
@@ -113,7 +129,7 @@ solar_locales table's columns (id, code, language, flag)
 
 Мөн хэрэглэгч талд зориулан i18 стандартын JSON болон laravel-д зориулсан орчуулгийн file үүсгэх боломж байгаа. solar_static_words table's columns (id, key, translation)
 
-[Орчуулгийн хүснэгтийг удирдах жишээ] (https://github.com/solarcms/table-properties#Орчуулгийн-хүснэгтийг-удирдах-жишээ)
+[Орчуулгийн хүснэгтийг удирдах жишээ] (https://github.com/solarcms/table-properties#sample-example-with-transltation-Орчуулгийн-хүснэгтийг-удирдах-жишээ)
 
 
 # Grid Features
@@ -129,6 +145,12 @@ $tp->form_input_control = [
 ];
 ```
 
+#### CRUD permission
+module-д эрх зааж өгж болно.
+Default
+```php
+$tp->permission = ['c'=>true, 'r'=>true, 'u'=>true, 'd'=>true];
+```
 
 
 # Form Features
