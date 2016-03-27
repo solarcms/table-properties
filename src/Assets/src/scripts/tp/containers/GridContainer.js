@@ -112,22 +112,22 @@ class GridContainer extends Component {
             return false;
 
 
-            this.props.actions.setRowEdit(id, 0)
-            edit(id).then((data)=> {
-                if(data.length >= 1)
-                    this.props.formControls.map((formControl, index)=>{
-                        this.props.actions.chagenValue(index, data[0][formControl.column])
-                    })
-                else
-                    alert('please try agian')
-            });
-            //$('#windowForm').modal({'backdrop': false}, 'show');
+        this.props.actions.setRowEdit(id, 0)
+        edit(id).then((data)=> {
+            if(data.length >= 1)
+                this.props.formControls.map((formControl, index)=>{
+                    this.props.actions.chagenValue(index, data[0][formControl.column])
+                })
+            else
+                alert('please try agian')
+        });
+        //$('#windowForm').modal({'backdrop': false}, 'show');
 
 
     }
     showModal(){
         if(this.props.permission.c !== true)
-           return false;
+            return false;
         //$('#windowForm').modal({'backdrop': false}, 'show');
     }
     hideModal(){
@@ -144,7 +144,7 @@ class GridContainer extends Component {
     getColumnValdation(column){
         //return _.findIndex(this.props.gridHeader, { column: column })
         if(this.props.gridHeader[column].validate)
-        return this.props.gridHeader[column].validate;
+            return this.props.gridHeader[column].validate;
         else
             return ''
     }
@@ -226,45 +226,45 @@ class GridContainer extends Component {
         while (td.firstChild) {
             td.removeChild(td.firstChild);
         }
-                    var self = this;
+        var self = this;
 
-                    let pre_del =  document.createElement('a');
-                    let pre_editBtn =  document.createElement('a');
-                    let pre =  document.createElement('span');
+        let pre_del =  document.createElement('a');
+        let pre_editBtn =  document.createElement('a');
+        let pre =  document.createElement('span');
 
-                    td.appendChild(pre)
+        td.appendChild(pre)
 
-                    if(this.props.formType != 'inline'){
-                        ///EDIT BUTTTON
-                        pre_editBtn.href = "#edit/"+value;
-                        pre_editBtn.innerHTML = "<i class=\"material-icons\">&#xE254;</i>&nbsp;";
+        if(this.props.formType != 'inline'){
+            ///EDIT BUTTTON
+            pre_editBtn.href = "#edit/"+value;
+            pre_editBtn.innerHTML = "<i class=\"material-icons\">&#xE254;</i>&nbsp;";
 
-                        if(this.props.permission.u == true || this.props.ifUpdateDisabledCanEditColumns.length >=1)
-                            pre.appendChild(pre_editBtn);
-                    }
-
-
+            if(this.props.permission.u == true || this.props.ifUpdateDisabledCanEditColumns.length >=1)
+                pre.appendChild(pre_editBtn);
+        }
 
 
 
 
-                    // DELETE BUTTON
-                    pre_del.addEventListener("click", function(){
-
-                        self.handleDeleteItem(value)
-
-                    });
 
 
+        // DELETE BUTTON
+        pre_del.addEventListener("click", function(){
 
-                    pre_del.innerHTML = "<i class=\"material-icons\">&#xE872;</i> ";
-                    if(this.props.permission.d == true)
-                        pre.appendChild(pre_del);
+            self.handleDeleteItem(value)
+
+        });
 
 
 
+        pre_del.innerHTML = "<i class=\"material-icons\">&#xE872;</i> ";
+        if(this.props.permission.d == true)
+            pre.appendChild(pre_del);
 
-                    return td;
+
+
+
+        return td;
 
 
 
@@ -347,7 +347,7 @@ class GridContainer extends Component {
             if (changes[0][1] === parseInt(changes[0][1], 10)){
                 colIndex = changes[0][1]
             }else
-            colIndex = this.getColumnIndex(changes[0][1]);
+                colIndex = this.getColumnIndex(changes[0][1]);
 
 
 
@@ -536,31 +536,31 @@ class GridContainer extends Component {
         for (var index = 0; index < optionsList.length; index++) {
 
 
-                if (multiple === true) {
+            if (multiple === true) {
 
-                    values.map(tagValue=>{
+                values.map(tagValue=>{
 
-                        if(tagValue == optionsList[index][valueField]){
-                            if (textField instanceof Array) {
-                                textField.map(tf=>{
-                                    value.push(optionsList[index][tf]);
-                                })
-                            } else
-                            value.push(optionsList[index][textField]);
-                        }
-                    })
-                }
-                else {
-                    if(valueReal == optionsList[index][valueField]){
+                    if(tagValue == optionsList[index][valueField]){
                         if (textField instanceof Array) {
                             textField.map(tf=>{
                                 value.push(optionsList[index][tf]);
                             })
                         } else
-                        value.push(optionsList[index][textField]);
+                            value.push(optionsList[index][textField]);
                     }
-
+                })
+            }
+            else {
+                if(valueReal == optionsList[index][valueField]){
+                    if (textField instanceof Array) {
+                        textField.map(tf=>{
+                            value.push(optionsList[index][tf]);
+                        })
+                    } else
+                        value.push(optionsList[index][textField]);
                 }
+
+            }
         }
         value = value.join(", ");
 
@@ -826,29 +826,25 @@ class GridContainer extends Component {
                             } else {
                                 /* chnage 0,1 value to string*/
                                 let change_value = self.props.gridHeader[conIndex].change_value;
-                               if(change_value){
-
-                                   while (td.firstChild) {
-                                       td.removeChild(td.firstChild);
-                                   }
-
-                                   var textNode = document.createElement('span');
+                                if(change_value){
 
 
 
-                                       if(value == '1'){
-                                           textNode.innerText = self.props.gridHeader[conIndex].change_value[0]
+                                    while (td.firstChild) {
+                                        td.removeChild(td.firstChild);
+                                    }
 
-                                       } else{
-                                           textNode.innerText = self.props.gridHeader[conIndex].change_value[1]
+                                    var textNode = document.createElement('span');
 
-                                       }
+                                    change_value.map(cvalue=>{
+                                        if(value == cvalue.value)
+                                            textNode.innerText = cvalue.text
+                                    })
+
+                                    td.appendChild(textNode);
 
 
-                                   td.appendChild(textNode);
-
-
-                               }
+                                }
                             }
                         }
                         return cellProperties;
@@ -921,7 +917,7 @@ class GridContainer extends Component {
             showGird,
             permission,
             ifUpdateDisabledCanEditColumns,
-            } = this.props;
+        } = this.props;
 
         if (permission.r === false && permission.c === true) {
 
@@ -937,14 +933,14 @@ class GridContainer extends Component {
 
 
         const BottomPagination = <Pagination
-                totalItems={totalItems}
-                totalPages={totalPages}
-                currentPage={currentPage}
-                pageLimit={pageLimit}
-                handler={this.hangePageLimitChange.bind(this)}
-                handlerPage={this.handlePageChange.bind(this)}
-                paginationMarg="paginationBottom"
-            />
+            totalItems={totalItems}
+            totalPages={totalPages}
+            currentPage={currentPage}
+            pageLimit={pageLimit}
+            handler={this.hangePageLimitChange.bind(this)}
+            handlerPage={this.handlePageChange.bind(this)}
+            paginationMarg="paginationBottom"
+        />
 
 
 

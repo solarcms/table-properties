@@ -4,7 +4,7 @@
 [installation guide] (https://github.com/solarcms/table-properties#installation-guide)
 
 #### Examples
-[Sample example] (https://github.com/solarcms/table-properties#sample-example-Хэлний-хүснэгтийг-удирдах-жишээ)
+[Sample example] (https://github.com/solarcms/table-properties#sample-example-Хэлний-хүснэгтийг-удирдах-жишээ),
 [Sample example with translation] (https://github.com/solarcms/table-properties#sample-example-with-transltation-Орчуулгийн-хүснэгтийг-удирдах-жишээ)
 
 
@@ -152,7 +152,11 @@ Grid дээр харуулах мөр доторх баганыг утгаас �
 
 ```php
 $tp->form_input_control = [
-['column'=>'is_buleg', 'title'=>'Бүлэг эсэх', 'type'=>'--text', 'change_value'=>['1'=>'Тийм', '0'=>'Үгүй'], 'fixed'=>false],
+['column'=>'is_buleg', 'title'=>'Бүлэг эсэх', 'type'=>'--text', 'change_value'=>[
+                ['value'=>0, 'text'=>'Үгүй'],
+                ['value'=>1, 'text'=>'Тийм'],
+            ]
+    ],
 ];
 ```
 
