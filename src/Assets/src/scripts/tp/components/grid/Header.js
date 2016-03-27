@@ -16,16 +16,16 @@ export default class Header extends Component {
         if(this.props.permission.c == true){
             if(this.props.formType == 'inline')
                 addButton = <a href="javascript:void(0)" className="nav-link" onClick={this.props.addInlineForm}>
-                    <i className="material-icons">&#xE145;</i>
-                    Нэмэх
+                    <i className="material-icons" style={{color:'green', fontWeight:'bold'}}>&#xE145;</i>
+                    Шинээр нэмэх
                 </a>
             else if(this.props.formType == 'window')
                 addButton = <a className="nav-link" href="javascript:void(0)" onClick={this.props.showModal}>
-                    <i className="material-icons">&#xE145;</i>
-                    Нэмэх
+                    <i className="material-icons"  style={{color:'green', fontWeight:'bold'}}>&#xE145;</i>
+                    Шинээр нэмэх
                 </a>
             else
-                addButton = <a href={this.props.link} className="nav-link"><i className="material-icons">&#xE145;</i> Нэмэх</a>
+                addButton = <a href={this.props.link} className="nav-link"><i className="material-icons"  style={{color:'green', fontWeight:'bold'}}>&#xE145;</i> Шинээр нэмэх</a>
         }
         let hideshow = this.props.gridHeader.map((header, index)=>
             <li key={index}>
@@ -66,18 +66,18 @@ export default class Header extends Component {
                     </a>
                     <div className="dropdown-menu dropdown-menu-scale pull-right text-color"
                          role="menu" style={{width: '320px'}}>
-                       <div style={{margin: '10px', paddingTop: '5px', border: '1px solid #ccc'}}>
-                           <h6 style={{paddingLeft:'20px'}}>Багана нуух</h6>
-                           <ul id="tp_column_option">
-                               {hideshow}
-                           </ul>
+                        <div style={{margin: '10px', paddingTop: '5px', border: '1px solid #ccc'}}>
+                            <h6 style={{paddingLeft:'20px'}}>Багана нуух</h6>
+                            <ul id="tp_column_option">
+                                {hideshow}
+                            </ul>
 
-                           {this.props.locales.map((locale)=>
-                               <a className="dropdown-item" href="javascript:void(0)" key={locale.code} onClick={this.changeLanguage.bind(this, locale.code)}>
-                                   <i className="material-icons">&#xE894;</i> {locale.code}
-                               </a>
-                           )}
-                       </div>
+                            {this.props.locales.map((locale)=>
+                                <a className="dropdown-item" href="javascript:void(0)" key={locale.code} onClick={this.changeLanguage.bind(this, locale.code)}>
+                                    <i className="material-icons">&#xE894;</i> {locale.code}
+                                </a>
+                            )}
+                        </div>
 
                     </div>
                 </li>
@@ -126,7 +126,7 @@ export default class Header extends Component {
                             </li>
                         </ul>
 
-                        <div className="navbar-item pull-left h6 p-l" id="pageTitle" >{this.props.pageName}</div>
+                        <div className="navbar-item pull-left h6 p-l" id="pageTitle" >{this.props.pageName} :</div>
 
                         {actionControls}
                         {searchBar}

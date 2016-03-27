@@ -31,7 +31,8 @@ module.exports = {
     output: {
         path: webpackDirs.pathDir,
         filename: 'js/[name].js',
-        publicPath: '../'
+        publicPath: '../',
+        sourceMapFilename: "js/[name].js.map",
     },
 
 
