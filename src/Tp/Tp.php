@@ -71,6 +71,7 @@ class Tp
     public $save_from_parent = []; // parent columns :"id", "active", "name", child columns:'id', 'parent_id', 'parent_name'(NULL ABLE)  #['child_column'=>'parent_name', 'parent_column'=>'name']
     public $save_sub_items_count = []; // parent columns :"id", "active", "name" "total_childs", child columns:'id', 'parent_id',  #['child_connect_column'=>'parent_id', 'parent_column'=>'total_childs']
     public $before_insert = null;
+    public $before_delete = null;
 
     //Buttons
     public $save_button_text = 'Хадгалах';
@@ -1200,6 +1201,15 @@ class Tp
             return Response::json('permission denied', 400);
 
         $id = Request::input('id');
+
+        if($this->before_delete != null){
+
+            $controller = $this->before_delete['controller'];
+            $function = $this->before_delete['function'];
+
+            app($controller)->$function($id);
+
+        }
 
         $deleted = DB::table($this->table)->where("$this->identity_name", '=', $id)->delete();
 

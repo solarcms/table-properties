@@ -43,6 +43,7 @@
 - Change per page items
 - Count total items
 - Count total pages
+- [Before delete] (https://github.com/solarcms/table-properties#before-delete)
 
 
 #### Form Features
@@ -166,7 +167,27 @@ Default
 ```php
 $tp->permission = ['c'=>true, 'r'=>true, 'u'=>true, 'd'=>true];
 ```
+#### Before delete
 
+grid-н мөр устгахаас өмнө ажиллах үйлдэл.
+Жишээ:
+
+```php
+
+ $tp->before_delete = [
+            'controller'=>'App\Http\Controllers\AdminController',
+            'function'=>'beforeDeleteAanSalbar'
+        ];
+
+
+ //exmample before delete function
+   public function beforeDeleteAanSalbar($id){
+        $userid = DB::table('aan')->select('user_id')->where('ID', '=', $id)->pluck('user_id');
+
+        DB::table('users')->where('id', '=', $userid)->delete();
+
+    }
+```
 
 # Form Features
 
