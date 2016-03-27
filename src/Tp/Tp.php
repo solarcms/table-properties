@@ -589,6 +589,9 @@ class Tp
         $rules = [];
 
         foreach($form_input_control as $form_control){
+            if(isset($form_control['show'])){
+
+            }else
             if(isset($form_control['validate'])){
                 $validation = str_replace("number","numeric",$form_control['validate']);
                 if($id != false && strstr($validation, "unique")){
