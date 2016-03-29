@@ -1055,6 +1055,16 @@ class AddEditContainer extends Component {
 
         });
     }
+    _handleKeyPress(e) {
+        if (e.key === 'Enter') {
+            if(this.props.params.id){
+                this.updateForm();
+            }else {
+                this.saveForm();
+            }
+        }
+    }
+
 
     render() {
 
@@ -1103,6 +1113,7 @@ class AddEditContainer extends Component {
                 edit_parent_id={edit_parent_id}
                 setErrorManuale={this.setErrorManuale.bind(this)}
                 changeHandler={this.changeValues.bind(this)}
+                keyPress={this._handleKeyPress.bind(this)}
                 translateChangeHandler={this.translateChangeHandler.bind(this)}
 
             />

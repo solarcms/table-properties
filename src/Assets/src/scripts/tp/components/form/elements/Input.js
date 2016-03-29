@@ -91,6 +91,7 @@ export default class Input extends Component {
         //if(this.props.type == 'money')
         //    $('.money').autoNumeric('destroy');
     }
+    
     render() {
         const { autoFocus, name, value, placeholder, changeHandler, errorText, fieldClass, type, disabled, dataIndex } = this.props;
 
@@ -189,6 +190,7 @@ export default class Input extends Component {
                         onChange={changeHandler}
                         onFocus={focusHandler}
                         onBlur={this.blurFunction.bind(this)}
+                        onKeyPress = {this.props.keyPress}
                         type={realType}/>
 
         }

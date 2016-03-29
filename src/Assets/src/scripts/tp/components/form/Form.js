@@ -22,7 +22,6 @@ import ComboBox from './elements/ComboBox'
 import ComboBoxAddAble from '../../containers/formContainers/ComboBoxAddAbleContainer'
 import numeral from 'numeral';
 
-
 export default class Form extends Component {
 
 
@@ -144,6 +143,7 @@ export default class Form extends Component {
                     validation={field.get('validate')}
                     setErrorManuale={this.props.setErrorManuale}
                     edit_parent_id={this.props.edit_parent_id}
+                    keyPress={this.props.keyPress}
                     changeHandler={this.changeHandler.bind(this, locale_index)}
                     errorText={field.get('error')}
 
