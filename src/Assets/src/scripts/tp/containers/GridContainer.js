@@ -241,7 +241,7 @@ class GridContainer extends Component {
         if(this.props.formType != 'inline'){
             ///EDIT BUTTTON
             pre_editBtn.href = "#edit/"+value;
-            pre_editBtn.innerHTML = "<i class=\"material-icons\">&#xE254;</i>&nbsp;";
+            pre_editBtn.innerHTML = "<i class=\"material-icons green-color\">&#xE254;</i>&nbsp;";
 
             if(this.props.permission.u == true || this.props.ifUpdateDisabledCanEditColumns.length >=1)
                 pre.appendChild(pre_editBtn);
@@ -261,7 +261,7 @@ class GridContainer extends Component {
 
 
 
-        pre_del.innerHTML = "<i class=\"material-icons\">&#xE872;</i> ";
+        pre_del.innerHTML = "<i class=\"material-icons red-color\">&#xE872;</i> ";
         if(this.props.permission.d == true)
             pre.appendChild(pre_del);
 
