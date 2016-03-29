@@ -1,7 +1,3 @@
-/**
- * Created by n0m4dz on 11/14/15.
- */
-
 var webpack = require('webpack');
 var WebpackDevServer = require('webpack-dev-server');
 var config = require('./webpack.config');

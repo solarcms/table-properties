@@ -71,6 +71,7 @@ class Tp
     public $save_from_parent = []; // parent columns :"id", "active", "name", child columns:'id', 'parent_id', 'parent_name'(NULL ABLE)  #['child_column'=>'parent_name', 'parent_column'=>'name']
     public $save_sub_items_count = []; // parent columns :"id", "active", "name" "total_childs", child columns:'id', 'parent_id',  #['child_connect_column'=>'parent_id', 'parent_column'=>'total_childs']
     public $before_insert = null;
+    public $before_update = null;
     public $before_delete = null;
 
     //Buttons
@@ -375,7 +376,7 @@ class Tp
 
     }
     public function get_data($formControls){
-        if($this->permission['r'] != true && $this->permission['c'] === false)
+        if($this->permission['u'] == false && $this->permission['r'] == false && $this->permission['c'] === false)
             return Response::json('permission denied', 400);
 
         $FormData = [];
@@ -472,7 +473,7 @@ class Tp
         return $FormData;
     }
     public function get_form_datas(){
-        if($this->permission['r'] != true && $this->permission['c'] === false)
+        if($this->permission['u'] == false &&$this->permission['r'] == false && $this->permission['c'] === false)
             return [];
 //            return Response::json('permission denied', 400);
 
@@ -616,6 +617,17 @@ class Tp
         $controller = $before_insert['controller'];
         $function = $before_insert['function'];
         $arguments = $before_insert['arguments'];
+        $arguments['insert_values'] = $insertQuery;
+
+        return app($controller)->$function($arguments);
+
+    }
+
+    public function beforeUpdateCaller($before_update, $insertQuery){
+
+        $controller = $before_update['controller'];
+        $function = $before_update['function'];
+        $arguments = $before_update['arguments'];
         $arguments['insert_values'] = $insertQuery;
 
         return app($controller)->$function($arguments);
@@ -818,6 +830,9 @@ class Tp
                     if($this->before_insert != null){
                         $pre_values =  $this->beforeInsertCaller($this->before_insert, $insertQuery);
 
+                        if($pre_values == false){
+                            return Response::json('before insert error', 400);
+                        } else 
                         $insertQuery = array_merge($insertQuery, $pre_values);
                     }
 
@@ -843,7 +858,10 @@ class Tp
                     if($this->before_insert != null){
                         $pre_values =  $this->beforeInsertCaller($this->before_insert, $insertQuery);
 
-                        $insertQuery = array_merge($insertQuery, $pre_values);
+                        if($pre_values == false){
+                            return Response::json('before insert error', 400);
+                        } else
+                            $insertQuery = array_merge($insertQuery, $pre_values);
                     }
 
                     $saved = DB::table($this->table)->insert($insertQuery);
@@ -867,7 +885,10 @@ class Tp
             if($this->before_insert != null){
                $pre_values =  $this->beforeInsertCaller($this->before_insert, $insertQuery);
 
-                $insertQuery = array_merge($insertQuery, $pre_values);
+                if($pre_values == false){
+                    return Response::json('before insert error', 400);
+                } else
+                    $insertQuery = array_merge($insertQuery, $pre_values);
             }
 
             $saved = DB::table($this->table)->insert($insertQuery);
@@ -1126,6 +1147,15 @@ class Tp
 
                     $insertQuery[$this->save_first_id_column] = $id;
 
+                    if($this->before_update != null){
+                        $pre_values =  $this->beforeUpdateCaller($this->before_update, $insertQuery);
+
+                        if($pre_values == false){
+                            return Response::json('before updated error', 400);
+                        } else
+                            $insertQuery = array_merge($insertQuery, $pre_values);
+                    }
+
                     $validator = Validator::make($insertQuery, $rules);
                     if ( $validator->fails())
                     {
@@ -1140,6 +1170,15 @@ class Tp
                 } else {
 
                     $insertQuery[$this->save_first_id_column] = $id;
+
+                    if($this->before_update != null){
+                        $pre_values =  $this->beforeUpdateCaller($this->before_update, $insertQuery);
+
+                        if($pre_values == false){
+                            return Response::json('before updated error', 400);
+                        } else
+                            $insertQuery = array_merge($insertQuery, $pre_values);
+                    }
 
                     $validator = Validator::make($insertQuery, $rules);
                     if ( $validator->fails())
@@ -1158,6 +1197,14 @@ class Tp
             $saved = true;
         } else {
 
+            if($this->before_update != null){
+                $pre_values =  $this->beforeUpdateCaller($this->before_update, $insertQuery);
+
+                if($pre_values == false){
+                    return Response::json('before updated error', 400);
+                } else
+                    $insertQuery = array_merge($insertQuery, $pre_values);
+            }
 
 
 
@@ -1207,7 +1254,11 @@ class Tp
             $controller = $this->before_delete['controller'];
             $function = $this->before_delete['function'];
 
-            app($controller)->$function($id);
+            $customErrorMessage = app($controller)->$function($id);
+
+            if($customErrorMessage != ''){
+                return $customErrorMessage;
+            }
 
         }
 

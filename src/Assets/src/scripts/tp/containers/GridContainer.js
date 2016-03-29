@@ -191,10 +191,14 @@ class GridContainer extends Component {
                     this.removeInlineForm()
                     if (data == 'success')
                         this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
+                    else if(data == 'error')
+                        alert("Алдаа гарлаа")
                     else
-                        alert("Please try agian")
+                        alert(data)
                 });
-            }
+            }.fail(()=>{
+                alert("Алдаа гарлаа")
+            })
 
 
         }
@@ -733,7 +737,7 @@ class GridContainer extends Component {
 
         tp_dataSchema['id'] = -1;
 
-        if(this.props.permission.u == true || this.props.ifUpdateDisabledCanEditColumns.length >=1){
+        if(this.props.permission.d == true || this.props.permission.u == true || this.props.ifUpdateDisabledCanEditColumns.length >=1){
             tp_colHeader.push(this.props.edit_delete_column_title)
             tp_columns.push({
                 data: 'id',

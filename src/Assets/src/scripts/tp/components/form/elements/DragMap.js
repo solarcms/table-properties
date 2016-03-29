@@ -53,7 +53,7 @@ export default class DragMap extends Component {
         </section>
         return (
 
-            <div  className={`form-group ${fieldClass}  `}>
+            <div  className={`form-group ${fieldClass}  `}  id={`solar-form-group-${dataIndex}`}>
                 <label className="control-label">{placeholder}</label>
                 <div>
                     {myMap}

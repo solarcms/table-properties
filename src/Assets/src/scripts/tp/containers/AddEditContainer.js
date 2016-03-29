@@ -26,6 +26,7 @@ class AddEditContainer extends Component {
         this.state = {
             sending: false,
             savedAlertShow: false,
+            errorY: 0
         };
     }
     getValueByColumn(column){
@@ -42,10 +43,15 @@ class AddEditContainer extends Component {
         const FD = this.props.formControls;
         let foundError = false;
 
+        let perPositionY = [];
+
+
         FD.map((formColumn, index) => {
             if (formColumn.get('type') == '--group') {
 
                 formColumn.get('controls').map((formColumnSub, subIndex) => {
+
+
 
                     if(formColumnSub.get('show')){
 
@@ -77,10 +83,24 @@ class AddEditContainer extends Component {
                     if (error) {
                         this.props.actions.setError([index, 'controls', subIndex], error);
                         foundError = true;
+
+
+                        let preY = document.getElementById(`solar-form-group-${index}-${subIndex}`).offsetTop;
+
+
+
+                        perPositionY.push(preY);
+
+
+
+
                     }
                 })
             } else
             {
+
+
+
                 if(formColumn.get('show')){
 
                     let showCheckers = formColumn.get('show').toJS();
@@ -102,6 +122,7 @@ class AddEditContainer extends Component {
 
                     })
                     if(hideElement === true){
+
                        return false
                     }
                 }
@@ -118,6 +139,14 @@ class AddEditContainer extends Component {
                 if (error) {
                     this.props.actions.setError([index], error);
                     foundError = true;
+
+                    let preY = document.getElementById(`solar-form-group-${index}`).offsetTop;
+
+
+
+                    perPositionY.push(preY);
+
+
                 }
 
             }
@@ -143,6 +172,17 @@ class AddEditContainer extends Component {
             })
 
         })
+
+        let preY_ = 0;
+        perPositionY.map((pY, pIndex)=>{
+            if(pIndex == 0)
+                preY_ = pY;
+
+            if(pY < preY_)
+                preY_ = pY;
+        })
+
+        this.setState({errorY: preY_});
 
         return foundError;
     }
@@ -202,8 +242,8 @@ class AddEditContainer extends Component {
         if (foundError === false){
             this.setState({sending: true});
             save(FD, this.props.translateFormControls, this.props.subItems, multiItems).done((data)=> {
-                
 
+                console.log('sent saved')
                     this.setState({sending: false});
                     if(this.props.showInsertResponse === true){
                         alert(data);
@@ -211,18 +251,24 @@ class AddEditContainer extends Component {
                     }else if(this.props.show_saved_alert === true){
                         this.setState({savedAlertShow: true});
 
-
-
                     } else {
                         window.location.replace('#/');
                     }
 
-
-
-
             }).fail(()=> {
+                this.setState({sending: false});
                 alert("Уучлаарай алдаа гарлаа дахин оролдоно уу")
             })
+        } else {
+
+            setTimeout(()=>{
+            
+                $('html, body').animate({
+                    scrollTop: this.state.errorY
+                }, 400);
+
+            }, 120);
+
         }
 
 
@@ -397,11 +443,14 @@ class AddEditContainer extends Component {
 
                                 if(formControl.getIn(['options', 'child'])){
 
-                                    getCascadeChild(formControl.getIn(['options', 'child']), data[0][formControl.get('column')]).then((dataChild)=>{
-                                        this.props.actions.changeFormData(formControl.getIn(['options', 'child']), dataChild);
 
-                                        this.props.actions.changeValue([index], data[0][formControl.get('column')])
-                                    })
+                                    this.props.actions.changeValue([index], data[0][formControl.get('column')])
+
+                                    // getCascadeChild(formControl.getIn(['options', 'child']), data[0][formControl.get('column')]).then((dataChild)=>{
+                                    //     this.props.actions.changeFormData(formControl.getIn(['options', 'child']), dataChild);
+                                    //
+                                    //     this.props.actions.changeValue([index], data[0][formControl.get('column')])
+                                    // })
 
                                 } else
                                     this.props.actions.changeValue([index], data[0][formControl.get('column')])
@@ -422,11 +471,13 @@ class AddEditContainer extends Component {
 
                                         if(control.getIn(['options', 'child'])){
 
-                                            getCascadeChild(control.getIn(['options', 'child']), data[0][control.get('column')]).then((dataChild)=>{
-                                                this.props.actions.changeFormData(control.getIn(['options', 'child']), dataChild);
+                                            this.props.actions.changeValue([index, 'controls', subIndex], data[0][control.get('column')])
 
-                                                this.props.actions.changeValue([index, 'controls', subIndex], data[0][control.get('column')])
-                                            })
+                                            // getCascadeChild(control.getIn(['options', 'child']), data[0][control.get('column')]).then((dataChild)=>{
+                                            //     this.props.actions.changeFormData(control.getIn(['options', 'child']), dataChild);
+                                            //
+                                            //     this.props.actions.changeValue([index, 'controls', subIndex], data[0][control.get('column')])
+                                            // })
                                         } else
                                             this.props.actions.changeValue([index, 'controls', subIndex], data[0][control.get('column')])
                                     } else

@@ -196,7 +196,7 @@ export default class Input extends Component {
 
         return (
 
-                <div  className={`form-group ${fieldClass} `}>
+                <div  className={`form-group ${fieldClass} `} id={`solar-form-group-${dataIndex}`}>
                     <label className="control-label">{placeholder}</label>
                     {input}
                     <span className="help-block">

@@ -1,7 +1,3 @@
-/**
- * Created by n0m4dz on 10/20/15.
- */
-
 var Path = require('path');
 var Webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
@@ -24,45 +20,45 @@ module.exports = {
     context: webpackDirs.contextDir,
 
     entry: {
-        dependencies: ['./vendor'],
+        // dependencies: ['./vendor'],
         tp: ['./app']
     },
 
     output: {
         path: webpackDirs.pathDir,
         filename: 'js/[name].js',
-        publicPath: '../',
-        sourceMapFilename: "js/[name].js.map",
+        publicPath: '../'
     },
-
+    // devtool: 'source-map',
 
     plugins: [
         new Webpack.HotModuleReplacementPlugin(),
         new Webpack.NoErrorsPlugin(),
 
         //Chunk script
-        new Webpack.optimize.CommonsChunkPlugin('dependencies', 'js/dependencies.js', Infinity),
+        // new Webpack.optimize.CommonsChunkPlugin('dependencies', 'js/dependencies.js', Infinity),
 
         //Chunk css
         new ExtractTextPlugin('css/[name].css', {
             allChunks: true
         }),
-
-        //Aliasing library
-        new Webpack.ProvidePlugin({
-            $: 'jquery',
-            jQuery: 'jquery',
-            'window.jQuery': 'jquery'
-        }),
-
+        
         //Copy assets
         new CopyPlugin([
             // File
             //{from: '../../dist/css/tp.css', to: '../../../../../public/shared/table-properties/css/tp.css', toType: 'file'},
             //{from: '../../dist/js/tp.js', to: '../../../../../public/shared/table-properties/js/tp.js', toType: 'file'},
         ]),
+        
+        // new Webpack.DefinePlugin({
+        //     'process.env.NODE_ENV': JSON.stringify('development')
+        // }),
 
-
+        new Webpack.DefinePlugin({
+            'process.env': {
+                'NODE_ENV': JSON.stringify('production')
+            }
+        }),
 
         new Webpack.BannerPlugin("*************************************\n   Solar Content Management System \n*************************************\n")
     ],
@@ -74,6 +70,7 @@ module.exports = {
                 test: /\.js$/,
                 exclude: webpackDirs.excludeDir,
                 loaders: ['babel']
+                // loaders: ['babel?compact=false']
             },
 
             //SCSS

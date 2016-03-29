@@ -40,7 +40,9 @@ export default class Form extends Component {
     }
 
     dateChange(locale_index, dIndex, value) {
+
         value = Moment(value).format("YYYY.MM.DD");
+
         this.manualeChangeHandler(locale_index, dIndex, value);
     }
     getValueByColumn(column){
@@ -98,6 +100,8 @@ export default class Form extends Component {
 
 
         const keyIndex = locale_index === false ? index : `__local__${locale_index}-${index}`
+
+
 
         if(field.get('show')){
 
@@ -412,16 +416,19 @@ export default class Form extends Component {
                     errorText={field.get('error')}
                 />
                 break;
+
             case "--date":
-                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass}  `}>
+    
+                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass}  `}  id={`solar-form-group-${index}`}>
                     <label className="control-label">{title}</label>
                     <DateTimePicker
                         disabled={thisDisabled}
                         name={name}
                         defaultValue={mainValue === null ? null : new Date(mainValue)}
-                        value={mainValue === null ? null : new Date(mainValue)}
+
                         format={"YYYY.MM.DD"}
                         time={false}
+                       
                         onChange={this.dateChange.bind(this, locale_index, `${index}`)}
                         placeholder={title}
                     />
@@ -431,7 +438,8 @@ export default class Form extends Component {
                 </div>
                 break;
             case "--datetime":
-                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass}  `}>
+
+                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass}  `}  id={`solar-form-group-${index}`}>
                     <label>
 
                         {title}
@@ -440,9 +448,10 @@ export default class Form extends Component {
                         disabled={thisDisabled}
                         name={name}
                         defaultValue={mainValue === null ? null : new Date(mainValue)}
-                        value={mainValue === null ? null : new Date(mainValue)}
+
                         format={"YYYY.MM.DD HH:mm"}
                         placeholder={title}
+
                         onChange={this.dateTimeChange.bind(this, locale_index, `${index}`)}
                     />
                                 <span className="help-block">
@@ -460,7 +469,7 @@ export default class Form extends Component {
                } else {
                    time_show = new Date(mainValue)
                }
-                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass}  `}>
+                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass}  `}  id={`solar-form-group-${index}`}>
                     <label>
 
                         {title}
@@ -482,7 +491,7 @@ export default class Form extends Component {
                 </div>
                 break;
             case "--combogrid":
-                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass}  `}>
+                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass}  `}  id={`solar-form-group-${index}`}>
                     {formType == 'inline' ? '' : <label className="control-label">{title}</label>}
                     <Combogrid listData={formData[field.get('column')].data.data}
                                disabled={thisDisabled}
@@ -508,6 +517,7 @@ export default class Form extends Component {
                 return <ComboBox
                     disabled={thisDisabled}
                     key={keyIndex}
+                    dataIndex={index}
                     column={field.get('column')}
                     name={name}
                     fieldClass={fieldClass}
@@ -545,6 +555,7 @@ export default class Form extends Component {
             case "--tag":
                 return <ComboBox
                     disabled={thisDisabled}
+                    dataIndex={index}
                     key={keyIndex}
                     column={field.get('column')}
                     name={name}
@@ -561,7 +572,7 @@ export default class Form extends Component {
                 />
                 break;
             case "--checkbox":
-                return <div key={keyIndex}  className={`form-group ${fieldClass} `}>
+                return <div key={keyIndex}  className={`form-group ${fieldClass} `}  id={`solar-form-group-${index}`}>
                     <div className="checkbox">
                         {formType == 'inline' ?
                             <input type="checkbox"
@@ -596,7 +607,7 @@ export default class Form extends Component {
                 break;
             case "--radio":
 
-                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass} `}>
+                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass} `}  id={`solar-form-group-${index}`}>
                     <div className="radio">
 
                         <label >

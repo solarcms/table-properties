@@ -36,7 +36,7 @@ export default class ComboBoxAddAble extends Component {
             })
 
         return (
-            <div className={`form-group ${fieldClass}`}>
+            <div className={`form-group ${fieldClass}`}  id={`solar-form-group-${dataIndex}`}>
                 {formType == 'inline' ? '' : <label className="control-label">{placeholder}</label>}
 
                 {formData.get(column) ?

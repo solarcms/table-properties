@@ -34,11 +34,11 @@ export default class CK extends Component {
     }
 
     render() {
-        const { gridId, mainValue, changeHandler, index, errorText, fieldClass, placeholder, disabled, keyIndex } = this.props;
+        const { gridId, mainValue, changeHandler, index, errorText, fieldClass, placeholder, disabled, keyIndex, dataIndex } = this.props;
 
         return (
 
-                <div className={`form-group ${fieldClass}  `}>
+                <div className={`form-group ${fieldClass}  `}  id={`solar-form-group-${dataIndex}`}>
                     <label className="control-label">{placeholder}</label>
                 <textarea
                     id={`ckeditor-${keyIndex}`}

@@ -131,7 +131,7 @@ export default class SingleFileUploader extends Component {
 
         return (
 
-            <div  className={`form-group ${fieldClass}`}>
+            <div  className={`form-group ${fieldClass}`}  id={`solar-form-group-${dataIndex}`}>
                 <label className="control-label">{placeholder}</label>
                 <div>
                     {disabled == true ? null :

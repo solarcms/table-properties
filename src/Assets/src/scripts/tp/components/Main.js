@@ -1,13 +1,13 @@
-import React, { Component, PropTypes }  from 'react';
-import ReactDOM from 'react-dom';
-//import Home from './Home';
+import React, { Component, PropTypes } from 'react'
 
-export default ( props ) => {
-    return (
-        <div className="solar-grid">
-            { props.children }
-        </div>
-    )
+export default class Main extends Component {
+    render() {
+        return (
+            <div className="solar-grid">
+                { this.props.children }
+            </div>
+        )
 
+    }
 }
 
