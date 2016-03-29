@@ -195,10 +195,10 @@ class GridContainer extends Component {
                         alert("Алдаа гарлаа")
                     else
                         alert(data)
+                }).fail(()=>{
+                    alert("Алдаа гарлаа")
                 });
-            }.fail(()=>{
-                alert("Алдаа гарлаа")
-            })
+            }
 
 
         }

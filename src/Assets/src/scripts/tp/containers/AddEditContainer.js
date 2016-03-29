@@ -243,7 +243,7 @@ class AddEditContainer extends Component {
             this.setState({sending: true});
             save(FD, this.props.translateFormControls, this.props.subItems, multiItems).done((data)=> {
 
-                console.log('sent saved')
+
                     this.setState({sending: false});
                     if(this.props.showInsertResponse === true){
                         alert(data);
@@ -256,8 +256,9 @@ class AddEditContainer extends Component {
                     }
 
             }).fail(()=> {
-                this.setState({sending: false});
+
                 alert("Уучлаарай алдаа гарлаа дахин оролдоно уу")
+                this.setState({sending: false});
             })
         } else {
 
