@@ -1,9 +1,9 @@
-import React, { Component, PropTypes } from "react"
+import React, {Component, PropTypes} from "react"
 import * as DataActions from "../actions/grid"
-import { bindActionCreators } from "redux"
-import { connect } from "react-redux"
+import {bindActionCreators} from "redux"
+import {connect} from "react-redux"
 
-import { getList, setupPage, deleteItem, save, update, edit, changeLanguage, inlineSave, inlineSaveUpdate } from "../api/"
+import {getList, setupPage, deleteItem, save, update, edit, changeLanguage, inlineSave, inlineSaveUpdate} from "../api/"
 
 import Header from "../components/grid/Header"
 
@@ -25,43 +25,47 @@ class GridContainer extends Component {
     componentWillMount() {
 
     }
+
     componentDidMount() {
         this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
     }
+
     componentDidUpdate(prevProps) {
 
-        if(prevProps.defaultLocale != this.props.defaultLocale){
+        if (prevProps.defaultLocale != this.props.defaultLocale) {
             this.setUpHandsonTable()
         }
 
-        if(prevProps.permission.r == false && this.props.permission.r == true){
+        if (prevProps.permission.r == false && this.props.permission.r == true) {
             this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
         }
-        if(this.props.showInlineForm === true){
+        if (this.props.showInlineForm === true) {
             //this.setUpHandsonTable()
 
         }
 
     }
+
     componentWillUnmount() {
         //tp_handSonTable.destroy()
     }
 
 
     /* header functions ----------------------------------------- */
-    changeLanguage(locale){
-        changeLanguage(locale).then(()=>{
+    changeLanguage(locale) {
+        changeLanguage(locale).then(()=> {
             this.props.actions.setLocale(locale);
 
         })
 
     }
-    exportEXCEL(){
+
+    exportEXCEL() {
 
         var date;
         date = new Date();
         date = date.getUTCFullYear() + '-' +
-            ('00' + (date.getUTCMonth()+1)).slice(-2) + '-' +
+            ('00' + (date.getUTCMonth() + 1)).slice(-2) + '-' +
             ('00' + date.getUTCDate()).slice(-2) + ' ' +
             ('00' + date.getUTCHours()).slice(-2) + ':' +
             ('00' + date.getUTCMinutes()).slice(-2) + ':' +
@@ -69,7 +73,7 @@ class GridContainer extends Component {
 
 
         exportPlugin.downloadFile('csv', {
-            filename: this.props.setup.page_name+'-'+date,
+            filename: this.props.setup.page_name + '-' + date,
             exportHiddenRows: true,     // default false, exports the hidden rows
             exportHiddenColumns: true,  // default false, exports the hidden columns
             columnHeaders: true,        // default false, exports the column headers
@@ -77,7 +81,8 @@ class GridContainer extends Component {
             //range: [null, null, this.props.gridHeader.length-1, this.props.gridHeader.length-1]
         });
     }
-    hideShowColumn(show, columnIndex){
+
+    hideShowColumn(show, columnIndex) {
         this.props.actions.setShowHideColumn(show, columnIndex)
         setTimeout(
             () => {
@@ -86,6 +91,7 @@ class GridContainer extends Component {
             100
         );
     }
+
     handleSearch() {
         let sword = this.refs.search.refs.searchWord.value
         this.props.actions.setSearch(sword)
@@ -95,10 +101,11 @@ class GridContainer extends Component {
 
     /* pagination */
     hangePageLimitChange(e) {
-        this.props.actions.setPageLimit(e.target.value*1)
+        this.props.actions.setPageLimit(e.target.value * 1)
         this.props.actions.setCurrentPage(1)
         this.callPageDatas(1, e.target.value, this.props.searchValue)
     }
+
     handlePageChange(pageNumber) {
         this.props.actions.setCurrentPage(pageNumber)
 
@@ -107,15 +114,15 @@ class GridContainer extends Component {
 
 
     /* Window form*/
-    callWindowEdit(id){
-        if(this.props.permission.u !== true)
+    callWindowEdit(id) {
+        if (this.props.permission.u !== true)
             return false;
 
 
         this.props.actions.setRowEdit(id, 0)
         edit(id).then((data)=> {
-            if(data.length >= 1)
-                this.props.formControls.map((formControl, index)=>{
+            if (data.length >= 1)
+                this.props.formControls.map((formControl, index)=> {
                     this.props.actions.chagenValue(index, data[0][formControl.column])
                 })
             else
@@ -125,43 +132,49 @@ class GridContainer extends Component {
 
 
     }
-    showModal(){
-        if(this.props.permission.c !== true)
+
+    showModal() {
+        if (this.props.permission.c !== true)
             return false;
         //$('#windowForm').modal({'backdrop': false}, 'show');
     }
-    hideModal(){
+
+    hideModal() {
         //$('#windowForm').modal('hide');
         this.props.actions.clearFromValidation();
     }
 
 
     /* Grid */
-    getColumnIndex(column){
+    getColumnIndex(column) {
         //return _.findIndex(this.props.gridHeader, { column: column })
-        return this.props.gridHeader.findIndex(x => x.column == column );
+        return this.props.gridHeader.findIndex(x => x.column == column);
     }
-    getColumnValdation(column){
+
+    getColumnValdation(column) {
         //return _.findIndex(this.props.gridHeader, { column: column })
-        if(this.props.gridHeader[column].validate)
+        if (this.props.gridHeader[column].validate)
             return this.props.gridHeader[column].validate;
         else
             return ''
     }
-    getColumnTranslate(column){
+
+    getColumnTranslate(column) {
         //return _.findIndex(this.props.gridHeader, { column: column })
-        if(this.props.gridHeader[column] && this.props.gridHeader[column].translate)
+        if (this.props.gridHeader[column] && this.props.gridHeader[column].translate)
             return this.props.gridHeader[column].translate;
         else
             return false
     }
-    getColumnType(column){
+
+    getColumnType(column) {
 
         return this.props.gridHeader[column].type;
 
     }
+
     callPageDatas(page, pageLimit, searchValue) {
-        if(this.props.permission.r !== true)
+        if (this.props.permission.r !== true)
             return false;
 
         this.props.actions.setShowGrid(false);
@@ -174,28 +187,29 @@ class GridContainer extends Component {
             this.setUpHandsonTable()
         });
     }
+
     handleDeleteItem(id) {
 
-        if(id == -1){
+        if (id == -1) {
             this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
 
             this.removeInlineForm()
-        } else if(this.props.permission.d == true) {
+        } else if (this.props.permission.d == true) {
 
             if (!confirm('Delete this record?')) {
                 return;
             }
-            else{
+            else {
                 deleteItem(id).then((data)=> {
 
                     this.removeInlineForm()
                     if (data == 'success')
                         this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
-                    else if(data == 'error')
+                    else if (data == 'error')
                         alert("Алдаа гарлаа")
                     else
                         alert(data)
-                }).fail(()=>{
+                }).fail(()=> {
                     alert("Алдаа гарлаа")
                 });
             }
@@ -203,11 +217,12 @@ class GridContainer extends Component {
 
         }
     }
-    addInlineForm(){
+
+    addInlineForm() {
         this.props.actions.setInlineFrom(true);
 
 
-        if(this.props.showInlineForm === false){
+        if (this.props.showInlineForm === false) {
 
 
             tp_handSonTable.alter('insert_row', 0, 1);
@@ -218,13 +233,16 @@ class GridContainer extends Component {
             alert("Эхний өгөгдлөө хадгалана уу")
 
     }
-    removeInlineForm(){
+
+    removeInlineForm() {
 
         this.props.actions.setInlineFrom(false);
     }
-    getData(row){
+
+    getData(row) {
         return tp_handSonTable.getDataAtRow(row);
     }
+
     editDeleteRender(instance, td, row, col, prop, value, cellProperties) {
 
         while (td.firstChild) {
@@ -232,54 +250,40 @@ class GridContainer extends Component {
         }
         var self = this;
 
-        let pre_del =  document.createElement('a');
-        let pre_editBtn =  document.createElement('a');
-        let pre =  document.createElement('span');
+        let pre_del = document.createElement('a');
+        let pre_editBtn = document.createElement('a');
+        let pre = document.createElement('span');
 
         td.appendChild(pre)
 
-        if(this.props.formType != 'inline'){
+        if (this.props.formType != 'inline') {
             ///EDIT BUTTTON
-            pre_editBtn.href = "#edit/"+value;
+            pre_editBtn.href = "#edit/" + value;
             pre_editBtn.innerHTML = "<i class=\"material-icons green-color\">&#xE254;</i>&nbsp;";
 
-            if(this.props.permission.u == true || this.props.ifUpdateDisabledCanEditColumns.length >=1)
+            if (this.props.permission.u == true || this.props.ifUpdateDisabledCanEditColumns.length >= 1)
                 pre.appendChild(pre_editBtn);
         }
 
 
-
-
-
-
         // DELETE BUTTON
-        pre_del.addEventListener("click", function(){
+        pre_del.addEventListener("click", function () {
 
             self.handleDeleteItem(value)
 
         });
 
 
-
         pre_del.innerHTML = "<i class=\"material-icons red-color\">&#xE872;</i> ";
-        if(this.props.permission.d == true)
+        if (this.props.permission.d == true)
             pre.appendChild(pre_del);
-
-
 
 
         return td;
 
 
-
-
-
-
-
-
-
-
     }
+
     gridImage(instance, td, row, col, prop, value, cellProperties) {
 
         while (td.firstChild) {
@@ -287,27 +291,25 @@ class GridContainer extends Component {
         }
 
 
-        if(value){
-            let pre_link =  document.createElement('a');
+        if (value) {
+            let pre_link = document.createElement('a');
 
 
+            let value_image = JSON.parse(value);
 
-            let value_image =  JSON.parse(value);
-
-            let image_thum_url = value_image.thumbUrl+value_image.uniqueName
-            let image_url = value_image.destinationUrl+value_image.uniqueName
+            let image_thum_url = value_image.thumbUrl + value_image.uniqueName
+            let image_url = value_image.destinationUrl + value_image.uniqueName
 
             pre_link.setAttribute('target', '_blank');
             pre_link.setAttribute('href', image_url);
 
-            let image =  document.createElement('img');
+            let image = document.createElement('img');
             image.setAttribute('class', 'grid-thumb');
             image.setAttribute('src', image_thum_url);
 
             pre_link.appendChild(image)
 
 
-
             td.appendChild(pre_link);
 
 
@@ -316,24 +318,24 @@ class GridContainer extends Component {
 
 
     }
+
     internalLink(instance, td, row, col, prop, value, cellProperties) {
         while (td.firstChild) {
             td.removeChild(td.firstChild);
         }
 
 
-        if(value){
+        if (value) {
             let colIndex = this.getColumnIndex(prop)
-            let pre_link =  document.createElement('a');
+            let pre_link = document.createElement('a');
 
             let colOption = this.props.gridHeader[colIndex];
             pre_link.setAttribute('target', '_blank');
             td.setAttribute('class', 'htCenter htMiddle');
-            pre_link.setAttribute('href', colOption.link+value);
+            pre_link.setAttribute('href', colOption.link + value);
 
 
             pre_link.innerHTML = colOption.icon
-
 
 
             td.appendChild(pre_link);
@@ -342,30 +344,30 @@ class GridContainer extends Component {
             return td;
         }
     }
-    afterChange(changes, source, isValid){
 
-        if(changes){
+    afterChange(changes, source, isValid) {
+
+        if (changes) {
 
             let colIndex = 0;
 
-            if (changes[0][1] === parseInt(changes[0][1], 10)){
+            if (changes[0][1] === parseInt(changes[0][1], 10)) {
                 colIndex = changes[0][1]
-            }else
+            } else
                 colIndex = this.getColumnIndex(changes[0][1]);
-
 
 
             let colType = this.props.gridHeader[colIndex].type
 
             let row = changes[0][0];
 
-            if(colType != '--auto-calculate'){
+            if (colType != '--auto-calculate') {
 
                 ///auto-calculate
                 let calculate_columns = []
 
-                this.props.gridHeader.map((fcontrol, findex)=>{
-                    if(fcontrol.type == '--auto-calculate'){
+                this.props.gridHeader.map((fcontrol, findex)=> {
+                    if (fcontrol.type == '--auto-calculate') {
 
 
                         let calculate_type = fcontrol.options.calculate_type;
@@ -373,10 +375,9 @@ class GridContainer extends Component {
 
                         let columns = [];
 
-                        fcontrol.options.calculate_columns.map((calculate_column, cal_index)=>{
+                        fcontrol.options.calculate_columns.map((calculate_column, cal_index)=> {
 
                             let colIndex_ = this.getColumnIndex(calculate_column)
-
 
 
                             columns.push(
@@ -386,47 +387,47 @@ class GridContainer extends Component {
 
                         calculate_columns.push(
                             {
-                                column:calculate_column,
-                                type:calculate_type,
-                                columns:columns,
-                                dataIndex:findex
+                                column: calculate_column,
+                                type: calculate_type,
+                                columns: columns,
+                                dataIndex: findex
                             }
                         )
                     }
                 })
 
-                calculate_columns.map((calculate_column, index)=>{
+                calculate_columns.map((calculate_column, index)=> {
                     let checkAllValue = true;
-                    calculate_column.columns.map((cal_column)=>{
-                        if(cal_column.value === null)
+                    calculate_column.columns.map((cal_column)=> {
+                        if (cal_column.value === null)
                             checkAllValue = false
                     })
                     let calculate_result = null;
-                    if(checkAllValue === true){
-                        if(calculate_column.type == '--multiply'){
-                            calculate_column.columns.map((cal_column, calIndex)=>{
-                                if(calIndex == 0)
+                    if (checkAllValue === true) {
+                        if (calculate_column.type == '--multiply') {
+                            calculate_column.columns.map((cal_column, calIndex)=> {
+                                if (calIndex == 0)
                                     calculate_result = cal_column.value;
                                 else
                                     calculate_result = calculate_result * cal_column.value
                             })
-                        }else if((calculate_column.type == '--sum')){
-                            calculate_column.columns.map((cal_column, calIndex)=>{
-                                if(calIndex == 0)
+                        } else if ((calculate_column.type == '--sum')) {
+                            calculate_column.columns.map((cal_column, calIndex)=> {
+                                if (calIndex == 0)
                                     calculate_result = cal_column.value;
                                 else
                                     calculate_result = calculate_result + cal_column.value
                             })
-                        } else if(calculate_column.type == '--average'){
-                            calculate_column.columns.map((cal_column, calIndex)=>{
-                                if(calIndex == 0)
+                        } else if (calculate_column.type == '--average') {
+                            calculate_column.columns.map((cal_column, calIndex)=> {
+                                if (calIndex == 0)
                                     calculate_result = cal_column.value;
                                 else
                                     calculate_result = calculate_result + cal_column.value
                             })
-                            calculate_result = calculate_result/calculate_column.columns.length;
+                            calculate_result = calculate_result / calculate_column.columns.length;
                         }
-                        if(calculate_result !== null){
+                        if (calculate_result !== null) {
 
                             tp_handSonTable.setDataAtCell(row, calculate_column.dataIndex, calculate_result);
                         }
@@ -435,14 +436,10 @@ class GridContainer extends Component {
             }
 
 
-
-
-
-            if(changes[0][1] != 'id' && colType != '--combobox' && colType != '--tag') {
+            if (changes[0][1] != 'id' && colType != '--combobox' && colType != '--tag') {
 
 
                 let rowDatas = this.getData(changes[0][0]);
-
 
 
                 let error_not_found = true;
@@ -494,8 +491,6 @@ class GridContainer extends Component {
             }
 
 
-
-
             //tp_handSonTable.getCellValidator(row, col)(newValue, function(isValid) {
             //    if (!isValid) {
             //        hot.setDataAtCell(row, col, null);
@@ -504,14 +499,14 @@ class GridContainer extends Component {
         }
 
 
-
-
     }
-    validationCaller(validateData, value, callback){
+
+    validationCaller(validateData, value, callback) {
 
         return validationGrid(validateData, value, callback);
     }
-    afterValidater(isValid, value, row, prop, source){
+
+    afterValidater(isValid, value, row, prop, source) {
 
         //let ColIndex = this.getColumnIndex(prop);
         //if(isValid)
@@ -520,6 +515,7 @@ class GridContainer extends Component {
         //    return false;
 
     }
+
     customDropdownRenderer(instance, td, row, col, prop, value, cellProperties) {
 
         while (td.firstChild) {
@@ -542,11 +538,11 @@ class GridContainer extends Component {
 
             if (multiple === true) {
 
-                values.map(tagValue=>{
+                values.map(tagValue=> {
 
-                    if(tagValue == optionsList[index][valueField]){
+                    if (tagValue == optionsList[index][valueField]) {
                         if (textField instanceof Array) {
-                            textField.map(tf=>{
+                            textField.map(tf=> {
                                 value.push(optionsList[index][tf]);
                             })
                         } else
@@ -555,9 +551,9 @@ class GridContainer extends Component {
                 })
             }
             else {
-                if(valueReal == optionsList[index][valueField]){
+                if (valueReal == optionsList[index][valueField]) {
                     if (textField instanceof Array) {
-                        textField.map(tf=>{
+                        textField.map(tf=> {
                             value.push(optionsList[index][tf]);
                         })
                     } else
@@ -569,7 +565,7 @@ class GridContainer extends Component {
         value = value.join(", ");
 
 
-        let pre =  document.createElement('span');
+        let pre = document.createElement('span');
         pre.innerHTML = value
         td.appendChild(pre)
 
@@ -577,12 +573,12 @@ class GridContainer extends Component {
         return td;
     }
 
-    setUpHandsonTable(){
+    setUpHandsonTable() {
         $('#tp_grid').empty();
 
         const {gridHeader, listData} = this.props;
 
-        if(tp_handSonTable !== null){
+        if (tp_handSonTable !== null) {
             tp_handSonTable.destroy()
         }
 
@@ -592,15 +588,15 @@ class GridContainer extends Component {
         let tp_columns = [];
         let fixedColumnsLeft = 0;
 
-        gridHeader.map((header, h_index)=>{
-            if(header.hidden){
+        gridHeader.map((header, h_index)=> {
+            if (header.hidden) {
 
             } else {
                 tp_colHeader.push(header.title)
                 let gridColumn = {}
                 switch (header.type) {
                     case "--text":
-                        gridColumn ={
+                        gridColumn = {
                             data: header.column,
                             editor: 'text',
                             type: 'text',
@@ -609,7 +605,7 @@ class GridContainer extends Component {
                         }
                         break;
                     case "--textarea":
-                        gridColumn ={
+                        gridColumn = {
                             data: header.column,
                             editor: 'text',
                             type: 'text',
@@ -618,7 +614,7 @@ class GridContainer extends Component {
                         }
                         break;
                     case "--checkbox":
-                        gridColumn ={
+                        gridColumn = {
                             data: header.column,
                             type: 'checkbox',
                             checkedTemplate: 1,
@@ -627,7 +623,6 @@ class GridContainer extends Component {
                         }
                         break;
                     case "--combobox":
-
 
 
                         gridColumn = {
@@ -678,7 +673,7 @@ class GridContainer extends Component {
 
                         break;
                     case "--date":
-                        gridColumn ={
+                        gridColumn = {
                             data: header.column,
                             type: 'date',
                             validator: this.validationCaller.bind(this, header.validate),
@@ -712,13 +707,13 @@ class GridContainer extends Component {
                             data: header.column,
                             type: 'numeric',
                             format: '0,0.00',
-                            readOnly:true,
+                            readOnly: true,
                             validator: this.validationCaller.bind(this, header.validate),
                         }
                         break;
                     default:
 
-                        gridColumn ={
+                        gridColumn = {
                             data: header.column,
                         }
 
@@ -729,7 +724,7 @@ class GridContainer extends Component {
 
             }
 
-            if(header.fixed)
+            if (header.fixed)
                 fixedColumnsLeft++;
 
             tp_dataSchema[header.column] = null;
@@ -737,7 +732,7 @@ class GridContainer extends Component {
 
         tp_dataSchema['id'] = -1;
 
-        if(this.props.permission.d == true || this.props.permission.u == true || this.props.ifUpdateDisabledCanEditColumns.length >=1){
+        if (this.props.permission.d == true || this.props.permission.u == true || this.props.ifUpdateDisabledCanEditColumns.length >= 1) {
             tp_colHeader.push(this.props.edit_delete_column_title)
             tp_columns.push({
                 data: 'id',
@@ -754,8 +749,8 @@ class GridContainer extends Component {
         //inline form add
         let trimRows = null
         let readOnly = true
-        if(this.props.formType == 'inline'){
-            readOnly =false
+        if (this.props.formType == 'inline') {
+            readOnly = false
 
             //gridData.unshift(
             //    tp_dataSchema
@@ -765,8 +760,8 @@ class GridContainer extends Component {
             //)
 
         }
-        if(this.props.formType == 'inline' && this.props.showInlineForm === false)
-            trimRows =[0]
+        if (this.props.formType == 'inline' && this.props.showInlineForm === false)
+            trimRows = [0]
 
         maxRows = gridData.length;
         //if(this.props.formType == 'inline' && this.props.showInlineForm === false)
@@ -790,7 +785,7 @@ class GridContainer extends Component {
             fillHandle: false, // drag change value and create row disable
             //trimRows: trimRows,
             //maxRows:maxRows,
-            afterChange:this.afterChange.bind(this),
+            afterChange: this.afterChange.bind(this),
             //afterCreateRow: function(index, amount){
             //    if(index >= 1){
             //        gridData.splice(index, amount)
@@ -806,10 +801,9 @@ class GridContainer extends Component {
                 var translate = self.getColumnTranslate(conIndex)
 
 
-
-                if(prop != self.props.identity_name && prop != 'id'){
+                if (prop != self.props.identity_name && prop != 'id') {
                     var type_col = self.getColumnType(conIndex)
-                    if(type_col != '--image' && type_col != '--internal-link' && type_col != '--combobox' && type_col != '--tag'){
+                    if (type_col != '--image' && type_col != '--internal-link' && type_col != '--combobox' && type_col != '--tag') {
                         cellProperties.renderer = function (instance, td, row, col, prop, value, cellProperties) {
 
                             Handsontable.cellTypes[cellProperties.type].renderer.apply(this, arguments);
@@ -817,9 +811,9 @@ class GridContainer extends Component {
                                 while (td.firstChild) {
                                     td.removeChild(td.firstChild);
                                 }
-                                let json_translations =  JSON.parse(value);
-                                json_translations.map(json_translation =>{
-                                    if(json_translation.locale == self.props.defaultLocale){
+                                let json_translations = JSON.parse(value);
+                                json_translations.map(json_translation => {
+                                    if (json_translation.locale == self.props.defaultLocale) {
                                         var textNode = document.createElement('span');
                                         textNode.innerHTML = json_translation.value;
                                         td.appendChild(textNode);
@@ -830,8 +824,7 @@ class GridContainer extends Component {
                             } else {
                                 /* chnage 0,1 value to string*/
                                 let change_value = self.props.gridHeader[conIndex].change_value;
-                                if(change_value){
-
+                                if (change_value) {
 
 
                                     while (td.firstChild) {
@@ -840,8 +833,8 @@ class GridContainer extends Component {
 
                                     var textNode = document.createElement('span');
 
-                                    change_value.map(cvalue=>{
-                                        if(value == cvalue.value)
+                                    change_value.map(cvalue=> {
+                                        if (value == cvalue.value)
                                             textNode.innerText = cvalue.text
                                     })
 
@@ -931,7 +924,7 @@ class GridContainer extends Component {
 
         if (permission.r === false && permission.c === false && permission.d === false && setup.update_row !== null) {
 
-            window.location.replace('#/edit/'+setup.update_row);
+            window.location.replace('#/edit/' + setup.update_row);
 
         }
 
@@ -945,8 +938,6 @@ class GridContainer extends Component {
             handlerPage={this.handlePageChange.bind(this)}
             paginationMarg="paginationBottom"
         />
-
-
 
 
         return (
@@ -976,7 +967,6 @@ class GridContainer extends Component {
                 {BottomPagination}
 
 
-
             </div>
 
         )
@@ -990,10 +980,10 @@ GridContainer.defaultProps = {
     currentPage: 1,
     pageLimit: 10,
     searchValue: '',
-    listData:[],
-    locales:[],
-    permission:{c:false, r:true, u:false, d:false},
-    ifUpdateDisabledCanEditColumns:[]
+    listData: [],
+    locales: [],
+    permission: {c: false, r: true, u: false, d: false},
+    ifUpdateDisabledCanEditColumns: []
 
 }
 

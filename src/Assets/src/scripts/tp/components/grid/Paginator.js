@@ -1,6 +1,6 @@
 import React, { Component, PropTypes }  from 'react';
 
-import Pagination from "./pagination/Pagination";
+import { Pagination } from 'react-bootstrap';
 import ComboBox from "./pagination/ComboBox";
 
 export default class Paginator extends Component {
@@ -37,6 +37,19 @@ export default class Paginator extends Component {
                                 itemsCountPerPage={pageLimit}
                                 onChange={ handlerPage }
 
+                            />
+
+                            <Pagination
+                                prev
+                                next
+                                first
+                                last
+                                ellipsis
+                                buttonComponentClass='button'
+                                items={totalItems}
+                                activePage={currentPage}
+                                onSelect={this.handleSelectPage.bind(this)}
+                                maxButtons={5}
                             />
                         </div>
                     </div>

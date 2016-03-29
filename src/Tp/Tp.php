@@ -110,6 +110,9 @@ class Tp
     public $default_locale = "EN";
     public $translate_form_input_control = [];
 
+    //map
+    public $googleMap = false;
+
 
     function __construct(){
         $this->config = Config::get('tp_config');
@@ -246,7 +249,8 @@ class Tp
             'show_insert_response'=>$this->show_insert_response,
             'save_alert_word'=>$this->save_alert_word,
             'password_change'=>$this->password_change,
-            'edit_delete_column_title'=>$this->edit_delete_column_title
+            'edit_delete_column_title'=>$this->edit_delete_column_title,
+            'googleMap'=>$this->googleMap
         ];
 
         ////
