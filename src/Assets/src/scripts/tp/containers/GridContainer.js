@@ -106,10 +106,11 @@ class GridContainer extends Component {
         this.callPageDatas(1, e.target.value, this.props.searchValue)
     }
 
-    handlePageChange(pageNumber) {
-        this.props.actions.setCurrentPage(pageNumber)
+    handlePageChange(event, selectedEvent) {
+   
+        this.props.actions.setCurrentPage(selectedEvent.eventKey)
 
-        this.callPageDatas(pageNumber, this.props.pageLimit, this.props.searchValue)
+        this.callPageDatas(selectedEvent.eventKey, this.props.pageLimit, this.props.searchValue)
     }
 
 

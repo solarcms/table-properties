@@ -31,13 +31,7 @@ export default class Paginator extends Component {
                         </div>
 
                         <div className="pull-right" style={{height:'20px'}}>
-                            <Pagination
-                                activePage={currentPage}
-                                totalItemsCount={totalItems}
-                                itemsCountPerPage={pageLimit}
-                                onChange={ handlerPage }
 
-                            />
 
                             <Pagination
                                 prev
@@ -45,10 +39,11 @@ export default class Paginator extends Component {
                                 first
                                 last
                                 ellipsis
-                                buttonComponentClass='button'
-                                items={totalItems}
+                                // buttonComponentClass='button'
+                                bsSize="small"
+                                items={totalPages}
                                 activePage={currentPage}
-                                onSelect={this.handleSelectPage.bind(this)}
+                                onSelect={handlerPage}
                                 maxButtons={5}
                             />
                         </div>
