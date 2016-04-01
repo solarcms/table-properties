@@ -11,4 +11,5 @@ return [
     'cancel_button_text'=>'Болих',
     'delete_button_text'=>'Устгах',
     'edit_delete_column_title'=>'Засах',
+    'add_button_text'=>'Шинээр нэмэх',
 ];

@@ -78,7 +78,8 @@ class Tp
     public $save_button_text = 'Хадгалах';
     public $cancel_button_text = 'Болих';
     public $delete_button_text = 'Устгах';
-    public $edit_delete_column_title = 'Харах';
+    public $edit_delete_column_title = 'Засах';
+    public $add_button_text = 'Шинээр нэмэх';
 
     //action words
     public $save_alert_word = 'Saved';
@@ -127,6 +128,7 @@ class Tp
         $this->cancel_button_text = $this->config['cancel_button_text'];
         $this->delete_button_text = $this->config['delete_button_text'];
         $this->edit_delete_column_title = $this->config['edit_delete_column_title'];
+        $this->add_button_text = $this->config['add_button_text'];
 
 
     }
@@ -200,7 +202,8 @@ class Tp
         $buttons = [
             'save_text'=>$this->save_button_text,
             'cancel_text'=>$this->cancel_button_text,
-            'delete_text'=>$this->delete_button_text
+            'delete_text'=>$this->delete_button_text,
+            'add_button_text'=>$this->add_button_text
         ];
 
 

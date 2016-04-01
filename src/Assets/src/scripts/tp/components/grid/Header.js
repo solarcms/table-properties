@@ -17,15 +17,15 @@ export default class Header extends Component {
             if(this.props.formType == 'inline')
                 addButton = <a href="javascript:void(0)" className="nav-link" onClick={this.props.addInlineForm}>
                     <i className="material-icons green bold">&#xE145;</i>
-                    Шинээр нэмэх
+                    {this.props.add_button_text}
                 </a>
             else if(this.props.formType == 'window')
                 addButton = <a className="nav-link" href="javascript:void(0)" onClick={this.props.showModal}>
                     <i className="material-icons green bold" >&#xE145;</i>
-                    Шинээр нэмэх
+                    {this.props.add_button_text}
                 </a>
             else
-                addButton = <a href={this.props.link} className="nav-link"><i className="material-icons green bold" >&#xE145;</i> Шинээр нэмэх</a>
+                addButton = <a href={this.props.link} className="nav-link"><i className="material-icons green bold" >&#xE145;</i> {this.props.add_button_text}</a>
         }
         let hideshow = this.props.gridHeader.map((header, index)=>
             <li key={index}>

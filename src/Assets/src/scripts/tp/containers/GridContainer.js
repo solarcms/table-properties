@@ -244,6 +244,7 @@ class GridContainer extends Component {
         return tp_handSonTable.getDataAtRow(row);
     }
 
+
     editDeleteRender(instance, td, row, col, prop, value, cellProperties) {
 
         while (td.firstChild) {
@@ -927,6 +928,7 @@ class GridContainer extends Component {
             showGird,
             permission,
             ifUpdateDisabledCanEditColumns,
+            button_texts
         } = this.props;
 
         if (permission.r === false && permission.c === true) {
@@ -971,6 +973,7 @@ class GridContainer extends Component {
                         permission={permission}
                         gridHeader={gridHeader}
                         hideShowColumn={this.hideShowColumn.bind(this)}
+                        add_button_text={button_texts.add_button_text}
                 />
 
                 <div id="tp_grid">
@@ -1015,6 +1018,7 @@ function mapStateToProps(state) {
         editID: Grid.get('editID'),
         showInlineForm: Grid.get('showInlineForm'),
         showGird: Grid.get('showGird'),
+        button_texts: Grid.get('button_texts'),
         focusIndex: Grid.get('focusIndex'),
         formControls: Form.get('form_input_control'),
         permission: Grid.get('setup').toJS().permission,
