@@ -20,7 +20,7 @@ module.exports = {
     context: webpackDirs.contextDir,
 
     entry: {
-        // dependencies: ['./vendor'],
+        dependencies: ['./vendor'],
         tp: ['./app']
     },
 
@@ -36,7 +36,7 @@ module.exports = {
         new Webpack.NoErrorsPlugin(),
 
         //Chunk script
-        // new Webpack.optimize.CommonsChunkPlugin('dependencies', 'js/dependencies.js', Infinity),
+        new Webpack.optimize.CommonsChunkPlugin('dependencies', 'js/dependencies.js', Infinity),
 
         //Chunk css
         new ExtractTextPlugin('css/[name].css', {

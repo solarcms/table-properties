@@ -257,6 +257,9 @@ class GridContainer extends Component {
 
         td.appendChild(pre)
 
+        td.setAttribute('class', 'htCenter htMiddle');
+
+
         if (this.props.formType != 'inline') {
             ///EDIT BUTTTON
             pre_editBtn.href = "#edit/" + value;
@@ -602,7 +605,7 @@ class GridContainer extends Component {
                             editor: 'text',
                             type: 'text',
                             validator: this.validationCaller.bind(this, header.validate),
-                            //allowInvalid: false
+
                         }
                         break;
                     case "--textarea":
@@ -689,6 +692,7 @@ class GridContainer extends Component {
                             data: header.column,
                             type: 'numeric',
                             editor: 'numeric',
+                            className:'htRight',
                             validator: this.validationCaller.bind(this, header.validate),
                         }
 
@@ -699,6 +703,7 @@ class GridContainer extends Component {
                             data: header.column,
                             type: 'numeric',
                             format: '0,0.00',
+                            className:'htRight',
                             validator: this.validationCaller.bind(this, header.validate),
                         }
                         break;
@@ -708,6 +713,7 @@ class GridContainer extends Component {
                             data: header.column,
                             type: 'numeric',
                             format: '0,0.00',
+                            className:'htRight',
                             readOnly: true,
                             validator: this.validationCaller.bind(this, header.validate),
                         }
@@ -737,8 +743,7 @@ class GridContainer extends Component {
             tp_colHeader.push(this.props.edit_delete_column_title)
             tp_columns.push({
                 data: 'id',
-                width: 40,
-
+                width: 70,
                 renderer: this.editDeleteRender.bind(this),
                 editor: false
             })
@@ -853,7 +858,14 @@ class GridContainer extends Component {
 
 
             },
-
+            // dropdownMenu: true,
+            dropdownMenu: [
+                'alignment', '---------',
+                'filter_by_condition', '---------',
+                'filter_by_value', '---------',
+                'filter_action_bar', '---------',
+            ],
+            filters: true
 
             //afterValidate:this.afterValidater.bind(this),
             //comments: true,
