@@ -106,7 +106,41 @@ Route::group([
 use Solarcms\TableProperties\TableProperties;
 use Solarcms\Core\TableProperties\Tp\Tp;
 ```
-11. Last add once funtion to your controller
+11. create your view with css and javascript of table properties
+
+css
+```html
+@if(Config::get('tp_config.tp_debug'))
+        <link rel="stylesheet" href="http://localhost:3000/css/tp.css" type="text/css"/>
+    @else
+        <link rel="stylesheet" href="{{ URL::asset('shared/table-properties/css/tp.css') }}" type="text/css"/>
+    @endif
+```
+app div
+```html
+<div id="solar-tp"></div>
+<script>
+   window.setup = {!! json_encode($setup) !!};
+</script>
+@if($setup['googleMap'] == true)
+   <script src="https://maps.googleapis.com/maps/api/js"></script>
+@endif
+```
+javascript
+```html
+ <script type="text/javascript" charset="utf-8" src="{{ URL::asset('shared/ckeditor/ckeditor.js')}}"></script>
+    @if(Config::get('tp_config.tp_debug'))
+        <script src="http://localhost:3000/js/dependencies.js"></script>
+        <script src="http://localhost:3000/js/tp.js"></script>
+    @else
+        <script type="text/javascript" charset="utf-8"
+                src="{{ URL::asset('shared/table-properties/js/dependencies.js')}}"></script>
+        <script type="text/javascript" charset="utf-8"
+                src="{{ URL::asset('shared/table-properties/js/tp.js')}}"></script>
+    @endif
+```
+
+12. Last add once funtion to your controller
 ```php
  public function TableProperties($slug, $action = 'index') {
 
