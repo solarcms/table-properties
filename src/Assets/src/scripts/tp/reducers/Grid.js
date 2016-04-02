@@ -23,15 +23,22 @@ const initialState = {
     translateFormControls:{},
     button_texts:{},
     defaultLocale:null,
-    edit_delete_column_title:'Засах'
+    edit_delete_column_title:'Засах',
+    showAdvenced:false,
+    order:{
+        column:null,
+        sortOrder: null
+    }
 };
 
 export default createReducer(initialState, {
     [types.SETUP](state, { setupData }) {
 
         const data = Immutable.fromJS(setupData);
+        const order = Immutable.fromJS(setupData.order);
 
         state = state.set('setup', data);
+        state = state.set('order', order);
         state = state.set('defaultLocale', setupData.default_locale);
 
         state = state.set('pageLimit', setupData.pageLimit);
@@ -83,6 +90,19 @@ export default createReducer(initialState, {
     [types.SET_SHOW_GRID](state, { value }) {
 
         state = state.set('showGird', value);
+
+        return state;
+    },
+    [types.SHOW_ADVENCED](state, { value }) {
+
+        state = state.set('showAdvenced', value);
+
+        return state;
+    },
+    [types.SET_ORDER](state, { column,  sortOrder}) {
+
+        state = state.setIn(['order', 'column'], column);
+        state = state.setIn(['order', 'sortOrder'], sortOrder);
 
         return state;
     },

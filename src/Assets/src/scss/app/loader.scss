@@ -1,11 +1,10 @@
 .loading-bar{
 
-
   text-align: center;
-  position: fixed;
-  left: 50%;
-  top: 40%;
-  transform: translate(-50%, -50%);
+  position: absolute;
+  width: 100%;
+  min-height: 400px;
+
 }
 
 .app-hint,

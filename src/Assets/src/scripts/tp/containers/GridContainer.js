@@ -44,6 +44,10 @@ class GridContainer extends Component {
 
         }
 
+        if (prevProps.order.column != this.props.order.column || prevProps.order.sortOrder != this.props.order.sortOrder) {
+            this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
+        }
+
     }
 
     componentWillUnmount() {
@@ -173,6 +177,11 @@ class GridContainer extends Component {
         return this.props.gridHeader[column].type;
 
     }
+    getColumn(index) {
+
+        return this.props.gridHeader[index].column;
+
+    }
 
     callPageDatas(page, pageLimit, searchValue) {
         if (this.props.permission.r !== true)
@@ -181,7 +190,8 @@ class GridContainer extends Component {
         this.props.actions.setShowGrid(false);
         getList(page, {
             pageLimit: pageLimit,
-            searchValue: searchValue
+            searchValue: searchValue,
+            order: this.props.order
         }).then((data)=> {
             this.props.actions.receiveListData(data);
             this.props.actions.setShowGrid(true);
@@ -776,6 +786,17 @@ class GridContainer extends Component {
 
         var self = this;
         var container = document.getElementById('tp_grid');
+
+        let sortValues = true;
+
+        if(this.props.order.column !== null && this.props.order.sortOrder !== null && this.props.order.column  != this.props.identity_name)
+            sortValues = {
+                column: this.getColumnIndex(this.props.order.column),
+                sortOrder: this.props.order.sortOrder == 'ASC' ? true : false
+            }
+
+
+
         tp_handSonTable = new Handsontable(container, {
             stretchH: 'all',
             data: gridData,
@@ -787,12 +808,13 @@ class GridContainer extends Component {
             manualRowResize: true,
             fixedColumnsLeft: fixedColumnsLeft,
             readOnly: readOnly,
-            columnSorting: true,
+            columnSorting: sortValues,
             sortIndicator: true,
             fillHandle: false, // drag change value and create row disable
             //trimRows: trimRows,
             //maxRows:maxRows,
             afterChange: this.afterChange.bind(this),
+            beforeColumnSort: this.beforeColumnSort.bind(this),
             //afterCreateRow: function(index, amount){
             //    if(index >= 1){
             //        gridData.splice(index, amount)
@@ -809,6 +831,9 @@ class GridContainer extends Component {
 
 
                 if (prop != self.props.identity_name && prop != 'id') {
+
+
+
                     var type_col = self.getColumnType(conIndex)
                     if (type_col != '--image' && type_col != '--internal-link' && type_col != '--combobox' && type_col != '--tag') {
                         cellProperties.renderer = function (instance, td, row, col, prop, value, cellProperties) {
@@ -904,6 +929,46 @@ class GridContainer extends Component {
 
     }
 
+    showAdvenced(){
+        if(this.props.showAdvenced)
+            this.props.actions.showAdvenced(false);
+        else
+            this.props.actions.showAdvenced(true);
+
+        this.setUpHandsonTable();
+    }
+
+    /*advedsen search & order */
+    beforeColumnSort(columnIndex, order){
+        if(columnIndex == -1)
+            return false;
+
+        let column = null;
+        let sortOrder = null;
+
+        if(order === true){
+            sortOrder = 'ASC';
+            column = this.getColumn(columnIndex);
+        } else if(order === false){
+            sortOrder = 'DESC';
+            column = this.getColumn(columnIndex);
+        }
+
+
+        this.props.actions.setOrder(column, sortOrder)
+
+
+
+
+        return false;
+    }
+    mainOrderNew(){
+        this.props.actions.setOrder(this.props.identity_name, 'DESC')
+    }
+    mainOrderOld(){
+        this.props.actions.setOrder(this.props.identity_name, 'ASC')
+    }
+
     render() {
 
         const {
@@ -954,7 +1019,8 @@ class GridContainer extends Component {
             paginationMarg="paginationBottom"
         />
 
-
+        const AdvencedClass = this.props.showAdvenced ? 'show_advenced' : '';
+        const gridClass = this.props.showAdvenced ? 'with_advenced' : '';
         return (
             <div >
                 <Header pageName={setup.page_name} icon="fa fa-plus"
@@ -973,10 +1039,29 @@ class GridContainer extends Component {
                         permission={permission}
                         gridHeader={gridHeader}
                         hideShowColumn={this.hideShowColumn.bind(this)}
+                        showAdvenced={this.showAdvenced.bind(this)}
                         add_button_text={button_texts.add_button_text}
                 />
+                <div className={`advanced_search_order ${AdvencedClass}`}>
 
-                <div id="tp_grid">
+                    <div className="sortNewOld">
+                        Эрэмблэх:
+                        <a href="javascript:void(0)"
+                           onClick={this.mainOrderNew.bind(this)}
+                           className={this.props.order.column == this.props.identity_name && this.props.order.sortOrder == 'DESC' ? `active-sort` : null}>
+                            <i className="material-icons">&#xE5C5;</i> Шинэ
+                        </a>
+                        <a href="javascript:void(0)"
+                           onClick={this.mainOrderOld.bind(this)}
+                           className={this.props.order.column == this.props.identity_name && this.props.order.sortOrder == 'ASC' ? `active-sort` : null}>
+                            <i className="material-icons">&#xE5C7;</i> Хуучин
+                        </a>
+                    </div>
+
+
+                </div>
+
+                <div id="tp_grid" className={gridClass}>
                     <Loading />
                 </div>
 
@@ -1033,6 +1118,8 @@ function mapStateToProps(state) {
         pageLimit: Grid.get('pageLimit'),
         searchValue: Grid.get('searchValue'),
         edit_delete_column_title: Grid.get('edit_delete_column_title'),
+        showAdvenced: Grid.get('showAdvenced'),
+        order: Grid.get('order').toJS(),
 
     }
 }

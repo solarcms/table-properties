@@ -229,6 +229,14 @@ class Tp
             Session::set('locale', $this->default_locale);
         }
 
+        if (Session::has('order')) {
+            $order = Session::get('order');
+        } else {
+            $orderPre = explode(" ",$this->grid_default_order_by);
+            $order = ['column'=>$orderPre[0],'sortOrder'=>$orderPre[1]];
+            Session::set('order', $order);
+        }
+
         $setup = [
             'button_texts'=>$buttons,
             'locales'=>$locales,
@@ -253,7 +261,8 @@ class Tp
             'save_alert_word'=>$this->save_alert_word,
             'password_change'=>$this->password_change,
             'edit_delete_column_title'=>$this->edit_delete_column_title,
-            'googleMap'=>$this->googleMap
+            'googleMap'=>$this->googleMap,
+            'order'=>$order,
         ];
 
         ////
@@ -269,6 +278,7 @@ class Tp
 
         $pageLimit = Request::input('pageLimit');
         $searchValue = Request::input('searchValue');
+        $newOrder = Request::input('order');
 
         $table_data = DB::table($this->table)->select($this->grid_columns);
 
@@ -373,8 +383,20 @@ class Tp
         }
 
         if($this->grid_default_order_by != ''){
-            $order = explode(" ",$this->grid_default_order_by);
-            $table_data->orderBy($order[0], $order[1]);
+            if($newOrder['column'] != null && $newOrder['sortOrder'] != null){
+
+                $table_data->orderBy($newOrder['column'], $newOrder['sortOrder']);
+
+                $orderList = ['column'=>$newOrder['column'],'sortOrder'=>$newOrder['sortOrder']];
+                Session::set('order', $orderList);
+            } else {
+                $order = explode(" ",$this->grid_default_order_by);
+                $table_data->orderBy($order[0], $order[1]);
+
+                $orderList = ['column'=>$order[0],'sortOrder'=>$order[1]];
+                Session::set('order', $orderList);
+            }
+
         }
 
 //        dd($table_data->toSql());

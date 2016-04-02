@@ -12,6 +12,7 @@
 
 }
 
+
 .solar-form {
   margin: 2px 15px;
   //width: 600px;
@@ -56,6 +57,11 @@
     *{
       color: #333;
     }
+  }
+  #tp_grid.with_advenced{
+    height: -moz-calc(100vh - 132px);
+    height: -webkit-calc(100vh - 132px);
+    height: calc(100vh - 132px);
   }
 
 }

@@ -11,6 +11,8 @@ export const SET_EDIT_ROW = 'SET_EDIT_ROW';
 export const SET_INLINE_FORM = 'SET_INLINE_FORM';
 export const SET_LOCALE = 'SET_LOCALE';
 export const SET_SHOW_HIDE_COLUMN = 'SET_SHOW_HIDE_COLUMN';
+export const SHOW_ADVENCED = 'SHOW_ADVENCED';
+export const SET_ORDER = 'SET_ORDER';
 
 
 

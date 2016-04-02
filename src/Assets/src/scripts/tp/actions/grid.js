@@ -80,6 +80,22 @@ export function setShowGrid(value) {
     }
 }
 
+export function showAdvenced(value) {
+
+    return {
+        type: types.SHOW_ADVENCED,
+        value: value
+    }
+}
+export function setOrder(column, sortOrder) {
+
+    return {
+        type: types.SET_ORDER,
+        column,
+        sortOrder
+    }
+}
+
 export function setRowEdit(editID, focusIndex) {
 
     return {
