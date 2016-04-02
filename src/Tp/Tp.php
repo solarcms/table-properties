@@ -231,9 +231,15 @@ class Tp
 
         if (Session::has('order')) {
             $order = Session::get('order');
+
+            if($order['page_name'] != $page_name){
+                $orderPre = explode(" ",$this->grid_default_order_by);
+                $order = ['column'=>$orderPre[0],'sortOrder'=>$orderPre[1], 'page_name'=>$page_name];
+                Session::set('order', $order);
+            }
         } else {
             $orderPre = explode(" ",$this->grid_default_order_by);
-            $order = ['column'=>$orderPre[0],'sortOrder'=>$orderPre[1]];
+            $order = ['column'=>$orderPre[0],'sortOrder'=>$orderPre[1], 'page_name'=>$page_name];
             Session::set('order', $order);
         }
 
@@ -387,13 +393,13 @@ class Tp
 
                 $table_data->orderBy($newOrder['column'], $newOrder['sortOrder']);
 
-                $orderList = ['column'=>$newOrder['column'],'sortOrder'=>$newOrder['sortOrder']];
+                $orderList = ['column'=>$newOrder['column'],'sortOrder'=>$newOrder['sortOrder'], 'page_name'=>$this->page_name];
                 Session::set('order', $orderList);
             } else {
                 $order = explode(" ",$this->grid_default_order_by);
                 $table_data->orderBy($order[0], $order[1]);
 
-                $orderList = ['column'=>$order[0],'sortOrder'=>$order[1]];
+                $orderList = ['column'=>$order[0],'sortOrder'=>$order[1], 'page_name'=>$this->page_name];
                 Session::set('order', $orderList);
             }
 
