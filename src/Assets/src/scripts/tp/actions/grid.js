@@ -87,6 +87,14 @@ export function showAdvenced(value) {
         value: value
     }
 }
+export function dynamicChange(index, value) {
+
+    return {
+        type: types.DYNAMIC_ACTION,
+        index,
+        value
+    }
+}
 export function setOrder(column, sortOrder) {
 
     return {

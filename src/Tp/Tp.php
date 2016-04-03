@@ -114,6 +114,13 @@ class Tp
     //map
     public $googleMap = false;
 
+    //advanced
+    public $advancedSearch = [
+        'dateRage' =>[],
+        'numberRange'=>[],
+        'parentSelect'=>[]
+    ];
+
 
     function __construct(){
         $this->config = Config::get('tp_config');
@@ -129,8 +136,6 @@ class Tp
         $this->delete_button_text = $this->config['delete_button_text'];
         $this->edit_delete_column_title = $this->config['edit_delete_column_title'];
         $this->add_button_text = $this->config['add_button_text'];
-
-
     }
 
 
@@ -269,6 +274,7 @@ class Tp
             'edit_delete_column_title'=>$this->edit_delete_column_title,
             'googleMap'=>$this->googleMap,
             'order'=>$order,
+            'advancedSearch'=>$this->advancedSearch,
         ];
 
         ////
@@ -285,6 +291,7 @@ class Tp
         $pageLimit = Request::input('pageLimit');
         $searchValue = Request::input('searchValue');
         $newOrder = Request::input('order');
+        $advancedSearch = Request::input('advancedSearch');
 
         $table_data = DB::table($this->table)->select($this->grid_columns);
 
@@ -406,6 +413,20 @@ class Tp
         }
 
 //        dd($table_data->toSql());
+
+        if(isset($advancedSearch['parentSelect'])){
+            foreach ($advancedSearch['parentSelect'] as $parentSelect){
+                if($parentSelect['value'] != null){
+                    $parentTable = $parentSelect['table'];
+                    $childColumn = $parentSelect['column'];
+                    $table_data->where("$parentTable.$childColumn", "=", $parentSelect['value']);
+
+                
+                }
+            }
+        }
+
+
 
         return  $table_data->paginate($pageLimit);
 

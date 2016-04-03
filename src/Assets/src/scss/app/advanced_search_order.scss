@@ -3,7 +3,7 @@
   width: 100%;
   background: #fff;
   opacity: 0;
-  line-height: 40px;
+  line-height: 14px;
 
   -webkit-transition:all 0.4s ease-in-out;
   -moz-transition:all 0.4s ease-in-out;
@@ -22,9 +22,22 @@
       color: #fff;
     }
   }
+  .dateRange, .numberRange, .parentSelect{
+    display: inline-block;
+    padding: 0 5px;
+
+    .form-group{
+      min-width: 200px;
+      line-height: 14px;
+      .control-label{
+        height: 14px;
+        margin: 3px 5px;
+      }
+    }
+  }
 }
 .show_advenced{
-  height: 40px;
+  height: 60px;
   width: 100%;
   background: #fff;
   opacity: 1;

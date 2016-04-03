@@ -37,8 +37,11 @@ export default createReducer(initialState, {
         const data = Immutable.fromJS(setupData);
         const order = Immutable.fromJS(setupData.order);
 
+        const advancedSearch = Immutable.fromJS(setupData.advancedSearch);
+
         state = state.set('setup', data);
         state = state.set('order', order);
+        state = state.set('advancedSearch', advancedSearch);
         state = state.set('defaultLocale', setupData.default_locale);
 
         state = state.set('pageLimit', setupData.pageLimit);
@@ -84,6 +87,13 @@ export default createReducer(initialState, {
     [types.SET_SEARCH](state, { word }) {
 
         state = state.set('searchValue', word);
+
+        return state;
+    },
+    [types.DYNAMIC_ACTION](state, { index, value }) {
+        console.log(index, value)
+
+        state = state.setIn(index, value);
 
         return state;
     },

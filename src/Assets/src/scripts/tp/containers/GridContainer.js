@@ -11,6 +11,8 @@ import Pagination from "../components/grid/Paginator"
 
 import Window from "../components/window/"
 
+import ComboBox from '../components/form/elements/ComboBox'
+
 import validationGrid from "../components/grid/validation/"
 
 /*for handson table*/
@@ -45,6 +47,10 @@ class GridContainer extends Component {
         }
 
         if (prevProps.order.column != this.props.order.column || prevProps.order.sortOrder != this.props.order.sortOrder) {
+            this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
+        }
+
+        if (JSON.stringify(prevProps.advancedSearch) != JSON.stringify(this.props.advancedSearch)) {
             this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
         }
 
@@ -191,7 +197,8 @@ class GridContainer extends Component {
         getList(page, {
             pageLimit: pageLimit,
             searchValue: searchValue,
-            order: this.props.order
+            order: this.props.order,
+            advancedSearch:this.props.advancedSearch
         }).then((data)=> {
             this.props.actions.receiveListData(data);
             this.props.actions.setShowGrid(true);
@@ -968,6 +975,10 @@ class GridContainer extends Component {
     mainOrderOld(){
         this.props.actions.setOrder(this.props.identity_name, 'ASC')
     }
+    parentSelectHandler(index, value){
+
+        this.props.actions.dynamicChange(['advancedSearch', 'parentSelect', index, 'value'], value);
+    }
 
     render() {
 
@@ -993,7 +1004,8 @@ class GridContainer extends Component {
             showGird,
             permission,
             ifUpdateDisabledCanEditColumns,
-            button_texts
+            button_texts,
+            advancedSearch
         } = this.props;
 
         if (permission.r === false && permission.c === true) {
@@ -1043,6 +1055,45 @@ class GridContainer extends Component {
                         add_button_text={button_texts.add_button_text}
                 />
                 <div className={`advanced_search_order ${AdvencedClass}`}>
+                    
+                    <div className="dateRange">
+                        
+                    </div>
+                    <div className="numberRange">
+
+                    </div>
+                    <div className="parentSelect">
+                        {advancedSearch.parentSelect.map((parentSelect, index)=>{
+
+                            let options = [];
+                                formControls.map(data=>{
+                                    if(data.get('column') == parentSelect.column){
+                                        options = data.get('options');
+                                    }
+                                })
+                                return <div key={index} className="form-inline">
+
+                                    <ComboBox
+                                        disabled={false}
+                                        dataIndex={index}
+                                        column={parentSelect.column}
+                                        name={parentSelect.column}
+                                        fieldClass={``}
+                                        placeholder={parentSelect.label}
+                                        formType={``}
+                                        formData={this.props.formDataNew}
+                                        value={parentSelect.value}
+                                        multi={false}
+                                        defaultLocale={this.props.defaultLocale}
+                                        fieldOptions={options}
+                                        changeHandler={this.parentSelectHandler.bind(this, index)}
+                                        errorText={``}
+                                    />
+
+                                    </div>
+                        }
+                            )}
+                    </div>
 
                     <div className="sortNewOld">
                         Эрэмблэх:
@@ -1100,6 +1151,7 @@ function mapStateToProps(state) {
         locales: Grid.get('setup').toJS().locales,
         defaultLocale: Grid.get('defaultLocale'),
         formData: Form.get('formData').toJS(),
+        formDataNew: Form.get('formData'),
         editID: Grid.get('editID'),
         showInlineForm: Grid.get('showInlineForm'),
         showGird: Grid.get('showGird'),
@@ -1120,6 +1172,7 @@ function mapStateToProps(state) {
         edit_delete_column_title: Grid.get('edit_delete_column_title'),
         showAdvenced: Grid.get('showAdvenced'),
         order: Grid.get('order').toJS(),
+        advancedSearch: Grid.get('advancedSearch').toJS(),
 
     }
 }

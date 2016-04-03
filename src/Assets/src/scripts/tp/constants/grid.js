@@ -13,6 +13,7 @@ export const SET_LOCALE = 'SET_LOCALE';
 export const SET_SHOW_HIDE_COLUMN = 'SET_SHOW_HIDE_COLUMN';
 export const SHOW_ADVENCED = 'SHOW_ADVENCED';
 export const SET_ORDER = 'SET_ORDER';
+export const DYNAMIC_ACTION = 'DYNAMIC_ACTION';
 
 
 
