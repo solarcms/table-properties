@@ -14,6 +14,11 @@ import Window from "../components/window/"
 import ComboBox from '../components/form/elements/ComboBox'
 
 import validationGrid from "../components/grid/validation/"
+import DateTimePicker from 'react-widgets/lib/DateTimePicker';
+import Moment from 'moment'
+import momentLocalizer from 'react-widgets/lib/localizers/moment'
+
+momentLocalizer(Moment);
 
 /*for handson table*/
 var tp_handSonTable = null
@@ -53,6 +58,7 @@ class GridContainer extends Component {
         if (JSON.stringify(prevProps.advancedSearch) != JSON.stringify(this.props.advancedSearch)) {
             this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
         }
+
 
     }
 
@@ -979,6 +985,16 @@ class GridContainer extends Component {
 
         this.props.actions.dynamicChange(['advancedSearch', 'parentSelect', index, 'value'], value);
     }
+    dateRange1(index, value1){
+
+        const value = Moment(value1).format("YYYY.MM.DD");
+
+        this.props.actions.dynamicChange(['advancedSearch', 'dateRange', index, 'value1'], value);
+    }
+    dateRange2(index, value2){
+        const value = Moment(value2).format("YYYY.MM.DD");
+        this.props.actions.dynamicChange(['advancedSearch', 'dateRange', index, 'value2'], value);
+    }
 
     render() {
 
@@ -1057,7 +1073,44 @@ class GridContainer extends Component {
                 <div className={`advanced_search_order ${AdvencedClass}`}>
                     
                     <div className="dateRange">
-                        
+                        {advancedSearch.dateRange.map((dateRange, index)=>{
+
+
+                                return <div key={index} className="form-inline">
+
+                                    <div key={index} dataIndex={index} className={`form-group`}>
+                                        <label className="control-label">{dateRange.label}</label>
+                                        <div className="">
+                                            <DateTimePicker
+                                                disabled={false}
+                                                name={dateRange.column}
+                                                defaultValue={dateRange.value1 === null ? null : new Date(dateRange.value1)}
+
+                                                format={"YYYY.MM.DD"}
+                                                time={false}
+
+                                                onChange={this.dateRange1.bind(this, index)}
+                                                placeholder={`Эхлэх`}
+                                            />
+                                            <DateTimePicker
+                                                disabled={false}
+                                                name={`${dateRange.column}-2`}
+                                                defaultValue={dateRange.value2 === null ? null : new Date(dateRange.value2)}
+
+                                                format={"YYYY.MM.DD"}
+                                                time={false}
+
+                                                onChange={this.dateRange2.bind(this, index)}
+                                                placeholder={`Дуусах`}
+                                            />
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            }
+                        )}
+
                     </div>
                     <div className="numberRange">
 

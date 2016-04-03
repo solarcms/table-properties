@@ -91,7 +91,6 @@ export default createReducer(initialState, {
         return state;
     },
     [types.DYNAMIC_ACTION](state, { index, value }) {
-        console.log(index, value)
 
         state = state.setIn(index, value);
 

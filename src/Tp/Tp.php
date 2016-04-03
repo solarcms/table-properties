@@ -426,6 +426,26 @@ class Tp
             }
         }
 
+        if(isset($advancedSearch['dateRange'])){
+            foreach ($advancedSearch['dateRange'] as $dateRange){
+                if($dateRange['value1'] != null){
+                    $rangeTable = $dateRange['table'];
+                    $rangeColumn = $dateRange['column'];
+                    $table_data->where("$rangeTable.$rangeColumn", ">=", $dateRange['value1']);
+
+               
+                }
+                if($dateRange['value2'] != null){
+                    $rangeTable = $dateRange['table'];
+                    $rangeColumn = $dateRange['column'];
+                    $table_data->where("$rangeTable.$rangeColumn", "<=", $dateRange['value2']);
+
+
+                }
+            }
+
+        }
+
 
 
         return  $table_data->paginate($pageLimit);
