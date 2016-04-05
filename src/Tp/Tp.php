@@ -487,15 +487,16 @@ class Tp
                     $pre_data = DB::table($options['table'])->select($options['grid_columns'])->orderBy($order[0], $order[1]);
 
                     if(isset($options['where_condition'])){
-                        $cond = 0;
+
                         foreach($options['where_condition'] as $where_condition){
 
-                            if($cond == 0){
-                                $pre_data->where($where_condition[0], $where_condition[1], $where_condition[2]);
-                            } else {
+                            if(isset($where_condition[3]) && $where_condition[3] == 'or'){
+
                                 $pre_data->orWhere($where_condition[0], $where_condition[1], $where_condition[2]);
+                            } else {
+                                $pre_data->where($where_condition[0], $where_condition[1], $where_condition[2]);
                             }
-                            $cond++;
+
                         }
                     }
 

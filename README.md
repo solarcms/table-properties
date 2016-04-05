@@ -38,6 +38,7 @@
 - resize column & row
 - Sort
 - Search
+- Filter column
 - Inline form validation
 - Pagination
 - Change per page items

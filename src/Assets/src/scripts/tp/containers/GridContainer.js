@@ -553,9 +553,16 @@ class GridContainer extends Component {
         var selectedId;
         var multiple = cellProperties.chosenOptions.multiple;
         var optionsList = cellProperties.chosenOptions.data;
+
         var valueField = cellProperties.chosenOptions.valueField;
         var textField = cellProperties.chosenOptions.textField;
         var valueReal = value;
+
+
+
+
+
+
 
         var values = (value + "").split(",");
 
@@ -563,29 +570,27 @@ class GridContainer extends Component {
         var value = [];
         for (var index = 0; index < optionsList.length; index++) {
 
-
             if (multiple === true) {
-
                 values.map(tagValue=> {
 
-                    if (tagValue == optionsList[index][valueField]) {
+                    if (tagValue == optionsList[index]['id']) {
                         if (textField instanceof Array) {
                             textField.map(tf=> {
                                 value.push(optionsList[index][tf]);
                             })
                         } else
-                            value.push(optionsList[index][textField]);
+                            value.push(optionsList[index]['label']);
                     }
                 })
             }
             else {
-                if (valueReal == optionsList[index][valueField]) {
+                if (valueReal == optionsList[index]['id']) {
                     if (textField instanceof Array) {
                         textField.map(tf=> {
                             value.push(optionsList[index][tf]);
                         })
                     } else
-                        value.push(optionsList[index][textField]);
+                        value.push(optionsList[index]['label']);
                 }
 
             }
@@ -652,6 +657,22 @@ class GridContainer extends Component {
                         break;
                     case "--combobox":
 
+                        let optionsList = [];
+                        this.props.formData[header.column].data.data.map((lsdata, lsindex) => {
+
+                            var valuef = [];
+                            if (header.options.valueField instanceof Array) {
+                                header.options.valueField.map(tf=> {
+                                    valuef.push(lsdata[tf]);
+                                })
+                            } else
+                                valuef.push(lsdata[header.options.textField]);
+                            valuef = valuef.join(", ");
+                            optionsList.push({
+                                id:lsdata[header.options.valueField],
+                                label:valuef
+                            })
+                        })
 
                         gridColumn = {
                             data: header.column,
@@ -659,7 +680,7 @@ class GridContainer extends Component {
 
                             chosenOptions: {
                                 multiple: false,
-                                data: this.props.formData[header.column].data.data,
+                                data: optionsList,
                                 valueField: header.options.valueField,
                                 textField: header.options.textField,
                             },
@@ -802,7 +823,19 @@ class GridContainer extends Component {
 
         let sortValues = true;
 
-        if(this.props.order.column !== null && this.props.order.sortOrder !== null && this.props.order.column  != this.props.identity_name)
+        let identity_name_pre = this.props.identity_name.split('.');
+        let identity_name_real = this.props.identity_name;
+        if(identity_name_pre.length >= 2)
+            identity_name_real = identity_name_pre[1];
+
+        let column_pre = this.props.order.column.split('.');
+        let column_real = this.props.column;
+        if(column_pre.length >= 2)
+            column_real = column_pre[1];
+
+        console.log(column_real, identity_name_real);
+
+        if(column_real !== null && this.props.order.sortOrder !== null && column_real  != identity_name_real)
             sortValues = {
                 column: this.getColumnIndex(this.props.order.column),
                 sortOrder: this.props.order.sortOrder == 'ASC' ? true : false
@@ -1073,7 +1106,7 @@ class GridContainer extends Component {
                 <div className={`advanced_search_order ${AdvencedClass}`}>
                     
                     <div className="dateRange">
-                        {advancedSearch.dateRange.map((dateRange, index)=>{
+                        {advancedSearch.dateRange ? advancedSearch.dateRange.map((dateRange, index)=>{
 
 
                                 return <div key={index} className="form-inline">
@@ -1109,14 +1142,14 @@ class GridContainer extends Component {
 
                                 </div>
                             }
-                        )}
+                        ) : null}
 
                     </div>
                     <div className="numberRange">
 
                     </div>
                     <div className="parentSelect">
-                        {advancedSearch.parentSelect.map((parentSelect, index)=>{
+                        {advancedSearch.parentSelect ? advancedSearch.parentSelect.map((parentSelect, index)=>{
 
                             let options = [];
                                 formControls.map(data=>{
@@ -1145,7 +1178,7 @@ class GridContainer extends Component {
 
                                     </div>
                         }
-                            )}
+                            ): null}
                     </div>
 
                     <div className="sortNewOld">
