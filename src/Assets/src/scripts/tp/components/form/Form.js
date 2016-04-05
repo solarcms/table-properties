@@ -209,10 +209,14 @@ export default class Form extends Component {
             case "--group":
                 let bootsrap_gird_sum = field.get('controls').size/(12/this.props.fromFieldClass);
                 let formRows = [];
+                bootsrap_gird_sum =Math.ceil(bootsrap_gird_sum);
                 for(let rowI = 1; rowI <= bootsrap_gird_sum; rowI ++){
                     formRows.push(rowI)
                 }
                 let rendered = 0;
+
+
+
                 const groupFields = formRows.map(formRow=>{
                     return <div className="row">
                         {field.get('controls').map((control, subindex)=>{
@@ -680,6 +684,7 @@ export default class Form extends Component {
 
         let bootsrap_gird_sum = formControls.size/(12/this.props.fromFieldClass);
         let formRows = [];
+        bootsrap_gird_sum =Math.ceil(bootsrap_gird_sum);
         for(let rowI = 1; rowI <= bootsrap_gird_sum; rowI ++){
             formRows.push(rowI)
         }
@@ -832,6 +837,9 @@ export default class Form extends Component {
 
         let bootsrap_gird_sum = formControls.size/(12/this.props.fromFieldClass);
         let formRows = [];
+
+       bootsrap_gird_sum =Math.ceil(bootsrap_gird_sum);
+
         for(let rowI = 1; rowI <= bootsrap_gird_sum; rowI ++){
             formRows.push(rowI)
         }
