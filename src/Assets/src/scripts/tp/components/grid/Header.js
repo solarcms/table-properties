@@ -119,6 +119,17 @@ export default class Header extends Component {
                     <li className="nav-item dropdown">
                         {addButton}
                     </li>
+                    <li className="nav-item dropdown saved-success" id="save_info">
+                       <span className="nav-link">
+                            Амжилттай хадгалагдлаа
+                       </span>
+                    </li>
+                    <li className="nav-item dropdown saved-failed" id="save_info_failed">
+
+                       <span className="nav-link " >
+                            Алдаа гарлаа
+                       </span>
+                    </li>
                 </ul>
             </div>
             :

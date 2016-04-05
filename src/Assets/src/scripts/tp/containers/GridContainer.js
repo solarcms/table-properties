@@ -501,10 +501,20 @@ class GridContainer extends Component {
 
                     inlineSave(data).then((data)=> {
 
+
+                        $("#save_info" ).addClass("show-info");
+
                         this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
 
-                        this.removeInlineForm()
+                        this.removeInlineForm();
 
+                        setTimeout(function(){ $("#save_info" ).removeClass("show-info"); }, 2500);
+
+
+
+                    }).fail(()=> {
+                        $("#save_info_failed" ).addClass("show-info");
+                        setTimeout(function(){ $("#save_info_failed" ).removeClass("show-info"); }, 2500);
                     });
 
                 }
@@ -512,7 +522,13 @@ class GridContainer extends Component {
                 if (error_not_found && edit_id >= 1) {
 
                     inlineSaveUpdate(edit_id, data).then((data)=> {
+                        $("#save_info" ).addClass("show-info");
                         this.removeInlineForm()
+                        setTimeout(function(){ $("#save_info" ).removeClass("show-info"); }, 2500);
+                    }).fail(()=> {
+                        $("#save_info_failed" ).addClass("show-info");
+                        setTimeout(function(){ $("#save_info_failed" ).removeClass("show-info"); }, 2500);
+
                     });
 
                 }
@@ -537,7 +553,7 @@ class GridContainer extends Component {
     }
 
     afterValidater(isValid, value, row, prop, source) {
-        console.log(isValid, value, row, prop, source)
+       
         let columnIndex = this.getColumnIndex(prop);
         if(isValid){
             tp_handSonTable.setCellMeta(row, columnIndex, 'className', '');
@@ -855,8 +871,6 @@ class GridContainer extends Component {
                 sortOrder: this.props.order.sortOrder == 'ASC' ? true : false
             }
 
-
-
         tp_handSonTable = new Handsontable(container, {
             stretchH: 'all',
             data: gridData,
@@ -900,7 +914,7 @@ class GridContainer extends Component {
                     if(self.props.gridHeader[col] && self.props.gridHeader[col].validate)
                         validate = self.props.gridHeader[col].validate;
 
-                    if(validate){
+                    if(validate && gridData.length >=1){
 
                         let isvalid =validationGrid(validate, gridData[row][prop]);
 
