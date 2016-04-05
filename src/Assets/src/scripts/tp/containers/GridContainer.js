@@ -464,10 +464,12 @@ class GridContainer extends Component {
             }
 
 
-            if (changes[0][1] != 'id' && colType != '--combobox' && colType != '--tag') {
+            if (changes[0][1] != this.props.identity_name) {
 
 
                 let rowDatas = this.getData(changes[0][0]);
+
+
 
 
                 let error_not_found = true;
@@ -535,12 +537,18 @@ class GridContainer extends Component {
     }
 
     afterValidater(isValid, value, row, prop, source) {
+        console.log(isValid, value, row, prop, source)
+        let columnIndex = this.getColumnIndex(prop);
+        if(isValid){
+            tp_handSonTable.setCellMeta(row, columnIndex, 'className', '');
+            return true;
+        }
+        else{
 
-        //let ColIndex = this.getColumnIndex(prop);
-        //if(isValid)
-        //    return true;
-        //else
-        //    return false;
+            tp_handSonTable.setCellMeta(row, columnIndex, 'className', 'required-field');
+            return false;
+        }
+
 
     }
 
@@ -603,6 +611,8 @@ class GridContainer extends Component {
         td.appendChild(pre)
 
 
+        td.setAttribute('class', cellProperties.className);
+
         return td;
     }
 
@@ -628,7 +638,11 @@ class GridContainer extends Component {
                 tp_colHeader.push(header.title)
                 let gridColumn = {}
                 switch (header.type) {
+
                     case "--text":
+
+
+
                         gridColumn = {
                             data: header.column,
                             editor: 'text',
@@ -833,7 +847,7 @@ class GridContainer extends Component {
         if(column_pre.length >= 2)
             column_real = column_pre[1];
 
-        console.log(column_real, identity_name_real);
+
 
         if(column_real !== null && this.props.order.sortOrder !== null && column_real  != identity_name_real)
             sortValues = {
@@ -875,8 +889,28 @@ class GridContainer extends Component {
                 var conIndex = self.getColumnIndex(prop)
                 var translate = self.getColumnTranslate(conIndex)
 
+                let cellClass = ''
 
                 if (prop != self.props.identity_name && prop != 'id') {
+
+                    let validate = false;
+
+
+
+                    if(self.props.gridHeader[col] && self.props.gridHeader[col].validate)
+                        validate = self.props.gridHeader[col].validate;
+
+                    if(validate){
+
+                        let isvalid =validationGrid(validate, gridData[row][prop]);
+
+                        if(isvalid){
+
+                        } else{
+                            cellClass = 'required-field';
+                        }
+
+                    }
 
 
 
@@ -922,8 +956,12 @@ class GridContainer extends Component {
                                 }
                             }
                         }
+                        cellProperties['className'] =cellClass;
                         return cellProperties;
 
+                    } else {
+                        cellProperties['className'] =cellClass;
+                        return cellProperties;
                     }
 
                 }
@@ -937,9 +975,9 @@ class GridContainer extends Component {
                 'filter_by_value', '---------',
                 'filter_action_bar', '---------',
             ],
-            filters: true
+            filters: true,
 
-            //afterValidate:this.afterValidater.bind(this),
+            afterValidate:this.afterValidater.bind(this),
             //comments: true,
 
 

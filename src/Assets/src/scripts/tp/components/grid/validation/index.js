@@ -118,6 +118,25 @@ export default function validationGrid(validationData, value, callback){
 
 
         callback(error_not_found)
+    } else {
+        rules.map((rule) => {
+
+            if(rule == 'required'){
+                errors.push(required(value));
+
+            } else if(rule == 'number'){
+                errors.push(number(value));
+
+            }
+
+        })
+        let error_not_found = true;
+        errors.map(error =>{
+            if(error === false)
+                error_not_found = false
+        })
+
+        return error_not_found;
     }
 
 
