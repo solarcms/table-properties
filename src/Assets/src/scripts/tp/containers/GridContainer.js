@@ -519,6 +519,8 @@ class GridContainer extends Component {
 
                 }
 
+
+
                 if (error_not_found && edit_id >= 1) {
 
                     inlineSaveUpdate(edit_id, data).then((data)=> {
@@ -553,7 +555,7 @@ class GridContainer extends Component {
     }
 
     afterValidater(isValid, value, row, prop, source) {
-       
+
         let columnIndex = this.getColumnIndex(prop);
         if(isValid){
             tp_handSonTable.setCellMeta(row, columnIndex, 'className', '');
@@ -598,23 +600,13 @@ class GridContainer extends Component {
                 values.map(tagValue=> {
 
                     if (tagValue == optionsList[index]['id']) {
-                        if (textField instanceof Array) {
-                            textField.map(tf=> {
-                                value.push(optionsList[index][tf]);
-                            })
-                        } else
-                            value.push(optionsList[index]['label']);
+                        value.push(optionsList[index]['label']);
                     }
                 })
             }
             else {
                 if (valueReal == optionsList[index]['id']) {
-                    if (textField instanceof Array) {
-                        textField.map(tf=> {
-                            value.push(optionsList[index][tf]);
-                        })
-                    } else
-                        value.push(optionsList[index]['label']);
+                    value.push(optionsList[index]['label']);
                 }
 
             }
@@ -691,12 +683,18 @@ class GridContainer extends Component {
                         this.props.formData[header.column].data.data.map((lsdata, lsindex) => {
 
                             var valuef = [];
-                            if (header.options.valueField instanceof Array) {
-                                header.options.valueField.map(tf=> {
+                            if (header.options.textField instanceof Array) {
+                                header.options.textField.map(tf=> {
+
                                     valuef.push(lsdata[tf]);
                                 })
                             } else
                                 valuef.push(lsdata[header.options.textField]);
+
+
+
+
+
                             valuef = valuef.join(", ");
                             optionsList.push({
                                 id:lsdata[header.options.valueField],
@@ -812,12 +810,13 @@ class GridContainer extends Component {
             tp_dataSchema[header.column] = null;
         })
 
-        tp_dataSchema['id'] = -1;
+        tp_dataSchema[this.props.identity_name] = -1;
 
         if (this.props.permission.d == true || this.props.permission.u == true || this.props.ifUpdateDisabledCanEditColumns.length >= 1) {
             tp_colHeader.push(this.props.edit_delete_column_title)
+
             tp_columns.push({
-                data: 'id',
+                data: this.props.identity_name,
                 width: 70,
                 renderer: this.editDeleteRender.bind(this),
                 editor: false
@@ -859,15 +858,15 @@ class GridContainer extends Component {
             identity_name_real = identity_name_pre[1];
 
         let column_pre = this.props.order.column.split('.');
-        let column_real = this.props.column;
+        let column_real = this.props.order.column;
         if(column_pre.length >= 2)
             column_real = column_pre[1];
 
-
+       
 
         if(column_real !== null && this.props.order.sortOrder !== null && column_real  != identity_name_real)
             sortValues = {
-                column: this.getColumnIndex(this.props.order.column),
+                column: this.getColumnIndex(column_real),
                 sortOrder: this.props.order.sortOrder == 'ASC' ? true : false
             }
 
