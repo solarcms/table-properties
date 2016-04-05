@@ -42,7 +42,7 @@ class Tp
     public $grid_default_order_by = '';     // free-form 'order by' clause. Not used if grid_sql is specified. Example: column1 desc, column2 asc
     public $grid_input_control = [];   // for grid(), define inputs like select boxes, checkboxes, etc... *info on usage below*
     public $grid_output_control = [];  // for grid(). define outputs like --email to make a clickable mailto or --document to make a link. *info on usage below*
-    public $pageLimit = 50;               // pagination limit number of records per page
+    public $pageLimit = 500;               // pagination limit number of records per page
     public $pagination_position = 'bottom'; // both, top, bottom
 
 
@@ -120,6 +120,9 @@ class Tp
         'numberRange'=>[],
         'parentSelect'=>[]
     ];
+
+    //column summary
+    public $columnSummary = [];
 
 
     function __construct(){
@@ -275,6 +278,7 @@ class Tp
             'googleMap'=>$this->googleMap,
             'order'=>$order,
             'advancedSearch'=>$this->advancedSearch,
+            'columnSummary'=>$this->columnSummary,
         ];
 
         ////
@@ -484,6 +488,7 @@ class Tp
 //
 //                } else{
                     $order = explode(" ", $options['grid_default_order_by']);
+
                     $pre_data = DB::table($options['table'])->select($options['grid_columns'])->orderBy($order[0], $order[1]);
 
                     if(isset($options['where_condition'])){
@@ -496,6 +501,17 @@ class Tp
                             } else {
                                 $pre_data->where($where_condition[0], $where_condition[1], $where_condition[2]);
                             }
+
+                        }
+                    }
+
+                    if(isset($options['where_condition_raw'])){
+
+                        foreach($options['where_condition_raw'] as $where_condition_raw){
+
+
+                                $pre_data->whereRaw($where_condition_raw);
+
 
                         }
                     }

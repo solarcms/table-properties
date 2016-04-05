@@ -38,10 +38,12 @@ export default createReducer(initialState, {
         const order = Immutable.fromJS(setupData.order);
 
         const advancedSearch = Immutable.fromJS(setupData.advancedSearch);
+        const columnSummary = Immutable.fromJS(setupData.columnSummary);
 
         state = state.set('setup', data);
         state = state.set('order', order);
         state = state.set('advancedSearch', advancedSearch);
+        state = state.set('columnSummary', columnSummary);
         state = state.set('defaultLocale', setupData.default_locale);
 
         state = state.set('pageLimit', setupData.pageLimit);

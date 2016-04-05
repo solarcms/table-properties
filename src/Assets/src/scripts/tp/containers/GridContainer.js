@@ -17,7 +17,7 @@ import validationGrid from "../components/grid/validation/"
 import DateTimePicker from 'react-widgets/lib/DateTimePicker';
 import Moment from 'moment'
 import momentLocalizer from 'react-widgets/lib/localizers/moment'
-
+import numeral from 'numeral';
 momentLocalizer(Moment);
 
 /*for handson table*/
@@ -775,6 +775,7 @@ class GridContainer extends Component {
                             data: header.column,
                             type: 'text',
                             editor: false,
+                            validator: this.validationCaller.bind(this, ''),
                         }
                         break;
                     case "--float":
@@ -845,26 +846,30 @@ class GridContainer extends Component {
 
         let gridData = listData;
 
+        // if user column summary
+        let columnSummary = this.props.columnSummary;
+        let fixedRowsBottom = 0;
+        if(columnSummary.length >=1){
+            let preEmpty = gridData[0];
+            let lastRow = {};
+            Object.keys(preEmpty).map(empty =>{
+                lastRow[empty] = null;
+            })
+            lastRow[this.props.identity_name] = 0;
+            gridData.push(lastRow);
+
+            fixedRowsBottom = 1;
+        }
+
+
         //inline form add
         let trimRows = null
         let readOnly = true
         if (this.props.formType == 'inline') {
             readOnly = false
-
-            //gridData.unshift(
-            //    tp_dataSchema
-            //)
-            //gridData.unshift(
-            //    {}
-            //)
-
         }
-        if (this.props.formType == 'inline' && this.props.showInlineForm === false)
-            trimRows = [0]
 
-        maxRows = gridData.length;
-        //if(this.props.formType == 'inline' && this.props.showInlineForm === false)
-        //    maxRows = gridData.length+1;
+
 
         var self = this;
         var container = document.getElementById('tp_grid');
@@ -889,6 +894,10 @@ class GridContainer extends Component {
                 sortOrder: this.props.order.sortOrder == 'ASC' ? true : false
             }
 
+
+
+
+
         tp_handSonTable = new Handsontable(container, {
             stretchH: 'all',
             data: gridData,
@@ -902,20 +911,14 @@ class GridContainer extends Component {
             readOnly: readOnly,
             columnSorting: sortValues,
             sortIndicator: true,
-            fillHandle: false, // drag change value and create row disable
-            //trimRows: trimRows,
-            //maxRows:maxRows,
+            fillHandle: false,
             afterChange: this.afterChange.bind(this),
             beforeColumnSort: this.beforeColumnSort.bind(this),
             enterMoves:{row: 0, col: 1},
-            //afterCreateRow: function(index, amount){
-            //    if(index >= 1){
-            //        gridData.splice(index, amount)
-            //    }
-            //
-            //
-            //},
+            fixedRowsBottom:fixedRowsBottom,
             cells: function (row, col, prop) {
+
+
 
                 var cellProperties = {};
 
@@ -924,84 +927,137 @@ class GridContainer extends Component {
 
                 let cellClass = ''
 
-                if (prop != self.props.identity_name && prop != 'id') {
+                let hasahToo =  columnSummary.length >=1 ? 2 : 1;
 
-                    let validate = false;
+                if(row <= gridData.length-hasahToo) {
+                    if (prop != self.props.identity_name && prop != 'id') {
 
-
-
-                    if(self.props.gridHeader[col] && self.props.gridHeader[col].validate)
-                        validate = self.props.gridHeader[col].validate;
-
-                    if(validate && gridData.length >=1){
-
-                        let isvalid =validationGrid(validate, gridData[row][prop]);
-
-                        if(isvalid){
-
-                        } else{
-                            cellClass = 'required-field';
-                        }
-
-                    }
+                        let validate = false;
 
 
+                        if (self.props.gridHeader[col] && self.props.gridHeader[col].validate)
+                            validate = self.props.gridHeader[col].validate;
 
-                    var type_col = self.getColumnType(conIndex)
-                    if (type_col != '--image' && type_col != '--internal-link' && type_col != '--combobox' && type_col != '--tag') {
-                        cellProperties.renderer = function (instance, td, row, col, prop, value, cellProperties) {
 
-                            Handsontable.cellTypes[cellProperties.type].renderer.apply(this, arguments);
-                            if (translate === true) {
-                                while (td.firstChild) {
-                                    td.removeChild(td.firstChild);
-                                }
-                                let json_translations = JSON.parse(value);
-                                json_translations.map(json_translation => {
-                                    if (json_translation.locale == self.props.defaultLocale) {
-                                        var textNode = document.createElement('span');
-                                        textNode.innerHTML = json_translation.value;
-                                        td.appendChild(textNode);
-                                    }
+                        if (validate && gridData.length >= 1 && gridData[row]) {
 
-                                })
+                            let isvalid = validationGrid(validate, gridData[row][prop]);
+
+                            if (isvalid) {
 
                             } else {
-                                /* chnage 0,1 value to string*/
-                                let change_value = self.props.gridHeader[conIndex].change_value;
-                                if (change_value) {
-
-
-                                    while (td.firstChild) {
-                                        td.removeChild(td.firstChild);
-                                    }
-
-                                    var textNode = document.createElement('span');
-
-                                    change_value.map(cvalue=> {
-                                        if (value == cvalue.value)
-                                            textNode.innerText = cvalue.text
-                                    })
-
-                                    td.appendChild(textNode);
-
-
-                                }
+                                cellClass = 'required-field';
                             }
+
                         }
-                        cellProperties['className'] =cellClass;
-                        return cellProperties;
 
-                    } else {
-                        cellProperties['className'] =cellClass;
-                        return cellProperties;
+
+                        var type_col = self.getColumnType(conIndex)
+
+
+                            if (type_col != '--image' && type_col != '--internal-link' && type_col != '--combobox' && type_col != '--tag') {
+                                cellProperties.renderer = function (instance, td, row, col, prop, value, cellProperties) {
+
+                                    Handsontable.cellTypes[cellProperties.type].renderer.apply(this, arguments);
+                                    if (translate === true) {
+                                        while (td.firstChild) {
+                                            td.removeChild(td.firstChild);
+                                        }
+                                        let json_translations = JSON.parse(value);
+                                        json_translations.map(json_translation => {
+                                            if (json_translation.locale == self.props.defaultLocale) {
+                                                var textNode = document.createElement('span');
+                                                textNode.innerHTML = json_translation.value;
+                                                td.appendChild(textNode);
+                                            }
+
+                                        })
+
+                                    } else {
+                                        /* chnage 0,1 value to string*/
+                                        let change_value = self.props.gridHeader[conIndex].change_value;
+                                        if (change_value) {
+
+
+                                            while (td.firstChild) {
+                                                td.removeChild(td.firstChild);
+                                            }
+
+                                            var textNode = document.createElement('span');
+
+                                            change_value.map(cvalue=> {
+                                                if (value == cvalue.value)
+                                                    textNode.innerText = cvalue.text
+                                            })
+
+                                            td.appendChild(textNode);
+
+
+                                        }
+                                    }
+                                }
+                                cellProperties['className'] = cellClass;
+                                return cellProperties;
+
+                            } else {
+                                cellProperties['className'] = cellClass;
+                                return cellProperties;
+                            }
+
+
+
                     }
+                } else {
+                    cellProperties.renderer = function (instance, td, row, col, prop, value, cellProperties) {
 
+                        Handsontable.cellTypes[cellProperties.type].renderer.apply(this, arguments);
+
+
+                        while (td.firstChild) {
+                            td.removeChild(td.firstChild);
+                        }
+
+                        var textNode = document.createElement('span');
+
+                        columnSummary.map(summary=>{
+
+                            if (prop ==summary.column) {
+
+                              if(summary.type == 'sum'){
+                                  let columnSum = 0;
+                                  for(let q=0; q<=gridData.length-2; q++){
+                                      columnSum = (gridData[q][prop]*1)+columnSum;
+                                  }
+
+                                  columnSum = numeral(columnSum);
+                                  if(summary.format == 'money'){
+                                      columnSum = columnSum.format('0,0.00');
+                                  } else if(summary.format == 'float'){
+                                      columnSum = columnSum.format('0,0.000');
+                                  } else{
+                                      columnSum = columnSum.format('0,0');
+                                  }
+
+
+                                  textNode.innerHTML = "<b>"+columnSum+"</b>";
+                              }
+                            }
+
+                        })
+
+
+
+
+                        td.appendChild(textNode);
+
+
+                    }
+                    cellProperties['readOnly'] = true;
+                    return cellProperties;
                 }
 
 
             },
-            // dropdownMenu: true,
             dropdownMenu: [
                 'alignment', '---------',
                 'filter_by_condition', '---------',
@@ -1009,27 +1065,10 @@ class GridContainer extends Component {
                 'filter_action_bar', '---------',
             ],
             filters: true,
-
+            autoWrapRow:true,
             afterValidate:this.afterValidater.bind(this),
-            //comments: true,
 
 
-            //columnSorting: {
-            //    column: 0,
-            //    sortOrder: false
-            //},
-
-            //fixedRowsBottom: 1,
-            //columnSummary: [
-            //    {
-            //        "destinationColumn": 0,
-            //        "destinationRow": 49,
-            //        "type": "average",
-            //        "forceNumeric": true,
-            //        "suppressDataTypeErrors": false,
-            //        "readOnly": true
-            //    }
-            //],
 
         });
 
@@ -1330,6 +1369,7 @@ function mapStateToProps(state) {
         showAdvenced: Grid.get('showAdvenced'),
         order: Grid.get('order').toJS(),
         advancedSearch: Grid.get('advancedSearch').toJS(),
+        columnSummary: Grid.get('columnSummary').toJS(),
 
     }
 }
