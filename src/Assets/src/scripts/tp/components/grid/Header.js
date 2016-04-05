@@ -66,7 +66,7 @@ export default class Header extends Component {
                     </a>
                     <div className="dropdown-menu dropdown-menu-scale pull-right text-color"
                          role="menu" style={{width: '320px'}}>
-                        <div style={{margin: '10px', paddingTop: '5px', border: '1px solid #ccc'}}>
+                        <div style={{margin: '10px', paddingTop: '5px', border: '1px solid #ccc', maxHeight:'250px', overflowY:'auto'}}>
                             <h6 style={{paddingLeft:'20px'}}>Багана нуух</h6>
                             <ul id="tp_column_option">
                                 {hideshow}

@@ -1082,7 +1082,8 @@ class AddEditContainer extends Component {
             permission,
             locales,
             button_texts,
-            defaultLocale
+            defaultLocale,
+            fromFieldClass
             } = this.props;
 
 
@@ -1116,6 +1117,7 @@ class AddEditContainer extends Component {
                 changeHandler={this.changeValues.bind(this)}
                 keyPress={this._handleKeyPress.bind(this)}
                 translateChangeHandler={this.translateChangeHandler.bind(this)}
+                fromFieldClass={fromFieldClass}
 
             />
             :
@@ -1232,6 +1234,7 @@ function mapStateToProps(state) {
         show_saved_alert: Form.get('show_saved_alert'),
         save_alert_word: Form.get('save_alert_word'),
         showInsertResponse: Form.get('showInsertResponse'),
+        fromFieldClass: Form.get('fieldClass'),
         permission: Grid.get('setup').toJS().permission,
         ifUpdateDisabledCanEditColumns: Grid.get('setup').toJS().ifUpdateDisabledCanEditColumns,
     }

@@ -12,4 +12,7 @@ return [
     'delete_button_text'=>'Устгах',
     'edit_delete_column_title'=>'Засах',
     'add_button_text'=>'Шинээр нэмэх',
+    
+    //form
+    'fieldClass'=>6
 ];

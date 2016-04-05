@@ -124,6 +124,12 @@ class Tp
     //column summary
     public $columnSummary = [];
 
+    //search mode
+    public $search_mode = 'grid_columns';
+
+    //form-grup class
+    public $fieldClass = 6;
+
 
     function __construct(){
         $this->config = Config::get('tp_config');
@@ -139,6 +145,9 @@ class Tp
         $this->delete_button_text = $this->config['delete_button_text'];
         $this->edit_delete_column_title = $this->config['edit_delete_column_title'];
         $this->add_button_text = $this->config['add_button_text'];
+
+        //form
+        $this->fieldClass = $this->config['fieldClass'];
     }
 
 
@@ -279,6 +288,7 @@ class Tp
             'order'=>$order,
             'advancedSearch'=>$this->advancedSearch,
             'columnSummary'=>$this->columnSummary,
+            'fieldClass'=>$this->fieldClass,
         ];
 
         ////
@@ -379,6 +389,15 @@ class Tp
 
         if($searchValue != '') {
             $loop = 0;
+            if($this->grid_columns == 'grid_columns'){
+                foreach($this->grid_columns as $sw){
+                    if($loop == 0)
+                        $table_data->where($sw, 'LIKE', "%$searchValue%");
+                    else
+                        $table_data->orwhere($sw, 'LIKE', "%$searchValue%");
+                    $loop++;
+                }
+            } else
             foreach($this->search_columns as $sw){
                 if($loop == 0)
                     $table_data->where($sw, 'LIKE', "%$searchValue%");

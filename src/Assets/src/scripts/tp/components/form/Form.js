@@ -207,41 +207,75 @@ export default class Form extends Component {
                 />
                 break;
             case "--group":
+                let bootsrap_gird_sum = field.get('controls').size/(12/this.props.fromFieldClass);
+                let formRows = [];
+                for(let rowI = 1; rowI <= bootsrap_gird_sum; rowI ++){
+                    formRows.push(rowI)
+                }
+                let rendered = 0;
+                const groupFields = formRows.map(formRow=>{
+                    return <div className="row">
+                        {field.get('controls').map((field, index) => {
+
+                            if((formRow*(12/this.props.fromFieldClass)) >= index+1 && index  >= rendered){
+
+                                rendered++;
+
+                                //formfield start
+
+                                let thisDisabled = true;
+                                if(this.props.permission.u !== true && this.props.edit_parent_id !== false){
+                                    this.props.ifUpdateDisabledCanEditColumns.map((ifUpdateDisabledCanEditColumn)=>{
+                                        if(field.get('column') == ifUpdateDisabledCanEditColumn)
+                                            thisDisabled = false;
+                                    })
+                                } else
+                                    thisDisabled = false;
+
+
+                                let fieldClass = 'col-md-'+this.props.fromFieldClass;
+                                if (field.get('error'))
+                                    fieldClass = 'col-md-'+this.props.fromFieldClass+' has-error'
+
+                                let mainValue = this.props.formValue ?
+                                    this.props.formValue
+                                    :
+                                    field.get('value')
+
+
+                                const name = `${locale_index}__locale__${this.props.gridId}-solar-input${index}`;
+
+                                let title = '';
+
+                                if (field.get('title') instanceof Object) {
+
+                                    if(field.getIn(['title', locale_code]))
+                                        title = field.getIn(['title', locale_code])
+                                    else
+                                        title = field.get('title').first()
+                                } else
+                                    title = field.get('title');
+
+
+
+                                return this.getFromField(locale_index, `${index}`, title, name, field, thisDisabled, fieldClass, mainValue, this.props.formType, this.props.formData, this.props.gridId, false);
+
+
+
+                                //formfield end
+                            }
+
+                        })}
+                    </div>
+
+                })
                 return <fieldset className="field_set" key={keyIndex}>
                             <legend className="legendStyle">
                                 {field.get('title')}
                             </legend>
-                    {field.get('controls').map((control, subindex)=>{
-
-                        let thisSubDisabled = true;
-                        if(this.props.permission.u !== true && this.props.edit_parent_id !== false){
-                            this.props.ifUpdateDisabledCanEditColumns.map((ifUpdateDisabledCanEditColumn)=>{
-                                if(field.get('column') == ifUpdateDisabledCanEditColumn)
-                                    thisSubDisabled = false;
-                            })
-                        } else
-                            thisSubDisabled = false;
 
 
-                        let subFieldClass = '';
-                        if (control.get('error'))
-                            subFieldClass = 'has-error'
-
-                        let subMainValue = this.props.formValue ?
-                            this.props.formValue
-                            :
-                            control.get('value')
-
-
-                        let focus = false;
-
-
-                        const subname = `solar-input-${index}-${subindex}`;
-
-                        return this.getFromField(locale_index, `${index}-${subindex}`, control.get('title'), subname, control, thisSubDisabled, subFieldClass, subMainValue, formType, formData, focus);
-
-
-                    })}
+                    {groupFields}
 
                        </fieldset>
                 break;
@@ -644,46 +678,70 @@ export default class Form extends Component {
     }
 
     getTranslationForm(formControls, locale_id, locale_code, locale_index){
-        return formControls.map((field, index) => {
-            let thisDisabled = true;
-            if(this.props.permission.u !== true && this.props.edit_parent_id !== false){
-                this.props.ifUpdateDisabledCanEditColumns.map((ifUpdateDisabledCanEditColumn)=>{
-                    if(field.get('column') == ifUpdateDisabledCanEditColumn)
-                        thisDisabled = false;
-                })
-            } else
-                thisDisabled = false;
+
+        let bootsrap_gird_sum = formControls.size/(12/this.props.fromFieldClass);
+        let formRows = [];
+        for(let rowI = 1; rowI <= bootsrap_gird_sum; rowI ++){
+            formRows.push(rowI)
+        }
+        let rendered = 0;
+        return formRows.map(formRow=>{
+            return <div className="row">
+                {formControls.map((field, index) => {
+
+                    if((formRow*(12/this.props.fromFieldClass)) >= index+1 && index  >= rendered){
+
+                        rendered++;
+
+                        //formfield start
+
+                        let thisDisabled = true;
+                        if(this.props.permission.u !== true && this.props.edit_parent_id !== false){
+                            this.props.ifUpdateDisabledCanEditColumns.map((ifUpdateDisabledCanEditColumn)=>{
+                                if(field.get('column') == ifUpdateDisabledCanEditColumn)
+                                    thisDisabled = false;
+                            })
+                        } else
+                            thisDisabled = false;
 
 
-            let fieldClass = '';
-            if (field.get('error'))
-                fieldClass = 'has-error'
+                        let fieldClass = 'col-md-'+this.props.fromFieldClass;
+                        if (field.get('error'))
+                            fieldClass = 'col-md-'+this.props.fromFieldClass+' has-error'
 
-            let mainValue = this.props.formValue ?
-                this.props.formValue
-                :
-                field.get('value')
-
-
-            const name = `${locale_index}__locale__${this.props.gridId}-solar-input${index}`;
-
-            let title = '';
-
-            if (field.get('title') instanceof Object) {
-
-                if(field.getIn(['title', locale_code]))
-                    title = field.getIn(['title', locale_code])
-                else
-                    title = field.get('title').first()
-            } else
-                title = field.get('title');
+                        let mainValue = this.props.formValue ?
+                            this.props.formValue
+                            :
+                            field.get('value')
 
 
+                        const name = `${locale_index}__locale__${this.props.gridId}-solar-input${index}`;
 
-            return this.getFromField(locale_index, `${index}`, title, name, field, thisDisabled, fieldClass, mainValue, this.props.formType, this.props.formData, this.props.gridId, false);
+                        let title = '';
 
+                        if (field.get('title') instanceof Object) {
+
+                            if(field.getIn(['title', locale_code]))
+                                title = field.getIn(['title', locale_code])
+                            else
+                                title = field.get('title').first()
+                        } else
+                            title = field.get('title');
+
+
+
+                        return this.getFromField(locale_index, `${index}`, title, name, field, thisDisabled, fieldClass, mainValue, this.props.formType, this.props.formData, this.props.gridId, false);
+
+
+
+                        //formfield end
+                    }
+
+                })}
+            </div>
 
         })
+
     }
 
     componentDidUpdate() {
@@ -773,49 +831,74 @@ export default class Form extends Component {
     render() {
         const { formControls, translateFormControls, changeHandler, formData, formType, formValue, focusIndex, gridIndex, gridId, ifUpdateDisabledCanEditColumns, permission, edit_parent_id  } = this.props;
 
-        let formFields = formControls.size >= 1 ? formControls.map((field, index) => {
-            let thisDisabled = true;
 
-            if(permission.u !== true && this.props.edit_parent_id !== false){
-                ifUpdateDisabledCanEditColumns.map((ifUpdateDisabledCanEditColumn)=>{
-                    if(field.get('column') == ifUpdateDisabledCanEditColumn)
-                        thisDisabled = false;
-                })
-            } else
-                thisDisabled = false;
+        let bootsrap_gird_sum = formControls.size/(12/this.props.fromFieldClass);
+        let formRows = [];
+        for(let rowI = 1; rowI <= bootsrap_gird_sum; rowI ++){
+            formRows.push(rowI)
+        }
+        let rendered = 0;
+        let formFields = formRows.map(formRow=>{
+            return <div className="row">
+                        {formControls.map((field, index) => {
 
+                            if((formRow*(12/this.props.fromFieldClass)) >= index+1 && index  >= rendered){
 
-            let fieldClass = '';
-            if (field.get('error'))
-                fieldClass = 'has-error'
+                                rendered++;
 
-            let mainValue = formValue ?
-                formValue
-                :
-                field.get('value')
-
-
-            let focus = false;
-            if (gridIndex) {
-                if (focusIndex == gridIndex)
-                    focus = true;
-
-                index = gridIndex
-
-            } else {
-                if (focusIndex == index)
-                    focus = true;
-            }
-
-            const name = `solar-input-${index}`;
+                                //formfield start
 
 
 
-           return this.getFromField(false, index, field.get('title'), name, field, thisDisabled, fieldClass, mainValue, formType, formData, gridId, focus);
+                                let thisDisabled = true;
 
+                                if(permission.u !== true && this.props.edit_parent_id !== false){
+                                    ifUpdateDisabledCanEditColumns.map((ifUpdateDisabledCanEditColumn)=>{
+                                        if(field.get('column') == ifUpdateDisabledCanEditColumn)
+                                            thisDisabled = false;
+                                    })
+                                } else
+                                    thisDisabled = false;
+
+
+                                let fieldClass = 'col-md-'+this.props.fromFieldClass;
+                                if (field.get('error'))
+                                    fieldClass = 'col-md-'+this.props.fromFieldClass+' has-error'
+
+                                let mainValue = formValue ?
+                                    formValue
+                                    :
+                                    field.get('value')
+
+
+                                let focus = false;
+                                if (gridIndex) {
+                                    if (focusIndex == gridIndex)
+                                        focus = true;
+
+                                    index = gridIndex
+
+                                } else {
+                                    if (focusIndex == index)
+                                        focus = true;
+                                }
+
+                                const name = `solar-input-${index}`;
+
+
+
+                                return this.getFromField(false, index, field.get('title'), name, field, thisDisabled, fieldClass, mainValue, formType, formData, gridId, focus);
+
+
+                                //formfield end
+                            }
+
+                        })}
+                    </div>
 
         })
-            : null
+
+
 
         const translateForm = translateFormControls && translateFormControls.size >= 1 ? translateFormControls.map((translateFormControl, locale_index)=>{
             return <Tab eventKey={locale_index} title={translateFormControl.get('locale_code')} key={locale_index}>
