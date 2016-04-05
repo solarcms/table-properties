@@ -9,7 +9,7 @@ const initialState = {
     listData:{},
     form_input_control:{},
     currentPage:1,
-    pageLimit:50,
+    pageLimit:500,
     formData:{},
     showAddEditForm:false,
     showGird:false,

@@ -768,6 +768,25 @@ class GridContainer extends Component {
                             className:'htRight',
                             validator: this.validationCaller.bind(this, header.validate),
                         }
+                        break;
+                    case "--disabled":
+                        gridColumn =
+                        {
+                            data: header.column,
+                            type: 'text',
+                            editor: false,
+                        }
+                        break;
+                    case "--float":
+                        gridColumn =
+                        {
+                            data: header.column,
+                            type: 'numeric',
+                            editor: 'numeric',
+                            format: '0,0.000',
+                            className:'htRight',
+                            validator: this.validationCaller.bind(this, header.validate),
+                        }
 
                         break;
                     case "--money":
@@ -862,7 +881,7 @@ class GridContainer extends Component {
         if(column_pre.length >= 2)
             column_real = column_pre[1];
 
-       
+
 
         if(column_real !== null && this.props.order.sortOrder !== null && column_real  != identity_name_real)
             sortValues = {
@@ -888,6 +907,7 @@ class GridContainer extends Component {
             //maxRows:maxRows,
             afterChange: this.afterChange.bind(this),
             beforeColumnSort: this.beforeColumnSort.bind(this),
+            enterMoves:{row: 0, col: 1},
             //afterCreateRow: function(index, amount){
             //    if(index >= 1){
             //        gridData.splice(index, amount)
