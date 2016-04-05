@@ -11,6 +11,7 @@ import {save, edit, update, getCascadeChild, callMultiItems, deleteItem} from ".
 import Window from "../components/window/"
 import SubItemsContainer from "./formContainers/SubItemsContainer"
 import { Modal, Button } from 'react-bootstrap';
+import {customDropdownRenderer, gridImage, genrateComboboxvalues} from '../lib/handSonTableHelper'
 /*for handson table*/
 var tp_handSonTable = null
 var exportPlugin = null
@@ -576,7 +577,7 @@ class AddEditContainer extends Component {
     getColumnType(column){
 
 
-        return this.props.gridmulti_items_form_input_controlHeader[column].type;
+        return this.props.multi_items_form_input_control[column].type;
 
     }
     callMultiItemsDatas(save_first_id_column) {
@@ -657,19 +658,11 @@ class AddEditContainer extends Component {
         pre_del.innerHTML = "<i class=\"material-icons\">&#xE872;</i> ";
         if(this.props.permission.d == true)
             pre.appendChild(pre_del);
-
-
-
+        
 
         return td;
 
-
-
-
-
-
-
-
+        
 
 
     }
@@ -678,30 +671,29 @@ class AddEditContainer extends Component {
     getData(row){
         return tp_handSonTable.getDataAtRow(row);
     }
-    afterChange(changes, source, isValid){
+    afterChange(changes, source, isValid) {
 
-        if(changes && changes[0][1] != 'id'){
-
-
+        if (changes) {
 
             let colIndex = 0;
 
-            if (changes[0][1] === parseInt(changes[0][1], 10)){
+            if (changes[0][1] === parseInt(changes[0][1], 10)) {
                 colIndex = changes[0][1]
-            }else
+            } else
                 colIndex = this.getColumnIndex(changes[0][1]);
+
 
             let colType = this.props.multi_items_form_input_control[colIndex].type
 
             let row = changes[0][0];
 
-            if(colType != '--auto-calculate'){
+            if (colType != '--auto-calculate') {
 
                 ///auto-calculate
                 let calculate_columns = []
 
-                this.props.multi_items_form_input_control.map((fcontrol, findex)=>{
-                    if(fcontrol.type == '--auto-calculate'){
+                this.props.multi_items_form_input_control.map((fcontrol, findex)=> {
+                    if (fcontrol.type == '--auto-calculate') {
 
 
                         let calculate_type = fcontrol.options.calculate_type;
@@ -709,10 +701,9 @@ class AddEditContainer extends Component {
 
                         let columns = [];
 
-                        fcontrol.options.calculate_columns.map((calculate_column, cal_index)=>{
+                        fcontrol.options.calculate_columns.map((calculate_column, cal_index)=> {
 
                             let colIndex_ = this.getColumnIndex(calculate_column)
-
 
 
                             columns.push(
@@ -722,47 +713,47 @@ class AddEditContainer extends Component {
 
                         calculate_columns.push(
                             {
-                                column:calculate_column,
-                                type:calculate_type,
-                                columns:columns,
-                                dataIndex:findex
+                                column: calculate_column,
+                                type: calculate_type,
+                                columns: columns,
+                                dataIndex: findex
                             }
                         )
                     }
                 })
 
-                calculate_columns.map((calculate_column, index)=>{
+                calculate_columns.map((calculate_column, index)=> {
                     let checkAllValue = true;
-                    calculate_column.columns.map((cal_column)=>{
-                        if(cal_column.value === null)
+                    calculate_column.columns.map((cal_column)=> {
+                        if (cal_column.value === null)
                             checkAllValue = false
                     })
                     let calculate_result = null;
-                    if(checkAllValue === true){
-                        if(calculate_column.type == '--multiply'){
-                            calculate_column.columns.map((cal_column, calIndex)=>{
-                                if(calIndex == 0)
+                    if (checkAllValue === true) {
+                        if (calculate_column.type == '--multiply') {
+                            calculate_column.columns.map((cal_column, calIndex)=> {
+                                if (calIndex == 0)
                                     calculate_result = cal_column.value;
                                 else
                                     calculate_result = calculate_result * cal_column.value
                             })
-                        }else if((calculate_column.type == '--sum')){
-                            calculate_column.columns.map((cal_column, calIndex)=>{
-                                if(calIndex == 0)
+                        } else if ((calculate_column.type == '--sum')) {
+                            calculate_column.columns.map((cal_column, calIndex)=> {
+                                if (calIndex == 0)
                                     calculate_result = cal_column.value;
                                 else
                                     calculate_result = calculate_result + cal_column.value
                             })
-                        } else if(calculate_column.type == '--average'){
-                            calculate_column.columns.map((cal_column, calIndex)=>{
-                                if(calIndex == 0)
+                        } else if (calculate_column.type == '--average') {
+                            calculate_column.columns.map((cal_column, calIndex)=> {
+                                if (calIndex == 0)
                                     calculate_result = cal_column.value;
                                 else
                                     calculate_result = calculate_result + cal_column.value
                             })
-                            calculate_result = calculate_result/calculate_column.columns.length;
+                            calculate_result = calculate_result / calculate_column.columns.length;
                         }
-                        if(calculate_result !== null){
+                        if (calculate_result !== null) {
 
                             tp_handSonTable.setDataAtCell(row, calculate_column.dataIndex, calculate_result);
                         }
@@ -771,13 +762,13 @@ class AddEditContainer extends Component {
             }
 
 
-
-
-
-            if(changes[0][1] != 'id' && colType != '--combobox' && colType != '--tag') {
+            if (changes[0][1] != this.props.identity_name) {
 
 
                 let rowDatas = this.getData(changes[0][0]);
+
+
+
 
                 let error_not_found = true;
 
@@ -806,33 +797,52 @@ class AddEditContainer extends Component {
 
                 if (error_not_found && edit_id === -1) {
 
-                    //inlineSave(data).then((data)=> {
-                    //
-                    //    this.callMultiItemsDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
-                    //
-                    //    this.removeInlineForm()
-                    //
-                    //});
+                    inlineSave(data).then((data)=> {
 
-                 //   console.log(this.callMultiItemsDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue))
+
+                        $("#save_info" ).addClass("show-info");
+
+                        this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
+
+                        this.removeInlineForm();
+
+                        setTimeout(function(){ $("#save_info" ).removeClass("show-info"); }, 2500);
+
+
+
+                    }).fail(()=> {
+                        $("#save_info_failed" ).addClass("show-info");
+                        setTimeout(function(){ $("#save_info_failed" ).removeClass("show-info"); }, 2500);
+                    });
 
                 }
 
-                if (error_not_found) {
 
-                  //  console.log(this.callMultiItemsDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue))
-                    //inlineSaveUpdate(edit_id, data).then((data)=> {
-                    //    this.removeInlineForm()
-                    //});
+
+                if (error_not_found && edit_id >= 1) {
+
+                    inlineSaveUpdate(edit_id, data).then((data)=> {
+                        $("#save_info" ).addClass("show-info");
+                        this.removeInlineForm()
+                        setTimeout(function(){ $("#save_info" ).removeClass("show-info"); }, 2500);
+                    }).fail(()=> {
+                        $("#save_info_failed" ).addClass("show-info");
+                        setTimeout(function(){ $("#save_info_failed" ).removeClass("show-info"); }, 2500);
+
+                    });
 
                 }
 
 
             }
 
+
+            //tp_handSonTable.getCellValidator(row, col)(newValue, function(isValid) {
+            //    if (!isValid) {
+            //        hot.setDataAtCell(row, col, null);
+            //    }
+            //});
         }
-
-
 
 
     }
@@ -842,40 +852,22 @@ class AddEditContainer extends Component {
 
         return validationGrid(validateData, value, callback);
     }
-    afterValidater(isValid, value, row, prop, source){
+    afterValidater(isValid, value, row, prop, source) {
 
-        //let ColIndex = this.getColumnIndex(prop);
-        //if(isValid)
-        //    return true;
-        //else
-        //    return false;
+        let columnIndex = this.getColumnIndex(prop);
+        if(isValid){
+            tp_handSonTable.setCellMeta(row, columnIndex, 'className', '');
+            return true;
+        }
+        else{
 
-    }
-    customDropdownRenderer(instance, td, row, col, prop, value, cellProperties) {
-
-        while (td.firstChild) {
-            td.removeChild(td.firstChild);
+            tp_handSonTable.setCellMeta(row, columnIndex, 'className', 'required-field');
+            return false;
         }
 
-        var selectedId;
-        var optionsList = cellProperties.chosenOptions.data;
 
-        var values = (value + "").split(",");
-        var value = [];
-        for (var index = 0; index < optionsList.length; index++) {
-            if (values.indexOf(optionsList[index].id + "") > -1) {
-                selectedId = optionsList[index].id;
-                value.push(optionsList[index].label);
-            }
-        }
-        value = value.join(", ");
-
-
-        let pre =  document.createElement('span');
-        pre.innerHTML = value
-        td.appendChild(pre)
-        return td;
     }
+
 
     setUpHandsonTable(){
 
@@ -909,35 +901,40 @@ class AddEditContainer extends Component {
                             //allowInvalid: false
                         }
                         break;
+
+
                     case "--combobox":
 
+                        const optionsList = genrateComboboxvalues(this.props.formData.toJS()[header.column].data.data, header);
                         gridColumn = {
                             data: header.column,
                             editor: "chosen",
-
                             chosenOptions: {
                                 multiple: false,
-                                data: this.props.formData.toJS()[header.column].data.data
+                                data: optionsList,
+                                valueField: header.options.valueField,
+                                textField: header.options.textField,
                             },
                             validator: this.validationCaller.bind(this, header.validate),
-                            renderer: this.customDropdownRenderer.bind(this),
+                            renderer: customDropdownRenderer,
                         }
 
                         break;
                     case "--tag":
-
+                        const optionsListtag = genrateComboboxvalues(this.props.formData.toJS()[header.column].data.data, header);
                         gridColumn = {
                             data: header.column,
                             editor: "chosen",
 
                             chosenOptions: {
                                 multiple: true,
-                                data: this.props.formData.toJS()[header.column].data.data
+                                data: optionsListtag,
+                                valueField: header.options.valueField,
+                                textField: header.options.textField,
                             },
                             validator: this.validationCaller.bind(this, header.validate),
-                            renderer: this.customDropdownRenderer.bind(this),
+                            renderer: customDropdownRenderer,
                         }
-
                         break;
                     case "--date":
                         gridColumn ={
@@ -955,6 +952,28 @@ class AddEditContainer extends Component {
                             data: header.column,
                             type: 'numeric',
                             editor: 'numeric',
+                            className:'htRight',
+                            validator: this.validationCaller.bind(this, header.validate),
+                        }
+                        break;
+
+                    case "--disabled":
+                        gridColumn =
+                        {
+                            data: header.column,
+                            type: 'text',
+                            editor: false,
+                            validator: this.validationCaller.bind(this, ''),
+                        }
+                        break;
+                    case "--float":
+                        gridColumn =
+                        {
+                            data: header.column,
+                            type: 'numeric',
+                            editor: 'numeric',
+                            format: '0,0.000',
+                            className:'htRight',
                             validator: this.validationCaller.bind(this, header.validate),
                         }
 
@@ -965,6 +984,7 @@ class AddEditContainer extends Component {
                             data: header.column,
                             type: 'numeric',
                             format: '0,0.00',
+                            className:'htRight',
                             validator: this.validationCaller.bind(this, header.validate),
                         }
                         break;
@@ -1026,6 +1046,8 @@ class AddEditContainer extends Component {
         //add empty 3 items
         //listData.push(tp_dataSchema);
 
+        let columnSummary = [];
+
         tp_handSonTable = new Handsontable(container, {
             stretchH: 'all',
             data: gridData,
@@ -1043,6 +1065,112 @@ class AddEditContainer extends Component {
             height: 320,
             minSpareRows:1,
             startRows: 1,
+            afterValidate:this.afterValidater.bind(this),
+            enterMoves:{row: 0, col: 1},
+            autoWrapRow:true,
+            cells: function (row, col, prop) {
+
+
+
+                var cellProperties = {};
+
+                var conIndex = self.getColumnIndex(prop)
+
+
+                let cellClass = ''
+
+                let hasahToo =  columnSummary.length >=1 ? 2 : 1;
+
+                if(row <= gridData.length-hasahToo) {
+                    if (prop != self.props.identity_name && prop != 'id') {
+
+                        let validate = false;
+
+
+                        if (self.props.multi_items_form_input_control[col] && self.props.multi_items_form_input_control[col].validate)
+                            validate = self.props.multi_items_form_input_control[col].validate;
+
+
+                        if (validate && gridData.length >= 1 && gridData[row]) {
+
+                            let isvalid = validationGrid(validate, gridData[row][prop]);
+
+                            if (isvalid) {
+
+                            } else {
+                                cellClass = 'required-field';
+                            }
+
+                        }
+
+
+                        var type_col = self.getColumnType(conIndex)
+
+
+                        if (type_col != '--image' && type_col != '--internal-link' && type_col != '--combobox' && type_col != '--tag') {
+
+                            cellProperties['className'] = cellClass;
+                            return cellProperties;
+
+                        } else {
+                            cellProperties['className'] = cellClass;
+                            return cellProperties;
+                        }
+
+
+
+                    }
+                } else {
+                    cellProperties.renderer = function (instance, td, row, col, prop, value, cellProperties) {
+
+                        Handsontable.cellTypes[cellProperties.type].renderer.apply(this, arguments);
+
+
+                        while (td.firstChild) {
+                            td.removeChild(td.firstChild);
+                        }
+
+                        var textNode = document.createElement('span');
+
+                        columnSummary.map(summary=>{
+
+                            if (prop ==summary.column) {
+
+                                if(summary.type == 'sum'){
+                                    let columnSum = 0;
+                                    for(let q=0; q<=gridData.length-2; q++){
+                                        columnSum = (gridData[q][prop]*1)+columnSum;
+                                    }
+
+                                    columnSum = numeral(columnSum);
+                                    if(summary.format == 'money'){
+                                        columnSum = columnSum.format('0,0.00');
+                                    } else if(summary.format == 'float'){
+                                        columnSum = columnSum.format('0,0.000');
+                                    } else{
+                                        columnSum = columnSum.format('0,0');
+                                    }
+
+
+                                    textNode.innerHTML = "<b>"+columnSum+"</b>";
+                                }
+                            }
+
+                        })
+
+
+
+
+                        td.appendChild(textNode);
+
+
+                    }
+                    cellProperties['readOnly'] = true;
+                    return cellProperties;
+                }
+
+
+            },
         });
 
         exportPlugin = tp_handSonTable.getPlugin('exportFile');

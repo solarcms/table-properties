@@ -215,55 +215,35 @@ export default class Form extends Component {
                 let rendered = 0;
                 const groupFields = formRows.map(formRow=>{
                     return <div className="row">
-                        {field.get('controls').map((field, index) => {
+                        {field.get('controls').map((control, subindex)=>{
 
-                            if((formRow*(12/this.props.fromFieldClass)) >= index+1 && index  >= rendered){
-
-                                rendered++;
-
-                                //formfield start
-
-                                let thisDisabled = true;
-                                if(this.props.permission.u !== true && this.props.edit_parent_id !== false){
-                                    this.props.ifUpdateDisabledCanEditColumns.map((ifUpdateDisabledCanEditColumn)=>{
-                                        if(field.get('column') == ifUpdateDisabledCanEditColumn)
-                                            thisDisabled = false;
-                                    })
-                                } else
-                                    thisDisabled = false;
+                            let thisSubDisabled = true;
+                            if(this.props.permission.u !== true && this.props.edit_parent_id !== false){
+                                this.props.ifUpdateDisabledCanEditColumns.map((ifUpdateDisabledCanEditColumn)=>{
+                                    if(field.get('column') == ifUpdateDisabledCanEditColumn)
+                                        thisSubDisabled = false;
+                                })
+                            } else
+                                thisSubDisabled = false;
 
 
-                                let fieldClass = 'col-md-'+this.props.fromFieldClass;
-                                if (field.get('error'))
-                                    fieldClass = 'col-md-'+this.props.fromFieldClass+' has-error'
+                            let subFieldClass = '';
+                            if (control.get('error'))
+                                subFieldClass = 'has-error'
 
-                                let mainValue = this.props.formValue ?
-                                    this.props.formValue
-                                    :
-                                    field.get('value')
-
-
-                                const name = `${locale_index}__locale__${this.props.gridId}-solar-input${index}`;
-
-                                let title = '';
-
-                                if (field.get('title') instanceof Object) {
-
-                                    if(field.getIn(['title', locale_code]))
-                                        title = field.getIn(['title', locale_code])
-                                    else
-                                        title = field.get('title').first()
-                                } else
-                                    title = field.get('title');
+                            let subMainValue = this.props.formValue ?
+                                this.props.formValue
+                                :
+                                control.get('value')
 
 
-
-                                return this.getFromField(locale_index, `${index}`, title, name, field, thisDisabled, fieldClass, mainValue, this.props.formType, this.props.formData, this.props.gridId, false);
-
+                            let focus = false;
 
 
-                                //formfield end
-                            }
+                            const subname = `solar-input-${index}-${subindex}`;
+
+                            return this.getFromField(locale_index, `${index}-${subindex}`, control.get('title'), subname, control, thisSubDisabled, subFieldClass, subMainValue, formType, formData, focus);
+
 
                         })}
                     </div>
@@ -370,6 +350,24 @@ export default class Form extends Component {
 
                 />
             case "--disabled":
+                return <Input
+                    disabled={true}
+                    key={keyIndex} dataIndex={index}
+                    fieldClass={fieldClass}
+                    value={mainValue}
+                    type="text"
+                    autoFocus={focus}
+                    placeholder={title}
+                    name={name}
+                    validation={field.get('validate')}
+                    setErrorManuale={this.props.setErrorManuale}
+                    edit_parent_id={this.props.edit_parent_id}
+                    changeHandler={this.changeHandler.bind(this, locale_index)}
+                    errorText={field.get('error')}
+
+                />
+                break;
+            case "--disabled-textarea":
                 return <Input
                     disabled={true}
                     key={keyIndex} dataIndex={index}
@@ -705,9 +703,9 @@ export default class Form extends Component {
                             thisDisabled = false;
 
 
-                        let fieldClass = 'col-md-'+this.props.fromFieldClass;
+                        let fieldClass = '';
                         if (field.get('error'))
-                            fieldClass = 'col-md-'+this.props.fromFieldClass+' has-error'
+                            fieldClass = 'has-error'
 
                         let mainValue = this.props.formValue ?
                             this.props.formValue
@@ -731,7 +729,6 @@ export default class Form extends Component {
 
 
                         return this.getFromField(locale_index, `${index}`, title, name, field, thisDisabled, fieldClass, mainValue, this.props.formType, this.props.formData, this.props.gridId, false);
-
 
 
                         //formfield end

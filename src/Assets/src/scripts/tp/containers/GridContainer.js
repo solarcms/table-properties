@@ -18,6 +18,7 @@ import DateTimePicker from 'react-widgets/lib/DateTimePicker';
 import Moment from 'moment'
 import momentLocalizer from 'react-widgets/lib/localizers/moment'
 import numeral from 'numeral';
+import {customDropdownRenderer, gridImage, genrateComboboxvalues} from '../lib/handSonTableHelper'
 momentLocalizer(Moment);
 
 /*for handson table*/
@@ -26,6 +27,7 @@ var exportPlugin = null
 var tp_dataSchema = {};
 var maxRows = 0;
 import Loading from '../components/loading/loading'
+
 class GridContainer extends Component {
 
     /* component life cycle ----------------------------------------- */
@@ -312,40 +314,6 @@ class GridContainer extends Component {
 
     }
 
-    gridImage(instance, td, row, col, prop, value, cellProperties) {
-
-        while (td.firstChild) {
-            td.removeChild(td.firstChild);
-        }
-
-
-        if (value) {
-            let pre_link = document.createElement('a');
-
-
-            let value_image = JSON.parse(value);
-
-            let image_thum_url = value_image.thumbUrl + value_image.uniqueName
-            let image_url = value_image.destinationUrl + value_image.uniqueName
-
-            pre_link.setAttribute('target', '_blank');
-            pre_link.setAttribute('href', image_url);
-
-            let image = document.createElement('img');
-            image.setAttribute('class', 'grid-thumb');
-            image.setAttribute('src', image_thum_url);
-
-            pre_link.appendChild(image)
-
-
-            td.appendChild(pre_link);
-
-
-            return td;
-        }
-
-
-    }
 
     internalLink(instance, td, row, col, prop, value, cellProperties) {
         while (td.firstChild) {
@@ -371,6 +339,22 @@ class GridContainer extends Component {
 
             return td;
         }
+    }
+
+    afterValidater(isValid, value, row, prop, source) {
+
+        let columnIndex = this.getColumnIndex(prop);
+        if(isValid){
+            tp_handSonTable.setCellMeta(row, columnIndex, 'className', '');
+            return true;
+        }
+        else{
+
+            tp_handSonTable.setCellMeta(row, columnIndex, 'className', 'required-field');
+            return false;
+        }
+
+
     }
 
     afterChange(changes, source, isValid) {
@@ -554,76 +538,8 @@ class GridContainer extends Component {
         return validationGrid(validateData, value, callback);
     }
 
-    afterValidater(isValid, value, row, prop, source) {
 
-        let columnIndex = this.getColumnIndex(prop);
-        if(isValid){
-            tp_handSonTable.setCellMeta(row, columnIndex, 'className', '');
-            return true;
-        }
-        else{
-
-            tp_handSonTable.setCellMeta(row, columnIndex, 'className', 'required-field');
-            return false;
-        }
-
-
-    }
-
-    customDropdownRenderer(instance, td, row, col, prop, value, cellProperties) {
-
-        while (td.firstChild) {
-            td.removeChild(td.firstChild);
-        }
-
-        var selectedId;
-        var multiple = cellProperties.chosenOptions.multiple;
-        var optionsList = cellProperties.chosenOptions.data;
-
-        var valueField = cellProperties.chosenOptions.valueField;
-        var textField = cellProperties.chosenOptions.textField;
-        var valueReal = value;
-
-
-
-
-
-
-
-        var values = (value + "").split(",");
-
-
-        var value = [];
-        for (var index = 0; index < optionsList.length; index++) {
-
-            if (multiple === true) {
-                values.map(tagValue=> {
-
-                    if (tagValue == optionsList[index]['id']) {
-                        value.push(optionsList[index]['label']);
-                    }
-                })
-            }
-            else {
-                if (valueReal == optionsList[index]['id']) {
-                    value.push(optionsList[index]['label']);
-                }
-
-            }
-        }
-        value = value.join(", ");
-
-
-        let pre = document.createElement('span');
-        pre.innerHTML = value
-        td.appendChild(pre)
-
-
-        td.setAttribute('class', cellProperties.className);
-
-        return td;
-    }
-
+    
     setUpHandsonTable() {
         $('#tp_grid').empty();
 
@@ -648,9 +564,6 @@ class GridContainer extends Component {
                 switch (header.type) {
 
                     case "--text":
-
-
-
                         gridColumn = {
                             data: header.column,
                             editor: 'text',
@@ -679,33 +592,10 @@ class GridContainer extends Component {
                         break;
                     case "--combobox":
 
-                        let optionsList = [];
-                        this.props.formData[header.column].data.data.map((lsdata, lsindex) => {
-
-                            var valuef = [];
-                            if (header.options.textField instanceof Array) {
-                                header.options.textField.map(tf=> {
-
-                                    valuef.push(lsdata[tf]);
-                                })
-                            } else
-                                valuef.push(lsdata[header.options.textField]);
-
-
-
-
-
-                            valuef = valuef.join(", ");
-                            optionsList.push({
-                                id:lsdata[header.options.valueField],
-                                label:valuef
-                            })
-                        })
-
+                        const optionsList = genrateComboboxvalues(this.props.formData[header.column].data.data, header);
                         gridColumn = {
                             data: header.column,
                             editor: "chosen",
-
                             chosenOptions: {
                                 multiple: false,
                                 data: optionsList,
@@ -713,30 +603,30 @@ class GridContainer extends Component {
                                 textField: header.options.textField,
                             },
                             validator: this.validationCaller.bind(this, header.validate),
-                            renderer: this.customDropdownRenderer.bind(this),
+                            renderer: customDropdownRenderer,
                         }
 
                         break;
                     case "--tag":
-
+                        const optionsListtag = genrateComboboxvalues(this.props.formData[header.column].data.data, header);
                         gridColumn = {
                             data: header.column,
                             editor: "chosen",
 
                             chosenOptions: {
                                 multiple: true,
-                                data: this.props.formData[header.column].data.data,
+                                data: optionsListtag,
                                 valueField: header.options.valueField,
                                 textField: header.options.textField,
                             },
                             validator: this.validationCaller.bind(this, header.validate),
-                            renderer: this.customDropdownRenderer.bind(this),
+                            renderer: customDropdownRenderer,
                         }
                         break;
                     case "--image":
                         gridColumn = {
                             data: header.column,
-                            renderer: this.gridImage.bind(this),
+                            renderer: gridImage,
                         }
 
                         break;
@@ -850,6 +740,7 @@ class GridContainer extends Component {
         let columnSummary = this.props.columnSummary;
         let fixedRowsBottom = 0;
         if(columnSummary.length >=1 && gridData.length >=1){
+            console.log(gridData)
             let preEmpty = gridData[0];
             let lastRow = {};
             Object.keys(preEmpty).map(empty =>{
@@ -929,7 +820,7 @@ class GridContainer extends Component {
 
                 let hasahToo =  columnSummary.length >=1 ? 2 : 1;
 
-                if(row <= gridData.length-hasahToo) {
+                if(row <= gridData.length-hasahToo || row <=0 ) {
                     if (prop != self.props.identity_name && prop != 'id') {
 
                         let validate = false;
