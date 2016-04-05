@@ -253,7 +253,18 @@ class AddEditContainer extends Component {
                         this.setState({savedAlertShow: true});
 
                     } else {
+                       
+                        if(this.props.after_save_reload_page === true){
+                            
+                            window.location.replace('#/');
+                            window.location.reload();
+                          
+
+                        } else
                         window.location.replace('#/');
+
+
+
                     }
 
             }).fail(()=> {
@@ -1363,6 +1374,7 @@ function mapStateToProps(state) {
         save_alert_word: Form.get('save_alert_word'),
         showInsertResponse: Form.get('showInsertResponse'),
         fromFieldClass: Form.get('fieldClass'),
+        after_save_reload_page: Form.get('after_save_reload_page'),
         permission: Grid.get('setup').toJS().permission,
         ifUpdateDisabledCanEditColumns: Grid.get('setup').toJS().ifUpdateDisabledCanEditColumns,
     }

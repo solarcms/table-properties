@@ -740,7 +740,7 @@ class GridContainer extends Component {
         let columnSummary = this.props.columnSummary;
         let fixedRowsBottom = 0;
         if(columnSummary.length >=1 && gridData.length >=1){
-            console.log(gridData)
+       
             let preEmpty = gridData[0];
             let lastRow = {};
             Object.keys(preEmpty).map(empty =>{

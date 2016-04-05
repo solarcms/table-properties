@@ -52,6 +52,20 @@ class ComboBoxAddAbleContainer extends Component {
         return foundError;
     }
 
+    setErrorManuale(CAcolumn, CAIndex, dataIndex, error){
+        let realDataIndex = [];
+
+        dataIndex.map((dIndex, index)=> {
+            if (index == 0) {
+                realDataIndex.push(dIndex);
+            } else if (index >= 1) {
+                realDataIndex.push('controls')
+                realDataIndex.push(dIndex)
+            }
+        })
+        this.props.actions.setError(CAcolumn, CAIndex, realDataIndex, error)
+    }
+
     saveForm(CAcolumn, CAIndex) {
 
 
@@ -160,7 +174,7 @@ class ComboBoxAddAbleContainer extends Component {
 
     render() {
 
-        const {button_texts, disabled, modals, fieldClass, formData, column, fieldOptions, value, changeHandler, errorText, formType, placeholder, pageName, name, formControls, showAddModal, comboBoxs } = this.props;
+        const {button_texts, disabled, modals, fieldClass, formData, column, fieldOptions, value, fromFieldClass, changeHandler, errorText, formType, placeholder, pageName, name, formControls, showAddModal, comboBoxs } = this.props;
 
         let options = [];
 
@@ -206,6 +220,8 @@ class ComboBoxAddAbleContainer extends Component {
                                    formControls={comboBox.get('form_input_control')}
 
                                    formData={formData}
+                                   fromFieldClass={fromFieldClass}
+                                   setErrorManuale={this.setErrorManuale.bind(this, comboBox.get('column'), index)}
                                    pageName={pageName}
                                    show={shwoModal}
                                    permission={{c:true, r:true, u:true, d:false}}

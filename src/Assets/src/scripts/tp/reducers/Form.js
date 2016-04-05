@@ -52,6 +52,7 @@ export default createReducer(initialState, {
         state = state.set('save_alert_word', setupData.save_alert_word);
         state = state.set('showInsertResponse', setupData.show_insert_response);
         state = state.set('fieldClass', setupData.fieldClass);
+        state = state.set('after_save_reload_page', setupData.after_save_reload_page);
 
         return state;
     },

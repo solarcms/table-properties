@@ -130,6 +130,9 @@ class Tp
     //form-grup class
     public $fieldClass = 6;
 
+    //after save reload page
+    public $after_save_reload_page = false;
+
 
     function __construct(){
         $this->config = Config::get('tp_config');
@@ -171,7 +174,7 @@ class Tp
             case "delete":        return $this->delete();      break;
 
             case "index":         return $this->index($this->viewName);       break;
-            case "setup":         return $this->setup();       break;
+            case "setup":         return $this->index($this->viewName);       break;
             case "grid_list":     return $this->gridList();    break;
             case "get_form_datas":     return $this->get_form_datas();    break;
             // combo gird
@@ -289,6 +292,7 @@ class Tp
             'advancedSearch'=>$this->advancedSearch,
             'columnSummary'=>$this->columnSummary,
             'fieldClass'=>$this->fieldClass,
+            'after_save_reload_page'=>$this->after_save_reload_page,
         ];
 
         ////
@@ -942,7 +946,7 @@ class Tp
                     if($this->before_insert != null){
                         $pre_values =  $this->beforeInsertCaller($this->before_insert, $insertQuery);
 
-                        if($pre_values == false){
+                        if($pre_values == 'fail'){
                             return Response::json('before insert error', 400);
                         } else 
                         $insertQuery = array_merge($insertQuery, $pre_values);
@@ -970,7 +974,7 @@ class Tp
                     if($this->before_insert != null){
                         $pre_values =  $this->beforeInsertCaller($this->before_insert, $insertQuery);
 
-                        if($pre_values == false){
+                        if($pre_values == 'fail'){
                             return Response::json('before insert error', 400);
                         } else
                             $insertQuery = array_merge($insertQuery, $pre_values);
@@ -997,7 +1001,7 @@ class Tp
             if($this->before_insert != null){
                $pre_values =  $this->beforeInsertCaller($this->before_insert, $insertQuery);
 
-                if($pre_values == false){
+                if($pre_values == 'fail'){
                     return Response::json('before insert error', 400);
                 } else
                     $insertQuery = array_merge($insertQuery, $pre_values);
@@ -1045,7 +1049,7 @@ class Tp
         $rules = [];
 
         if(count($this->form_input_control) <= 0){
-            $this->setup();
+
         }
 
         $insertQuery = $this->hidden_values;
@@ -1383,60 +1387,7 @@ class Tp
 
     }
 
-    public function setup(){
-        $columns = [];
 
-        //$table_info_columns = DB::select( DB::raw("SHOW COLUMNS FROM $this->table"));
-
-        // this will skip identity_name and created_at, updated_at columns
-//        foreach($table_info_columns as $column_pre){
-//
-//            $col_name = $column_pre->Field;
-//            $col_type = $column_pre->Type;
-//
-//
-//            if($col_name == 'created_at')
-//                $this->created_at = true;
-//
-//            if($col_name == 'updated_at')
-//                $this->updated_at = true;
-//
-//            if($col_name != $this->identity_name && $col_name != 'created_at' && $col_name != 'updated_at')
-//                $columns[] = ['name'=>$col_name, 'type'=>$col_type];
-//        }
-//        $fields =  $this->create_grid_from_fields($columns);
-        $subItems = [];
-        foreach($this->subItems as $subItem){
-            $subItem['items']=[];
-            $subItems[] = $subItem;
-        }
-        if(count($this->translate_form_input_control) >= 1){
-            if (Session::has('locale')) {
-
-            } else {
-                Session::set('locale', $this->default_locale);
-            }
-
-            $locales = DB::table($this->locales_table)->select('id', 'code')->orderBy('id', 'ASC')->get();
-        }
-
-        else
-            $locales = [];
-        return [
-            'locales'=>$locales,
-            'form_input_control'=>$this->form_input_control,
-            'translate_form_input_control'=>$this->translate_form_input_control,
-            'grid_output_control'=>$this->grid_output_control,
-            'page_name'=>$this->page_name,
-            'pagination_position'=>$this->pagination_position,
-            'formType'=>$this->formType,
-            'pageLimit'=>$this->pageLimit,
-            'subItems'=>$subItems,
-            'permission'=>$this->permission,
-            'ifUpdateDisabledCanEditColumns'=>$this->ifUpdateDisabledCanEditColumns
-        ];
-
-    }
 
     public function create_grid_from_fields($columns){
 
@@ -2069,7 +2020,13 @@ class Tp
         $row_id_field = Request::input('row_id_field');
         $row_id = Request::input('row_id');
 
-        $count = DB::table($table)->where($column, '=', $value)->where($row_id_field, '!=', $row_id)->count();
+        $count = DB::table($table)->where($column, '=', $value);
+            if($row_id != null && $row_id != NULL && $row_id != 'NULL'&& $row_id != 'null'){
+                $count->where($row_id_field, '!=', $row_id);
+            }
+
+
+         $count =   $count->count();
 
         return $count;
     }

@@ -14,7 +14,7 @@ export default class Window extends Component {
 
     }
     render() {
-        const { pageName, formControls, formData, changeHandler, saveForm, hideModal, id, show, permission, ifUpdateDisabledCanEditColumns, button_texts } = this.props;
+        const { pageName, formControls, formData, changeHandler, saveForm, hideModal, id, show, fromFieldClass, permission, setErrorManuale, ifUpdateDisabledCanEditColumns, button_texts,  } = this.props;
 
         const deleteButton = this.props.showDelete == true ? <button type="button" className="btn btn-fw btn-danger p-h-lg" onClick={this.props.delete}>
                                                         <i className="material-icons">&#xE872;</i> {button_texts ? button_texts.delete_text : null}
@@ -34,6 +34,8 @@ export default class Window extends Component {
                                   permission={permission}
                                   ifUpdateDisabledCanEditColumns={ifUpdateDisabledCanEditColumns}
                                   changeHandler={changeHandler}
+                                  fromFieldClass={fromFieldClass}
+                                  setErrorManuale={setErrorManuale}
                             />
                         </div>
                     </Modal.Body>

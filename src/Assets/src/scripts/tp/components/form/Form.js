@@ -578,6 +578,7 @@ export default class Form extends Component {
                     formData={formData}
                     value={mainValue}
                     defaultLocale={this.props.defaultLocale}
+                    fromFieldClass={this.props.fromFieldClass}
                     fieldOptions={field.get('options')}
                     formControls={field.getIn(['options', 'form_input_control'])}
                     changeHandler={this.manualeChangeHandler.bind(this, locale_index, `${index}`)}
