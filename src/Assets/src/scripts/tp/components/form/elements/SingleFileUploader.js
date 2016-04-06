@@ -67,7 +67,7 @@ export default class SingleFileUploader extends Component {
 
     }
     render() {
-        const { mainValue, fieldClass, placeholder, errorText, disabled } = this.props;
+        const { mainValue, fieldClass, placeholder, errorText, disabled, dataIndex } = this.props;
 
         const protcol = window.location.protocol !== 'https:' ? 'http://' :  'https://';
         const baseUrl = protcol+window.location.hostname + window.location.pathname+'/upload-image';

@@ -231,9 +231,11 @@ export default class Form extends Component {
                                 thisSubDisabled = false;
 
 
-                            let subFieldClass = '';
+                            let subFieldClass = 'col-md-'+this.props.fromFieldClass;
                             if (control.get('error'))
-                                subFieldClass = 'has-error'
+                                subFieldClass = 'col-md-'+this.props.fromFieldClass+' has-error'
+
+
 
                             let subMainValue = this.props.formValue ?
                                 this.props.formValue
@@ -708,10 +710,9 @@ export default class Form extends Component {
                         } else
                             thisDisabled = false;
 
-
-                        let fieldClass = '';
+                        let fieldClass = 'col-md-'+this.props.fromFieldClass;
                         if (field.get('error'))
-                            fieldClass = 'has-error'
+                            fieldClass = 'col-md-'+this.props.fromFieldClass+' has-error'
 
                         let mainValue = this.props.formValue ?
                             this.props.formValue

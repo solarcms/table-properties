@@ -38,7 +38,7 @@ export default class CK extends Component {
 
         return (
 
-                <div className={`form-group ${fieldClass}  `}  id={`solar-form-group-${dataIndex}`}>
+                <div className={`form-group ${fieldClass}  col-md-12`}  id={`solar-form-group-${dataIndex}`}>
                     <label className="control-label">{placeholder}</label>
                 <textarea
                     id={`ckeditor-${keyIndex}`}
