@@ -12,7 +12,7 @@ export default class DragMap extends Component {
     }
 
     render() {
-        const { mainValue, fieldClass, placeholder, errorText, disabled } = this.props;
+        const { mainValue, fieldClass, placeholder, errorText, disabled, dataIndex } = this.props;
 
         const canDrag = disabled == true ? false : true;
 
