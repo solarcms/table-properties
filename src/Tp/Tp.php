@@ -2242,8 +2242,8 @@ class Tp
     }
     function generateLocalePhp()
     {
-        $words = DB::table('static_words')->get();
-        $locales = DB::table('locales')->get();
+        $words = DB::table($this->static_words_table)->get();
+        $locales = DB::table($this->locales_table)->get();
         $i18Path = base_path('resources' . DIRECTORY_SEPARATOR . 'lang') . DIRECTORY_SEPARATOR;
         $localeArr = [];
 
