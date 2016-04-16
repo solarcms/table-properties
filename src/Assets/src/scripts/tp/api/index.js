@@ -206,7 +206,9 @@ export function getCascadeChild(child, parent) {
     return postResuest(`get-cascade-child`, {child:child, parent: parent});
 }
 
-
+export function afterChangeTrigger(dataIndex, value) {
+    return postResuest(`after-change-trigger`, {dataIndex:dataIndex, value: value});
+}
 // check unique
 
 export function checkUnique(table, table_colummn, value, row_id, row_id_field){

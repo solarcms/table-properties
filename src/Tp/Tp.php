@@ -206,6 +206,7 @@ class Tp
             case "delete-file": return $this->deleteFile(); break;
             case "get-extra-images": return $this->getExtraImages(); break;
             case "call-multi-items": return $this->callMultImtems(); break;
+            case "after-change-trigger": return $this->afterChangeTrigger(); break;
 
             default:              return $this->index($this->viewName);
         }
@@ -295,7 +296,7 @@ class Tp
             'after_save_reload_page'=>$this->after_save_reload_page,
         ];
 
-        ////
+        //dd($setup);
 
 
         return view($viewName, compact('page_name', 'setup'));
@@ -2345,5 +2346,31 @@ class Tp
 
 
         return  $table_data->get();
+    }
+
+    public function afterChangeTrigger(){
+        $dataIndex = Request::input('dataIndex');
+        $value = Request::input('value');
+
+
+
+        $feild = $this->form_input_control;
+        $i = 0;
+        foreach ($dataIndex as $index){
+            if($i == 0){
+                $feild = $feild[$index];
+            } else {
+                $feild = $feild['control'][$index];
+            }
+            $i++;
+        }
+
+        $trigger = $feild['after_change_trigger'];
+
+        $controller = $trigger['controller'];
+        $function = $trigger['function'];
+        
+        return app($controller)->$function($value);
+
     }
 }

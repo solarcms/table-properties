@@ -6,7 +6,7 @@ import Header from '../components/grid/Header'
 import Form from "../components/form/Form"
 import validation from "../components/form/validation/"
 import validationGrid from "../components/grid/validation/"
-import {save, edit, update, getCascadeChild, callMultiItems, deleteItem} from "../api/"
+import {save, edit, update, getCascadeChild, callMultiItems, deleteItem, afterChangeTrigger} from "../api/"
 
 import Window from "../components/window/"
 import SubItemsContainer from "./formContainers/SubItemsContainer"
@@ -396,9 +396,13 @@ class AddEditContainer extends Component {
 
 
 
+
+
         this.props.actions.changeValue(realDataIndex, value);
 
         const field = this.props.formControls.getIn(realDataIndex);
+
+
 
         let error = null;
 
@@ -409,6 +413,16 @@ class AddEditContainer extends Component {
         } else {
 
              error = validation(value, field.get('validate'));
+        }
+
+        if(error === null && field.get('after_change_trigger')){
+            afterChangeTrigger(realDataIndex, value).then((data)=>{
+                let setValues = data;
+
+                setValues.map(setValue=>{
+                    this.changeValues(setValue[0], setValue[1]);
+                })
+            })
         }
 
 
