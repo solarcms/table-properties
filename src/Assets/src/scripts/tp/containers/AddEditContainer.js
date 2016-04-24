@@ -416,7 +416,7 @@ class AddEditContainer extends Component {
         }
 
         if(error === null && field.get('after_change_trigger')){
-            afterChangeTrigger(realDataIndex, value).then((data)=>{
+            afterChangeTrigger(realDataIndex, value, 'form').then((data)=>{
                 let setValues = data;
 
                 setValues.map(setValue=>{
@@ -711,6 +711,9 @@ class AddEditContainer extends Component {
             let colType = this.props.multi_items_form_input_control[colIndex].type
 
             let row = changes[0][0];
+            let elValue = changes[0][3];
+
+            console.log(elValue)
 
             if (colType != '--auto-calculate') {
 
@@ -785,7 +788,20 @@ class AddEditContainer extends Component {
                     }
                 });
             }
+            if(this.props.multi_items_form_input_control[colIndex].after_change_trigger){
 
+
+                afterChangeTrigger([colIndex], elValue, 'multi_items_form').then((data)=>{
+                    let setValues = data;
+
+                    setValues.map(setValue=>{
+                        this.changeValues(setValue[0], setValue[1]);
+
+                        tp_handSonTable.setDataAtCell(row, setValue[0][0], setValue[1]);
+                    })
+                })
+
+            }
 
             if (changes[0][1] != this.props.identity_name) {
 

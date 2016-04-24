@@ -657,8 +657,13 @@ class Tp
         $options = null;
         foreach($this->form_input_control as $formControl){
 
-            if(isset($formControl['column']))
+            if(isset($formControl['column'])){
+                if($formControl['type'] == '--password-confirm' || $formControl['type']=='--password'){
+
+                }else
                 $table_data->addSelect("$this->table." . $formControl['column']);
+            }
+
 
 //            if($formControl['type'] == '--combogrid' || $formControl['type'] == '--combobox' || $formControl['type'] == '--tag' || $formControl['type'] == '--combobox-addable' || $formControl['type'] == '--combobox-hidden'){
 //
@@ -2351,10 +2356,13 @@ class Tp
     public function afterChangeTrigger(){
         $dataIndex = Request::input('dataIndex');
         $value = Request::input('value');
+        $formType = Request::input('formType');
 
+        if($formType == 'form'){
+            $feild = $this->form_input_control;
+        }elseif($formType == 'multi_items_form')
+            $feild = $this->multi_items_form_input_control;
 
-
-        $feild = $this->form_input_control;
         $i = 0;
         foreach ($dataIndex as $index){
             if($i == 0){

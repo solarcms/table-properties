@@ -206,8 +206,8 @@ export function getCascadeChild(child, parent) {
     return postResuest(`get-cascade-child`, {child:child, parent: parent});
 }
 
-export function afterChangeTrigger(dataIndex, value) {
-    return postResuest(`after-change-trigger`, {dataIndex:dataIndex, value: value});
+export function afterChangeTrigger(dataIndex, value, formType) {
+    return postResuest(`after-change-trigger`, {dataIndex:dataIndex, value: value, formType:formType});
 }
 // check unique
 
