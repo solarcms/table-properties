@@ -12,7 +12,7 @@ export default class DragMap extends Component {
     }
 
     render() {
-        const { mainValue, fieldClass, placeholder, errorText, disabled, dataIndex } = this.props;
+        const { mainValue, fieldClass, placeholder, errorText, disabled, dataIndex, fieldClassName } = this.props;
 
         const canDrag = disabled == true ? false : true;
 
@@ -53,7 +53,7 @@ export default class DragMap extends Component {
         </section>
         return (
 
-            <div  className={`form-group ${fieldClass}  `}  id={`solar-form-group-${dataIndex}`}>
+            <div  className={`form-group ${fieldClass} ${fieldClassName}`}  id={`solar-form-group-${dataIndex}`}>
                 <label className="control-label">{placeholder}</label>
                 <div>
                     {myMap}

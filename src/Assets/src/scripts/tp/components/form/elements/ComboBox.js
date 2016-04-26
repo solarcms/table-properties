@@ -21,7 +21,7 @@ export default class ComboBox extends Component {
     }
 
     render() {
-        const { fieldClass, formData, column, fieldOptions, value, changeHandler, errorText, formType, placeholder, name, disabled, multi, dataIndex } = this.props;
+        const { fieldClass, formData, column, changeHandler, fieldOptions, value, fieldClassName, errorText, formType, placeholder, name, disabled, multi, dataIndex } = this.props;
 
         let options = [];
 
@@ -53,7 +53,7 @@ export default class ComboBox extends Component {
 
 
         return (
-            <div className={`form-group ${fieldClass}`}  id={`solar-form-group-${dataIndex}`}>
+            <div className={`form-group ${fieldClass} ${fieldClassName}`}  id={`solar-form-group-${dataIndex}`}>
                 {formType == 'inline' ? '' : <label className="control-label">{placeholder}</label>}
 
 

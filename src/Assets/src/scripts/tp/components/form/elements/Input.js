@@ -93,7 +93,7 @@ export default class Input extends Component {
     }
     
     render() {
-        const { autoFocus, name, value, placeholder, changeHandler, errorText, fieldClass, type, disabled, dataIndex } = this.props;
+        const { autoFocus, name, value, placeholder, changeHandler, fieldClassName, errorText, fieldClass, type, disabled, dataIndex } = this.props;
 
         const focusHandler = type == 'text' ? moveCursorToEnd : false
 
@@ -198,7 +198,7 @@ export default class Input extends Component {
 
         return (
 
-                <div  className={`form-group ${fieldClass} `} id={`solar-form-group-${dataIndex}`}>
+                <div  className={`form-group ${fieldClass} ${fieldClassName}`} id={`solar-form-group-${dataIndex}`}>
                     <label className="control-label">{placeholder}</label>
                     {input}
                     <span className="help-block">

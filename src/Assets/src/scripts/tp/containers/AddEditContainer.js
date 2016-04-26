@@ -1252,7 +1252,8 @@ class AddEditContainer extends Component {
             locales,
             button_texts,
             defaultLocale,
-            fromFieldClass
+            fromFieldClass,
+            formClassName
             } = this.props;
 
 
@@ -1287,6 +1288,7 @@ class AddEditContainer extends Component {
                 keyPress={this._handleKeyPress.bind(this)}
                 translateChangeHandler={this.translateChangeHandler.bind(this)}
                 fromFieldClass={fromFieldClass}
+                formClassName={formClassName}
 
             />
             :
@@ -1396,6 +1398,7 @@ function mapStateToProps(state) {
         save_first_id_column: Form.get('save_first_id_column'),
         multi_items_form_input_control: Form.get('multi_items_form_input_control').toJS(),
         showAddEditForm: Form.get('showAddEditForm'),
+        formClassName: Form.get('formClassName'),
         focusIndex: Form.get('focusIndex'),
         formData: Form.get('formData'),
         subItems: SubItems.get('subItems'),

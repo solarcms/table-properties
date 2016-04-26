@@ -133,6 +133,9 @@ class Tp
     //after save reload page
     public $after_save_reload_page = false;
 
+    //form class
+    public $formClassName = '';
+
 
     function __construct(){
         $this->config = Config::get('tp_config');
@@ -294,6 +297,7 @@ class Tp
             'columnSummary'=>$this->columnSummary,
             'fieldClass'=>$this->fieldClass,
             'after_save_reload_page'=>$this->after_save_reload_page,
+            'formClassName'=>$this->formClassName,
         ];
 
         //dd($setup);

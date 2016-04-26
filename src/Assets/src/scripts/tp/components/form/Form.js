@@ -100,7 +100,7 @@ export default class Form extends Component {
 
         const keyIndex = locale_index === false ? index : `__local__${locale_index}-${index}`
 
-
+        const fieldClassName = field.get('className') ? field.get('className') : null;
 
         if(field.get('show')){
 
@@ -140,6 +140,7 @@ export default class Form extends Component {
                     autoFocus={focus}
                     placeholder={title}
                     name={name}
+                    fieldClassName={fieldClassName}
                     validation={field.get('validate')}
                     setErrorManuale={this.props.setErrorManuale}
                     edit_parent_id={this.props.edit_parent_id}
@@ -158,6 +159,7 @@ export default class Form extends Component {
                     type="password"
                     autoFocus={focus}
                     placeholder={title}
+                    fieldClassName={fieldClassName}
                     name={name}
                     validation={field.get('validate')}
                     setErrorManuale={this.props.setErrorManuale}
@@ -175,6 +177,7 @@ export default class Form extends Component {
                     value={mainValue}
                     type="password-confirm"
                     autoFocus={focus}
+                    fieldClassName={fieldClassName}
                     placeholder={title}
                     name={name}
                     validation={field.get('validate')}
@@ -197,6 +200,7 @@ export default class Form extends Component {
                     type="text"
                     autoFocus={focus}
                     placeholder={title}
+                    fieldClassName={fieldClassName}
                     name={name}
                     validation={field.get('validate')}
                     setErrorManuale={this.props.setErrorManuale}
@@ -255,7 +259,7 @@ export default class Form extends Component {
                     </div>
 
                 })
-                return <fieldset className="field_set" key={keyIndex}>
+                return <fieldset className={`field_set ${fieldClassName}`} key={keyIndex}>
                             <legend className="legendStyle">
                                 {field.get('title')}
                             </legend>
@@ -274,6 +278,7 @@ export default class Form extends Component {
                     type="number"
                     autoFocus={focus}
                     placeholder={title}
+                    fieldClassName={fieldClassName}
                     name={name}
                     validation={field.get('validate')}
                     setErrorManuale={this.props.setErrorManuale}
@@ -292,6 +297,7 @@ export default class Form extends Component {
                     value={mainValue}
                     type="money"
                     autoFocus={focus}
+                    fieldClassName={fieldClassName}
                     placeholder={title}
                     validation={field.get('validate')}
                     setErrorManuale={this.props.setErrorManuale}
@@ -311,6 +317,7 @@ export default class Form extends Component {
                     type="email"
                     autoFocus={focus}
                     placeholder={title}
+                    fieldClassName={fieldClassName}
                     name={name}
                     validation={field.get('validate')}
                     setErrorManuale={this.props.setErrorManuale}
@@ -329,6 +336,7 @@ export default class Form extends Component {
                     type="text"
                     autoFocus={focus}
                     placeholder={title}
+                    fieldClassName={fieldClassName}
                     name={name}
                     validation={field.get('validate')}
                     setErrorManuale={this.props.setErrorManuale}
@@ -346,6 +354,7 @@ export default class Form extends Component {
                     value={mainValue}
                     type="textarea"
                     autoFocus={focus}
+                    fieldClassName={fieldClassName}
                     placeholder={title}
                     name={name}
                     validation={field.get('validate')}
@@ -364,6 +373,7 @@ export default class Form extends Component {
                     type="text"
                     autoFocus={focus}
                     placeholder={title}
+                    fieldClassName={fieldClassName}
                     name={name}
                     validation={field.get('validate')}
                     setErrorManuale={this.props.setErrorManuale}
@@ -382,6 +392,8 @@ export default class Form extends Component {
                     type="textarea"
                     autoFocus={focus}
                     placeholder={title}
+                    fieldClassName={fieldClassName}
+                    fieldClassName={fieldClassName}
                     name={name}
                     validation={field.get('validate')}
                     setErrorManuale={this.props.setErrorManuale}
@@ -399,6 +411,7 @@ export default class Form extends Component {
                     dataIndex={index}
                     placeholder={title}
                     fieldClass={fieldClass}
+                    fieldClassName={fieldClassName}
                     name={name}
                     gridId={gridId}
                     index={index}
@@ -414,6 +427,7 @@ export default class Form extends Component {
                     key={keyIndex} dataIndex={index}
                     placeholder={title}
                     fieldClass={fieldClass}
+                    fieldClassName={fieldClassName}
                     gridId={gridId}
                     index={index}
                     name={name}
@@ -430,6 +444,7 @@ export default class Form extends Component {
                     fieldClass={fieldClass}
                     gridId={gridId}
                     placeholder={title}
+                    fieldClassName={fieldClassName}
                     index={index}
                     name={name}
                     mainValue={mainValue}
@@ -445,6 +460,7 @@ export default class Form extends Component {
                     fieldClass={fieldClass}
                     gridId={gridId}
                     placeholder={title}
+                    fieldClassName={fieldClassName}
                     index={index}
                     name={name}
                     mainValue={mainValue}
@@ -458,7 +474,7 @@ export default class Form extends Component {
             case "--date":
     
                 return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass}  `}  id={`solar-form-group-${index}`}>
-                    <label className="control-label">{title}</label>
+                    <label className={`control-label ${fieldClassName}`}>{title}</label>
                     <DateTimePicker
                         disabled={thisDisabled}
                         name={name}
@@ -477,7 +493,7 @@ export default class Form extends Component {
                 break;
             case "--datetime":
 
-                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass}  `}  id={`solar-form-group-${index}`}>
+                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass} ${fieldClassName} `}  id={`solar-form-group-${index}`}>
                     <label>
 
                         {title}
@@ -507,7 +523,7 @@ export default class Form extends Component {
                } else {
                    time_show = new Date(mainValue)
                }
-                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass}  `}  id={`solar-form-group-${index}`}>
+                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass} ${fieldClassName}`}  id={`solar-form-group-${index}`}>
                     <label>
 
                         {title}
@@ -529,7 +545,7 @@ export default class Form extends Component {
                 </div>
                 break;
             case "--combogrid":
-                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass}  `}  id={`solar-form-group-${index}`}>
+                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass} ${fieldClassName}`}  id={`solar-form-group-${index}`}>
                     {formType == 'inline' ? '' : <label className="control-label">{title}</label>}
                     <Combogrid listData={formData[field.get('column')].data.data}
                                disabled={thisDisabled}
@@ -562,6 +578,7 @@ export default class Form extends Component {
                     placeholder={title}
                     formType={formType}
                     formData={formData}
+                    fieldClassName={fieldClassName}
                     value={mainValue}
                     multi={false}
                     defaultLocale={this.props.defaultLocale}
@@ -582,6 +599,7 @@ export default class Form extends Component {
                     pageName={field.getIn(['options', 'page_name'])}
                     formType={formType}
                     formData={formData}
+                    fieldClassName={fieldClassName}
                     value={mainValue}
                     defaultLocale={this.props.defaultLocale}
                     fromFieldClass={this.props.fromFieldClass}
@@ -602,6 +620,7 @@ export default class Form extends Component {
                     placeholder={title}
                     formType={formType}
                     formData={formData}
+                    fieldClassName={fieldClassName}
                     value={mainValue}
                     multi={true}
                     defaultLocale={this.props.defaultLocale}
@@ -611,7 +630,7 @@ export default class Form extends Component {
                 />
                 break;
             case "--checkbox":
-                return <div key={keyIndex}  className={`form-group ${fieldClass} `}  id={`solar-form-group-${index}`}>
+                return <div key={keyIndex}  className={`form-group ${fieldClass} ${fieldClassName}`}  id={`solar-form-group-${index}`}>
                     <div className="checkbox">
                         {formType == 'inline' ?
                             <input type="checkbox"
@@ -646,7 +665,7 @@ export default class Form extends Component {
                 break;
             case "--radio":
 
-                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass} `}  id={`solar-form-group-${index}`}>
+                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass} ${fieldClassName}`}  id={`solar-form-group-${index}`}>
                     <div className="radio">
 
                         <label >
@@ -833,7 +852,7 @@ export default class Form extends Component {
 
 
     render() {
-        const { formControls, translateFormControls, changeHandler, formData, formType, formValue, focusIndex, gridIndex, gridId, ifUpdateDisabledCanEditColumns, permission, edit_parent_id  } = this.props;
+        const { formControls, translateFormControls, changeHandler, formClassName, formData, formType, formValue, focusIndex, gridIndex, gridId, ifUpdateDisabledCanEditColumns, permission, edit_parent_id  } = this.props;
 
 
         let bootsrap_gird_sum = formControls.size/(12/this.props.fromFieldClass);
@@ -915,7 +934,7 @@ export default class Form extends Component {
 
 
         return (
-            <div className="add-edit-form">
+            <div className={`add-edit-form ${formClassName}`}>
 
                 <div className="none-translate-form">
                     {formFields}

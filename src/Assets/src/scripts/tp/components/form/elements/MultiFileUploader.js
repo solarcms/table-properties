@@ -135,7 +135,7 @@ export default class MultiFileUploader extends Component {
 
     }
     render() {
-        const { mainValue, fieldClass, placeholder, errorText, disabled, options, dataIndex} = this.props;
+        const { mainValue, fieldClass, placeholder, errorText, disabled, options, dataIndex, fieldClassName} = this.props;
 
         const protcol = window.location.protocol !== 'https:' ? 'http://' :  'https://';
         const baseUrl = protcol+window.location.hostname + window.location.pathname+'/upload-image';
@@ -214,7 +214,7 @@ export default class MultiFileUploader extends Component {
 
         return (
 
-            <div  className={`form-group ${fieldClass}`}  id={`solar-form-group-${dataIndex}`}>
+            <div  className={`form-group ${fieldClass} ${fieldClassName}`}  id={`solar-form-group-${dataIndex}`}>
                 <label className="control-label">{placeholder}</label>
                 <div>
                     {disabled == true ? null :

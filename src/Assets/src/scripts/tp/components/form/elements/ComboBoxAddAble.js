@@ -7,7 +7,7 @@ export default class ComboBoxAddAble extends Component {
         //this.props.openComboboxAdableForm(column)
     }
     render() {
-        const { fieldClass, formData, column, fieldOptions, value, changeHandler, errorText, formType, placeholder, name, disabled } = this.props;
+        const { fieldClass, formData, column, fieldOptions, value, fieldClassName, errorText, formType, placeholder, name, disabled } = this.props;
 
         let options = [];
 
@@ -36,7 +36,7 @@ export default class ComboBoxAddAble extends Component {
             })
 
         return (
-            <div className={`form-group ${fieldClass}`}  id={`solar-form-group-${dataIndex}`}>
+            <div className={`form-group ${fieldClass} ${fieldClassName}`}  id={`solar-form-group-${dataIndex}`}>
                 {formType == 'inline' ? '' : <label className="control-label">{placeholder}</label>}
 
                 {formData.get(column) ?
