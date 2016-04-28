@@ -221,8 +221,7 @@ export default class Form extends Component {
 
 
 
-                const groupFields = formRows.map(formRow=>{
-                    return <div className="row">
+                const groupFields =  <div className="row">
                         {field.get('controls').map((control, subindex)=>{
 
                             let thisSubDisabled = true;
@@ -258,8 +257,8 @@ export default class Form extends Component {
                         })}
                     </div>
 
-                })
                 return <fieldset className={`field_set ${fieldClassName}`} key={keyIndex}>
+
                             <legend className="legendStyle">
                                 {field.get('title')}
                             </legend>
@@ -533,7 +532,6 @@ export default class Form extends Component {
                         name={name}
                         calendar={false}
                         defaultValue={mainValue === null ? null : time_show}
-                        value={mainValue === null ? null : time_show }
                         format={"HH:mm"}
                         placeholder={title}
                         onChange={this.dateTimeChange.bind(this, locale_index, `${index}`)}
