@@ -4,9 +4,15 @@ import getMeta from '../../../lib/getMeta'
 
 import {deleteFile} from '../../../api/upload'
 
-var myDropzone;
 
 export default class SingleFileUploader extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            myDropzone: null,
+        };
+    }
 
     uploadSuccess(e, responsejson){
 
@@ -21,8 +27,15 @@ export default class SingleFileUploader extends Component {
         if(e.uniqueName)
         deleteFile(e.uniqueName).then((data)=>{
             if(data == 'success'){
+                
+
+                let myDropzone = this.state.myDropzone;
                 myDropzone.options.maxFiles = myDropzone.options.maxFiles + 1;
                 this.props.changeHandler(null)
+
+                this.setState({myDropzone: myDropzone});
+
+
             }
             else
                 alert('Алдаа гарлаа дахин оролдоно уу')
@@ -42,7 +55,9 @@ export default class SingleFileUploader extends Component {
 
             let mockFile = { name: image.origName, size: image.size, uniqueName: image.uniqueName };
 
-            myDropzone = dropzone;
+
+
+            let myDropzone = dropzone;
 
 
             myDropzone.emit("addedfile", mockFile);
@@ -59,6 +74,9 @@ export default class SingleFileUploader extends Component {
 
             let existingFileCount = 1; // The number of files already uploaded
             myDropzone.options.maxFiles = myDropzone.options.maxFiles - existingFileCount;
+
+
+            this.setState({myDropzone: myDropzone});
 
 
 

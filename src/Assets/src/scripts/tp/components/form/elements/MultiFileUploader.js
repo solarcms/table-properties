@@ -3,15 +3,25 @@ import DropzoneComponent from "react-dropzone-component";
 import getMeta from '../../../lib/getMeta'
 
 import {deleteFile, getExtraImages} from '../../../api/upload'
-
-var myDropzone;
-var uploadedFiles = [];
+//
+// var myDropzone;
+// var uploadedFiles = [];
 
 export default class MultiFileUploader extends Component {
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            myDropzone: null,
+            uploadedFiles : []
+        };
+    }
+
     componentWillUnmount(){
 
-        uploadedFiles = [];
+        this.setState({uploadedFiles: []});
+
     }
 
     componentWillMount(){
@@ -20,7 +30,7 @@ export default class MultiFileUploader extends Component {
 
 
     uploadSuccess(e, responsejson){
-
+        let uploadedFiles = this.state.uploadedFiles;
         if(e.status == 'success'){
             if (responsejson instanceof Array) {
 
@@ -63,9 +73,11 @@ export default class MultiFileUploader extends Component {
         else
             alert('error please try again')
 
-
+        this.setState({uploadedFiles: uploadedFiles});
     }
     removeImage(e){
+        let uploadedFiles = this.state.uploadedFiles;
+        let myDropzone = this.state.myDropzone;
         let delIndex = -1;
         if(e.uniqueName){
             deleteFile(e.uniqueName).then((data)=>{
@@ -94,13 +106,17 @@ export default class MultiFileUploader extends Component {
 
         this.props.changeHandler(uploadedFilesString)
 
+        this.setState({uploadedFiles: uploadedFiles});
+        this.setState({myDropzone: myDropzone});
+
     }
     initCallback(dropzone){
 
 
         const { mainValue, disabled, edit_parent_id } = this.props;
 
-        myDropzone = dropzone;
+        let myDropzone = dropzone;
+        let uploadedFiles = this.state.uploadedFiles;
 
 
 
@@ -132,6 +148,10 @@ export default class MultiFileUploader extends Component {
 
 
         }
+
+        this.setState({myDropzone: myDropzone});
+
+        this.setState({uploadedFiles: uploadedFiles});
 
     }
     render() {
