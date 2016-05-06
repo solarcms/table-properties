@@ -29,24 +29,26 @@ export default class Paginator extends Component {
                                 />
                             </div>
                         </div>
+                        {totalPages >= 2 ?
+                            <div className="pull-right" style={{height:'20px'}}>
 
-                        <div className="pull-right" style={{height:'20px'}}>
 
+                                <Pagination
+                                    prev
+                                    next
+                                    first
+                                    last
+                                    ellipsis
+                                    // buttonComponentClass='button'
+                                    bsSize="small"
+                                    items={totalPages}
+                                    activePage={currentPage}
+                                    onSelect={handlerPage}
+                                    maxButtons={5}
+                                />
+                            </div>
+                            : null}
 
-                            <Pagination
-                                prev
-                                next
-                                first
-                                last
-                                ellipsis
-                                // buttonComponentClass='button'
-                                bsSize="small"
-                                items={totalPages}
-                                activePage={currentPage}
-                                onSelect={handlerPage}
-                                maxButtons={5}
-                            />
-                        </div>
                     </div>
                 </div>
 

@@ -1307,11 +1307,11 @@ class AddEditContainer extends Component {
         return (
             <div className="">
                 <Header pageName={setup.page_name} gridHeader={this.props.gridHeader} icon="fa fa-chevron-left" link="#/" type="addEdit"/>
-                <div className="p-y-sm">
-                    <div className="row  m-x-sm">
-                        <div className="form-horizontal solar-form">
 
-                            <div className={`row ${sendingClass}`}>
+                    <div className="form-wrap">
+                        <div className="solar-form">
+
+                            <div className={`${sendingClass}`}>
                                 {containerForm}
 
                                 {formSubItmes}
@@ -1350,7 +1350,7 @@ class AddEditContainer extends Component {
 
                         </div>
                     </div>
-                </div>
+
                 <Modal aria-labelledby="contained-modal-title-sm" className="modal-shadowed" show={savedAlertShow} onHide={hideSaveModal} >
 
                     <Modal.Body>
