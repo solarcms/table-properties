@@ -248,11 +248,14 @@ class AddEditContainer extends Component {
                     this.setState({sending: false});
                     if(this.props.showInsertResponse === true){
                         alert(data);
+                        localStorage.setItem("addEditFromStatus", "ended");
                         window.location.replace('#/');
                     }else if(this.props.show_saved_alert === true){
+                        localStorage.setItem("addEditFromStatus", "ended");
                         this.setState({savedAlertShow: true});
 
                     } else {
+                        localStorage.setItem("addEditFromStatus", "ended");
                        
                         if(this.props.after_save_reload_page === true){
                             
@@ -266,6 +269,11 @@ class AddEditContainer extends Component {
 
 
                     }
+
+
+
+
+
 
             }).fail(()=> {
 
@@ -312,7 +320,7 @@ class AddEditContainer extends Component {
         if (foundError === false){
             this.setState({sending: true});
             update(FD, this.props.translateFormControls, this.props.params.id, this.props.subItems, multiItems).done((data)=> {
-
+                localStorage.setItem("addEditFromStatus", "ended");
                 this.setState({sending: false});
 
                 if (data == 'success' || 'none') {
@@ -445,6 +453,10 @@ class AddEditContainer extends Component {
     }
 
     componentWillMount() {
+        /*local storage*/
+
+        localStorage.setItem("addEditFromStatus", "started");
+
 
         //clear form validation
         const FC = this.props.formControls;
@@ -570,7 +582,11 @@ class AddEditContainer extends Component {
         }
 
 
+
+
+
     }
+
 
     componentWillUnmount() {
         this.props.actions.clearFromValidation();
