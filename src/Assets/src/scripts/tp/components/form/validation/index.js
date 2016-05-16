@@ -81,6 +81,7 @@ export function passConfirm(value, value2) {
 
 
 export default function validation(value, validationData, passConfirmValue){
+    // console.log(validationData, 'validationData')
     let errors = null;
     if(passConfirmValue){
         const error = passConfirm(value, passConfirmValue);

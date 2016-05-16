@@ -729,7 +729,7 @@ class AddEditContainer extends Component {
             let row = changes[0][0];
             let elValue = changes[0][3];
 
-            console.log(elValue)
+
 
             if (colType != '--auto-calculate') {
 
@@ -811,9 +811,11 @@ class AddEditContainer extends Component {
                     let setValues = data;
 
                     setValues.map(setValue=>{
-                        this.changeValues(setValue[0], setValue[1]);
-
+                        // console.log(setValue[0][0], 'changeing', setValue[1]);
+                        
                         tp_handSonTable.setDataAtCell(row, setValue[0][0], setValue[1]);
+
+                        // this.changeValues(setValue[0], setValue[1]);
                     })
                 })
 
