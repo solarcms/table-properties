@@ -398,7 +398,7 @@ class Tp
 
         if($searchValue != '') {
             $loop = 0;
-            if($this->grid_columns == 'grid_columns'){
+            if($this->search_mode == 'grid_columns'){
                 foreach($this->grid_columns as $sw){
                     if($loop == 0)
                         $table_data->where($sw, 'LIKE', "%$searchValue%");
