@@ -63,7 +63,11 @@ Paginator.defaultProps = {
         {value: 50, text: 50},
         {value: 100, text: 100},
         {value: 500, text: 500},
-        {value: 1000, text: 1000}
+        {value: 1000, text: 1000},
+        {value: 10000, text: 10000},
+        {value: 100000, text: 100000},
+        {value: 1000000, text: 1000000},
+        {value: 10000000, text: 10000000},
     ]
 };
 
