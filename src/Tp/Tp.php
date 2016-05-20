@@ -397,23 +397,60 @@ class Tp
 
 
         if($searchValue != '') {
-            $loop = 0;
-            if($this->search_mode == 'grid_columns'){
-                foreach($this->grid_columns as $sw){
-                    if($loop == 0)
-                        $table_data->where($sw, 'LIKE', "%$searchValue%");
-                    else
-                        $table_data->orwhere($sw, 'LIKE', "%$searchValue%");
-                    $loop++;
+
+
+            if(count($this->where_condition) >= 1) {
+
+
+                foreach ($this->where_condition as $where_condition) {
+
+
+                    $table_data->where(function($query) use ($searchValue)
+                        {
+                            $loop = 0;
+                            if($this->search_mode == 'grid_columns'){
+                                foreach($this->grid_columns as $sw){
+                                    if($loop == 0)
+                                        $query->where($sw, 'LIKE', "%$searchValue%");
+
+                                    else
+                                        $query->orwhere($sw, 'LIKE', "%$searchValue%");
+                                    $loop++;
+                                }
+                            } else
+                                foreach($this->search_columns as $sw){
+                                    if($loop == 0)
+                                        $query->where($sw, 'LIKE', "%$searchValue%");
+                                    else
+                                        $query->orwhere($sw, 'LIKE', "%$searchValue%");
+                                    $loop++;
+                                }
+
+                            return $query;
+                        });
+
                 }
-            } else
-            foreach($this->search_columns as $sw){
-                if($loop == 0)
-                    $table_data->where($sw, 'LIKE', "%$searchValue%");
-                else
-                    $table_data->orwhere($sw, 'LIKE', "%$searchValue%");
-                $loop++;
+
+            }else {
+                $loop = 0;
+                if($this->search_mode == 'grid_columns'){
+                    foreach($this->grid_columns as $sw){
+                        if($loop == 0)
+                            $table_data->where($sw, 'LIKE', "%$searchValue%");
+                        else
+                            $table_data->orwhere($sw, 'LIKE', "%$searchValue%");
+                        $loop++;
+                    }
+                } else
+                    foreach($this->search_columns as $sw){
+                        if($loop == 0)
+                            $table_data->where($sw, 'LIKE', "%$searchValue%");
+                        else
+                            $table_data->orwhere($sw, 'LIKE', "%$searchValue%");
+                        $loop++;
+                    }
             }
+
         }
 
 
@@ -1488,13 +1525,35 @@ class Tp
                 $table_data = DB::table($options['table'])->select($options['grid_columns'])->orderBy($order[0], $order[1]);
 
                 if($searchValue != '') {
-                    $loop = 0;
-                    foreach($options['grid_columns'] as $sw){
-                        if($loop == 0)
-                            $table_data->where($sw, 'LIKE', "%$searchValue%");
-                        else
-                            $table_data->orwhere($sw, 'LIKE', "%$searchValue%");
-                        $loop++;
+
+
+                    if(count($this->where_condition) >= 1){
+                        dd('aaa');
+                        foreach($this->where_condition as $where_condition){
+
+
+                            $table_data->where($where_condition[0], $where_condition[1], $where_condition[2]);
+
+
+
+                        }
+                        $loop = 0;
+                        foreach($options['grid_columns'] as $sw){
+                            if($loop == 0)
+                                $table_data->where($sw, 'LIKE', "%$searchValue%");
+                            else
+                                $table_data->orwhere($sw, 'LIKE', "%$searchValue%");
+                            $loop++;
+                        }
+                    } else {
+                        $loop = 0;
+                        foreach($options['grid_columns'] as $sw){
+                            if($loop == 0)
+                                $table_data->where($sw, 'LIKE', "%$searchValue%");
+                            else
+                                $table_data->orwhere($sw, 'LIKE', "%$searchValue%");
+                            $loop++;
+                        }
                     }
                 }
 
