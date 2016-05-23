@@ -435,11 +435,13 @@ class Tp
                 $loop = 0;
                 if($this->search_mode == 'grid_columns'){
                     foreach($this->grid_columns as $sw){
-                        if($loop == 0)
-                            $table_data->where($sw, 'LIKE', "%$searchValue%");
-                        else
-                            $table_data->orwhere($sw, 'LIKE', "%$searchValue%");
-                        $loop++;
+                        if($sw != $this->identity_name){
+                            if($loop == 0)
+                                $table_data->where($sw, 'LIKE', "%$searchValue%");
+                            else
+                                $table_data->orwhere($sw, 'LIKE', "%$searchValue%");
+                            $loop++;
+                        }
                     }
                 } else
                     foreach($this->search_columns as $sw){
@@ -1316,7 +1318,7 @@ class Tp
                         $pre_values =  $this->beforeUpdateCaller($this->before_update, $insertQuery);
 
                         if($pre_values == false){
-                            return Response::json('before updated error', 400);
+//                            return Response::json('before updated error', 400);
                         } else
                             $insertQuery = array_merge($insertQuery, $pre_values);
                     }
@@ -1340,7 +1342,7 @@ class Tp
                         $pre_values =  $this->beforeUpdateCaller($this->before_update, $insertQuery);
 
                         if($pre_values == false){
-                            return Response::json('before updated error', 400);
+//                            return Response::json('before updated error', 400);
                         } else
                             $insertQuery = array_merge($insertQuery, $pre_values);
                     }
@@ -1366,7 +1368,7 @@ class Tp
                 $pre_values =  $this->beforeUpdateCaller($this->before_update, $insertQuery);
 
                 if($pre_values == false){
-                    return Response::json('before updated error', 400);
+//                    return Response::json('before updated error', 400);
                 } else
                     $insertQuery = array_merge($insertQuery, $pre_values);
             }
@@ -1380,7 +1382,7 @@ class Tp
                     ['errors' => [$validator->messages()]
                     ], 400);
             }
-
+            
 
             $saved = DB::table($this->table)->where("$this->identity_name", '=', $id)->update($insertQuery);
         }
