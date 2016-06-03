@@ -25,6 +25,7 @@ class TablePropertiesServiceProvider extends ServiceProvider
         // For publishing assets
         $this->publishes([
             __DIR__ . DIRECTORY_SEPARATOR . 'Assets'. DIRECTORY_SEPARATOR . 'dist' => public_path('shared/table-properties'),
+            __DIR__ . DIRECTORY_SEPARATOR . 'Assets'. DIRECTORY_SEPARATOR . 'src'. DIRECTORY_SEPARATOR . 'vendor'. DIRECTORY_SEPARATOR . 'handsontable' => public_path('shared/table-properties/handsontable'),
         ], 'tp');
     }
 

@@ -1,0 +1,7 @@
+.htCore > tbody > tr:nth-child(even) > td {
+  background-color: #fff;
+}
+
+.htCore > tbody > tr:nth-child(odd) > td {
+  background-color: #eee;
+}

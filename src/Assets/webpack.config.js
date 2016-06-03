@@ -20,7 +20,7 @@ module.exports = {
     context: webpackDirs.contextDir,
 
     entry: {
-        // dependencies: ['./vendor'],
+        dependencies: ['./vendor'],
         tp: ['./app']
     },
 
