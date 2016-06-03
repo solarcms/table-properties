@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import {render} from 'react-dom';
 import App from './router';
 import createStore from './lib/createStore';
 import { Provider } from 'react-redux';
@@ -10,8 +10,7 @@ import { getSetupData } from './actions/grid'
 //call page setup datas
 store.dispatch(getSetupData());
 
-
-ReactDOM.render(
+render(
     <Provider store={store}>
         <App/>
     </Provider>,

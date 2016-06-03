@@ -27,13 +27,23 @@
     padding: 0 5px;
 
     .form-group{
-      min-width: 200px;
       line-height: 14px;
       .control-label{
         height: 14px;
         margin: 3px 5px;
       }
+      .date-range{
+        position: relative;
+      }
+      .date-range > div{
+
+          width: 170px;
+          display: inline-block;
+
+
+      }
     }
+
 
     .rw-datetimepicker{
       display: inline-block;

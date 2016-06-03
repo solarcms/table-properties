@@ -28,7 +28,8 @@ const initialState = {
     order:{
         column:null,
         sortOrder: null
-    }
+    },
+    advancedSearch:{}
 };
 
 export default createReducer(initialState, {

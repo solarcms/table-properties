@@ -9,17 +9,19 @@ import Header from "../components/grid/Header"
 
 import Pagination from "../components/grid/Paginator"
 
-import Window from "../components/window/"
+// import Window from "../components/window/"
 
 import ComboBox from '../components/form/elements/ComboBox'
 
 import validationGrid from "../components/grid/validation/"
-import DateTimePicker from 'react-widgets/lib/DateTimePicker';
-import Moment from 'moment'
-import momentLocalizer from 'react-widgets/lib/localizers/moment'
+
+import {getDate} from "../lib/date";
+
+
+import DateTimeField from 'react-bootstrap-datetimepicker';
 import numeral from 'numeral';
 import {customDropdownRenderer, gridImage, genrateComboboxvalues} from '../lib/handSonTableHelper'
-momentLocalizer(Moment);
+
 
 /*for handson table*/
 var tp_handSonTable = null
@@ -124,11 +126,13 @@ class GridContainer extends Component {
         this.callPageDatas(1, e.target.value, this.props.searchValue)
     }
 
-    handlePageChange(event, selectedEvent) {
-   
-        this.props.actions.setCurrentPage(selectedEvent.eventKey)
+    handlePageChange(event) {
 
-        this.callPageDatas(selectedEvent.eventKey, this.props.pageLimit, this.props.searchValue)
+        
+
+        this.props.actions.setCurrentPage(event)
+
+        this.callPageDatas(event, this.props.pageLimit, this.props.searchValue)
     }
 
 
@@ -539,7 +543,7 @@ class GridContainer extends Component {
     }
 
 
-    
+
     setUpHandsonTable() {
         $('#tp_grid').empty();
 
@@ -740,7 +744,7 @@ class GridContainer extends Component {
         let columnSummary = this.props.columnSummary;
         let fixedRowsBottom = 0;
         if(columnSummary.length >=1 && gridData.length >=1){
-       
+
             let preEmpty = gridData[0];
             let lastRow = {};
             Object.keys(preEmpty).map(empty =>{
@@ -846,54 +850,54 @@ class GridContainer extends Component {
                         var type_col = self.getColumnType(conIndex)
 
 
-                            if (type_col != '--image' && type_col != '--internal-link' && type_col != '--combobox' && type_col != '--tag') {
-                                cellProperties.renderer = function (instance, td, row, col, prop, value, cellProperties) {
+                        if (type_col != '--image' && type_col != '--internal-link' && type_col != '--combobox' && type_col != '--tag') {
+                            cellProperties.renderer = function (instance, td, row, col, prop, value, cellProperties) {
 
-                                    Handsontable.cellTypes[cellProperties.type].renderer.apply(this, arguments);
-                                    if (translate === true) {
+                                Handsontable.cellTypes[cellProperties.type].renderer.apply(this, arguments);
+                                if (translate === true) {
+                                    while (td.firstChild) {
+                                        td.removeChild(td.firstChild);
+                                    }
+                                    let json_translations = JSON.parse(value);
+                                    json_translations.map(json_translation => {
+                                        if (json_translation.locale == self.props.defaultLocale) {
+                                            var textNode = document.createElement('span');
+                                            textNode.innerHTML = json_translation.value;
+                                            td.appendChild(textNode);
+                                        }
+
+                                    })
+
+                                } else {
+                                    /* chnage 0,1 value to string*/
+                                    let change_value = self.props.gridHeader[conIndex].change_value;
+                                    if (change_value) {
+
+
                                         while (td.firstChild) {
                                             td.removeChild(td.firstChild);
                                         }
-                                        let json_translations = JSON.parse(value);
-                                        json_translations.map(json_translation => {
-                                            if (json_translation.locale == self.props.defaultLocale) {
-                                                var textNode = document.createElement('span');
-                                                textNode.innerHTML = json_translation.value;
-                                                td.appendChild(textNode);
-                                            }
 
+                                        var textNode = document.createElement('span');
+
+                                        change_value.map(cvalue=> {
+                                            if (value == cvalue.value)
+                                                textNode.innerText = cvalue.text
                                         })
 
-                                    } else {
-                                        /* chnage 0,1 value to string*/
-                                        let change_value = self.props.gridHeader[conIndex].change_value;
-                                        if (change_value) {
+                                        td.appendChild(textNode);
 
 
-                                            while (td.firstChild) {
-                                                td.removeChild(td.firstChild);
-                                            }
-
-                                            var textNode = document.createElement('span');
-
-                                            change_value.map(cvalue=> {
-                                                if (value == cvalue.value)
-                                                    textNode.innerText = cvalue.text
-                                            })
-
-                                            td.appendChild(textNode);
-
-
-                                        }
                                     }
                                 }
-                                cellProperties['className'] = cellClass;
-                                return cellProperties;
-
-                            } else {
-                                cellProperties['className'] = cellClass;
-                                return cellProperties;
                             }
+                            cellProperties['className'] = cellClass;
+                            return cellProperties;
+
+                        } else {
+                            cellProperties['className'] = cellClass;
+                            return cellProperties;
+                        }
 
 
 
@@ -914,24 +918,24 @@ class GridContainer extends Component {
 
                             if (prop ==summary.column) {
 
-                              if(summary.type == 'sum'){
-                                  let columnSum = 0;
-                                  for(let q=0; q<=gridData.length-2; q++){
-                                      columnSum = (gridData[q][prop]*1)+columnSum;
-                                  }
+                                if(summary.type == 'sum'){
+                                    let columnSum = 0;
+                                    for(let q=0; q<=gridData.length-2; q++){
+                                        columnSum = (gridData[q][prop]*1)+columnSum;
+                                    }
 
-                                  columnSum = numeral(columnSum);
-                                  if(summary.format == 'money'){
-                                      columnSum = columnSum.format('0,0.00');
-                                  } else if(summary.format == 'float'){
-                                      columnSum = columnSum.format('0,0.000');
-                                  } else{
-                                      columnSum = columnSum.format('0,0');
-                                  }
+                                    columnSum = numeral(columnSum);
+                                    if(summary.format == 'money'){
+                                        columnSum = columnSum.format('0,0.00');
+                                    } else if(summary.format == 'float'){
+                                        columnSum = columnSum.format('0,0.000');
+                                    } else{
+                                        columnSum = columnSum.format('0,0');
+                                    }
 
 
-                                  textNode.innerHTML = "<b>"+columnSum+"</b>";
-                              }
+                                    textNode.innerHTML = "<b>"+columnSum+"</b>";
+                                }
                             }
 
                         })
@@ -1019,16 +1023,13 @@ class GridContainer extends Component {
 
         this.props.actions.dynamicChange(['advancedSearch', 'parentSelect', index, 'value'], value);
     }
-    dateRange1(index, value1){
-
-        const value = Moment(value1).format("YYYY.MM.DD");
-
-        this.props.actions.dynamicChange(['advancedSearch', 'dateRange', index, 'value1'], value);
+    dateRange(index, v,  value){
+        let newValue = getDate(value);
+        this.props.actions.dynamicChange(['advancedSearch', 'dateRange', index, 'value'+v], newValue);
     }
-    dateRange2(index, value2){
-        const value = Moment(value2).format("YYYY.MM.DD");
-        this.props.actions.dynamicChange(['advancedSearch', 'dateRange', index, 'value2'], value);
-    }
+
+
+
 
     render() {
 
@@ -1105,7 +1106,7 @@ class GridContainer extends Component {
                         add_button_text={button_texts.add_button_text}
                 />
                 <div className={`advanced_search_order ${AdvencedClass}`}>
-                    
+
                     <div className="dateRange">
                         {advancedSearch.dateRange ? advancedSearch.dateRange.map((dateRange, index)=>{
 
@@ -1114,28 +1115,24 @@ class GridContainer extends Component {
 
                                     <div key={index} dataIndex={index} className={`form-group`}>
                                         <label className="control-label">{dateRange.label}</label>
-                                        <div className="">
-                                            <DateTimePicker
-                                                disabled={false}
-                                                name={dateRange.column}
-                                                defaultValue={dateRange.value1 === null ? null : new Date(dateRange.value1)}
-
-                                                format={"YYYY.MM.DD"}
-                                                time={false}
-
-                                                onChange={this.dateRange1.bind(this, index)}
-                                                placeholder={`Эхлэх`}
+                                        <div className="date-range">
+                                            <DateTimeField
+                                                dateTime={dateRange.value1 ? dateRange.value1 : undefined}
+                                                format={dateRange.value1 ? `YYYY-MM-DD` : undefined}
+                                                inputFormat={`YYYY-MM-DD`}
+                                                mode={`date`}
+                                                onChange={this.dateRange.bind(this, index, 1)}
+                                                defaultText={`Эхлэх`}
+                                       
                                             />
-                                            <DateTimePicker
-                                                disabled={false}
-                                                name={`${dateRange.column}-2`}
-                                                defaultValue={dateRange.value2 === null ? null : new Date(dateRange.value2)}
+                                            <DateTimeField
 
-                                                format={"YYYY.MM.DD"}
-                                                time={false}
-
-                                                onChange={this.dateRange2.bind(this, index)}
-                                                placeholder={`Дуусах`}
+                                                dateTime={dateRange.value2 ? dateRange.value2 : undefined}
+                                                format={dateRange.value2 ? `YYYY-MM-DD` : undefined}
+                                                inputFormat={`YYYY-MM-DD`}
+                                                mode={`date`}
+                                                onChange={this.dateRange.bind(this, index, 1)}
+                                                defaultText={`Дуусах`}
                                             />
                                         </div>
 
@@ -1152,7 +1149,7 @@ class GridContainer extends Component {
                     <div className="parentSelect">
                         {advancedSearch.parentSelect ? advancedSearch.parentSelect.map((parentSelect, index)=>{
 
-                            let options = [];
+                                let options = [];
                                 formControls.map(data=>{
                                     if(data.get('column') == parentSelect.column){
                                         options = data.get('options');
@@ -1178,9 +1175,9 @@ class GridContainer extends Component {
                                         errorText={``}
                                     />
 
-                                    </div>
-                        }
-                            ): null}
+                                </div>
+                            }
+                        ): null}
                     </div>
 
                     <div className="sortNewOld">

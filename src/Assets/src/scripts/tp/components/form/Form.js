@@ -6,13 +6,12 @@ import DragMap from './elements/DragMap';
 import SingleFileUploader from './elements/SingleFileUploader';
 import MultiFileUploader from './elements/MultiFileUploader';
 import Select from 'react-select';
-import DateTimePicker from 'react-widgets/lib/DateTimePicker';
+
 import { Tabs, Tab } from 'react-bootstrap';
 
-import Moment from 'moment'
-import momentLocalizer from 'react-widgets/lib/localizers/moment'
+import {getDate, getDateTime, getTime} from "../../lib/date";
+import DateTimeField from 'react-bootstrap-datetimepicker';
 
-momentLocalizer(Moment);
 
 import {moveCursorToEnd} from './helpers/'
 
@@ -32,17 +31,25 @@ export default class Form extends Component {
     }
 
     dateTimeChange(locale_index, dIndex, value) {
-        value = Moment(value).format("YYYY.MM.DD HH:mm");
+        let newValue = getDateTime(value)
 
-       this.manualeChangeHandler(locale_index,dIndex, value);
+       this.manualeChangeHandler(locale_index,dIndex, newValue);
+
+    }
+
+
+    timeChange(locale_index, dIndex, value) {
+        let newValue = getTime(value)
+
+       this.manualeChangeHandler(locale_index,dIndex, newValue);
 
     }
 
     dateChange(locale_index, dIndex, value) {
 
-        value = Moment(value).format("YYYY.MM.DD");
+        let newValue = getDate(value);
 
-        this.manualeChangeHandler(locale_index, dIndex, value);
+        this.manualeChangeHandler(locale_index, dIndex, newValue);
     }
     getValueByColumn(column){
         let value = null
@@ -474,16 +481,17 @@ export default class Form extends Component {
     
                 return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass}  `}  id={`solar-form-group-${index}`}>
                     <label className={`control-label ${fieldClassName}`}>{title}</label>
-                    <DateTimePicker
-                        disabled={thisDisabled}
-                        name={name}
-                        defaultValue={mainValue === null ? null : new Date(mainValue)}
 
-                        format={"YYYY.MM.DD"}
-                        time={false}
-                       
+                    <DateTimeField
+                        dateTime={mainValue ? mainValue : undefined}
+                        format={mainValue ? `YYYY-MM-DD` : undefined}
+                        inputFormat={`YYYY-MM-DD`}
+                        mode={`date`}
                         onChange={this.dateChange.bind(this, locale_index, `${index}`)}
-                        placeholder={title}
+                        defaultText={title}
+
+                        disabled={thisDisabled}
+
                     />
                                 <span className="help-block">
                                     {field.error}
@@ -497,15 +505,15 @@ export default class Form extends Component {
 
                         {title}
                     </label>
-                    <DateTimePicker
-                        disabled={thisDisabled}
-                        name={name}
-                        defaultValue={mainValue === null ? null : new Date(mainValue)}
-
-                        format={"YYYY.MM.DD HH:mm"}
-                        placeholder={title}
-
+                    <DateTimeField
+                        dateTime={mainValue ? mainValue : undefined}
+                        format={mainValue ? `YYYY-MM-DD  HH:mm` : undefined}
+                        inputFormat={`YYYY-MM-DD  HH:mm`}
                         onChange={this.dateTimeChange.bind(this, locale_index, `${index}`)}
+                        defaultText={title}
+
+                        disabled={thisDisabled}
+
                     />
                                 <span className="help-block">
 
@@ -527,14 +535,17 @@ export default class Form extends Component {
 
                         {title}
                     </label>
-                    <DateTimePicker
+
+                    <DateTimeField
+                        dateTime={mainValue ? mainValue : undefined}
+                        format={mainValue ? `HH:mm` : undefined}
+                        inputFormat={`HH:mm`}
+                        mode={`time`}
+                        onChange={this.timeChange.bind(this, locale_index, `${index}`)}
+                        defaultText={title}
+
                         disabled={thisDisabled}
-                        name={name}
-                        calendar={false}
-                        defaultValue={mainValue === null ? null : time_show}
-                        format={"HH:mm"}
-                        placeholder={title}
-                        onChange={this.dateTimeChange.bind(this, locale_index, `${index}`)}
+
                     />
                                 <span className="help-block">
 

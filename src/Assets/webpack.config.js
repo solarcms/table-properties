@@ -69,7 +69,10 @@ module.exports = {
             {
                 test: /\.js$/,
                 exclude: webpackDirs.excludeDir,
-                loaders: ['babel']
+                loader: 'babel',
+                query:{
+                    presets:['es2015', 'react']
+                }
                 // loaders: ['babel?compact=false']
             },
 
