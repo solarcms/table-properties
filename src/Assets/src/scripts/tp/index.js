@@ -11,7 +11,6 @@ import { getSetupData } from './actions/grid'
 store.dispatch(getSetupData());
 
 
-
 ReactDOM.render(
     <Provider store={store}>
         <App/>
