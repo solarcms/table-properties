@@ -20,7 +20,7 @@ import {getDate} from "../lib/date";
 
 import DateTimeField from 'react-bootstrap-datetimepicker';
 import numeral from 'numeral';
-import {customDropdownRenderer, gridImage, genrateComboboxvalues} from '../lib/handSonTableHelper'
+import {customDropdownRenderer, gridImage, gridJson, genrateComboboxvalues} from '../lib/handSonTableHelper'
 
 
 /*for handson table*/
@@ -128,7 +128,7 @@ class GridContainer extends Component {
 
     handlePageChange(event) {
 
-        
+
 
         this.props.actions.setCurrentPage(event)
 
@@ -631,6 +631,13 @@ class GridContainer extends Component {
                         gridColumn = {
                             data: header.column,
                             renderer: gridImage,
+                        }
+
+                        break;
+                    case "--json":
+                        gridColumn = {
+                            data: header.column,
+                            renderer: gridJson,
                         }
 
                         break;
