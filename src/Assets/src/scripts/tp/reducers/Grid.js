@@ -25,6 +25,7 @@ const initialState = {
     defaultLocale:null,
     edit_delete_column_title:'Засах',
     showAdvenced:false,
+    gridTop:83,
     order:{
         column:null,
         sortOrder: null
@@ -48,6 +49,8 @@ export default createReducer(initialState, {
         state = state.set('defaultLocale', setupData.default_locale);
 
         state = state.set('pageLimit', setupData.pageLimit);
+
+        state = state.set('gridTop', setupData.gridTop);
 
         state = state.set('button_texts', setupData.button_texts);
         state = state.set('edit_delete_column_title', setupData.edit_delete_column_title);

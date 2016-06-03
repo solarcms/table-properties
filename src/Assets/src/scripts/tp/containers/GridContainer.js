@@ -32,6 +32,14 @@ import Loading from '../components/loading/loading'
 
 class GridContainer extends Component {
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            tpHeight:window.innerHeight-this.props.gridTop
+        };
+    }
+
     /* component life cycle ----------------------------------------- */
     componentWillMount() {
 
@@ -39,6 +47,17 @@ class GridContainer extends Component {
 
     componentDidMount() {
         this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
+
+        window.addEventListener('resize', this.handleResize.bind(this));
+
+
+    }
+
+    handleResize(e) {
+    
+        this.setState({tpHeight: window.innerHeight-this.props.gridTop});
+
+        this.setUpHandsonTable(window.innerHeight-this.props.gridTop);
     }
 
     componentDidUpdate(prevProps) {
@@ -68,6 +87,8 @@ class GridContainer extends Component {
 
     componentWillUnmount() {
         //tp_handSonTable.destroy()
+
+        window.removeEventListener('resize', this.handleResize.bind(this));
     }
 
 
@@ -544,7 +565,7 @@ class GridContainer extends Component {
 
 
 
-    setUpHandsonTable() {
+    setUpHandsonTable(tpNewHeight) {
         $('#tp_grid').empty();
 
         const {gridHeader, listData} = this.props;
@@ -798,7 +819,7 @@ class GridContainer extends Component {
 
 
 
-
+        let gridHieght = tpNewHeight ? tpNewHeight : this.state.tpHeight
 
         tp_handSonTable = new Handsontable(container, {
             stretchH: 'all',
@@ -969,6 +990,7 @@ class GridContainer extends Component {
             filters: true,
             autoWrapRow:true,
             afterValidate:this.afterValidater.bind(this),
+            height: gridHieght,
 
 
 
@@ -1266,6 +1288,7 @@ function mapStateToProps(state) {
         order: Grid.get('order').toJS(),
         advancedSearch: Grid.get('advancedSearch').toJS(),
         columnSummary: Grid.get('columnSummary').toJS(),
+        gridTop: Grid.get('gridTop'),
 
     }
 }

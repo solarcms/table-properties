@@ -136,6 +136,9 @@ class Tp
     //form class
     public $formClassName = '';
 
+    //grid
+    public $gridTop = 83;
+
 
     function __construct(){
         $this->config = Config::get('tp_config');
@@ -154,6 +157,9 @@ class Tp
 
         //form
         $this->fieldClass = $this->config['fieldClass'];
+
+        //grid
+        $this->gridTop = $this->config['gridTop'];
     }
 
 
@@ -298,6 +304,7 @@ class Tp
             'fieldClass'=>$this->fieldClass,
             'after_save_reload_page'=>$this->after_save_reload_page,
             'formClassName'=>$this->formClassName,
+            'gridTop'=>$this->gridTop,
         ];
 
         //dd($setup);
