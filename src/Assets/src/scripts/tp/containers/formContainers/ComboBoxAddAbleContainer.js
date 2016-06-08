@@ -171,6 +171,10 @@ class ComboBoxAddAbleContainer extends Component {
     componentDidMount() {
 
     }
+    comboChange(value){
+
+        this.props.changeHandler(value.value)
+    }
 
     render() {
 
@@ -247,7 +251,7 @@ class ComboBoxAddAbleContainer extends Component {
                             name={name}
                             value={value}
                             options={options}
-                            onChange={changeHandler}
+                            onChange={this.comboChange.bind(this)}
                             button_texts={button_texts}
                             placeholder={`Сонгох`}
                     />

@@ -1175,7 +1175,7 @@ class GridContainer extends Component {
                     <div className="numberRange">
 
                     </div>
-                    <div className="parentSelect">
+                    <div className="parentSelect" >
                         {advancedSearch.parentSelect ? advancedSearch.parentSelect.map((parentSelect, index)=>{
 
                                 let options = [];
@@ -1185,7 +1185,7 @@ class GridContainer extends Component {
                                     }
                                 })
 
-                                return <div key={index} className="form-inline">
+                                return <div key={index}  >
 
                                     <ComboBox
                                         disabled={false}

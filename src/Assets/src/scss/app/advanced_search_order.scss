@@ -50,6 +50,15 @@
     }
   }
 }
+.parentSelect{
+  min-width: 170px;
+  vertical-align: top;
+}
+.parentSelect > div{
+  vertical-align: top;
+  width: 170px;
+  display: inline-block;
+}
 .show_advenced{
   height: 60px;
   width: 100%;
