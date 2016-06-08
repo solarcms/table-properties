@@ -529,6 +529,13 @@ class Tp
         return  $table_data->paginate($pageLimit);
 
     }
+    public function gridListByStoredProcedure(){
+
+
+
+        return  ;
+
+    }
     public function get_data($formControls){
         if($this->permission['u'] == false && $this->permission['r'] == false && $this->permission['c'] === false)
             return Response::json('permission denied', 400);
@@ -939,6 +946,8 @@ class Tp
         if($this->updated_at != null)
             $insertQuery[$this->updated_at] =  \Carbon\Carbon::now();
 
+
+
         $response = null;
         //multi items
         if(!empty($this->multi_items_form_input_control)){
@@ -1060,6 +1069,8 @@ class Tp
                       ], 400);
             }
 
+
+
             if($this->before_insert != null){
                $pre_values =  $this->beforeInsertCaller($this->before_insert, $insertQuery);
 
@@ -1070,6 +1081,8 @@ class Tp
                 } else
                     $insertQuery = array_merge($insertQuery, $pre_values);
             }
+
+  
 
             $saved = DB::table($this->table)->insert($insertQuery);
             $insertedId = DB::getPdo()->lastInsertId();

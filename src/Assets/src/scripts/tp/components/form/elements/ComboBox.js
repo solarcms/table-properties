@@ -3,6 +3,10 @@ import Select from 'react-select';
 
 export default class ComboBox extends Component {
 
+    comboChange(value){
+        this.props.changeHandler(value.value)
+    }
+
     getTranlate(translations){
         if(this.props.fieldOptions.get('with_translation')){
 
@@ -65,7 +69,7 @@ export default class ComboBox extends Component {
                         name={name}
                         value={value}
                         options={options}
-                        onChange={changeHandler}
+                        onChange={this.comboChange.bind(this)}
                         placeholder={`Сонгох`}
                         multi={multi}
                     />
