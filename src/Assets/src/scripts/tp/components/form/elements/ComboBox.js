@@ -4,7 +4,8 @@ import Select from 'react-select';
 export default class ComboBox extends Component {
 
     comboChange(value){
-        this.props.changeHandler(value.value)
+      
+        this.props.changeHandler(value)
     }
 
     getTranlate(translations){

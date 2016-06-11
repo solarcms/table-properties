@@ -4,7 +4,7 @@ import Select from 'react-select';
 export default class ComboBoxAddAble extends Component {
     comboChange(value){
    
-        this.props.changeHandler(value.value)
+        this.props.changeHandler(value)
     }
     openComboxFrom(column) {
         //this.props.openComboboxAdableForm(column)
