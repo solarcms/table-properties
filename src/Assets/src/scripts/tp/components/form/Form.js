@@ -221,18 +221,8 @@ export default class Form extends Component {
                 />
                 break;
             case "--group":
-                let bootsrap_gird_sum = field.get('controls').size/(12/this.props.fromFieldClass);
-                let formRows = [];
-                bootsrap_gird_sum =Math.ceil(bootsrap_gird_sum);
-                for(let rowI = 1; rowI <= bootsrap_gird_sum; rowI ++){
-                    formRows.push(rowI)
-                }
-                let rendered = 0;
-
-
-
-                const groupFields =  <div className="row">
-                        {field.get('controls').map((control, subindex)=>{
+                
+                const groupFields =  field.get('controls').map((control, subindex)=>{
 
                             let thisSubDisabled = true;
                             if(this.props.permission.u !== true && this.props.edit_parent_id !== false){
@@ -244,9 +234,9 @@ export default class Form extends Component {
                                 thisSubDisabled = false;
 
 
-                            let subFieldClass = 'col-md-'+this.props.fromFieldClass;
+                            let subFieldClass = '';
                             if (control.get('error'))
-                                subFieldClass = 'col-md-'+this.props.fromFieldClass+' has-error'
+                                subFieldClass = 'has-error'
 
 
 
@@ -264,19 +254,20 @@ export default class Form extends Component {
                             return this.getFromField(locale_index, `${index}-${subindex}`, control.get('title'), subname, control, thisSubDisabled, subFieldClass, subMainValue, formType, formData, focus);
 
 
-                        })}
-                    </div>
+                        })
 
-                return <fieldset className={`field_set ${fieldClassName}`} key={keyIndex}>
+                return <div className={`${fieldClassName}`}>
+                    <fieldset className={`field_set`} key={keyIndex}>
 
-                            <legend className="legendStyle">
-                                {field.get('title')}
-                            </legend>
+                        <legend className="legendStyle">
+                            {field.get('title')}
+                        </legend>
 
 
-                    {groupFields}
+                        {groupFields}
 
-                       </fieldset>
+                    </fieldset>
+                </div>
                 break;
             case "--number":
                 return <Input
@@ -614,7 +605,7 @@ export default class Form extends Component {
                     fieldClassName={fieldClassName}
                     value={mainValue}
                     defaultLocale={this.props.defaultLocale}
-                    fromFieldClass={this.props.fromFieldClass}
+                    fromFieldClass={null}
                     fieldOptions={field.get('options')}
                     formControls={field.getIn(['options', 'form_input_control'])}
                     changeHandler={this.manualeChangeHandler.bind(this, locale_index, `${index}`)}
@@ -715,20 +706,10 @@ export default class Form extends Component {
 
     getTranslationForm(formControls, locale_id, locale_code, locale_index){
 
-        let bootsrap_gird_sum = formControls.size/(12/this.props.fromFieldClass);
-        let formRows = [];
-        bootsrap_gird_sum =Math.ceil(bootsrap_gird_sum);
-        for(let rowI = 1; rowI <= bootsrap_gird_sum; rowI ++){
-            formRows.push(rowI)
-        }
-        let rendered = 0;
-        return formRows.map(formRow=>{
-            return <div className="row">
-                {formControls.map((field, index) => {
+  
+        return  formControls.map((field, index) => {
 
-                    if((formRow*(12/this.props.fromFieldClass)) >= index+1 && index  >= rendered){
 
-                        rendered++;
 
                         //formfield start
 
@@ -741,9 +722,9 @@ export default class Form extends Component {
                         } else
                             thisDisabled = false;
 
-                        let fieldClass = 'col-md-'+this.props.fromFieldClass;
+                        let fieldClass = '';
                         if (field.get('error'))
-                            fieldClass = 'col-md-'+this.props.fromFieldClass+' has-error'
+                            fieldClass = 'has-error'
 
                         let mainValue = this.props.formValue ?
                             this.props.formValue
@@ -770,10 +751,9 @@ export default class Form extends Component {
 
 
                         //formfield end
-                    }
 
-                })}
-            </div>
+
+
 
         })
 
@@ -866,23 +846,10 @@ export default class Form extends Component {
     render() {
         const { formControls, translateFormControls, changeHandler, formClassName, formData, formType, formValue, focusIndex, gridIndex, gridId, ifUpdateDisabledCanEditColumns, permission, edit_parent_id  } = this.props;
 
+        let formFields =  formControls.map((field, index) => {
 
-        let bootsrap_gird_sum = formControls.size/(12/this.props.fromFieldClass);
-        let formRows = [];
 
-       bootsrap_gird_sum =Math.ceil(bootsrap_gird_sum);
 
-        for(let rowI = 1; rowI <= bootsrap_gird_sum; rowI ++){
-            formRows.push(rowI)
-        }
-        let rendered = 0;
-        let formFields = formRows.map(formRow=>{
-            return <div className="row">
-                        {formControls.map((field, index) => {
-
-                            if((formRow*(12/this.props.fromFieldClass)) >= index+1 && index  >= rendered){
-
-                                rendered++;
 
                                 //formfield start
 
@@ -899,9 +866,9 @@ export default class Form extends Component {
                                     thisDisabled = false;
 
 
-                                let fieldClass = 'col-md-'+this.props.fromFieldClass;
+                                let fieldClass = '';
                                 if (field.get('error'))
-                                    fieldClass = 'col-md-'+this.props.fromFieldClass+' has-error'
+                                    fieldClass = 'has-error'
 
                                 let mainValue = formValue ?
                                     formValue
@@ -928,11 +895,7 @@ export default class Form extends Component {
                                 return this.getFromField(false, index, field.get('title'), name, field, thisDisabled, fieldClass, mainValue, formType, formData, gridId, focus);
 
 
-                                //formfield end
-                            }
 
-                        })}
-                    </div>
 
         })
 

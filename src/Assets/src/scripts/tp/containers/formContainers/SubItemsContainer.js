@@ -242,7 +242,6 @@ class SubItemsContainer extends Component {
         const {subItems, formData, modals, showAddEditForm,
             ifUpdateDisabledCanEditColumns,
             permission,
-            fromFieldClass,
             button_texts
             } = this.props;
 
@@ -289,7 +288,6 @@ class SubItemsContainer extends Component {
                         id={`sub-items-${subItem.get('connect_column')}`}
                         formControls={subItem.get('form_input_control')}
                         formData={formData}
-                        fromFieldClass={fromFieldClass}
                         pageName={subItem.get('page_name')}
                         show={shwoModal}
                         changeHandler={this.changeValues.bind(this, subItem.get('connect_column'), index)}

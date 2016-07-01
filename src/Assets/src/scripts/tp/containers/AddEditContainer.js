@@ -1256,6 +1256,7 @@ class AddEditContainer extends Component {
 
     render() {
 
+
         const {
             setup,
             formControls,
@@ -1270,7 +1271,6 @@ class AddEditContainer extends Component {
             locales,
             button_texts,
             defaultLocale,
-            fromFieldClass,
             formClassName
             } = this.props;
 
@@ -1305,7 +1305,6 @@ class AddEditContainer extends Component {
                 changeHandler={this.changeValues.bind(this)}
                 keyPress={this._handleKeyPress.bind(this)}
                 translateChangeHandler={this.translateChangeHandler.bind(this)}
-                fromFieldClass={fromFieldClass}
                 formClassName={formClassName}
 
             />
@@ -1316,7 +1315,7 @@ class AddEditContainer extends Component {
             <SubItemsContainer formData={formData} subItems={subItems} edit_parent_id={edit_parent_id}
                                ifUpdateDisabledCanEditColumns={ifUpdateDisabledCanEditColumns}
                                permission={permission}
-                               fromFieldClass={fromFieldClass}
+                          
                                showAddEditForm={showAddEditForm}/> : null
 
 
@@ -1425,7 +1424,6 @@ function mapStateToProps(state) {
         show_saved_alert: Form.get('show_saved_alert'),
         save_alert_word: Form.get('save_alert_word'),
         showInsertResponse: Form.get('showInsertResponse'),
-        fromFieldClass: Form.get('fieldClass'),
         after_save_reload_page: Form.get('after_save_reload_page'),
         permission: Grid.get('setup').toJS().permission,
         ifUpdateDisabledCanEditColumns: Grid.get('setup').toJS().ifUpdateDisabledCanEditColumns,

@@ -127,8 +127,7 @@ class Tp
     //search mode
     public $search_mode = 'grid_columns';
 
-    //form-grup class
-    public $fieldClass = 6;
+
 
     //after save reload page
     public $after_save_reload_page = false;
@@ -156,7 +155,7 @@ class Tp
         $this->add_button_text = $this->config['add_button_text'];
 
         //form
-        $this->fieldClass = $this->config['fieldClass'];
+
 
         //grid
         $this->gridTop = $this->config['gridTop'];
@@ -211,7 +210,7 @@ class Tp
             case "check-unique": return $this->checkUnique(); break;
 
             //upload
-            case "upload-image": return $this->uploadImage(); break;
+            case "upload-file": return $this->uploadFile(); break;
             case "delete-file": return $this->deleteFile(); break;
             case "get-extra-images": return $this->getExtraImages(); break;
             case "call-multi-items": return $this->callMultImtems(); break;
@@ -301,7 +300,7 @@ class Tp
             'order'=>$order,
             'advancedSearch'=>$this->advancedSearch,
             'columnSummary'=>$this->columnSummary,
-            'fieldClass'=>$this->fieldClass,
+
             'after_save_reload_page'=>$this->after_save_reload_page,
             'formClassName'=>$this->formClassName,
             'gridTop'=>$this->gridTop,
@@ -2137,9 +2136,45 @@ class Tp
     }
 
     //upload
-    public function uploadImage(){
+    public function uploadFile(){
 
         $file = Request::file('file');
+
+        $ext = $file->getClientOriginalExtension();
+        if ($ext == 'pdf' || $ext == 'swf' || $ext == 'doc' || $ext == 'docx' || $ext == 'xls' || $ext == 'xlsx' || $ext == 'ppt' || $ext == 'pptx') {
+            $destinationPath = public_path() . DIRECTORY_SEPARATOR . $this->base_folder . DIRECTORY_SEPARATOR . 'docs' . DIRECTORY_SEPARATOR;
+            $destinationUrl = "/" . $this->base_folder . "/docs/";
+
+            $fileOrigName = $file->getClientOriginalName();
+            $fileUniqueName = date("YmdHis") . "_" . str_random(25) . '.' . $file->getClientOriginalExtension();
+            if (!is_dir($destinationPath)) {
+                mkdir($destinationPath, 0755, true);
+            }
+
+            $uploadSuccess = $file->move($destinationPath, $fileUniqueName);
+
+            $result = [
+                'destinationUrl' => $destinationUrl,
+                'origName' => $fileOrigName,
+                'uniqueName' => $fileUniqueName
+            ];
+
+            if ($uploadSuccess) {
+                return Response::json($result, 200); // or do a redirect with some message that file was uploaded
+            } else {
+                return Response::json('error', 400);
+            }
+
+        } else {
+            return $this->uploadImageNew($file);
+        }
+
+
+
+    }
+    public function uploadImageNew($file){
+
+
 
 
         $rules = [
@@ -2294,6 +2329,7 @@ class Tp
 
 
     }
+
 
     public function deleteFile(){
         $filename = Request::input('filename');
