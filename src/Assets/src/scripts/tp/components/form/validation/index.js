@@ -3,13 +3,13 @@ const isEmpty = value => value === undefined || value === null || value === '';
 export function email(value) {
     // Let's not start a debate on email regex. This is just for an example app!
     if (!isEmpty(value) && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) {
-        return 'Invalid email address';
+        return 'И-мэйл оруулана уу';
     }
 }
 export function link(value) {
     // Let's not start a debate on email regex. This is just for an example app!
     if (!isEmpty(value) && !/^(ftp|http|https):\/\/[^ "]+$/i.test(value)) {
-        return 'Invalid url address';
+        return 'Буруу хаяг байна';
     }
 }
 export function number(value) {
@@ -50,7 +50,7 @@ export function maxLength(max) {
 
 export function integer(value) {
     if (!Number.isInteger(Number(value))) {
-        return 'Must be an integer';
+        return 'Зөвхөн тоо оруулна уу';
     }
 }
 
@@ -66,7 +66,7 @@ export function match(field) {
     return (value, data) => {
         if (data) {
             if (value !== data[field]) {
-                return 'Do not match';
+                return 'Таарсангүй';
             }
         }
     };

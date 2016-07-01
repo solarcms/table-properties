@@ -163,7 +163,7 @@ export default class MultiFileUploader extends Component {
 
         const componentConfig = {
             iconFiletypes: ['.jpg', '.png', '.gif'],
-            showFiletypeIcon: true,
+            showFiletypeIcon: false,
 
             postUrl: baseUrl
         };

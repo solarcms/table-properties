@@ -92,8 +92,8 @@ export default class SingleFileUploader extends Component {
 
 
         const componentConfig = {
-            iconFiletypes: ['.jpg', '.png', '.gif'],
-            showFiletypeIcon: true,
+            iconFiletypes: ['.jpg', '.png', '.gif', '.doc', '.docx', '.xls', '.xlsx', '.pdf', '.swf', '.ppt', '.pptx'],
+            showFiletypeIcon: false,
 
             postUrl: baseUrl
         };
