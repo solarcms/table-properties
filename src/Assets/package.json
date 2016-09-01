@@ -18,32 +18,32 @@
   "author": "Munkh-Altai <altaihero>",
   "license": "MIT",
   "bugs": {
-    "url": ""
+    "url": "https://github.com/solarcms/table-properties/issues"
   },
   "homepage": "",
   "devDependencies": {
-    "autoprefixer-loader": "^3.1.0",
     "babel-core": "^6.7.*",
     "babel-eslint": "^4.1.3",
     "babel-loader": "^6.2.*",
     "babel-preset-es2015": "^6.6.*",
     "babel-preset-react": "^6.5.*",
+    "copy-webpack-plugin": "^0.3.3",
     "css-loader": "^0.22.0",
     "eslint-plugin-react": "^3.6.2",
+    "expose-loader": "^0.7.1",
     "extract-text-webpack-plugin": "^0.9.1",
-    "node-sass": "^3.3.3",
-    "react-hot-loader": "^1.3.0",
-    "redux-devtools": "^2.1.5",
-    "style-loader": "^0.13.0",
-    "webpack": "^1.12.2",
-    "webpack-dev-server": "^1.12.1",
-    "copy-webpack-plugin": "^0.3.3",
     "file-loader": "^0.8.5",
     "history": "^1.13.1",
     "lodash": "^3.10.1",
-    "sass-loader": "^3.1.2",
+    "node-sass": "^3.3.3",
     "node-waves": "^0.7.4",
-    "expose-loader": "^0.7.1"
+    "postcss-loader": "^0.11.1",
+    "react-hot-loader": "^1.3.0",
+    "redux-devtools": "^2.1.5",
+    "sass-loader": "^3.1.2",
+    "style-loader": "^0.13.0",
+    "webpack": "^1.12.2",
+    "webpack-dev-server": "^1.12.1"
   },
   "dependencies": {
     "bootstrap": "^3.3.6",
