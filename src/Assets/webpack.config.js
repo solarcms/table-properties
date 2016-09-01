@@ -79,7 +79,7 @@ module.exports = {
             //SCSS
             {
                 test: /\.scss$/,
-                loader: ExtractTextPlugin.extract('style', 'css!autoprefixer!sass')
+                loader: ExtractTextPlugin.extract('style', 'css!postcss-loader!sass')
             },
 
             // IMAGES

@@ -12,7 +12,7 @@ import validation from "../../../components/form/validation/"
 //import {fixRowHeigth} from '../../grid/fixed/HeaderColumn'
 
 
-export default class ComboGrid extends Component {
+class ComboGrid extends Component {
     selectRow(row){
         if(row.id !== this.props.editID)
         this.props.comboGridSelected(row[this.props.valueField], row[this.props.textField], this.props.column)
