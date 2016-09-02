@@ -234,7 +234,10 @@ class SubItemsContainer extends Component {
 
     }
     componentWillUnmount(){
+
         this.props.actions.clearSubItems();
+
+
     }
     render() {
 

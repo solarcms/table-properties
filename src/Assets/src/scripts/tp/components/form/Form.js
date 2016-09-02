@@ -85,10 +85,7 @@ export default class Form extends Component {
 
     }
     manualeChangeHandler(locale_index, dIndex, value) {
-
-
-     
-
+        
 
         let dataIndexs  =  dIndex.split('-');
 

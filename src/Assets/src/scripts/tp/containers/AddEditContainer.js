@@ -589,11 +589,18 @@ class AddEditContainer extends Component {
 
 
     componentWillUnmount() {
+
+    
         this.props.actions.clearFromValidation();
+
         this.props.actions.clearTranslationFromValidation();
+      
         this.props.actions.setShowAddEditForm(false)
+  
 
         listData = [];
+
+  
     }
 
     componentDidMount(){

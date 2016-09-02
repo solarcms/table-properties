@@ -4,8 +4,17 @@ import Select from 'react-select';
 export default class ComboBox extends Component {
 
     comboChange(value){
-      
-        this.props.changeHandler(value)
+        let send_value = value;
+      if(this.props.multi){
+          if(value){
+              send_value = '';
+              for(let m = 0; m < value.length; m++){
+                 send_value = send_value+','+value[m].value;
+              }
+          }
+      }
+
+        this.props.changeHandler(send_value)
     }
 
     getTranlate(translations){
@@ -29,6 +38,8 @@ export default class ComboBox extends Component {
         const { fieldClass, formData, column, changeHandler, fieldOptions, value, fieldClassName, errorText, formType, placeholder, name, disabled, multi, dataIndex } = this.props;
 
         let options = [];
+
+
 
 
         if(formData.get(column))
@@ -56,28 +67,47 @@ export default class ComboBox extends Component {
                 }
         })
 
+        let new_value = value;
+
+        if(multi){
+            new_value = [];
+
+            if(value){
+                let old_value = value.split(",");
+                for(let m = 0; m < options.length; m++){
+                    for(let n = 0; n < old_value.length; n++){
+                        if(options[m].value == old_value[n]){
+                            new_value.push(options[m]);
+                            old_value.splice(n, 1);
+                        }
+                    }
+                }
+            }
+
+
+        }
+
 
         return (
             <div className={`form-group ${fieldClass} ${fieldClassName}`}  id={`solar-form-group-${dataIndex}`}>
                 {formType == 'inline' ? '' : <label className="control-label">{placeholder}</label>}
-
-
 
                 {formData.get(column) ?
 
                     <Select
                         disabled={disabled}
                         name={name}
-                        value={value}
+                        value={new_value}
                         options={options}
                         onChange={this.comboChange.bind(this)}
                         placeholder={`Сонгох`}
                         multi={multi}
+
                     />
                     :
                     null}
                     <span className="help-block">
-                            {errorText}
+                        {errorText}
                     </span>
 
             </div>

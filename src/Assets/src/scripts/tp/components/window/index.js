@@ -1,7 +1,7 @@
 import React, { Component, PropTypes }  from 'react';
 
 
-import Draggable from 'react-draggable';
+// import Draggable from 'react-draggable';
 
 import Form from "../form/Form"
 
@@ -22,11 +22,11 @@ export default class Window extends Component {
 
 
         return (
-            <Draggable handle=".modal-header">
+
                 <Modal id={`windowForm${id}`} className="modal-shadowed" show={show} backdrop={false}  onHide={hideModal} bsSize="large">
 
                     <Modal.Header closeButton>
-                        <Modal.Title>{pageName}</Modal.Title>
+                        <Modal.Title>{pageName} </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <div className="row solar-form">
@@ -62,7 +62,7 @@ export default class Window extends Component {
                     </Modal.Footer>
 
                 </Modal>
-            </Draggable>
+
 
         )
     }
