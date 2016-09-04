@@ -222,6 +222,8 @@ export default class Form extends Component {
                 const groupFields =  field.get('controls').map((control, subindex)=>{
 
                             let thisSubDisabled = true;
+
+
                             if(this.props.permission.u !== true && this.props.edit_parent_id !== false){
                                 this.props.ifUpdateDisabledCanEditColumns.map((ifUpdateDisabledCanEditColumn)=>{
                                     if(field.get('column') == ifUpdateDisabledCanEditColumn)
@@ -247,6 +249,13 @@ export default class Form extends Component {
 
 
                             const subname = `solar-input-${index}-${subindex}`;
+
+
+                    if(control.get('disabled') == 'true' || control.get('disabled') === true){
+                        thisSubDisabled = true;
+
+                    }
+     
 
                             return this.getFromField(locale_index, `${index}-${subindex}`, control.get('title'), subname, control, thisSubDisabled, subFieldClass, subMainValue, formType, formData, focus);
 
@@ -573,6 +582,7 @@ export default class Form extends Component {
                     key={keyIndex}
                     dataIndex={index}
                     column={field.get('column')}
+                    loadOptions={field.getIn(['options','load_options'])}
                     name={name}
                     fieldClass={fieldClass}
                     placeholder={title}
@@ -593,6 +603,7 @@ export default class Form extends Component {
                     disabled={thisDisabled}
                     key={keyIndex} dataIndex={index}
                     column={field.get('column')}
+                    loadOptions={field.getIn(['options','load_options'])}
                     name={name}
                     fieldClass={fieldClass}
                     placeholder={title}
@@ -613,6 +624,7 @@ export default class Form extends Component {
                 return <ComboBox
                     disabled={thisDisabled}
                     dataIndex={index}
+                    loadOptions={field.getIn(['options','load_options'])}
                     key={keyIndex}
                     column={field.get('column')}
                     name={name}
@@ -711,6 +723,8 @@ export default class Form extends Component {
                         //formfield start
 
                         let thisDisabled = true;
+
+
                         if(this.props.permission.u !== true && this.props.edit_parent_id !== false){
                             this.props.ifUpdateDisabledCanEditColumns.map((ifUpdateDisabledCanEditColumn)=>{
                                 if(field.get('column') == ifUpdateDisabledCanEditColumn)
@@ -741,6 +755,14 @@ export default class Form extends Component {
                                 title = field.get('title').first()
                         } else
                             title = field.get('title');
+
+
+
+            if(field.get('disabled') == 'true' || field.get('disabled') === true){
+                thisDisabled = true;
+
+            }
+
 
 
 
@@ -854,6 +876,8 @@ export default class Form extends Component {
 
                                 let thisDisabled = true;
 
+
+
                                 if(permission.u !== true && this.props.edit_parent_id !== false){
                                     ifUpdateDisabledCanEditColumns.map((ifUpdateDisabledCanEditColumn)=>{
                                         if(field.get('column') == ifUpdateDisabledCanEditColumn)
@@ -886,6 +910,14 @@ export default class Form extends Component {
                                 }
 
                                 const name = `solar-input-${index}`;
+
+
+
+            if(field.get('disabled') == 'true' || field.get('disabled') === true){
+                thisDisabled = true;
+
+            }
+
 
 
 

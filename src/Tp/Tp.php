@@ -185,6 +185,8 @@ class Tp
             case "setup":         return $this->index($this->viewName);       break;
             case "grid_list":     return $this->gridList();    break;
             case "get_form_datas":     return $this->get_form_datas();    break;
+            //combobox
+            case "combo-sync":     return $this->comboSync();    break;
             // combo gird
             case "grid_combo_list":     return $this->gridComboGrid();    break;
             case "insert-combo-grid":        return $this->insertComboGrid();      break;
@@ -563,7 +565,13 @@ class Tp
             if($formControl['type'] == '--combobox' || $formControl['type'] == '--tag' || $formControl['type'] == '--combobox-addable'){
 
                 $options = $formControl['options'];
-//                if(isset($options['parent'])){
+
+                if(isset($options['load_options'])){
+                    $data['data'] = [];
+
+                    $FormData[$formControl['column']] = ['data'=>$data];
+                } else {
+                    //                if(isset($options['parent'])){
 //                    $FormData[$formControl['column']] = ['data'=>['data'=>[]]];
 //
 //                } else{
@@ -590,7 +598,7 @@ class Tp
                         foreach($options['where_condition_raw'] as $where_condition_raw){
 
 
-                                $pre_data->whereRaw($where_condition_raw);
+                            $pre_data->whereRaw($where_condition_raw);
 
 
                         }
@@ -605,6 +613,8 @@ class Tp
 
                     $FormData[$formControl['column']] = ['data'=>$data];
 //                }
+                }
+
 
 
 
@@ -1543,7 +1553,78 @@ class Tp
         return ['form_input_control'=>$form_input_controll, 'grid_output_control'=>$this->grid_output_control];
     }
 
+    /*combo Sync*/
+    public function comboSync()
+    {
+        $input = Request::input('input');
+        $column = Request::input('column');
 
+        $data = [];
+
+        foreach($this->form_input_control as $formControl) {
+
+            if($formControl['column'] == $column){
+
+                $options = $formControl['options'];
+
+                $order = explode(" ", $options['grid_default_order_by']);
+
+                $pre_data = DB::table($options['table'])->select($options['grid_columns'])->orderBy($order[0], $order[1]);
+
+                if(isset($options['where_condition'])){
+
+                    foreach($options['where_condition'] as $where_condition){
+
+                        if(isset($where_condition[3]) && $where_condition[3] == 'or'){
+
+                            $pre_data->orWhere($where_condition[0], $where_condition[1], $where_condition[2]);
+                        } else {
+                            $pre_data->where($where_condition[0], $where_condition[1], $where_condition[2]);
+                        }
+
+                    }
+                }
+
+                if(isset($options['where_condition_raw'])){
+
+                    foreach($options['where_condition_raw'] as $where_condition_raw){
+
+
+                        $pre_data->whereRaw($where_condition_raw);
+
+
+                    }
+                }
+                $pre_data->where(function($query) use ($input, $options)
+                {
+                    $loop = 0;
+
+                        foreach($options['textField'] as $sw){
+                            if($loop == 0)
+                                $query->where($sw, 'LIKE', "%$input%");
+                            else
+                                $query->orwhere($sw, 'LIKE', "%$input%");
+                            $loop++;
+                        }
+
+                    return $query;
+                });
+
+
+
+                $data = $pre_data->get();
+
+
+
+
+
+
+
+            }
+        }
+
+        return $data;
+    }
     /* combo grid*/
     public function gridComboGrid(){
 
@@ -2510,6 +2591,13 @@ class Tp
 
         $controller = $trigger['controller'];
         $function = $trigger['function'];
+        
+/*        return example
+        $data_r = [
+            'status'=>'error',
+            'error_message'=>'',
+            'new_values'=>[] [[[index], value, status]
+        ]; */
         
         return app($controller)->$function($value);
 

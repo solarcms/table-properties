@@ -26,6 +26,14 @@ export function changeValue(index, value) {
         value: value
     }
 }
+export function changeStatus(index, status) {
+
+    return {
+        type: types.CHANGE_STATUS,
+        index: index,
+        status: status
+    }
+}
 
 export function setFormData(data) {
 

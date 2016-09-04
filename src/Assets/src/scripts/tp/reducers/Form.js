@@ -77,6 +77,19 @@ export default createReducer(initialState, {
 
         return state;
     },
+    [types.CHANGE_STATUS](state, { index, status }) {
+        let dataIndex = [];
+        index.map((key)=>dataIndex.push(key))
+        dataIndex.unshift('form_input_control')
+        dataIndex.push('disabled')
+
+
+
+        state = state.setIn(dataIndex, status);
+
+
+        return state;
+    },
     [types.SET_ERROR](state, { index, error }) {
         let dataIndex = [];
         index.map((key)=>dataIndex.push(key))

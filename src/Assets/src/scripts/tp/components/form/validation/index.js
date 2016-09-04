@@ -26,6 +26,20 @@ export function password(value) {
     }
 }
 
+export function regex_get(custom_hex, value) {
+
+
+    custom_hex = custom_hex.replace("/", '');
+    custom_hex = custom_hex.replace("/", '');
+    // custom_hex = custom_hex.replace("\\", "\\\\");
+    // console.log(custom_hex)
+    var patt = new RegExp(custom_hex);
+    // console.log(patt, patt.test(value))
+    if (!patt.test(value)) {
+        return 'Мэдээллийг зөв форматаар бөглөнө үү';
+    }
+}
+
 export function required(value) {
     if (isEmpty(value)) {
         return 'Заавал бөглөх';
@@ -134,6 +148,15 @@ export default function validation(value, validationData, passConfirmValue){
             }
             else if(rule == 'password'){
                 const error = password(value);
+                if (error) {
+                    if(errors !== null)
+                        errors = errors+", "+error;
+                    else
+                        errors = error;
+                }
+            } else if((rule.indexOf('regex') !== -1)){
+                var regex = rule.replace('regex:', '')
+                const error = regex_get(regex, value);
                 if (error) {
                     if(errors !== null)
                         errors = errors+", "+error;

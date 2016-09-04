@@ -425,11 +425,33 @@ class AddEditContainer extends Component {
 
         if(error === null && field.get('after_change_trigger')){
             afterChangeTrigger(realDataIndex, value, 'form').then((data)=>{
-                let setValues = data;
+                
+                if(data.status){
+                    if(data.status == 'success'){
+                        let setValues = data.new_values;
 
-                setValues.map(setValue=>{
-                    this.changeValues(setValue[0], setValue[1]);
-                })
+                        setValues.map(setValue=>{
+                            this.changeValues(setValue[0], setValue[1]);
+
+
+                            if(setValue[2] === false || setValue[2] === true){
+                              
+                                this.props.actions.changeStatus(setValue[0], setValue[2]);
+                            }
+                        })
+                    } else if(data.status == 'error'){
+                        alert(data.error_message);
+                        window.location.replace('#/');
+                    }
+
+                } else {
+                    let setValues = data;
+
+                    setValues.map(setValue=>{
+                        this.changeValues(setValue[0], setValue[1]);
+                    })
+                }
+
             })
         }
 
@@ -815,15 +837,39 @@ class AddEditContainer extends Component {
 
 
                 afterChangeTrigger([colIndex], elValue, 'multi_items_form').then((data)=>{
-                    let setValues = data;
+                    let setValues = null;
 
-                    setValues.map(setValue=>{
-                        // console.log(setValue[0][0], 'changeing', setValue[1]);
-                        
-                        tp_handSonTable.setDataAtCell(row, setValue[0][0], setValue[1]);
 
-                        // this.changeValues(setValue[0], setValue[1]);
-                    })
+
+                    if(data.status){
+                        if(data.status == 'success'){
+                             setValues = data.new_values;
+
+                            setValues.map(setValue=>{
+                                // console.log(setValue[0][0], 'changeing', setValue[1]);
+
+                                tp_handSonTable.setDataAtCell(row, setValue[0][0], setValue[1]);
+
+
+
+                                // this.changeValues(setValue[0], setValue[1]);
+                            })
+                        } else if(data.status == 'error'){
+                            alert(data.error_message);
+                            window.location.replace('#/');
+                        }
+
+                    } else {
+                         setValues = data;
+
+                        setValues.map(setValue=>{
+                            // console.log(setValue[0][0], 'changeing', setValue[1]);
+
+                            tp_handSonTable.setDataAtCell(row, setValue[0][0], setValue[1]);
+
+                            // this.changeValues(setValue[0], setValue[1]);
+                        })
+                    }
                 })
 
             }
