@@ -589,7 +589,7 @@ export default class Form extends Component {
                     formType={formType}
                     formData={formData}
                     fieldClassName={fieldClassName}
-                    value={mainValue}
+                    value={`${mainValue}`}
                     multi={false}
                     defaultLocale={this.props.defaultLocale}
                     fieldOptions={field.get('options')}
@@ -611,7 +611,7 @@ export default class Form extends Component {
                     formType={formType}
                     formData={formData}
                     fieldClassName={fieldClassName}
-                    value={mainValue}
+                    value={`${mainValue}`}
                     defaultLocale={this.props.defaultLocale}
                     fromFieldClass={null}
                     fieldOptions={field.get('options')}
@@ -633,7 +633,7 @@ export default class Form extends Component {
                     formType={formType}
                     formData={formData}
                     fieldClassName={fieldClassName}
-                    value={mainValue}
+                    value={`${mainValue}`}
                     multi={true}
                     defaultLocale={this.props.defaultLocale}
                     fieldOptions={field.get('options')}

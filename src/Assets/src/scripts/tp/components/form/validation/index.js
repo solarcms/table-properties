@@ -28,16 +28,28 @@ export function password(value) {
 
 export function regex_get(custom_hex, value) {
 
+    var patt = null;
+
+    let lastcharecter = custom_hex.substr(custom_hex.length - 1);
+    if(lastcharecter != '/'){
+        custom_hex = custom_hex.substring(0, custom_hex.length - 1);
+
+
+    }
+
 
     custom_hex = custom_hex.replace("/", '');
     custom_hex = custom_hex.replace("/", '');
-    // custom_hex = custom_hex.replace("\\", "\\\\");
-    // console.log(custom_hex)
-    var patt = new RegExp(custom_hex);
-    // console.log(patt, patt.test(value))
+
+    patt = new RegExp(custom_hex);
+
+
     if (!patt.test(value)) {
         return 'Мэдээллийг зөв форматаар бөглөнө үү';
     }
+
+
+
 }
 
 export function required(value) {
