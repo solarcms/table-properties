@@ -24,6 +24,7 @@ class Tp
 
     public $page_name ='';
     public $permission = ['c'=>true, 'r'=>true, 'u'=>true, 'd'=>true]; // Create, Read, Update, Delete CRUD default is all true
+    public $just_info = false;
     public $ifUpdateDisabledCanEditColumns = []; //['acitve', 'name']
     public $ifUpdateDisabledCanEditColumnsByValue = [];  //[['acitve'=>1]]
     public $where_condition = [];  //[['id', '=', 1]]
@@ -288,6 +289,7 @@ class Tp
             'pageLimit'=>$this->pageLimit,
             'subItems'=>$subItems,
             'permission'=>$this->permission,
+            'just_info'=>$this->just_info,
             'ifUpdateDisabledCanEditColumns'=>$this->ifUpdateDisabledCanEditColumns,
             'form_datas'=>$this->get_form_datas(),
             'default_locale'=>Session::get('locale'),
@@ -705,7 +707,7 @@ class Tp
     public function edit(){
 
         if(empty($this->ifUpdateDisabledCanEditColumns))
-            if($this->permission['u'] != true)
+            if($this->permission['u'] != true && $this->just_info == false)
                 return Response::json('permission denied', 400);
 
         $id = Request::input('id');
@@ -837,7 +839,7 @@ class Tp
 
 
 
-        if($this->permission['c'] != true)
+        if($this->permission['c'] != true || $this->just_info == true)
             return Response::json('permission denied', 400);
 
 
@@ -1123,7 +1125,7 @@ class Tp
 
     public function update(){
         if(empty($this->ifUpdateDisabledCanEditColumns))
-            if($this->permission['u'] != true)
+            if($this->permission['u'] != true  || $this->just_info == true)
                 return Response::json('permission denied', 400);
 
 
@@ -1452,7 +1454,7 @@ class Tp
     }
 
     public function delete(){
-        if($this->permission['d'] != true)
+        if($this->permission['d'] != true || $this->just_info == true)
             return Response::json('permission denied', 400);
 
         $id = Request::input('id');

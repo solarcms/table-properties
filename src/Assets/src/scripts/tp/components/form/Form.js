@@ -102,8 +102,12 @@ export default class Form extends Component {
 
     }
 
-    getFromField(locale_index, index, title, name, field, thisDisabled, fieldClass, mainValue, formType, formData, gridId, focus){
+    getFromField(locale_index, index, title, name, field, thisDisabled, fieldClass, mainValue, formType, formData, gridId, focus, just_info){
 
+
+        if(this.props.just_info === true){
+            thisDisabled = true;
+        }
 
         const keyIndex = locale_index === false ? index : `__local__${locale_index}-${index}`
 
@@ -863,7 +867,7 @@ export default class Form extends Component {
 
 
     render() {
-        const { formControls, translateFormControls, changeHandler, formClassName, formData, formType, formValue, focusIndex, gridIndex, gridId, ifUpdateDisabledCanEditColumns, permission, edit_parent_id  } = this.props;
+        const { formControls, translateFormControls, changeHandler, formClassName, formData, formType, just_info, formValue, focusIndex, gridIndex, gridId, ifUpdateDisabledCanEditColumns, permission, edit_parent_id  } = this.props;
 
         let formFields =  formControls.map((field, index) => {
 

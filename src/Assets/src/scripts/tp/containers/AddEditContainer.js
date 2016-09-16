@@ -309,7 +309,7 @@ class AddEditContainer extends Component {
 
 
         if (this.props.ifUpdateDisabledCanEditColumns.length <= 0)
-            if (this.props.permission.u !== true)
+            if (this.props.permission.u !== true &&  this.props.just_info === false)
                 return false;
 
         const FD = this.props.formControls;
@@ -488,7 +488,7 @@ class AddEditContainer extends Component {
 
         if (this.props.params.id) {
             if (this.props.ifUpdateDisabledCanEditColumns.length <= 0)
-                if (this.props.permission.u !== true)
+                if (this.props.permission.u !== true && this.props.just_info === false)
                     window.location.replace('#/');
 
             if(this.props.password_change === false)
@@ -654,7 +654,7 @@ class AddEditContainer extends Component {
 
 
 
-        if(this.props.permission.u !== true)
+        if(this.props.permission.u !== true && this.props.just_info === false)
             return false;
 
         callMultiItems(save_first_id_column).then((data)=> {
@@ -1359,6 +1359,7 @@ class AddEditContainer extends Component {
                 keyPress={this._handleKeyPress.bind(this)}
                 translateChangeHandler={this.translateChangeHandler.bind(this)}
                 formClassName={formClassName}
+                just_info={this.props.just_info}
 
             />
             :
@@ -1397,7 +1398,8 @@ class AddEditContainer extends Component {
                                     <div className="bounce3"></div>
                                 </div>
 
-                                : <div>
+                                :  this.props.just_info === false
+                                    ? <div>
                                     {this.props.params.id
                                         ? <button type="button" className="btn btn-fw btn-success p-h-lg"
                                                   onClick={this.updateForm.bind(this)}>
@@ -1416,6 +1418,8 @@ class AddEditContainer extends Component {
                                         <i className="material-icons">&#xE5CD;</i> {button_texts.cancel_text}
                                     </a>
                             </div>
+            :
+        null
                             }
 
                         </div>
@@ -1479,6 +1483,7 @@ function mapStateToProps(state) {
         showInsertResponse: Form.get('showInsertResponse'),
         after_save_reload_page: Form.get('after_save_reload_page'),
         permission: Grid.get('setup').toJS().permission,
+        just_info: Grid.get('setup').toJS().just_info,
         ifUpdateDisabledCanEditColumns: Grid.get('setup').toJS().ifUpdateDisabledCanEditColumns,
     }
 }
