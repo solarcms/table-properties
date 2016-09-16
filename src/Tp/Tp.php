@@ -55,7 +55,9 @@ class Tp
     public $destination_folder = 'common';
     public $thumb_folder = 'thumb';
 
+    /*Join tables*/
 
+  public $join_tables = []; // [['table2', 'table2.join_id', '=', 'table1.id']];
 
     // time stamp
     public $created_at = null;
@@ -327,9 +329,13 @@ class Tp
         $advancedSearch = Request::input('advancedSearch');
 
         $table_data = DB::table($this->table)->select($this->grid_columns);
-
-
-
+        
+        if($this->join_tables){
+            foreach ($this->join_tables as $join_table){
+                $table_data = $table_data->join($join_table[0], $join_table[1], $join_table[2], $join_table[3]);
+            }
+        }
+        
         foreach($this->form_input_control as $formControl){
             if($formControl['type'] == '--combogrid' || $formControl['type'] == '--combobox' || $formControl['type'] == '--tag' || $formControl['type'] == '--combobox-addable' || $formControl['type'] == '--combobox-hidden'){
 
