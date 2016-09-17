@@ -828,6 +828,13 @@ export default class Form extends Component {
                         else
                             calculate_result = calculate_result * cal_column.value
                     })
+                } else if(calculate_column.type == '--divide') {
+                    calculate_column.columns.map((cal_column, calIndex)=> {
+                        if (calIndex == 0)
+                            calculate_result = cal_column.value;
+                        else
+                            calculate_result = calculate_result / cal_column.value
+                    })
                 }else if(calculate_column.type == '--minus'){
                     calculate_column.columns.map((cal_column, calIndex)=>{
                         if(calIndex == 0)

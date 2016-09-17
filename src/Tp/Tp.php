@@ -2213,15 +2213,26 @@ class Tp
         $row_id_field = Request::input('row_id_field');
         $row_id = Request::input('row_id');
 
-        $count = DB::table($table)->where($column, '=', $value);
-            if($row_id != null && $row_id != NULL && $row_id != 'NULL'&& $row_id != 'null'){
-                $count->where($row_id_field, '!=', $row_id);
+        $validation = null;
+        foreach($this->form_input_control as $formControl) {
+
+            if(isset($formControl["column"]) && $formControl["column"] == $column){
+
+                $validation = ["$column"=>$formControl["validate"]];
+
             }
 
+        }
 
-         $count =   $count->count();
 
-        return $count;
+        $validator = Validator::make(["$column"=>$value], $validation);
+        if ( $validator->fails())
+        {
+            return 1;
+        } else {
+            return 0;
+        }
+
     }
 
     //upload

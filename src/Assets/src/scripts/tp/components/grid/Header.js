@@ -63,12 +63,7 @@ export default class Header extends Component {
                         </a>
                     </div>
                 </li>
-                <li className="nav-item">
-                    <a className="nav-link" onClick={this.props.handlerReload}>
-
-                        <i className="material-icons">&#xE5D5;</i>
-                    </a>
-                </li>
+         
 
                 <li className="nav-item dropdown">
                     <a className="nav-link p-l b-l" href="" data-toggle="dropdown">

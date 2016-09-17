@@ -1125,8 +1125,6 @@ class GridContainer extends Component {
                         ref="search"
                         handlerSearch={this.handleSearch.bind(this)}
                         showModal={this.showModal.bind(this)}
-                        handlerReload={this.callPageDatas.bind(this, this.props.currentPage, this.props.pageLimit, this.props.searchValue)}
-
                         exportEXCEL={this.exportEXCEL.bind(this)}
                         permission={permission}
                         gridHeader={gridHeader}
