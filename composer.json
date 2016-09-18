@@ -10,5 +10,7 @@
         }
     ],
     "minimum-stability": "stable",
-    "require": {}
+    "require": {
+        "intervention/image": "^2.3@dev"
+    }
 }
