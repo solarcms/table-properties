@@ -51,6 +51,7 @@ export default createReducer(initialState, {
         state = state.set('pageLimit', setupData.pageLimit);
 
         state = state.set('gridTop', setupData.gridTop);
+        state = state.set('showAdvenced', setupData.showAdvancedSearch);
 
         state = state.set('button_texts', setupData.button_texts);
         state = state.set('edit_delete_column_title', setupData.edit_delete_column_title);

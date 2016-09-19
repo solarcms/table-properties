@@ -1,9 +1,10 @@
 import React, {Component, PropTypes} from "react"
-import * as DataActions from "../actions/grid"
+import * as DataActions from "../actions/grid";
+import * as DataActionsForm from "../actions/form"
 import {bindActionCreators} from "redux"
 import {connect} from "react-redux"
 
-import {getList, setupPage, deleteItem, save, update, edit, changeLanguage, inlineSave, inlineSaveUpdate} from "../api/"
+import {getList, setupPage, deleteItem, save, getCascadeChild, update, edit, changeLanguage, inlineSave, inlineSaveUpdate} from "../api/"
 
 import Header from "../components/grid/Header"
 
@@ -1051,6 +1052,21 @@ class GridContainer extends Component {
     parentSelectHandler(index, value){
 
         this.props.actions.dynamicChange(['advancedSearch', 'parentSelect', index, 'value'], value);
+
+
+
+        if(this.props.advancedSearch.parentSelect[index].child){
+
+            this.props.advancedSearch.parentSelect.map((parentSelect, Pindex)=> {
+
+                if(parentSelect.column == this.props.advancedSearch.parentSelect[index].child){
+                    this.props.actions.dynamicChange(['advancedSearch', 'parentSelect', Pindex, 'value'], null);
+                }
+            });
+            getCascadeChild(this.props.advancedSearch.parentSelect[index].child, value).then((data)=>{
+                this.props.actionsForm.changeFormData(this.props.advancedSearch.parentSelect[index].child, data);
+            })
+        }
     }
     dateRange(index, v,  value){
         let newValue = getDate(value);
@@ -1294,7 +1310,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
 
     return {
-        actions: bindActionCreators(DataActions, dispatch)
+        actions: bindActionCreators(DataActions, dispatch),
+        actionsForm: bindActionCreators(DataActionsForm, dispatch)
     };
 }
 

@@ -123,6 +123,7 @@ class Tp
         'numberRange'=>[],
         'parentSelect'=>[]
     ];
+    public $showAdvancedSearch = false;
 
     //column summary
     public $columnSummary = [];
@@ -305,6 +306,7 @@ class Tp
             'googleMap'=>$this->googleMap,
             'order'=>$order,
             'advancedSearch'=>$this->advancedSearch,
+            'showAdvancedSearch'=>$this->showAdvancedSearch,
             'columnSummary'=>$this->columnSummary,
 
             'after_save_reload_page'=>$this->after_save_reload_page,
