@@ -1324,7 +1324,8 @@ class AddEditContainer extends Component {
             locales,
             button_texts,
             defaultLocale,
-            formClassName
+            formClassName,
+            fieldClassName
             } = this.props;
 
 
@@ -1359,6 +1360,7 @@ class AddEditContainer extends Component {
                 keyPress={this._handleKeyPress.bind(this)}
                 translateChangeHandler={this.translateChangeHandler.bind(this)}
                 formClassName={formClassName}
+                fieldClassName={fieldClassName}
                 just_info={this.props.just_info}
 
             />
@@ -1474,6 +1476,7 @@ function mapStateToProps(state) {
         multi_items_form_input_control: Form.get('multi_items_form_input_control').toJS(),
         showAddEditForm: Form.get('showAddEditForm'),
         formClassName: Form.get('formClassName'),
+        fieldClassName: Form.get('fieldClassName'),
         focusIndex: Form.get('focusIndex'),
         formData: Form.get('formData'),
         subItems: SubItems.get('subItems'),

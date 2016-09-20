@@ -10,7 +10,7 @@ import Select from 'react-select';
 import { Tabs, Tab } from 'react-bootstrap';
 
 import {getDate, getDateTime, getTime} from "../../lib/date";
-import DateTimeField from 'react-bootstrap-datetimepicker';
+import Datetime from 'react-datetime';
 
 
 import {moveCursorToEnd} from './helpers/'
@@ -111,7 +111,7 @@ export default class Form extends Component {
 
         const keyIndex = locale_index === false ? index : `__local__${locale_index}-${index}`
 
-        const fieldClassName = field.get('className') ? field.get('className') : null;
+        const fieldClassName = field.get('className') ? field.get('className') : this.props.fieldClassName;
 
         if(field.get('show')){
 
@@ -482,19 +482,19 @@ export default class Form extends Component {
                 break;
 
             case "--date":
-    
-                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass}  `}  id={`solar-form-group-${index}`}>
-                    <label className={`control-label ${fieldClassName}`}>{title}</label>
+                
+                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClassName}`}  id={`solar-form-group-${index}`}>
+                    <label className={`control-label `}>{title}</label>
 
-                    <DateTimeField
-                        dateTime={mainValue ? mainValue : undefined}
-                        format={mainValue ? `YYYY-MM-DD` : undefined}
-                        inputFormat={`YYYY-MM-DD`}
-                        mode={`date`}
+                    <Datetime
+                        value={mainValue ? mainValue : undefined}
+                        defaultValue={mainValue ? mainValue : undefined}
+                        viewMode={`days`}
+                        dateFormat={`YYYY-MM-DD`}
+                        timeFormat={false}
                         onChange={this.dateChange.bind(this, locale_index, `${index}`)}
-                        defaultText={title}
-
-                        disabled={thisDisabled}
+                        closeOnSelect={true}
+                        inputProps={{placeholder:title, disabled:thisDisabled}}
 
                     />
                                 <span className="help-block">
@@ -504,19 +504,19 @@ export default class Form extends Component {
                 break;
             case "--datetime":
 
-                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass} ${fieldClassName} `}  id={`solar-form-group-${index}`}>
+                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass} `}  id={`solar-form-group-${index}`}>
                     <label>
 
                         {title}
                     </label>
-                    <DateTimeField
-                        dateTime={mainValue ? mainValue : undefined}
-                        format={mainValue ? `YYYY-MM-DD  HH:mm` : undefined}
-                        inputFormat={`YYYY-MM-DD  HH:mm`}
-                        onChange={this.dateTimeChange.bind(this, locale_index, `${index}`)}
-                        defaultText={title}
-
-                        disabled={thisDisabled}
+                    <Datetime
+                        value={mainValue ? mainValue : undefined}
+                        defaultValue={mainValue ? mainValue : undefined}
+                        viewMode={`time`}
+                        dateFormat={`YYYY-MM-DD  HH:mm`}
+                        onChange={this.dateChange.bind(this, locale_index, `${index}`)}
+                        closeOnSelect={true}
+                        inputProps={{placeholder:title, disabled:thisDisabled}}
 
                     />
                                 <span className="help-block">
@@ -540,17 +540,17 @@ export default class Form extends Component {
                         {title}
                     </label>
 
-                    <DateTimeField
-                        dateTime={mainValue ? mainValue : undefined}
-                        format={mainValue ? `HH:mm` : undefined}
-                        inputFormat={`HH:mm`}
-                        mode={`time`}
+                    <Datetime
+                        value={mainValue ? mainValue : undefined}
+                        defaultValue={mainValue ? mainValue : undefined}
+                              viewMode={`time`}
+                              dateFormat={false}
+                              timeFormat={`HH:mm`}
+                        inputProps={{placeholder:title, disabled:thisDisabled}}
                         onChange={this.timeChange.bind(this, locale_index, `${index}`)}
-                        defaultText={title}
+                              closeOnSelect={true}
+                    />,
 
-                        disabled={thisDisabled}
-
-                    />
                                 <span className="help-block">
 
                                     {field.error}
@@ -874,7 +874,7 @@ export default class Form extends Component {
 
 
     render() {
-        const { formControls, translateFormControls, changeHandler, formClassName, formData, formType, just_info, formValue, focusIndex, gridIndex, gridId, ifUpdateDisabledCanEditColumns, permission, edit_parent_id  } = this.props;
+        const { formControls, translateFormControls, changeHandler, formClassName, fieldClassName, formData, formType, just_info, formValue, focusIndex, gridIndex, gridId, ifUpdateDisabledCanEditColumns, permission, edit_parent_id  } = this.props;
 
         let formFields =  formControls.map((field, index) => {
 

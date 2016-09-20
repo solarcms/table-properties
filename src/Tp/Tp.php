@@ -138,6 +138,7 @@ class Tp
 
     //form class
     public $formClassName = '';
+    public $fieldClassName = 'col-md-6';
 
     //grid
     public $gridTop = 83;
@@ -159,7 +160,7 @@ class Tp
         $this->add_button_text = $this->config['add_button_text'];
 
         //form
-
+        $this->fieldClassName = $this->config['fieldClassName'];
 
         //grid
         $this->gridTop = $this->config['gridTop'];
@@ -177,7 +178,9 @@ class Tp
             }
 
         // purpose: built-in controller
+
         switch($action){
+
             case "edit":          return $this->edit();        break;
             case "insert":        return $this->insert();      break;
             case "update":        return $this->update();      break;
@@ -308,7 +311,7 @@ class Tp
             'advancedSearch'=>$this->advancedSearch,
             'showAdvancedSearch'=>$this->showAdvancedSearch,
             'columnSummary'=>$this->columnSummary,
-
+            'fieldClassName'=>$this->fieldClassName,
             'after_save_reload_page'=>$this->after_save_reload_page,
             'formClassName'=>$this->formClassName,
             'gridTop'=>$this->gridTop,
@@ -2242,34 +2245,110 @@ class Tp
 
         $file = Request::file('file');
 
-        $ext = $file->getClientOriginalExtension();
-        if ($ext == 'pdf' || $ext == 'swf' || $ext == 'doc' || $ext == 'docx' || $ext == 'xls' || $ext == 'xlsx' || $ext == 'ppt' || $ext == 'pptx') {
-            $destinationPath = public_path() . DIRECTORY_SEPARATOR . $this->base_folder . DIRECTORY_SEPARATOR . 'docs' . DIRECTORY_SEPARATOR;
-            $destinationUrl = "/" . $this->base_folder . "/docs/";
+        if(is_array($file)){
+            $response = [];
+            foreach($file as $mfile){
+                $validator2 = Validator::make(
+                    ['file' => $mfile],
+                    ['file' => $this->image_upload_allow_list]
+                );
 
-            $fileOrigName = $file->getClientOriginalName();
-            $fileUniqueName = date("YmdHis") . "_" . str_random(25) . '.' . $file->getClientOriginalExtension();
-            if (!is_dir($destinationPath)) {
-                mkdir($destinationPath, 0755, true);
+                if ($validator2->passes()) {
+
+
+                    //paths
+                    $destinationPath = public_path(). DIRECTORY_SEPARATOR .$this->base_folder. DIRECTORY_SEPARATOR . $this->destination_folder . DIRECTORY_SEPARATOR;
+
+//                    dd($destinationPath);
+
+                    $thumbPath = $destinationPath . $this->thumb_folder . DIRECTORY_SEPARATOR;
+                    if (!is_dir($destinationPath)) {
+                        mkdir($destinationPath, 0755, true);
+                    }
+                    if (!is_dir($thumbPath)) {
+                        mkdir($thumbPath, 0755, true);
+                    }
+//            $destinationUrl = url('/') . "/".$this->base_folder."/" . $this->destination_folder . '/';
+                    $destinationUrl = "/".$this->base_folder."/" . $this->destination_folder . '/';
+                    $thumbUrl = $destinationUrl . $this->thumb_folder.'/';
+
+                    //property
+                    $fileOrigName = $mfile->getClientOriginalName();
+
+                    $fileUniqueName = date("YmdHis") . "_" . str_random(25) . '.' . $mfile->getClientOriginalExtension();
+
+
+                    while (File::exists($destinationPath . $fileUniqueName)) {
+
+                        $fileUniqueName = uniqid() . "_" . $fileUniqueName;
+                    }
+
+                    $uploadSuccess = Image::make($mfile->getRealPath());
+                    $bigImage = $uploadSuccess->save($destinationPath . $fileUniqueName, 100);
+
+                    $thum_iamge = $uploadSuccess->resize(364, null, function ($constraint) {
+                        $constraint->aspectRatio();
+                    });
+                    $thum_iamge->save($thumbPath . $fileUniqueName);
+
+
+
+                    $result = [
+                        'destinationUrl' => $destinationUrl,
+                        'thumbUrl' => $thumbUrl,
+                        'origName' => $fileOrigName,
+                        'uniqueName' => $fileUniqueName
+                    ];
+
+
+                    if($uploadSuccess) {
+
+                        $response[]= $result;
+
+                    } else {
+
+                        return Response::json('error', 400);
+                    }
+                } else {
+
+                    return Response::json('error. Invalid file format or size >5Mb', 400);
+                }
             }
 
-            $uploadSuccess = $file->move($destinationPath, $fileUniqueName);
+            return Response::json($response, 200);
 
-            $result = [
-                'destinationUrl' => $destinationUrl,
-                'origName' => $fileOrigName,
-                'uniqueName' => $fileUniqueName
-            ];
+        }else {
+            $ext = $file->getClientOriginalExtension();
+            if ($ext == 'pdf' || $ext == 'swf' || $ext == 'doc' || $ext == 'docx' || $ext == 'xls' || $ext == 'xlsx' || $ext == 'ppt' || $ext == 'pptx') {
+                $destinationPath = public_path() . DIRECTORY_SEPARATOR . $this->base_folder . DIRECTORY_SEPARATOR . 'docs' . DIRECTORY_SEPARATOR;
+                $destinationUrl = "/" . $this->base_folder . "/docs/";
 
-            if ($uploadSuccess) {
-                return Response::json($result, 200); // or do a redirect with some message that file was uploaded
+                $fileOrigName = $file->getClientOriginalName();
+                $fileUniqueName = date("YmdHis") . "_" . str_random(25) . '.' . $file->getClientOriginalExtension();
+                if (!is_dir($destinationPath)) {
+                    mkdir($destinationPath, 0755, true);
+                }
+
+                $uploadSuccess = $file->move($destinationPath, $fileUniqueName);
+
+                $result = [
+                    'destinationUrl' => $destinationUrl,
+                    'origName' => $fileOrigName,
+                    'uniqueName' => $fileUniqueName
+                ];
+
+                if ($uploadSuccess) {
+                    return Response::json($result, 200); // or do a redirect with some message that file was uploaded
+                } else {
+                    return Response::json('error', 400);
+                }
+
             } else {
-                return Response::json('error', 400);
+                return $this->uploadImageNew($file);
             }
-
-        } else {
-            return $this->uploadImageNew($file);
         }
+
+
 
 
 

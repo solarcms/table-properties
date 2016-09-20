@@ -14,5 +14,8 @@ return [
     'add_button_text'=>'Шинээр нэмэх',
 
     //grid
-    'gridTop'=>83
+    'gridTop'=>83,
+
+    //form
+    'fieldClassName'=>'col-md-6'
 ];

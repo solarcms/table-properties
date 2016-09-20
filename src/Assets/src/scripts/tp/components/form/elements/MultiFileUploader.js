@@ -158,7 +158,7 @@ export default class MultiFileUploader extends Component {
         const { mainValue, fieldClass, placeholder, errorText, disabled, options, dataIndex, fieldClassName} = this.props;
 
         const protcol = window.location.protocol !== 'https:' ? 'http://' :  'https://';
-        const baseUrl = protcol+window.location.hostname + window.location.pathname+'/upload-image';
+        const baseUrl = protcol+window.location.hostname + window.location.pathname+'/upload-file';
 
 
         const componentConfig = {
