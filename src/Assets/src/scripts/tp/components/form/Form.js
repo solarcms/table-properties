@@ -835,6 +835,19 @@ export default class Form extends Component {
                         else
                             calculate_result = calculate_result / cal_column.value
                     })
+                }else if(calculate_column.type == '--add_percent_10'){
+                    calculate_column.columns.map((cal_column, calIndex)=>{
+                        if(calIndex == 0)
+                            calculate_result = cal_column.value;
+                        else{
+                            let pluss_vlue = (calculate_result/100)*cal_column.value;
+
+                            let calculate_10 = Math.ceil(((calculate_result*1)+(pluss_vlue))/10)*10;
+
+                            calculate_result = calculate_10;
+                        }
+
+                    })
                 }else if(calculate_column.type == '--minus'){
                     calculate_column.columns.map((cal_column, calIndex)=>{
                         if(calIndex == 0)
