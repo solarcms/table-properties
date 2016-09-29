@@ -1844,9 +1844,10 @@ class Tp
         $formData = Request::input('data');
         $column = Request::input('column');
 
-
-
         $insertQuery = [];
+        if(isset($formControl['options']['hidden'])){
+            $insertQuery = $formControl['options']['hidden'];
+        }
         $table = '';
         foreach($this->form_input_control as $formControl){
             if($formControl['type']=='--combobox-addable' && $formControl['column']==$column){
@@ -1892,10 +1893,6 @@ class Tp
             }
 
         }
-
-
-
-
 
         if($table != '')
             $saved = DB::table($table)->insert($insertQuery);

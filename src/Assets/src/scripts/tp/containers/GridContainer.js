@@ -19,7 +19,7 @@ import validationGrid from "../components/grid/validation/"
 import {getDate} from "../lib/date";
 
 
-import DateTimeField from 'react-bootstrap-datetimepicker';
+import Datetime from 'react-datetime';
 import numeral from 'numeral';
 import {customDropdownRenderer, gridImage, gridJson, genrateComboboxvalues} from '../lib/handSonTableHelper'
 
@@ -35,7 +35,6 @@ class GridContainer extends Component {
 
     constructor(props) {
         super(props);
-
         this.state = {
             tpHeight:window.innerHeight-this.props.gridTop
         };
@@ -66,7 +65,6 @@ class GridContainer extends Component {
         if (prevProps.defaultLocale != this.props.defaultLocale) {
             this.setUpHandsonTable()
         }
-
         if (prevProps.permission.r == false && this.props.permission.r == true) {
             this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
         }
@@ -1159,24 +1157,31 @@ class GridContainer extends Component {
                                     <div key={index} dataIndex={index} className={`form-group`}>
                                         <label className="control-label">{dateRange.label}</label>
                                         <div className="date-range">
-                                            <DateTimeField
-                                                dateTime={dateRange.value1 ? dateRange.value1 : undefined}
-                                                format={dateRange.value1 ? `YYYY-MM-DD` : undefined}
-                                                inputFormat={`YYYY-MM-DD`}
-                                                mode={`date`}
+                                            <Datetime
+                                                value={dateRange.value1 ? dateRange.value1 : undefined}
+                                                defaultValue={dateRange.value1 ? dateRange.value1 : undefined}
+                                                viewMode={`days`}
+                                                dateFormat={`YYYY-MM-DD`}
+                                                timeFormat={false}
                                                 onChange={this.dateRange.bind(this, index, 1)}
-                                                defaultText={`Эхлэх`}
-                                       
-                                            />
-                                            <DateTimeField
+                                                closeOnSelect={true}
+                                                inputProps={{placeholder:'Эхлэх'}}
 
-                                                dateTime={dateRange.value2 ? dateRange.value2 : undefined}
-                                                format={dateRange.value2 ? `YYYY-MM-DD` : undefined}
-                                                inputFormat={`YYYY-MM-DD`}
-                                                mode={`date`}
-                                                onChange={this.dateRange.bind(this, index, 1)}
-                                                defaultText={`Дуусах`}
                                             />
+
+                                            <Datetime
+                                                value={dateRange.value2 ? dateRange.value2 : undefined}
+                                                defaultValue={dateRange.value2 ? dateRange.value2 : undefined}
+                                                viewMode={`days`}
+                                                dateFormat={`YYYY-MM-DD`}
+                                                timeFormat={false}
+                                                onChange={this.dateRange.bind(this, index, 2)}
+                                                closeOnSelect={true}
+                                                inputProps={{placeholder:'Дуусах'}}
+
+                                            />
+
+
                                         </div>
 
                                     </div>

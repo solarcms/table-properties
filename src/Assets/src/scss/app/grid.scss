@@ -24,3 +24,20 @@
   visibility: visible;
   opacity: 1;
 }
+.dateRange{
+  .form-inline .form-control{
+    max-width: 170px;
+  }
+  .form-group{
+    vertical-align: top !important;
+  }
+
+}
+.parentSelect{
+  .Select-control{
+    height: 34px;
+    .Select-input{
+      height: 32px;
+    }
+  }
+}
