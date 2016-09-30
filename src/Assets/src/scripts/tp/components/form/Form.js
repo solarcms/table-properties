@@ -48,6 +48,7 @@ export default class Form extends Component {
     dateChange(locale_index, dIndex, value) {
 
         let newValue = getDate(value);
+      
 
         this.manualeChangeHandler(locale_index, dIndex, newValue);
     }
