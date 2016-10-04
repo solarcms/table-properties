@@ -12,16 +12,20 @@ export default class Header extends Component {
 
 
     render() {
+        const {
+            permission,
+            formType
+        } = this.props;
         let addButton = "";
-        if(this.props.permission.c == true){
-            if(this.props.formType == 'inline')
+        if(permission.c == true){
+            if(formType == 'inline')
                 addButton = <a href="javascript:void(0)" className="nav-link" onClick={this.props.addInlineForm}>
                     <i className="material-icons green bold">&#xE145;</i>
                     <span className="hidden-xs">
                         {this.props.add_button_text}
                     </span>
                 </a>
-            else if(this.props.formType == 'window')
+            else if(formType == 'window')
                 addButton = <a className="nav-link" href="javascript:void(0)" onClick={this.props.showModal}>
                     <i className="material-icons green bold" >&#xE145;</i>
                     <span className="hidden-xs">
@@ -45,23 +49,11 @@ export default class Header extends Component {
         let actionControls = this.props.type == 'list'?
             <ul className="nav navbar-nav pull-right hidden-sm hidden-xs">
                 <li className="nav-item dropdown">
-                    <a className="nav-link p-l b-l" href="javascript:void(0)" data-toggle="dropdown">
+                    <a className="nav-link p-l b-l" href="javascript:void(0)"   onClick={this.props.exportEXCEL}>
 
                         <i className="material-icons">&#xE2C6;</i>
                     </a>
-                    <div className="dropdown-menu dropdown-menu-scale pull-right text-color"
-                         role="menu">
 
-                        <a className="dropdown-item" onClick={this.props.exportEXCEL}>
-                            <i className="material-icons">&#xE3EC;</i>
-                            &nbsp;Excel
-                        </a>
-                        &nbsp;&nbsp;
-                        <a className="dropdown-item" href="">
-                            <i className="material-icons">&#xE8AD;</i>
-                            &nbsp;Print
-                        </a>
-                    </div>
                 </li>
          
 

@@ -1,28 +1,24 @@
 import React, {Component, PropTypes} from "react"
-import * as DataActions from "../actions/grid";
-import * as DataActionsForm from "../actions/form"
+
 import {bindActionCreators} from "redux"
 import {connect} from "react-redux"
 
-import {getList, setupPage, deleteItem, save, getCascadeChild, update, edit, changeLanguage, inlineSave, inlineSaveUpdate} from "../api/"
+import numeral from 'numeral';
 
-import Header from "../components/grid/Header"
-
-import Pagination from "../components/grid/Paginator"
 
 // import Window from "../components/window/"
 
-import ComboBox from '../components/form/elements/ComboBox'
 
-import validationGrid from "../components/grid/validation/"
-
-import {getDate} from "../lib/date";
-
-
-import Datetime from 'react-datetime';
-import numeral from 'numeral';
+import * as DataActions from "../actions/grid";
+import * as DataActionsForm from "../actions/form"
+import {getList, setupPage, deleteItem, save, getCascadeChild, update, edit, changeLanguage, inlineSave, inlineSaveUpdate} from "../api/"
+import Header from "../components/grid/Header"
+import Pagination from "../components/grid/Paginator"
 import {customDropdownRenderer, gridImage, gridJson, genrateComboboxvalues} from '../lib/handSonTableHelper'
 
+import {getDate} from "../lib/date";
+import validationGrid from "../components/grid/validation/"
+import AdvenvedSearch from "../components/grid/AdvenvedSearch"
 
 /*for handson table*/
 var tp_handSonTable = null
@@ -1067,8 +1063,15 @@ class GridContainer extends Component {
         }
     }
     dateRange(index, v,  value){
+      
         let newValue = getDate(value);
         this.props.actions.dynamicChange(['advancedSearch', 'dateRange', index, 'value'+v], newValue);
+    }
+    dateYearMonthChangeY(value){
+        this.props.actions.dynamicChange(['advancedSearch', 'dateYearMonth', 'defaultYear'], value);
+    }
+    dateYearMonthChangeM(value){
+        this.props.actions.dynamicChange(['advancedSearch', 'dateYearMonth', 'defaultMonth'], value);
     }
 
 
@@ -1099,7 +1102,12 @@ class GridContainer extends Component {
             permission,
             ifUpdateDisabledCanEditColumns,
             button_texts,
-            advancedSearch
+            advancedSearch,
+            order,
+            identity_name,
+            formDataNew,
+            hideMainOrder,
+            advancedSearchImmutalbe
         } = this.props;
 
         if (permission.r === false && permission.c === true) {
@@ -1142,108 +1150,27 @@ class GridContainer extends Component {
                         exportEXCEL={this.exportEXCEL.bind(this)}
                         permission={permission}
                         gridHeader={gridHeader}
+                        hideMainOrder={hideMainOrder}
                         hideShowColumn={this.hideShowColumn.bind(this)}
                         showAdvenced={this.showAdvenced.bind(this)}
                         add_button_text={button_texts.add_button_text}
                 />
-                <div className={`advanced_search_order ${AdvencedClass}`}>
-
-                    <div className="dateRange">
-                        {advancedSearch.dateRange ? advancedSearch.dateRange.map((dateRange, index)=>{
-
-
-                                return <div key={index} className="form-inline">
-
-                                    <div key={index} dataIndex={index} className={`form-group`}>
-                                        <label className="control-label">{dateRange.label}</label>
-                                        <div className="date-range">
-                                            <Datetime
-                                                value={dateRange.value1 ? dateRange.value1 : undefined}
-                                                defaultValue={dateRange.value1 ? dateRange.value1 : undefined}
-                                                viewMode={`days`}
-                                                dateFormat={`YYYY-MM-DD`}
-                                                timeFormat={false}
-                                                onChange={this.dateRange.bind(this, index, 1)}
-                                                closeOnSelect={true}
-                                                inputProps={{placeholder:'Эхлэх'}}
-
-                                            />
-
-                                            <Datetime
-                                                value={dateRange.value2 ? dateRange.value2 : undefined}
-                                                defaultValue={dateRange.value2 ? dateRange.value2 : undefined}
-                                                viewMode={`days`}
-                                                dateFormat={`YYYY-MM-DD`}
-                                                timeFormat={false}
-                                                onChange={this.dateRange.bind(this, index, 2)}
-                                                closeOnSelect={true}
-                                                inputProps={{placeholder:'Дуусах'}}
-
-                                            />
-
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-                            }
-                        ) : null}
-
-                    </div>
-                    <div className="numberRange">
-
-                    </div>
-                    <div className="parentSelect" >
-                        {advancedSearch.parentSelect ? advancedSearch.parentSelect.map((parentSelect, index)=>{
-
-                                let options = [];
-                                formControls.map(data=>{
-                                    if(data.get('column') == parentSelect.column){
-                                        options = data.get('options');
-                                    }
-                                })
-
-                                return <div key={index}  >
-
-                                    <ComboBox
-                                        disabled={false}
-                                        dataIndex={index}
-                                        column={parentSelect.column}
-                                        name={parentSelect.column}
-                                        fieldClass={``}
-                                        placeholder={parentSelect.label}
-                                        formType={``}
-                                        formData={this.props.formDataNew}
-                                        value={parentSelect.value}
-                                        multi={false}
-                                        defaultLocale={this.props.defaultLocale}
-                                        fieldOptions={options}
-                                        changeHandler={this.parentSelectHandler.bind(this, index)}
-                                        errorText={``}
-                                    />
-
-                                </div>
-                            }
-                        ): null}
-                    </div>
-
-                    <div className="sortNewOld">
-                        Эрэмблэх:
-                        <a href="javascript:void(0)"
-                           onClick={this.mainOrderNew.bind(this)}
-                           className={this.props.order.column == this.props.identity_name && this.props.order.sortOrder == 'DESC' ? `active-sort` : null}>
-                            <i className="material-icons">&#xE5C5;</i> Шинэ
-                        </a>
-                        <a href="javascript:void(0)"
-                           onClick={this.mainOrderOld.bind(this)}
-                           className={this.props.order.column == this.props.identity_name && this.props.order.sortOrder == 'ASC' ? `active-sort` : null}>
-                            <i className="material-icons">&#xE5C7;</i> Хуучин
-                        </a>
-                    </div>
-
-
-                </div>
+                <AdvenvedSearch
+                    AdvencedClass={AdvencedClass}
+                    advancedSearch={advancedSearch}
+                    order={order}
+                    identity_name={identity_name}
+                    formDataNew={formDataNew}
+                    defaultLocale={defaultLocale}
+                    formControls={formControls}
+                    hideMainOrder={hideMainOrder}
+                    dateRangeChange={this.dateRange.bind(this)}
+                    dateYearMonthChangeY={this.dateYearMonthChangeY.bind(this)}
+                    dateYearMonthChangeM={this.dateYearMonthChangeM.bind(this)}
+                    parentSelectHandler={this.parentSelectHandler.bind(this)}
+                    mainOrderNew={this.mainOrderNew.bind(this)}
+                    mainOrderOld={this.mainOrderOld.bind(this)}
+                />
 
                 <div id="tp_grid" className={gridClass}>
                     <Loading />
@@ -1308,6 +1235,7 @@ function mapStateToProps(state) {
         advancedSearch: Grid.get('advancedSearch').toJS(),
         columnSummary: Grid.get('columnSummary').toJS(),
         gridTop: Grid.get('gridTop'),
+        hideMainOrder: Grid.get('hideMainOrder'),
 
     }
 }

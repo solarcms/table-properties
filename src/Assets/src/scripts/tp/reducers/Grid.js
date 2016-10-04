@@ -30,7 +30,8 @@ const initialState = {
         column:null,
         sortOrder: null
     },
-    advancedSearch:{}
+    advancedSearch:{},
+    hideMainOrder:false
 };
 
 export default createReducer(initialState, {
@@ -51,6 +52,7 @@ export default createReducer(initialState, {
         state = state.set('pageLimit', setupData.pageLimit);
 
         state = state.set('gridTop', setupData.gridTop);
+        state = state.set('hideMainOrder', setupData.hideMainOrder);
         state = state.set('showAdvenced', setupData.showAdvancedSearch);
 
         state = state.set('button_texts', setupData.button_texts);

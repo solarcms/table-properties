@@ -41,3 +41,32 @@
     }
   }
 }
+.date-year-month{
+  display: inline-block;
+  padding: 0 5px;
+  min-width: 200px;
+  vertical-align: top;
+  .form-group {
+    line-height: 14px;
+    .control-label {
+      height: 14px;
+      margin: 3px 5px;
+    }
+  }
+  .year-search, .month-search{
+
+      vertical-align: top;
+      width: 100px;
+      display: inline-block;
+    .Select {
+      position: relative;
+      z-index: 120;
+    }
+    .Select-control{
+      height: 34px;
+      .Select-input{
+        height: 32px;
+      }
+    }
+  }
+}
