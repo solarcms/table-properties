@@ -31,8 +31,9 @@ class GridContainer extends Component {
 
     constructor(props) {
         super(props);
+        let topH = this.props.showAdvenced ? this.props.gridTopWithAdvenced : this.props.gridTop;
         this.state = {
-            tpHeight:window.innerHeight-this.props.gridTop
+            tpHeight:window.innerHeight-topH
         };
     }
 
