@@ -79,7 +79,7 @@ export default class Header extends Component {
 
                             <a className="dropdown-item" onClick={this.props.showAdvenced}>
 
-                                    <i className="material-icons">&#xE8B6;</i> Нарывчилсан хайлт, <i className="material-icons">&#xE053;</i> Эрэмблэх
+                                    <i className="material-icons">&#xE8B6;</i> Дэлгэрэнгүй хайлт, <i className="material-icons">&#xE053;</i> Эрэмбэлэх
                              
                             </a>
                         

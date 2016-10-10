@@ -50,10 +50,10 @@ class GridContainer extends Component {
     }
 
     handleResize(e) {
-    
-        this.setState({tpHeight: window.innerHeight-this.props.gridTop});
+        let topH = this.props.showAdvenced ? this.props.gridTopWithAdvenced : this.props.gridTop;
+        this.setState({tpHeight: window.innerHeight-topH});
 
-        this.setUpHandsonTable(window.innerHeight-this.props.gridTop);
+        this.setUpHandsonTable(window.innerHeight-topH);
     }
 
     componentDidUpdate(prevProps) {
@@ -1235,6 +1235,7 @@ function mapStateToProps(state) {
         advancedSearch: Grid.get('advancedSearch').toJS(),
         columnSummary: Grid.get('columnSummary').toJS(),
         gridTop: Grid.get('gridTop'),
+        gridTopWithAdvenced: Grid.get('gridTopWithAdvenced'),
         hideMainOrder: Grid.get('hideMainOrder'),
 
     }

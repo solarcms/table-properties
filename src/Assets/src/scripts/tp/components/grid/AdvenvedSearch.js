@@ -5,8 +5,8 @@ import HeaderCombo from '../../components/grid/HeaderCombo';
 import Datetime from 'react-datetime';
 export default class AdvenvedSearch extends Component {
 
-    parentSelectHandler(index){
-        this.props.parentSelectHandler(index);
+    parentSelectHandler(index, value){
+        this.props.parentSelectHandler(index, value);
     }
 
     dateRangeChange(index, number, value){
@@ -152,7 +152,7 @@ export default class AdvenvedSearch extends Component {
                 </div>
                 {hideMainOrder === false ?
                     <div className="sortNewOld">
-                        Эрэмблэх:
+                        Эрэмбэлэх:
                         <a href="javascript:void(0)"
                            onClick={mainOrderNew}
                            className={order.column == identity_name && order.sortOrder == 'DESC' ? `active-sort` : null}>

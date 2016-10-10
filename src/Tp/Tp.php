@@ -159,6 +159,7 @@ class Tp
 
     //grid
     public $gridTop = 83;
+    public $gridTopWithAdvenced = 145;
 
 
     function __construct()
@@ -182,6 +183,7 @@ class Tp
 
         //grid
         $this->gridTop = $this->config['gridTop'];
+        $this->gridTopWithAdvenced = $this->config['gridTopWithAdvenced'];
     }
 
 
@@ -388,6 +390,7 @@ class Tp
             'after_save_reload_page' => $this->after_save_reload_page,
             'formClassName' => $this->formClassName,
             'gridTop' => $this->gridTop,
+            'gridTopWithAdvenced' => $this->gridTopWithAdvenced,
             'hideMainOrder' => $this->hideMainOrder,
         ];
 
