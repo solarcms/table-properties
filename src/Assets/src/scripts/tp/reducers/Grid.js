@@ -26,6 +26,7 @@ const initialState = {
     edit_delete_column_title:'Засах',
     showAdvenced:false,
     gridTop:83,
+    gridTopWithAdvenced:145,
     order:{
         column:null,
         sortOrder: null
@@ -52,6 +53,7 @@ export default createReducer(initialState, {
         state = state.set('pageLimit', setupData.pageLimit);
 
         state = state.set('gridTop', setupData.gridTop);
+        state = state.set('gridTopWithAdvenced', setupData.gridTopWithAdvenced);
         state = state.set('hideMainOrder', setupData.hideMainOrder);
         state = state.set('showAdvenced', setupData.showAdvancedSearch);
 
