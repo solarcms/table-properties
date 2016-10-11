@@ -16,6 +16,8 @@ const initialState = {
     formData:{},
     showAddEditForm:false,
     showInsertResponse:false,
+    after_save_redirect_url:'',
+    after_save_redirect:false,
     focusIndex:0,
 
 };
@@ -56,6 +58,8 @@ export default createReducer(initialState, {
         state = state.set('formClassName', setupData.formClassName);
         state = state.set('fieldClassName', setupData.fieldClassName);
         state = state.set('after_save_reload_page', setupData.after_save_reload_page);
+        state = state.set('after_save_redirect_url', setupData.after_save_redirect_url);
+        state = state.set('after_save_redirect', setupData.after_save_redirect);
 
         return state;
     },

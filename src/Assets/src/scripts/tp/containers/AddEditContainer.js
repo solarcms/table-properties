@@ -264,7 +264,9 @@ class AddEditContainer extends Component {
                             window.location.reload();
                           
 
-                        } else
+                        } else if(this.props.after_save_redirect === true){
+                            window.location.replace(this.props.after_save_redirect_url);
+                        }else
                         window.location.replace('#/');
 
 
@@ -1612,6 +1614,8 @@ function mapStateToProps(state) {
         permission: Grid.get('setup').toJS().permission,
         just_info: Grid.get('setup').toJS().just_info,
         ifUpdateDisabledCanEditColumns: Grid.get('setup').toJS().ifUpdateDisabledCanEditColumns,
+        after_save_redirect: Form.get('after_save_redirect'),
+        after_save_redirect_url: Form.get('after_save_redirect_url'),
     }
 }
 // Which action creators does it want to receive by props?

@@ -97,6 +97,11 @@ class Tp
     public $insert_response_function = null;
 
 
+    //after save redirect
+    public $after_save_redirect = false;
+    public $after_save_redirect_url = '';
+
+
     // generate locale's files
     public $generateLocaleFile = false;
 
@@ -392,6 +397,8 @@ class Tp
             'gridTop' => $this->gridTop,
             'gridTopWithAdvenced' => $this->gridTopWithAdvenced,
             'hideMainOrder' => $this->hideMainOrder,
+            'after_save_redirect'=>$this->after_save_redirect,
+            'after_save_redirect_url'=>$this->after_save_redirect_url,
         ];
 
         //dd($setup);
