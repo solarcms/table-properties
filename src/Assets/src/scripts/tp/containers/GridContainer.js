@@ -135,7 +135,6 @@ class GridContainer extends Component {
         this.callPageDatas(1, this.props.pageLimit, sword)
     }
 
-
     /* pagination */
     hangePageLimitChange(e) {
         this.props.actions.setPageLimit(e.target.value * 1)

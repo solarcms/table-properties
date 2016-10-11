@@ -19,6 +19,7 @@ var tp_dataSchema = {};
 var maxRows = 0;
 var listData = []
 var save_first_id_column_ = 0
+
 import Loading from '../components/loading/loading'
 class AddEditContainer extends Component {
     constructor(props) {
@@ -27,7 +28,7 @@ class AddEditContainer extends Component {
         this.state = {
             sending: false,
             savedAlertShow: false,
-            errorY: 0
+            errorY: 0,
         };
     }
     getValueByColumn(column){
@@ -617,10 +618,16 @@ class AddEditContainer extends Component {
 
         this.props.actions.clearTranslationFromValidation();
       
-        this.props.actions.setShowAddEditForm(false)
+        this.props.actions.setShowAddEditForm(false);
   
 
-        listData = [];
+
+
+        if(listData && tp_handSonTable){
+            tp_handSonTable.destroy();
+            tp_handSonTable = null;
+            listData = [];
+        }
 
   
     }
@@ -642,7 +649,7 @@ class AddEditContainer extends Component {
         if(this.props.multi_items_form_input_control[column].validate)
             return this.props.multi_items_form_input_control[column].validate;
         else
-            return ''
+            return '';
     }
     getColumnType(column){
 
@@ -665,7 +672,8 @@ class AddEditContainer extends Component {
             this.setUpHandsonTable()
         });
     }
-    handleDeleteItem(id) {
+    handleDeleteItem(id, row) {
+
 
         if(id == -1){
             this.callMultiItemsDatas(save_first_id_column_)
@@ -676,14 +684,19 @@ class AddEditContainer extends Component {
                 return;
             }
             else{
-                deleteItem(id).then((data)=> {
+                if(id === null){
+                    listData.splice(row, 1);
+                } else {
+                    deleteItem(id).then((data)=> {
 
 
-                    if (data == 'success')
-                        this.callMultiItemsDatas(save_first_id_column_)
-                    else
-                        alert("Please try agian")
-                });
+                        if (data == 'success')
+                            listData.splice(row, 1);
+                        else
+                            alert("Please try agian")
+                    });
+                }
+
             }
 
 
@@ -714,20 +727,37 @@ class AddEditContainer extends Component {
         //
         //
 
+        let all_null = true;
+        if(tp_handSonTable){
+            if(tp_handSonTable.rootElement){
+                let h_datas = tp_handSonTable.getDataAtRow(row);
 
 
-        // DELETE BUTTON
-        pre_del.addEventListener("click", function(){
+                h_datas.map((h_data)=>{
+                    if(h_data !== null){
+                        all_null =false;
+                    }
+                });
+            }
 
-            self.handleDeleteItem(value)
+        }
 
-        });
+        if(all_null === false){
+            // DELETE BUTTON
+            pre_del.addEventListener("click", function(){
+
+                self.handleDeleteItem(value, row)
+
+            });
 
 
 
-        pre_del.innerHTML = "<i class=\"material-icons\">&#xE872;</i> ";
-        if(this.props.permission.d == true)
-            pre.appendChild(pre_del);
+            pre_del.innerHTML = "<i class=\"material-icons\">&#xE872;</i> ";
+            if(this.props.permission.d == true)
+                pre.appendChild(pre_del);
+        }
+
+
         
 
         return td;
@@ -741,9 +771,17 @@ class AddEditContainer extends Component {
     getData(row){
         return tp_handSonTable.getDataAtRow(row);
     }
+    getValueAtCell(row, calculate_column){
+        let colIndex_ = this.getColumnIndex(calculate_column)
+        return tp_handSonTable.getDataAtCell(row, colIndex_);
+    }
+
     afterChange(changes, source, isValid) {
 
+
+
         if (changes) {
+
 
             let colIndex = 0;
 
@@ -753,14 +791,20 @@ class AddEditContainer extends Component {
                 colIndex = this.getColumnIndex(changes[0][1]);
 
 
-            let colType = this.props.multi_items_form_input_control[colIndex].type
+            let colType = this.props.multi_items_form_input_control[colIndex].type;
+
+
 
             let row = changes[0][0];
             let elValue = changes[0][3];
 
 
 
-            if (colType != '--auto-calculate') {
+
+
+
+
+
 
                 ///auto-calculate
                 let calculate_columns = []
@@ -776,22 +820,68 @@ class AddEditContainer extends Component {
 
                         fcontrol.options.calculate_columns.map((calculate_column, cal_index)=> {
 
-                            let colIndex_ = this.getColumnIndex(calculate_column)
 
 
                             columns.push(
-                                {column: calculate_column, value: tp_handSonTable.getDataAtCell(row, colIndex_)}
+                                {column: calculate_column, value: this.getValueAtCell(row, calculate_column)}
                             );
                         })
+                        if(calculate_type == '--urtug-bodoh'){
+                            let noat_shalgah = fcontrol.options.noat_shalgah;
+                            let irsen_une = fcontrol.options.irsen_une;
 
-                        calculate_columns.push(
-                            {
-                                column: calculate_column,
-                                type: calculate_type,
-                                columns: columns,
-                                dataIndex: findex
-                            }
-                        )
+
+
+                            calculate_columns.push(
+                                {
+                                    column:calculate_column,
+                                    type:calculate_type,
+                                    columns:columns,
+                                    dataIndex:findex,
+                                    noat_shalgah: this.getValueAtCell(row, noat_shalgah),
+                                    irsen_une: this.getValueAtCell(row, irsen_une)
+                                }
+                            )
+                        } else if(calculate_type == '--noat-bodoh'){
+                            let noat_shalgah = fcontrol.options.noat_shalgah;
+                            let irsen_une = fcontrol.options.irsen_une;
+                            let urtug_une = fcontrol.options.urtug_une;
+
+                            calculate_columns.push(
+                                {
+                                    column:calculate_column,
+                                    type:calculate_type,
+                                    columns:columns,
+                                    dataIndex:findex,
+                                    noat_shalgah: this.getValueAtCell(row, noat_shalgah),
+                                    irsen_une: this.getValueAtCell(row, irsen_une),
+                                    urtug_une: this.getValueAtCell(row, urtug_une)
+                                }
+                            )
+                        } else if(calculate_type == '--hudaldal-une-bodoh'){
+                            let borluulaltiin_huvi = fcontrol.options.borluulaltiin_huvi;
+                            let urtug_une = fcontrol.options.urtug_une;
+
+                            calculate_columns.push(
+                                {
+                                    column:calculate_column,
+                                    type:calculate_type,
+                                    columns:columns,
+                                    dataIndex:findex,
+                                    borluulaltiin_huvi: this.getValueAtCell(row, borluulaltiin_huvi),
+                                    urtug_une: this.getValueAtCell(row, urtug_une)
+                                }
+                            )
+                        } else
+                            calculate_columns.push(
+                                {
+                                    column:calculate_column,
+                                    type:calculate_type,
+                                    columns:columns,
+                                    dataIndex:findex
+                                }
+                            )
+
                     }
                 })
 
@@ -810,6 +900,34 @@ class AddEditContainer extends Component {
                                 else
                                     calculate_result = calculate_result * cal_column.value
                             })
+                        } else if(calculate_column.type == '--urtug-bodoh'){
+
+
+                            if(calculate_column.noat_shalgah == 1 || calculate_column.noat_shalgah == '1'){
+                                calculate_result = Math.ceil((calculate_column.irsen_une/1.1));
+                            } else {
+
+                                calculate_result = calculate_column.irsen_une*1;
+                            }
+
+                        }else if(calculate_column.type == '--noat-bodoh'){
+
+                            if(calculate_column.noat_shalgah == 1 || calculate_column.noat_shalgah == '1'){
+                                calculate_result = (calculate_column.irsen_une*1) - (calculate_column.urtug_une*1);
+                            } else {
+                                calculate_result = 0;
+                            }
+
+                        }else if(calculate_column.type == '--hudaldal-une-bodoh'){
+
+
+                            let pluss_vlue = (calculate_column.urtug_une/100)*calculate_column.borluulaltiin_huvi;
+                            let niilber = (calculate_column.urtug_une*1)+(pluss_vlue);
+                            let pre_hudaldah_une = niilber+(niilber*0.1);
+                            let calculate_pre_ = Math.ceil((pre_hudaldah_une/10))*10;
+
+                            calculate_result = calculate_pre_;
+
                         } else if ((calculate_column.type == '--sum')) {
                             calculate_column.columns.map((cal_column, calIndex)=> {
                                 if (calIndex == 0)
@@ -828,11 +946,17 @@ class AddEditContainer extends Component {
                         }
                         if (calculate_result !== null) {
 
-                            tp_handSonTable.setDataAtCell(row, calculate_column.dataIndex, calculate_result);
+                            let thisValue = tp_handSonTable.getDataAtCell(row, calculate_column.dataIndex);
+
+                            if(thisValue != calculate_result){
+
+                                tp_handSonTable.setDataAtCell(row, calculate_column.dataIndex, calculate_result);
+                            }
+
                         }
                     }
                 });
-            }
+
             if(this.props.multi_items_form_input_control[colIndex].after_change_trigger){
 
 
@@ -931,19 +1055,6 @@ class AddEditContainer extends Component {
 
 
 
-                if (error_not_found && edit_id >= 1) {
-
-                    inlineSaveUpdate(edit_id, data).then((data)=> {
-                        $("#save_info" ).addClass("show-info");
-                        this.removeInlineForm()
-                        setTimeout(function(){ $("#save_info" ).removeClass("show-info"); }, 2500);
-                    }).fail(()=> {
-                        $("#save_info_failed" ).addClass("show-info");
-                        setTimeout(function(){ $("#save_info_failed" ).removeClass("show-info"); }, 2500);
-
-                    });
-
-                }
 
 
             }
@@ -1014,7 +1125,19 @@ class AddEditContainer extends Component {
                         }
                         break;
 
-
+                    case "--checkbox":
+                        gridColumn = {
+                            data: header.column,
+                            type: 'checkbox',
+                            checkedTemplate: '1',
+                            uncheckedTemplate: '0',
+                            validator: this.validationCaller.bind(this, header.validate),
+                            label: {
+                                position: 'before',
+                                value: 'НӨАТ: '
+                            },
+                        }
+                        break;
                     case "--combobox":
 
                         const optionsList = genrateComboboxvalues(this.props.formData.toJS()[header.column].data.data, header);
@@ -1131,10 +1254,10 @@ class AddEditContainer extends Component {
 
         tp_dataSchema['id'] = -1;
 
-        tp_colHeader.push('Засах')
+        tp_colHeader.push('Устгах')
         tp_columns.push({
             data: this.props.identity_name,
-            width: 40,
+            width: 35,
 
             renderer: this.editDeleteRender.bind(this),
             editor: false
@@ -1174,6 +1297,7 @@ class AddEditContainer extends Component {
             columnSorting: true,
             sortIndicator: true,
             afterChange:this.afterChange.bind(this),
+
             height: 320,
             minSpareRows:1,
             startRows: 1,

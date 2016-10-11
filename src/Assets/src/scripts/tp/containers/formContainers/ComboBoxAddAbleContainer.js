@@ -173,12 +173,12 @@ class ComboBoxAddAbleContainer extends Component {
     }
     comboChange(value){
 
-        this.props.changeHandler(value.value)
+        this.props.changeHandler(value)
     }
 
     render() {
 
-        const {button_texts, disabled, modals, fieldClass, formData, column, fieldOptions, value, fromFieldClass, changeHandler, errorText, formType, placeholder, pageName, name, formControls, showAddModal, comboBoxs } = this.props;
+        const {button_texts, disabled, modals, fieldClass, formData, column, fieldOptions, value, fromFieldClass,fieldClassName, changeHandler, errorText, formType, placeholder, pageName, name, formControls, showAddModal, comboBoxs } = this.props;
 
         let options = [];
 
@@ -197,16 +197,19 @@ class ComboBoxAddAbleContainer extends Component {
                             arrayLabel = arrayLabel + ", " + data.get(fieldOptions.getIn(['textField', i]))
                     }
 
-                    options.push({value: data.get(fieldOptions.get('valueField')), label: arrayLabel})
+
+                    options.push({value: data.get(fieldOptions.get('valueField'))+'', label: arrayLabel})
                 }
                 else {
 
                     options.push({
-                        value: data.get(fieldOptions.get('valueField')),
+                        value: data.get(fieldOptions.get('valueField'))+'',
                         label: data.get(fieldOptions.get('textField'))
                     })
                 }
-            })
+            });
+
+ 
 
 
         let windowForm = null;
@@ -241,7 +244,7 @@ class ComboBoxAddAbleContainer extends Component {
 
 
         return (
-            <div className={`form-group ${fieldClass}  `}>
+            <div className={`form-group ${fieldClass} ${fieldClassName} `}>
                 {formType == 'inline' ? '' : <label className="control-label">{placeholder}</label>}
 
                 {formData.get(column) ?
@@ -254,6 +257,7 @@ class ComboBoxAddAbleContainer extends Component {
                             onChange={this.comboChange.bind(this)}
                             button_texts={button_texts}
                             placeholder={`Сонгох`}
+                            simpleValue
                     />
                     :
                     null}

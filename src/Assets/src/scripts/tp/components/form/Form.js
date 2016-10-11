@@ -66,10 +66,11 @@ export default class Form extends Component {
 
         let value  = null;
         if(e.target.type == 'checkbox'){
-            value = e.target.checked ? e.target.value : null
+            value = e.target.checked ? e.target.value : 0
         } else {
             value = e.target.value;
         }
+
 
         let dataIndexs  =  e.target.getAttribute('data-index').split('-');
 
@@ -792,6 +793,7 @@ export default class Form extends Component {
 
 
                 let calculate_type = fcontrol.getIn(['options', 'calculate_type']);
+
                 let calculate_column = fcontrol.get('column');
 
                 let columns = [];
@@ -802,7 +804,55 @@ export default class Form extends Component {
                     columns.push(
                         {column: calculate_column, value: this.getValueByColumn(calculate_column)}
                     );
-                })
+                });
+
+                if(calculate_type == '--urtug-bodoh'){
+                    let noat_shalgah = fcontrol.getIn(['options', 'noat_shalgah']);
+                    let irsen_une = fcontrol.getIn(['options', 'irsen_une']);
+
+
+
+                    calculate_columns.push(
+                        {
+                            column:calculate_column,
+                            type:calculate_type,
+                            columns:columns,
+                            dataIndex:findex,
+                            noat_shalgah: this.getValueByColumn(noat_shalgah),
+                            irsen_une: this.getValueByColumn(irsen_une)
+                        }
+                    )
+                } else if(calculate_type == '--noat-bodoh'){
+                    let noat_shalgah = fcontrol.getIn(['options', 'noat_shalgah']);
+                    let irsen_une = fcontrol.getIn(['options', 'irsen_une']);
+                    let urtug_une = fcontrol.getIn(['options', 'urtug_une']);
+
+                    calculate_columns.push(
+                        {
+                            column:calculate_column,
+                            type:calculate_type,
+                            columns:columns,
+                            dataIndex:findex,
+                            noat_shalgah: this.getValueByColumn(noat_shalgah),
+                            irsen_une: this.getValueByColumn(irsen_une),
+                            urtug_une: this.getValueByColumn(urtug_une)
+                        }
+                    )
+                } else if(calculate_type == '--hudaldal-une-bodoh'){
+                    let borluulaltiin_huvi = fcontrol.getIn(['options', 'borluulaltiin_huvi']);
+                    let urtug_une = fcontrol.getIn(['options', 'urtug_une']);
+
+                    calculate_columns.push(
+                        {
+                            column:calculate_column,
+                            type:calculate_type,
+                            columns:columns,
+                            dataIndex:findex,
+                            borluulaltiin_huvi: this.getValueByColumn(borluulaltiin_huvi),
+                            urtug_une: this.getValueByColumn(urtug_une)
+                        }
+                    )
+                } else
                 calculate_columns.push(
                     {
                         column:calculate_column,
@@ -843,12 +893,38 @@ export default class Form extends Component {
                         else{
                             let pluss_vlue = (calculate_result/100)*cal_column.value;
 
-                            let calculate_10 = Math.ceil(((calculate_result*1)+(pluss_vlue))/10)*10;
+                            let calculate_10 = Math.ceil((((calculate_result*1)+(pluss_vlue))/10))*10;
 
                             calculate_result = calculate_10;
                         }
 
                     })
+                }else if(calculate_column.type == '--urtug-bodoh'){
+                    if(calculate_column.noat_shalgah == 1 || calculate_column.noat_shalgah == '1'){
+                        calculate_result = Math.ceil((calculate_column.irsen_une/1.1));
+                    } else {
+
+                        calculate_result = calculate_column.irsen_une*1;
+                    }
+
+                }else if(calculate_column.type == '--noat-bodoh'){
+
+                    if(calculate_column.noat_shalgah == 1 || calculate_column.noat_shalgah == '1'){
+                        calculate_result = (calculate_column.irsen_une*1) - (calculate_column.urtug_une*1);
+                    } else {
+                        calculate_result = 0;
+                    }
+
+                }else if(calculate_column.type == '--hudaldal-une-bodoh'){
+
+
+                    let pluss_vlue = (calculate_column.urtug_une/100)*calculate_column.borluulaltiin_huvi;
+                    let niilber = (calculate_column.urtug_une*1)+(pluss_vlue);
+                    let pre_hudaldah_une = niilber+(niilber*0.1);
+                    let calculate_pre = Math.ceil((pre_hudaldah_une/10))*10;
+
+                    calculate_result = calculate_pre;
+
                 }else if(calculate_column.type == '--minus'){
                     calculate_column.columns.map((cal_column, calIndex)=>{
                         if(calIndex == 0)
