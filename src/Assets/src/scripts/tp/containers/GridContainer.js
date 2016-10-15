@@ -207,7 +207,7 @@ class GridContainer extends Component {
     }
 
     getColumnType(column) {
-
+        
         return this.props.gridHeader[column].type;
 
     }
@@ -393,7 +393,7 @@ class GridContainer extends Component {
 
             let row = changes[0][0];
 
-            if (colType != '--auto-calculate') {
+      
 
                 ///auto-calculate
                 let calculate_columns = []
@@ -450,6 +450,13 @@ class GridContainer extends Component {
                                 else
                                     calculate_result = calculate_result + cal_column.value
                             })
+                        } else if ((calculate_column.type == '--minus')) {
+                            calculate_column.columns.map((cal_column, calIndex)=> {
+                                if (calIndex == 0)
+                                    calculate_result = cal_column.value;
+                                else
+                                    calculate_result = calculate_result - cal_column.value
+                            })
                         } else if (calculate_column.type == '--average') {
                             calculate_column.columns.map((cal_column, calIndex)=> {
                                 if (calIndex == 0)
@@ -461,11 +468,16 @@ class GridContainer extends Component {
                         }
                         if (calculate_result !== null) {
 
-                            tp_handSonTable.setDataAtCell(row, calculate_column.dataIndex, calculate_result);
+                            let thisValue = tp_handSonTable.getDataAtCell(row, calculate_column.dataIndex);
+
+                            if(thisValue != calculate_result) {
+
+                                tp_handSonTable.setDataAtCell(row, calculate_column.dataIndex, calculate_result);
+                            }
                         }
                     }
                 });
-            }
+            
 
 
             if (changes[0][1] != this.props.identity_name) {
@@ -576,9 +588,13 @@ class GridContainer extends Component {
         let fixedColumnsLeft = 0;
 
         gridHeader.map((header, h_index)=> {
+            let colReadOnly = false;
             if (header.hidden) {
 
             } else {
+                if(header.readOnly){
+                    colReadOnly = true;
+                }
                 tp_colHeader.push(header.title)
                 let gridColumn = {}
                 switch (header.type) {
@@ -588,6 +604,7 @@ class GridContainer extends Component {
                             data: header.column,
                             editor: 'text',
                             type: 'text',
+                            readOnly:colReadOnly,
                             validator: this.validationCaller.bind(this, header.validate),
 
                         }
@@ -597,6 +614,7 @@ class GridContainer extends Component {
                             data: header.column,
                             editor: 'text',
                             type: 'text',
+                            readOnly:colReadOnly,
                             validator: this.validationCaller.bind(this, header.validate),
                             //allowInvalid: false
                         }
@@ -607,6 +625,7 @@ class GridContainer extends Component {
                             type: 'checkbox',
                             checkedTemplate: 1,
                             uncheckedTemplate: 0,
+                            readOnly:colReadOnly,
                             validator: this.validationCaller.bind(this, header.validate),
                         }
                         break;
@@ -616,6 +635,7 @@ class GridContainer extends Component {
                         gridColumn = {
                             data: header.column,
                             editor: "chosen",
+                            readOnly:colReadOnly,
                             chosenOptions: {
                                 multiple: false,
                                 data: optionsList,
@@ -632,7 +652,7 @@ class GridContainer extends Component {
                         gridColumn = {
                             data: header.column,
                             editor: "chosen",
-
+                            readOnly:colReadOnly,
                             chosenOptions: {
                                 multiple: true,
                                 data: optionsListtag,
@@ -652,6 +672,7 @@ class GridContainer extends Component {
                         break;
                     case "--json":
                         gridColumn = {
+                            readOnly:colReadOnly,
                             data: header.column,
                             renderer: gridJson,
                         }
@@ -670,8 +691,9 @@ class GridContainer extends Component {
                         gridColumn = {
                             data: header.column,
                             type: 'date',
+                            readOnly:colReadOnly,
                             validator: this.validationCaller.bind(this, header.validate),
-                            dateFormat: "YYYY.MM.DD"
+                            dateFormat: "YYYY-MM-DD"
                             //allowInvalid: false
                         }
 
@@ -682,6 +704,7 @@ class GridContainer extends Component {
                             data: header.column,
                             type: 'numeric',
                             editor: 'numeric',
+                            readOnly:colReadOnly,
                             className:'htRight',
                             validator: this.validationCaller.bind(this, header.validate),
                         }
@@ -703,6 +726,7 @@ class GridContainer extends Component {
                             editor: 'numeric',
                             format: '0,0.000',
                             className:'htRight',
+                            readOnly:colReadOnly,
                             validator: this.validationCaller.bind(this, header.validate),
                         }
 
@@ -714,6 +738,7 @@ class GridContainer extends Component {
                             type: 'numeric',
                             format: '0,0.00',
                             className:'htRight',
+                            readOnly:colReadOnly,
                             validator: this.validationCaller.bind(this, header.validate),
                         }
                         break;
@@ -848,7 +873,9 @@ class GridContainer extends Component {
                 let hasahToo =  columnSummary.length >=1 ? 2 : 1;
 
                 if(row <= gridData.length-hasahToo || row <=0 ) {
-                    if (prop != self.props.identity_name && prop != 'id') {
+                    if (prop != self.props.identity_name && prop != 'id' && prop != -1) {
+
+                       
 
                         let validate = false;
 
@@ -1107,6 +1134,7 @@ class GridContainer extends Component {
             identity_name,
             formDataNew,
             hideMainOrder,
+            grid_extra_data,
             advancedSearchImmutalbe
         } = this.props;
 
@@ -1161,6 +1189,7 @@ class GridContainer extends Component {
                     order={order}
                     identity_name={identity_name}
                     formDataNew={formDataNew}
+                    grid_extra_data={grid_extra_data}
                     defaultLocale={defaultLocale}
                     formControls={formControls}
                     hideMainOrder={hideMainOrder}
@@ -1212,6 +1241,7 @@ function mapStateToProps(state) {
         defaultLocale: Grid.get('defaultLocale'),
         formData: Form.get('formData').toJS(),
         formDataNew: Form.get('formData'),
+        grid_extra_data: Grid.get('grid_extra_data'),
         editID: Grid.get('editID'),
         showInlineForm: Grid.get('showInlineForm'),
         showGird: Grid.get('showGird'),

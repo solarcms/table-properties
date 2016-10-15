@@ -693,7 +693,7 @@ class AddEditContainer extends Component {
 
 
                         if (data == 'success')
-                            listData.splice(row, 1);
+                            this.callMultiItemsDatas(save_first_id_column_)
                         else
                             alert("Please try agian")
                     });
@@ -1256,7 +1256,7 @@ class AddEditContainer extends Component {
 
         tp_dataSchema['id'] = -1;
 
-        tp_colHeader.push('Устгах')
+        tp_colHeader.push('Засах')
         tp_columns.push({
             data: this.props.identity_name,
             width: 35,

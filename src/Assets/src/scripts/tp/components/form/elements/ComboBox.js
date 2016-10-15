@@ -82,7 +82,7 @@ export default class ComboBox extends Component {
 
             formData.getIn([column, 'data', 'data']).map((data, sindex)=>{
 
-                
+              
 
                 if (fieldOptions.get('textField') instanceof Object) {
 

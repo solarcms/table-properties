@@ -39,6 +39,7 @@ class Tp
     public $form_sql_param = array();       // associative array to bind named parameters to form_sql. use to pass in identity_id when specifiying form_sql.
     public $form_input_control = [];   // for form(), define inputs like select boxes, document uploads, etc... *info on usage below*
 
+    public $grid_extra_data = [];
 
     public $grid_columns = [];
     public $grid_default_order_by = '';     // free-form 'order by' clause. Not used if grid_sql is specified. Example: column1 desc, column2 asc
@@ -369,6 +370,7 @@ class Tp
             'save_first_id_column' => $this->save_first_id_column,
             'multi_items_form_input_control' => $this->multi_items_form_input_control,
             'grid_output_control' => $this->grid_output_control,
+            'grid_extra_data' => $this->grid_extra_data,
             'page_name' => $this->page_name,
             'pagination_position' => $this->pagination_position,
             'formType' => $this->formType,
@@ -579,7 +581,7 @@ class Tp
 
 //        group by
         if ($this->group_by) {
-            $table_data->groupBy($this->group_by);
+            $table_data->groupBy(DB::raw($this->group_by));
         }
         if ($this->grid_default_order_by != '') {
             if ($newOrder['column'] != null && $newOrder['sortOrder'] != null) {
@@ -789,6 +791,8 @@ class Tp
 
         $FormData = [];
 
+        $extra = $this->get_data($this->grid_extra_data);
+
         if ($this->formType == 'inline')
             $FormData_pre = $this->get_data($this->grid_output_control);
         else
@@ -818,6 +822,10 @@ class Tp
                 $FormData = array_merge($FormData, $FormData_pre_sub);
             }
         }
+
+        $FormData = array_merge($FormData, $extra);
+
+
 
 
         return $FormData;
@@ -892,8 +900,15 @@ class Tp
             $table_data->addSelect("$this->table." . $t_f_c['column']);
         }
 
+        $e_data = $table_data->get();
 
-        return $table_data->get();
+        if (count($this->multi_items_form_input_control) >= 1) {
+
+            $e_pre =  (array)$e_data[0];
+
+            Session::set('first_id', $e_pre[$this->save_first_id_column]);
+        }
+        return $e_data;
 
     }
 
@@ -968,7 +983,7 @@ class Tp
         $multiItems = Request::input('multiItems');
 
         $rules = [];
-
+        
         $insertQuery = $this->hidden_values;
         foreach ($this->form_input_control as $formControl) {
 
@@ -1130,6 +1145,8 @@ class Tp
 
                 if ($checkFirst == 0) {
 
+                  
+
                     $validator = Validator::make($insertQuery, $rules);
                     if ($validator->fails()) {
                         return Response::json(
@@ -1157,6 +1174,7 @@ class Tp
                     DB::table($this->table)->where($this->identity_name, '=', $insertedId)->update($firstItem);
 
                 } else {
+                    
                     $insertQuery[$this->save_first_id_column] = $insertedId;
 
                     $validator = Validator::make($insertQuery, $rules);
@@ -1225,6 +1243,8 @@ class Tp
             if ($this->insert_response_function == null)
                 return Response::json('success', 200);
             else {
+
+                $insertQuery['insertedId'] = $insertedId;
                 return $this->responseCaller($this->insert_response_function, $insertQuery);
             }
         } else {
@@ -1457,7 +1477,7 @@ class Tp
 
                 if (!$multiItem[$this->identity_name]) {
 
-                    $insertQuery[$this->save_first_id_column] = $id;
+                    $insertQuery[$this->save_first_id_column] = Session::get('first_id');
 
                     if ($this->before_update != null) {
                         $pre_values = $this->beforeUpdateCaller($this->before_update, $insertQuery);
@@ -1482,7 +1502,7 @@ class Tp
 
                 } else {
 
-                    $insertQuery[$this->save_first_id_column] = $id;
+                    $insertQuery[$this->save_first_id_column] = Session::get('first_id');
 
                     if ($this->before_update != null) {
                         $pre_values = $this->beforeUpdateCaller($this->before_update, $insertQuery);
@@ -1544,7 +1564,13 @@ class Tp
         }
 
         if ($saved == true || $saved == 'none') {
-            return Response::json('success', 200);
+            if ($this->insert_response_function == null)
+                return Response::json('success', 200);
+            else {
+                return $this->responseCaller($this->insert_response_function, $insertQuery);
+            }
+          
+            
         } else {
             return Response::json('error', 400);
         }

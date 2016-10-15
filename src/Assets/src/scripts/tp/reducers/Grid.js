@@ -8,6 +8,7 @@ const initialState = {
     setup: {},
     listData:{},
     form_input_control:{},
+    grid_extra_data:{},
     currentPage:1,
     pageLimit:500,
     formData:{},
@@ -43,10 +44,12 @@ export default createReducer(initialState, {
 
         const advancedSearch = Immutable.fromJS(setupData.advancedSearch);
         const columnSummary = Immutable.fromJS(setupData.columnSummary);
+        const grid_extra_data = Immutable.fromJS(setupData.grid_extra_data);
 
         state = state.set('setup', data);
         state = state.set('order', order);
         state = state.set('advancedSearch', advancedSearch);
+        state = state.set('grid_extra_data', grid_extra_data);
         state = state.set('columnSummary', columnSummary);
         state = state.set('defaultLocale', setupData.default_locale);
 

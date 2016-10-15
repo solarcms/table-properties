@@ -27,6 +27,7 @@ export default class AdvenvedSearch extends Component {
             mainOrderNew,
             hideMainOrder,
             dateYearMonthChangeY,
+            grid_extra_data,
             dateYearMonthChangeM
         } = this.props;
 
@@ -123,9 +124,19 @@ export default class AdvenvedSearch extends Component {
                             let options = [];
                             formControls.map(data=>{
                                 if(data.get('column') == parentSelect.column){
+
                                     options = data.get('options');
                                 }
-                            })
+                            });
+                            if(options.length <= 0){
+                    
+                                grid_extra_data.map(data=>{
+                                    if(data.get('column') == parentSelect.column){
+
+                                        options = data.get('options');
+                                    }
+                                });
+                            }
 
                             return <div key={index}  >
 

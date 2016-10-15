@@ -24,7 +24,7 @@ export function number(value) {
 
 export function required(value) {
 
-        if (!value || value == '' || value === null) {
+        if (value == '' || value === null) {
             return false;
         }
         else {
