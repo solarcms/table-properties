@@ -14,7 +14,7 @@ import * as DataActionsForm from "../actions/form"
 import {getList, setupPage, deleteItem, save, getCascadeChild, update, edit, changeLanguage, inlineSave, inlineSaveUpdate} from "../api/"
 import Header from "../components/grid/Header"
 import Pagination from "../components/grid/Paginator"
-import {customDropdownRenderer, gridImage, gridJson, genrateComboboxvalues} from '../lib/handSonTableHelper'
+import {customDropdownRenderer, gridImage, gridColor,gridJson, genrateComboboxvalues} from '../lib/handSonTableHelper'
 
 import {getDate} from "../lib/date";
 import validationGrid from "../components/grid/validation/"
@@ -670,6 +670,14 @@ class GridContainer extends Component {
                         }
 
                         break;
+                    case "--color":
+                        gridColumn = {
+
+                            data: header.column,
+                            renderer: gridColor,
+                        }
+
+                        break;
                     case "--json":
                         gridColumn = {
                             readOnly:colReadOnly,
@@ -900,7 +908,7 @@ class GridContainer extends Component {
                         var type_col = self.getColumnType(conIndex)
 
 
-                        if (type_col != '--image' && type_col != '--internal-link' && type_col != '--combobox' && type_col != '--tag') {
+                        if (type_col != '--color' && type_col != '--image' && type_col != '--internal-link' && type_col != '--combobox' && type_col != '--tag') {
                             cellProperties.renderer = function (instance, td, row, col, prop, value, cellProperties) {
 
                                 Handsontable.cellTypes[cellProperties.type].renderer.apply(this, arguments);

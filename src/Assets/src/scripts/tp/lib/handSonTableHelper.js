@@ -86,6 +86,28 @@ export function gridImage(instance, td, row, col, prop, value, cellProperties) {
 
 
 }
+export function gridColor(instance, td, row, col, prop, value, cellProperties) {
+
+    while (td.firstChild) {
+        td.removeChild(td.firstChild);
+    }
+
+
+
+    if (value) {
+        let pre = document.createElement('span');
+        pre.innerHTML = value;
+        pre.style.color = value;
+        td.appendChild(pre);
+        td.style.color = value;
+        td.style.backgroundColor = value;
+
+
+        return td;
+    }
+
+
+}
 export function genrateComboboxvalues(data, header) {
 
     let optionsList = [];
