@@ -45,34 +45,34 @@ export default class AdvenvedSearch extends Component {
         return (
             <div className={`advanced_search_order ${AdvencedClass}`}>
                 {advancedSearch.dateYearMonth && advancedSearch.dateYearMonth.years.length >= 1 && advancedSearch.dateYearMonth.months.length >= 1?
-                <div  className="date-year-month">
-                    <div className="year-search">
-                        <HeaderCombo
-                            disabled={false}
-                            name={`years`}
-                            fieldClass={``}
-                            placeholder={`Жил`}
-                            fieldClassName={``}
-                            value={advancedSearch.dateYearMonth.defaultYear}
-                            multi={false}
-                            fieldOptions={yearOptions}
-                            changeHandler={dateYearMonthChangeY}
-                        />
+                    <div  className="date-year-month">
+                        <div className="year-search">
+                            <HeaderCombo
+                                disabled={false}
+                                name={`years`}
+                                fieldClass={``}
+                                placeholder={`Жил`}
+                                fieldClassName={``}
+                                value={advancedSearch.dateYearMonth.defaultYear}
+                                multi={false}
+                                fieldOptions={yearOptions}
+                                changeHandler={dateYearMonthChangeY}
+                            />
 
-                    </div>
-                    <div className="month-search">
-                        <HeaderCombo
-                            disabled={false}
-                            name={`months`}
-                            fieldClassName={``}
-                            placeholder={`Сар`}
-                            value={advancedSearch.dateYearMonth.defaultMonth}
-                            multi={false}
-                            fieldOptions={monthOptions}
-                            changeHandler={dateYearMonthChangeM}
-                        />
-                    </div>
-                </div>:null
+                        </div>
+                        <div className="month-search">
+                            <HeaderCombo
+                                disabled={false}
+                                name={`months`}
+                                fieldClassName={``}
+                                placeholder={`Сар`}
+                                value={advancedSearch.dateYearMonth.defaultMonth}
+                                multi={false}
+                                fieldOptions={monthOptions}
+                                changeHandler={dateYearMonthChangeM}
+                            />
+                        </div>
+                    </div>:null
                 }
                 <div className="dateRange">
                     {advancedSearch.dateRange ? advancedSearch.dateRange.map((dateRange, index)=>{
@@ -128,15 +128,28 @@ export default class AdvenvedSearch extends Component {
                                     options = data.get('options');
                                 }
                             });
-                            if(options.length <= 0){
-                    
+                            if(Array.isArray(options)){
+                                if(options.length <= 0){
+
+                                    grid_extra_data.map(data=>{
+                                        if(data.get('column') == parentSelect.column){
+
+                                            options = data.get('options');
+                                        }
+                                    });
+                                }
+                            }else{
+
+
                                 grid_extra_data.map(data=>{
                                     if(data.get('column') == parentSelect.column){
 
                                         options = data.get('options');
                                     }
                                 });
+
                             }
+
 
                             return <div key={index}  >
 
@@ -175,7 +188,7 @@ export default class AdvenvedSearch extends Component {
                             <i className="material-icons">&#xE5C7;</i> Хуучин 2
                         </a>
                     </div>
-                :null
+                    :null
                 }
 
 

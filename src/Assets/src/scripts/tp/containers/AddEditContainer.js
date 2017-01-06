@@ -808,156 +808,248 @@ class AddEditContainer extends Component {
 
 
 
-                ///auto-calculate
-                let calculate_columns = []
+            ///auto-calculate
+            let calculate_columns = []
 
-                this.props.multi_items_form_input_control.map((fcontrol, findex)=> {
-                    if (fcontrol.type == '--auto-calculate') {
-
-
-                        let calculate_type = fcontrol.options.calculate_type;
-                        let calculate_column = fcontrol.column;
-
-                        let columns = [];
-
-                        fcontrol.options.calculate_columns.map((calculate_column, cal_index)=> {
+            this.props.multi_items_form_input_control.map((fcontrol, findex)=> {
+                if (fcontrol.type == '--auto-calculate') {
 
 
+                    let calculate_type = fcontrol.options.calculate_type;
+                    let calculate_column = fcontrol.column;
 
-                            columns.push(
-                                {column: calculate_column, value: this.getValueAtCell(row, calculate_column)}
-                            );
-                        })
-                        if(calculate_type == '--urtug-bodoh'){
-                            let noat_shalgah = fcontrol.options.noat_shalgah;
-                            let irsen_une = fcontrol.options.irsen_une;
+                    let columns = [];
+
+                    fcontrol.options.calculate_columns.map((calculate_column, cal_index)=> {
 
 
 
-                            calculate_columns.push(
-                                {
-                                    column:calculate_column,
-                                    type:calculate_type,
-                                    columns:columns,
-                                    dataIndex:findex,
-                                    noat_shalgah: this.getValueAtCell(row, noat_shalgah),
-                                    irsen_une: this.getValueAtCell(row, irsen_une)
-                                }
-                            )
-                        } else if(calculate_type == '--noat-bodoh'){
-                            let noat_shalgah = fcontrol.options.noat_shalgah;
-                            let irsen_une = fcontrol.options.irsen_une;
-                            let urtug_une = fcontrol.options.urtug_une;
-
-                            calculate_columns.push(
-                                {
-                                    column:calculate_column,
-                                    type:calculate_type,
-                                    columns:columns,
-                                    dataIndex:findex,
-                                    noat_shalgah: this.getValueAtCell(row, noat_shalgah),
-                                    irsen_une: this.getValueAtCell(row, irsen_une),
-                                    urtug_une: this.getValueAtCell(row, urtug_une)
-                                }
-                            )
-                        } else if(calculate_type == '--hudaldal-une-bodoh'){
-                            let borluulaltiin_huvi = fcontrol.options.borluulaltiin_huvi;
-                            let urtug_une = fcontrol.options.urtug_une;
-
-                            calculate_columns.push(
-                                {
-                                    column:calculate_column,
-                                    type:calculate_type,
-                                    columns:columns,
-                                    dataIndex:findex,
-                                    borluulaltiin_huvi: this.getValueAtCell(row, borluulaltiin_huvi),
-                                    urtug_une: this.getValueAtCell(row, urtug_une)
-                                }
-                            )
-                        } else
-                            calculate_columns.push(
-                                {
-                                    column:calculate_column,
-                                    type:calculate_type,
-                                    columns:columns,
-                                    dataIndex:findex
-                                }
-                            )
-
-                    }
-                })
-
-                calculate_columns.map((calculate_column, index)=> {
-                    let checkAllValue = true;
-                    calculate_column.columns.map((cal_column)=> {
-                        if (cal_column.value === null)
-                            checkAllValue = false
+                        columns.push(
+                            {column: calculate_column, value: this.getValueAtCell(row, calculate_column)}
+                        );
                     })
-                    let calculate_result = null;
-                    if (checkAllValue === true) {
-                        if (calculate_column.type == '--multiply') {
-                            calculate_column.columns.map((cal_column, calIndex)=> {
-                                if (calIndex == 0)
-                                    calculate_result = cal_column.value;
-                                else
-                                    calculate_result = calculate_result * cal_column.value
-                            })
-                        } else if(calculate_column.type == '--urtug-bodoh'){
+                    if(calculate_type == '--urtug-bodoh'){
+                        let noat_shalgah = fcontrol.options.noat_shalgah;
+                        let irsen_une = fcontrol.options.irsen_une;
 
 
-                            if(calculate_column.noat_shalgah == 1 || calculate_column.noat_shalgah == '1'){
-                                calculate_result = Math.ceil((calculate_column.irsen_une/1.1));
-                            } else {
 
-                                calculate_result = calculate_column.irsen_une*1;
+                        calculate_columns.push(
+                            {
+                                column:calculate_column,
+                                type:calculate_type,
+                                columns:columns,
+                                dataIndex:findex,
+                                noat_shalgah: this.getValueAtCell(row, noat_shalgah),
+                                irsen_une: this.getValueAtCell(row, irsen_une)
                             }
+                        )
+                    } else if(calculate_type == '--noat-bodoh'){
+                        let noat_shalgah = fcontrol.options.noat_shalgah;
+                        let irsen_une = fcontrol.options.irsen_une;
+                        let urtug_une = fcontrol.options.urtug_une;
 
-                        }else if(calculate_column.type == '--noat-bodoh'){
-
-                            if(calculate_column.noat_shalgah == 1 || calculate_column.noat_shalgah == '1'){
-                                calculate_result = (calculate_column.irsen_une*1) - (calculate_column.urtug_une*1);
-                            } else {
-                                calculate_result = 0;
+                        calculate_columns.push(
+                            {
+                                column:calculate_column,
+                                type:calculate_type,
+                                columns:columns,
+                                dataIndex:findex,
+                                noat_shalgah: this.getValueAtCell(row, noat_shalgah),
+                                irsen_une: this.getValueAtCell(row, irsen_une),
+                                urtug_une: this.getValueAtCell(row, urtug_une)
                             }
+                        )
+                    } else if(calculate_type == '--hudaldal-une-bodoh'){
+                        let borluulaltiin_huvi = fcontrol.options.borluulaltiin_huvi;
+                        let urtug_une = fcontrol.options.urtug_une;
+                        let noattei_zarah = fcontrol.options.noattei_zarah;
+                        let nhattai_zarah = fcontrol.options.nhattai_zarah;
 
-                        }else if(calculate_column.type == '--hudaldal-une-bodoh'){
 
 
-                            let pluss_vlue = (calculate_column.urtug_une/100)*calculate_column.borluulaltiin_huvi;
-                            let niilber = (calculate_column.urtug_une*1)+(pluss_vlue);
-                            let pre_hudaldah_une = niilber+(niilber*0.1);
-                            let calculate_pre_ = Math.ceil((pre_hudaldah_une/10))*10;
+                        calculate_columns.push(
+                            {
+                                column:calculate_column,
+                                type:calculate_type,
+                                columns:columns,
+                                dataIndex:findex,
+                                borluulaltiin_huvi: this.getValueAtCell(row, borluulaltiin_huvi),
+                                urtug_une: this.getValueAtCell(row, urtug_une),
+                                nhattai_zarah: this.getValueAtCell(row, nhattai_zarah),
+                                noattei_zarah: this.getValueAtCell(row, noattei_zarah)
+                            }
+                        )
+                    } else if(calculate_type == '--noat-zarah'){
+                        let borluulaltiin_huvi = fcontrol.options.borluulaltiin_huvi;
+                        let urtug_une = fcontrol.options.urtug_une;
+                        let noattei_zarah = fcontrol.options.noattei_zarah;
 
-                            calculate_result = calculate_pre_;
 
-                        } else if ((calculate_column.type == '--sum')) {
-                            calculate_column.columns.map((cal_column, calIndex)=> {
-                                if (calIndex == 0)
-                                    calculate_result = cal_column.value;
-                                else
-                                    calculate_result = calculate_result + cal_column.value
-                            })
-                        } else if (calculate_column.type == '--average') {
-                            calculate_column.columns.map((cal_column, calIndex)=> {
-                                if (calIndex == 0)
-                                    calculate_result = cal_column.value;
-                                else
-                                    calculate_result = calculate_result + cal_column.value
-                            })
-                            calculate_result = calculate_result / calculate_column.columns.length;
+                        calculate_columns.push(
+                            {
+                                column:calculate_column,
+                                type:calculate_type,
+                                columns:columns,
+                                dataIndex:findex,
+                                borluulaltiin_huvi: this.getValueAtCell(row, borluulaltiin_huvi),
+                                urtug_une: this.getValueAtCell(row, urtug_une),
+                                noattei_zarah: this.getValueAtCell(row, noattei_zarah)
+                            }
+                        )
+                    } else if(calculate_type == '--nhat-zarah'){
+                        let borluulaltiin_huvi = fcontrol.options.borluulaltiin_huvi;
+                        let urtug_une = fcontrol.options.urtug_une;
+                        let nhattai_zarah = fcontrol.options.nhattai_zarah;
+
+
+                        calculate_columns.push(
+                            {
+                                column:calculate_column,
+                                type:calculate_type,
+                                columns:columns,
+                                dataIndex:findex,
+                                borluulaltiin_huvi: this.getValueAtCell(row, borluulaltiin_huvi),
+                                urtug_une: this.getValueAtCell(row, urtug_une),
+                                nhattai_zarah: this.getValueAtCell(row, nhattai_zarah)
+                            }
+                        )
+                    } else
+                        calculate_columns.push(
+                            {
+                                column:calculate_column,
+                                type:calculate_type,
+                                columns:columns,
+                                dataIndex:findex
+                            }
+                        )
+
+                }
+            })
+
+            calculate_columns.map((calculate_column, index)=> {
+                let checkAllValue = true;
+                calculate_column.columns.map((cal_column)=> {
+                    if (cal_column.value === null)
+                        checkAllValue = false
+                })
+                let calculate_result = null;
+                if (checkAllValue === true) {
+                    if (calculate_column.type == '--multiply') {
+                        calculate_column.columns.map((cal_column, calIndex)=> {
+                            if (calIndex == 0)
+                                calculate_result = cal_column.value;
+                            else
+                                calculate_result = calculate_result * cal_column.value
+                        })
+                    } else if(calculate_column.type == '--urtug-bodoh'){
+
+
+                        if(calculate_column.noat_shalgah == 1 || calculate_column.noat_shalgah == '1'){
+                            calculate_result = Math.ceil((calculate_column.irsen_une/1.1));
+                        } else {
+
+                            calculate_result = calculate_column.irsen_une*1;
                         }
-                        if (calculate_result !== null) {
 
-                            let thisValue = tp_handSonTable.getDataAtCell(row, calculate_column.dataIndex);
+                    }else if(calculate_column.type == '--noat-bodoh'){
 
-                            if(thisValue != calculate_result){
+                        if(calculate_column.noat_shalgah == 1 || calculate_column.noat_shalgah == '1'){
+                            calculate_result = (calculate_column.irsen_une*1) - (calculate_column.urtug_une*1);
+                        } else {
+                            calculate_result = 0;
+                        }
 
-                                tp_handSonTable.setDataAtCell(row, calculate_column.dataIndex, calculate_result);
-                            }
+                    }else if(calculate_column.type == '--hudaldal-une-bodoh'){
+
+                        let hudaldah_und_bodson = 0;
+
+                        let pluss_vlue = (calculate_column.urtug_une/100)*calculate_column.borluulaltiin_huvi;
+                        hudaldah_und_bodson = (calculate_column.urtug_une*1)+(pluss_vlue);
+
+                        let noat = 0;
+                        let nhat = 0;
+
+                        if(calculate_column.noattei_zarah == 1 || calculate_column.noattei_zarah == '1'){
+                            noat = (hudaldah_und_bodson*0.1);
 
                         }
+
+                        if(calculate_column.nhattai_zarah == 1 || calculate_column.nhattai_zarah == '1'){
+                            nhat = (hudaldah_und_bodson*0.01);
+
+                        }
+                        hudaldah_und_bodson = hudaldah_und_bodson+nhat+noat;
+                        hudaldah_und_bodson = Math.ceil((hudaldah_und_bodson/10))*10;
+
+                        calculate_result = hudaldah_und_bodson;
+
+                    }else if(calculate_column.type == '--noat-zarah'){
+
+                        let hudaldah_und_bodson = 0;
+
+                        let pluss_vlue = (calculate_column.urtug_une/100)*calculate_column.borluulaltiin_huvi;
+                        hudaldah_und_bodson = (calculate_column.urtug_une*1)+(pluss_vlue);
+
+                        let noat = 0;
+
+
+                        if(calculate_column.noattei_zarah == 1 || calculate_column.noattei_zarah == '1'){
+                            noat = (hudaldah_und_bodson*0.1);
+
+                        }
+
+
+
+                        calculate_result = noat;
+
+                    } else if(calculate_column.type == '--nhat-zarah'){
+
+                        let hudaldah_und_bodson = 0;
+
+                        let pluss_vlue = (calculate_column.urtug_une/100)*calculate_column.borluulaltiin_huvi;
+                        hudaldah_und_bodson = (calculate_column.urtug_une*1)+(pluss_vlue);
+
+                        let nhat = 0;
+
+
+                        if(calculate_column.nhattei_zarah == 1 || calculate_column.nhattei_zarah == '1'){
+                            nhat = (hudaldah_und_bodson*0.01);
+
+                        }
+
+                        console.log(nhat)
+
+                        calculate_result = nhat;
+
+                    } else if ((calculate_column.type == '--sum')) {
+                        calculate_column.columns.map((cal_column, calIndex)=> {
+                            if (calIndex == 0)
+                                calculate_result = cal_column.value;
+                            else
+                                calculate_result = calculate_result + cal_column.value
+                        })
+                    } else if (calculate_column.type == '--average') {
+                        calculate_column.columns.map((cal_column, calIndex)=> {
+                            if (calIndex == 0)
+                                calculate_result = cal_column.value;
+                            else
+                                calculate_result = calculate_result + cal_column.value
+                        })
+                        calculate_result = calculate_result / calculate_column.columns.length;
                     }
-                });
+                    if (calculate_result !== null) {
+
+                        let thisValue = tp_handSonTable.getDataAtCell(row, calculate_column.dataIndex);
+
+                        if(thisValue != calculate_result){
+
+                            tp_handSonTable.setDataAtCell(row, calculate_column.dataIndex, calculate_result);
+                        }
+
+                    }
+                }
+            });
 
             if(this.props.multi_items_form_input_control[colIndex].after_change_trigger){
 
@@ -969,7 +1061,7 @@ class AddEditContainer extends Component {
 
                     if(data.status){
                         if(data.status == 'success'){
-                             setValues = data.new_values;
+                            setValues = data.new_values;
 
                             setValues.map(setValue=>{
                                 // console.log(setValue[0][0], 'changeing', setValue[1]);
@@ -986,7 +1078,7 @@ class AddEditContainer extends Component {
                         }
 
                     } else {
-                         setValues = data;
+                        setValues = data;
 
                         setValues.map(setValue=>{
                             // console.log(setValue[0][0], 'changeing', setValue[1]);
@@ -1071,6 +1163,8 @@ class AddEditContainer extends Component {
 
 
     }
+
+
 
 
     validationCaller(validateData, value, callback){

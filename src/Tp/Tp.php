@@ -63,8 +63,9 @@ class Tp
 
     //group by
     public $group_by = null;
-    //select RAW
+    //RAW
     public $selectRAW = null;
+
 
     // time stamp
     public $created_at = null;
@@ -82,7 +83,10 @@ class Tp
     public $save_sub_items_count = []; // parent columns :"id", "active", "name" "total_childs", child columns:'id', 'parent_id',  #['child_connect_column'=>'parent_id', 'parent_column'=>'total_childs']
     public $before_insert = null;
     public $before_update = null;
+    public $after_insert = null;
+    public $after_update = null;
     public $before_delete = null;
+    public $after_delete = null;
 
     //Buttons
     public $save_button_text = 'Хадгалах';
@@ -419,6 +423,7 @@ class Tp
         $searchValue = Request::input('searchValue');
         $newOrder = Request::input('order');
         $advancedSearch = Request::input('advancedSearch');
+
 
         $table_data = DB::table($this->table)->select($this->grid_columns);
 
@@ -961,6 +966,32 @@ class Tp
 
     }
 
+    public function afterInsertCaller($after_insert, $insertQuery, $id)
+    {
+
+        $controller = $after_insert['controller'];
+        $function = $after_insert['function'];
+        $arguments = $after_insert['arguments'];
+        $arguments['insert_values'] = $insertQuery;
+        $arguments['id'] = $id;
+
+        return app($controller)->$function($arguments);
+
+    }
+
+    public function afterUpdateCaller($after_update, $insertQuery, $id)
+    {
+
+        $controller = $after_update['controller'];
+        $function = $after_update['function'];
+        $arguments = $after_update['arguments'];
+        $arguments['insert_values'] = $insertQuery;
+        $arguments['updated_id'] = $id;
+
+        return app($controller)->$function($arguments);
+
+    }
+
     public function responseCaller($insert_response_function, $insertQuery)
     {
 
@@ -983,7 +1014,7 @@ class Tp
         $multiItems = Request::input('multiItems');
 
         $rules = [];
-        
+
         $insertQuery = $this->hidden_values;
         foreach ($this->form_input_control as $formControl) {
 
@@ -1095,10 +1126,13 @@ class Tp
         $response = null;
         //multi items
         if (!empty($this->multi_items_form_input_control)) {
+
             $rules_pre = $this->getRule($this->multi_items_form_input_control);
             $rules = array_merge($rules, $rules_pre);
             $checkFirst = 0;
             $insertedId = null;
+
+
 
             foreach ($multiItems as $multiItem) {
 
@@ -1145,8 +1179,6 @@ class Tp
 
                 if ($checkFirst == 0) {
 
-                  
-
                     $validator = Validator::make($insertQuery, $rules);
                     if ($validator->fails()) {
                         return Response::json(
@@ -1154,8 +1186,10 @@ class Tp
                             ], 400);
                     }
 
+
                     if ($this->before_insert != null) {
                         $pre_values = $this->beforeInsertCaller($this->before_insert, $insertQuery);
+
 
                         if ($pre_values == 'success') {
                             return Response::json('success', 200);
@@ -1169,12 +1203,23 @@ class Tp
                     $saved = DB::table($this->table)->insert($insertQuery);
                     $insertedId = DB::getPdo()->lastInsertId();
 
+
                     $firstItem[$this->save_first_id_column] = $insertedId;
 
                     DB::table($this->table)->where($this->identity_name, '=', $insertedId)->update($firstItem);
+                    $insertQuery[$this->save_first_id_column] = $insertedId;
+                    if ($saved && $this->after_insert != null) {
+                        $save_trigger = $this->afterInsertCaller($this->after_insert, $insertQuery, $insertedId);
+
+                        if ($save_trigger == 'success') {
+                            $saved = true;
+                        } elseif ($save_trigger == 'fail') {
+                            $saved = false;
+                        }
+                    }
 
                 } else {
-                    
+
                     $insertQuery[$this->save_first_id_column] = $insertedId;
 
                     $validator = Validator::make($insertQuery, $rules);
@@ -1188,7 +1233,7 @@ class Tp
                         $pre_values = $this->beforeInsertCaller($this->before_insert, $insertQuery);
 
                         if ($pre_values == 'success') {
-                            return Response::json('success', 200);
+//                        return Response::json('success', 200);
                         } elseif ($pre_values == 'fail') {
                             return Response::json('before insert error', 400);
                         } else
@@ -1196,6 +1241,17 @@ class Tp
                     }
 
                     $saved = DB::table($this->table)->insert($insertQuery);
+                    $insertedId_ = DB::getPdo()->lastInsertId();
+
+                    if ($saved && $this->after_insert != null) {
+                        $save_trigger = $this->afterInsertCaller($this->after_insert, $insertQuery, $insertedId_);
+
+                        if ($save_trigger == 'success') {
+                            $saved = true;
+                        } elseif ($save_trigger == 'fail') {
+                            $saved = false;
+                        }
+                    }
                 }
 
                 $checkFirst++;
@@ -1228,6 +1284,16 @@ class Tp
             $saved = DB::table($this->table)->insert($insertQuery);
             $insertedId = DB::getPdo()->lastInsertId();
 
+            if ($saved && $this->after_insert != null) {
+                $save_trigger = $this->afterInsertCaller($this->after_insert, $insertQuery, $insertedId);
+
+                if ($save_trigger == 'success') {
+                    $saved = true;
+                } elseif ($save_trigger == 'fail') {
+                    $saved = false;
+                }
+            }
+
         }
 
 
@@ -1240,8 +1306,11 @@ class Tp
 
 
         if ($saved) {
-            if ($this->insert_response_function == null)
+            if ($this->insert_response_function == null){
+
                 return Response::json('success', 200);
+            }
+
             else {
 
                 $insertQuery['insertedId'] = $insertedId;
@@ -1252,7 +1321,6 @@ class Tp
         }
 
     }
-
 
     public function update()
     {
@@ -1479,6 +1547,10 @@ class Tp
 
                     $insertQuery[$this->save_first_id_column] = Session::get('first_id');
 
+                    if($this->created_at){
+                        $insertQuery[$this->created_at] = \Carbon\Carbon::now();
+                    }
+
                     if ($this->before_update != null) {
                         $pre_values = $this->beforeUpdateCaller($this->before_update, $insertQuery);
 
@@ -1498,6 +1570,17 @@ class Tp
                     }
 
                     $saved = DB::table($this->table)->insert($insertQuery);
+                    $insertedId = DB::getPdo()->lastInsertId();
+
+                    if (($saved == true && $this->after_update != null) || ($saved == 'none' && $this->after_update)) {
+                        $save_trigger = $this->afterUpdateCaller($this->after_update, $insertQuery, $insertedId);
+
+                        if ($save_trigger == 'success') {
+                            $saved = true;
+                        } elseif ($save_trigger == 'fail') {
+                            $saved = false;
+                        }
+                    }
 
 
                 } else {
@@ -1523,6 +1606,17 @@ class Tp
                     }
 
                     $saved = DB::table($this->table)->where("$this->identity_name", '=', $multiItem[$this->identity_name])->update($insertQuery);
+
+
+                    if (($saved == true && $this->after_update != null) || ($saved == 'none' && $this->after_update)) {
+                        $save_trigger = $this->afterUpdateCaller($this->after_update, $insertQuery, $multiItem[$this->identity_name]);
+
+                        if ($save_trigger == 'success') {
+                            $saved = true;
+                        } elseif ($save_trigger == 'fail') {
+                            $saved = false;
+                        }
+                    }
                 }
 
                 $checkFirst++;
@@ -1552,6 +1646,16 @@ class Tp
 
 
             $saved = DB::table($this->table)->where("$this->identity_name", '=', $id)->update($insertQuery);
+
+            if (($saved == true && $this->after_update != null) || ($saved == 'none' && $this->after_update)) {
+                $save_trigger = $this->afterUpdateCaller($this->after_update, $insertQuery, $id);
+
+                if ($save_trigger == 'success') {
+                    $saved = true;
+                } elseif ($save_trigger == 'fail') {
+                    $saved = false;
+                }
+            }
         }
 
 
@@ -1567,10 +1671,11 @@ class Tp
             if ($this->insert_response_function == null)
                 return Response::json('success', 200);
             else {
+                $insertQuery['updated_id'] = $id;
                 return $this->responseCaller($this->insert_response_function, $insertQuery);
             }
-          
-            
+
+
         } else {
             return Response::json('error', 400);
         }
@@ -1612,7 +1717,6 @@ class Tp
             return 'error';
 
     }
-
 
     public function create_grid_from_fields($columns)
     {
@@ -1941,7 +2045,6 @@ class Tp
 
     }
 
-
     /*
      * Combox add able
      * */
@@ -2097,7 +2200,6 @@ class Tp
 
 
     }
-
 
     /*sub items*/
     public function saveSubItems($parentId, $thisSubItems, $subItems)

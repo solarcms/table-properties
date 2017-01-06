@@ -838,9 +838,13 @@ export default class Form extends Component {
                             urtug_une: this.getValueByColumn(urtug_une)
                         }
                     )
-                } else if(calculate_type == '--hudaldal-une-bodoh'){
+                }
+
+                else if(calculate_type == '--hudaldal-une-bodoh'){
                     let borluulaltiin_huvi = fcontrol.getIn(['options', 'borluulaltiin_huvi']);
                     let urtug_une = fcontrol.getIn(['options', 'urtug_une']);
+                    let nhattai_zarah = fcontrol.getIn(['options', 'nhattai_zarah']);
+                    let noattei_zarah = fcontrol.getIn(['options', 'noattei_zarah']);
 
                     calculate_columns.push(
                         {
@@ -849,18 +853,54 @@ export default class Form extends Component {
                             columns:columns,
                             dataIndex:findex,
                             borluulaltiin_huvi: this.getValueByColumn(borluulaltiin_huvi),
-                            urtug_une: this.getValueByColumn(urtug_une)
+                            urtug_une: this.getValueByColumn(urtug_une),
+                            noattei_zarah: this.getValueByColumn(noattei_zarah),
+                            nhattai_zarah: this.getValueByColumn(nhattai_zarah)
+                        }
+                    )
+                } else if(calculate_type == '--noat-zarah'){
+                    let borluulaltiin_huvi = fcontrol.getIn(['options', 'borluulaltiin_huvi']);
+                    let urtug_une = fcontrol.getIn(['options', 'urtug_une']);
+                    let noattei_zarah = fcontrol.getIn(['options', 'noattei_zarah']);
+
+                    calculate_columns.push(
+                        {
+                            column:calculate_column,
+                            type:calculate_type,
+                            columns:columns,
+                            dataIndex:findex,
+                            borluulaltiin_huvi: this.getValueByColumn(borluulaltiin_huvi),
+                            urtug_une: this.getValueByColumn(urtug_une),
+                            noattei_zarah: this.getValueByColumn(noattei_zarah),
+
+                        }
+                    )
+                }else if(calculate_type == '--nhat-zarah'){
+                    let borluulaltiin_huvi = fcontrol.getIn(['options', 'borluulaltiin_huvi']);
+                    let urtug_une = fcontrol.getIn(['options', 'urtug_une']);
+                    let nhattai_zarah = fcontrol.getIn(['options', 'nhattai_zarah']);
+
+
+                    calculate_columns.push(
+                        {
+                            column:calculate_column,
+                            type:calculate_type,
+                            columns:columns,
+                            dataIndex:findex,
+                            borluulaltiin_huvi: this.getValueByColumn(borluulaltiin_huvi),
+                            urtug_une: this.getValueByColumn(urtug_une),
+                            nhattai_zarah: this.getValueByColumn(nhattai_zarah)
                         }
                     )
                 } else
-                calculate_columns.push(
-                    {
-                        column:calculate_column,
-                        type:calculate_type,
-                        columns:columns,
-                        dataIndex:findex
-                    }
-                )
+                    calculate_columns.push(
+                        {
+                            column:calculate_column,
+                            type:calculate_type,
+                            columns:columns,
+                            dataIndex:findex
+                        }
+                    )
             }
         })
 
@@ -917,13 +957,65 @@ export default class Form extends Component {
 
                 }else if(calculate_column.type == '--hudaldal-une-bodoh'){
 
+                    let hudaldah_und_bodson = 0;
 
                     let pluss_vlue = (calculate_column.urtug_une/100)*calculate_column.borluulaltiin_huvi;
-                    let niilber = (calculate_column.urtug_une*1)+(pluss_vlue);
-                    let pre_hudaldah_une = niilber+(niilber*0.1);
-                    let calculate_pre = Math.ceil((pre_hudaldah_une/10))*10;
+                    hudaldah_und_bodson = (calculate_column.urtug_une*1)+(pluss_vlue);
 
-                    calculate_result = calculate_pre;
+                    let noat = 0;
+                    let nhat = 0;
+
+                    if(calculate_column.noattei_zarah == 1 || calculate_column.noattei_zarah == '1'){
+                        noat = hudaldah_und_bodson*0.1;
+                    }
+
+                    if(calculate_column.nhattai_zarah == 1 || calculate_column.nhattai_zarah == '1'){
+                        nhat = hudaldah_und_bodson*0.01;
+                    }
+
+
+                    hudaldah_und_bodson = hudaldah_und_bodson+nhat+noat;
+                    hudaldah_und_bodson = Math.ceil((hudaldah_und_bodson/10))*10;
+
+
+
+
+                    calculate_result = hudaldah_und_bodson;
+
+                }else if(calculate_column.type == '--noat-zarah'){
+
+                    let hudaldah_und_bodson = 0;
+
+                    let pluss_vlue = (calculate_column.urtug_une/100)*calculate_column.borluulaltiin_huvi;
+                    hudaldah_und_bodson = (calculate_column.urtug_une*1)+(pluss_vlue);
+
+                    let noat = 0;
+
+
+                    if(calculate_column.noattei_zarah == 1 || calculate_column.noattei_zarah == '1'){
+                        noat = hudaldah_und_bodson*0.1;
+                    }
+
+
+
+                    calculate_result = noat;
+
+                }else if(calculate_column.type == '--nhat-zarah'){
+
+                    let hudaldah_und_bodson = 0;
+
+                    let pluss_vlue = (calculate_column.urtug_une/100)*calculate_column.borluulaltiin_huvi;
+                    hudaldah_und_bodson = (calculate_column.urtug_une*1)+(pluss_vlue);
+
+                    let noat = 0;
+                    let nhat = 0;
+
+                    if(calculate_column.nhattai_zarah == 1 || calculate_column.nhattai_zarah == '1'){
+                        nhat = hudaldah_und_bodson*0.01;
+                    }
+
+
+                    calculate_result = nhat;
 
                 }else if(calculate_column.type == '--minus'){
                     calculate_column.columns.map((cal_column, calIndex)=>{
