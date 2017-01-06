@@ -1,4 +1,4 @@
-import createReducer from '../lib/createReducer';
+import createReducer from '../createStore/createReducer';
 
 import Immutable from 'immutable';
 import * as types from '../constants/subItems';

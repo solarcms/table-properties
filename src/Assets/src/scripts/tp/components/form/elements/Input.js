@@ -1,10 +1,9 @@
 import React, { Component, PropTypes }  from 'react';
 
-import {moveCursorToEnd} from '../helpers/'
+import {moveCursorToEnd} from '../../../tools/cursor'
 
 import numeral from 'numeral';
 import {checkUnique} from "../../../api/"
-
 
 export default class Input extends Component {
 
@@ -33,16 +32,16 @@ export default class Input extends Component {
         let dataIndexs  =  dataIndexnew.split('-');
 
         if(value !== null && value != '')
-        checkUnique(table, table_colummn, value, row_id, row_id_field).then((count)=>{
-            if(count >= 1){
+            checkUnique(table, table_colummn, value, row_id, row_id_field).then((count)=>{
+                if(count >= 1){
 
-                if(errorText !== null)
-                    this.props.setErrorManuale(dataIndexs, errorText+' Өгөгдөл давахцаж байна')
-                else
-                    this.props.setErrorManuale(dataIndexs, 'Өгөгдөл давахцаж байна')
-            }
+                    if(errorText !== null)
+                        this.props.setErrorManuale(dataIndexs, errorText+' Өгөгдөл давахцаж байна')
+                    else
+                        this.props.setErrorManuale(dataIndexs, 'Өгөгдөл давахцаж байна')
+                }
 
-        })
+            })
 
     }
 
@@ -72,7 +71,7 @@ export default class Input extends Component {
 
         if(this.props.validation.includes('unique')){
 
-           this.unique(value, this.props.validation, this.props.dataIndex, this.props.edit_parent_id, this.props.errorText);
+            this.unique(value, this.props.validation, this.props.dataIndex, this.props.edit_parent_id, this.props.errorText);
         }
 
     }
@@ -85,13 +84,12 @@ export default class Input extends Component {
         //    var string = number.format('0,0');
         //        console.log(string)
         //}
-
     }
     componentWillUnmount(){
         //if(this.props.type == 'money')
         //    $('.money').autoNumeric('destroy');
     }
-    
+
     render() {
         const { autoFocus, name, value, placeholder, changeHandler, fieldClassName, errorText, fieldClass, type, disabled, dataIndex } = this.props;
 
@@ -111,37 +109,37 @@ export default class Input extends Component {
                     }
                 }else{
 
-                        moneyValue = value;
+                    moneyValue = value;
 
                 }
 
                 input = <input
-                        disabled={disabled}
-                        autoFocus={autoFocus}
-                        className="form-control money"
-                        data-index={dataIndex}
-                        name={name}
-                        value={moneyValue}
-                        defaultValue={moneyValue}
-                        placeholder={placeholder}
-                        onChange={this.changeHandler.bind(this)}
-                        onFocus={this.moneyFonuce.bind(this)}
-                        onBlur={this.moneyFonuceFalse.bind(this)}
-                        type="text"/>
+                    disabled={disabled}
+                    autoFocus={autoFocus}
+                    className="form-control money"
+                    data-index={dataIndex}
+                    name={name}
+                    value={moneyValue}
+                    defaultValue={moneyValue}
+                    placeholder={placeholder}
+                    onChange={this.changeHandler.bind(this)}
+                    onFocus={this.moneyFonuce.bind(this)}
+                    onBlur={this.moneyFonuceFalse.bind(this)}
+                    type="text"/>
                 break;
             case 'textarea':
                 input = <textarea
-                        disabled={disabled}
-                        autoFocus={autoFocus}
-                        className="form-control"
-                        data-index={dataIndex}
-                        name={name}
-                        value={value}
-                        defaultValue={value}
-                        placeholder={placeholder}
-                        onChange={changeHandler}
-                        onFocus={moveCursorToEnd}
-                        type={realType}/>
+                    disabled={disabled}
+                    autoFocus={autoFocus}
+                    className="form-control"
+                    data-index={dataIndex}
+                    name={name}
+                    value={value}
+                    defaultValue={value}
+                    placeholder={placeholder}
+                    onChange={changeHandler}
+                    onFocus={moveCursorToEnd}
+                    type={realType}/>
                 break;
             case 'password':
                 input =
@@ -179,32 +177,31 @@ export default class Input extends Component {
                 break;
             default:
                 input = <input
-                        disabled={disabled}
-                        autoFocus={autoFocus}
-                        className="form-control"
-                        data-index={dataIndex}
-                        name={name}
-                        value={value}
-                        defaultValue={value}
-                        placeholder={placeholder}
-                        onChange={changeHandler}
-                        onFocus={focusHandler}
-                        onBlur={this.blurFunction.bind(this)}
-                        onKeyPress = {this.props.keyPress}
-                        type={realType}/>
+                    disabled={disabled}
+                    autoFocus={autoFocus}
+                    className="form-control"
+                    data-index={dataIndex}
+                    name={name}
+                    value={value}
+                    defaultValue={value}
+                    placeholder={placeholder}
+                    onChange={changeHandler}
+                    onFocus={focusHandler}
+                    onBlur={this.blurFunction.bind(this)}
+                    onKeyPress = {this.props.keyPress}
+                    type={realType}/>
 
         }
 
-
         return (
 
-                <div  className={`form-group ${fieldClass} ${fieldClassName}`} id={`solar-form-group-${dataIndex}`}>
-                    <label className="control-label">{placeholder}</label>
-                    {input}
-                    <span className="help-block">
+            <div  className={`form-group ${fieldClass} ${fieldClassName}`} id={`solar-form-group-${dataIndex}`}>
+                <label className="control-label">{placeholder}</label>
+                {input}
+                <span className="help-block">
                         {errorText}
                     </span>
-                </div>
+            </div>
 
 
         )

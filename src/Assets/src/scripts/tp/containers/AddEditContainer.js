@@ -11,7 +11,7 @@ import {save, edit, update, getCascadeChild, callMultiItems, deleteItem, afterCh
 import Window from "../components/window/"
 import SubItemsContainer from "./formContainers/SubItemsContainer"
 import { Modal, Button } from 'react-bootstrap';
-import {customDropdownRenderer, gridImage, genrateComboboxvalues} from '../lib/handSonTableHelper'
+import {customDropdownRenderer, gridImage, genrateComboboxvalues} from '../tools/handSonTableHelper'
 /*for handson table*/
 var tp_handSonTable = null
 var exportPlugin = null

@@ -1,6 +1,6 @@
 import React, { Component, PropTypes }  from 'react';
 import DropzoneComponent from "react-dropzone-component";
-import getMeta from '../../../lib/getMeta'
+import getMeta from '../../../tools/getMeta'
 
 import {deleteFile} from '../../../api/upload'
 

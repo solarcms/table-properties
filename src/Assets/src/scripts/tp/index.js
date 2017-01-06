@@ -1,7 +1,7 @@
 import React from 'react';
 import {render} from 'react-dom';
 import App from './router';
-import createStore from './lib/createStore';
+import createStore from './createStore/createStore';
 import { Provider } from 'react-redux';
 const store = createStore();
 

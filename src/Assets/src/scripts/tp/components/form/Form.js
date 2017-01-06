@@ -9,11 +9,11 @@ import Select from 'react-select';
 
 import { Tabs, Tab } from 'react-bootstrap';
 
-import {getDate, getDateTime, getTime} from "../../lib/date";
+import {getDate, getDateTime, getTime} from "../../tools/date";
 import Datetime from 'react-datetime';
 
 
-import {moveCursorToEnd} from './helpers/'
+// import {moveCursorToEnd} from '../../tools/cursor'
 
 //// form elemenets
 import Input from './elements/Input'
