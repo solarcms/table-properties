@@ -8,10 +8,10 @@ import validation from "../components/form/validation/"
 import validationGrid from "../components/grid/validation/"
 import {save, edit, update, getCascadeChild, callMultiItems, deleteItem, afterChangeTrigger} from "../api/"
 
-import Window from "../components/window/"
+// import Window from "../components/window/"
 import SubItemsContainer from "./formContainers/SubItemsContainer"
 import { Modal, Button } from 'react-bootstrap';
-import {getData, getColumnIndex, getValueAtCell, getColumnValdation, getColumnTranslate, getColumnType, getColumn,exportEXCEL, afterValidater, setUpHandsonTable, editDeleteRender, afterChange} from '../tools/handSonTableHelper'
+import {getData, getColumnIndex, getValueAtCell, getColumnTranslate, getColumnType, getColumn,exportEXCEL, afterValidater, setUpHandsonTable, editDeleteRender, afterChange} from '../tools/handSonTableHelper'
 /*for handson table*/
 
 

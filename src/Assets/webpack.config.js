@@ -59,7 +59,7 @@ module.exports = {
                 comments: false
             }
         }),
-
+        // new Webpack.IgnorePlugin(/(locale)/, /node_modules.+(momentjs)/),
 
         new Webpack.DefinePlugin({
             'process.env': {
@@ -71,6 +71,7 @@ module.exports = {
     ],
 
     module: {
+        noParse: [/moment.js/],
         loaders: [
             //SCRIPTS
             {

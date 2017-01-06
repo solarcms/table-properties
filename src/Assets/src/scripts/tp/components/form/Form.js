@@ -1,5 +1,4 @@
 import React, { Component, PropTypes }  from 'react';
-import ReactDOM from 'react-dom';
 import Combogrid from './elements/ComboGrid';
 import CK from './elements/CK';
 import DragMap from './elements/DragMap';
