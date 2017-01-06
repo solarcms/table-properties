@@ -38,11 +38,6 @@ module.exports = {
         //Chunk script
         // new Webpack.optimize.CommonsChunkPlugin('dependencies', 'js/dependencies.js', Infinity),
 
-        //Chunk css
-        new ExtractTextPlugin('css/[name].css', {
-            allChunks: true
-        }),
-        
         //Copy assets
         new CopyPlugin([
             // File
@@ -53,6 +48,18 @@ module.exports = {
         // new Webpack.DefinePlugin({
         //     'process.env.NODE_ENV': JSON.stringify('development')
         // }),
+
+        //Chunk css
+        new ExtractTextPlugin('css/[name].css', {
+            allChunks: true
+        }),
+
+        new Webpack.optimize.UglifyJsPlugin({
+            output: {
+                comments: false
+            }
+        }),
+
 
         new Webpack.DefinePlugin({
             'process.env': {

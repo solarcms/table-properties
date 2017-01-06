@@ -405,7 +405,6 @@ export default class Form extends Component {
                     autoFocus={focus}
                     placeholder={title}
                     fieldClassName={fieldClassName}
-                    fieldClassName={fieldClassName}
                     name={name}
                     validation={field.get('validate')}
                     setErrorManuale={this.props.setErrorManuale}

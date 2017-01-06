@@ -3,7 +3,7 @@ import React, {Component, PropTypes} from "react"
 import {bindActionCreators} from "redux"
 import {connect} from "react-redux"
 
-import numeral from 'numeral';
+
 
 // import Window from "../components/window/"
 
@@ -13,7 +13,7 @@ import * as DataActionsForm from "../actions/form"
 import {getList, setupPage, deleteItem, save, getCascadeChild, update, edit, changeLanguage} from "../api/"
 import Header from "../components/grid/Header"
 import Pagination from "../components/grid/Paginator"
-import {afterChange, exportEXCEL, afterValidater, setUpHandsonTable, editDeleteRender} from '../tools/handSonTableHelper'
+import {getData, getColumnIndex, getValueAtCell, getColumnValdation, getColumnTranslate, getColumnType, getColumn, afterChange, exportEXCEL, afterValidater, setUpHandsonTable, editDeleteRender} from '../tools/handSonTableHelper'
 
 import {getDate} from "../tools/date";
 import validationGrid from "../components/grid/validation/"
@@ -31,7 +31,14 @@ class GridContainer extends Component {
         //window resize handler
         this.handleResize = this.handleResize.bind(this);
         //handson table
+        this.grid = 'tp_grid';
         this.exportEXCEL = exportEXCEL.bind(this);
+        this.getData = getData.bind(this);
+        this.getValueAtCell = getValueAtCell.bind(this);
+        this.getColumnIndex = getColumnIndex.bind(this);
+        this.getColumnTranslate = getColumnTranslate.bind(this);
+        this.getColumnType = getColumnType.bind(this);
+        this.getColumn = getColumn.bind(this);
         this.afterChange = afterChange.bind(this);
         this.afterValidater = afterValidater.bind(this);
         this.setUpHandsonTable = setUpHandsonTable.bind(this);
@@ -162,38 +169,9 @@ class GridContainer extends Component {
     }
 
 
-    /* Grid */
-    getColumnIndex(column) {
-        //return _.findIndex(this.props.gridHeader, { column: column })
-        return this.props.gridHeader.findIndex(x => x.column == column);
-    }
 
-    getColumnValdation(column) {
-        //return _.findIndex(this.props.gridHeader, { column: column })
-        if (this.props.gridHeader[column].validate)
-            return this.props.gridHeader[column].validate;
-        else
-            return ''
-    }
 
-    getColumnTranslate(column) {
-        //return _.findIndex(this.props.gridHeader, { column: column })
-        if (this.props.gridHeader[column] && this.props.gridHeader[column].translate)
-            return this.props.gridHeader[column].translate;
-        else
-            return false
-    }
 
-    getColumnType(column) {
-        
-        return this.props.gridHeader[column].type;
-
-    }
-    getColumn(index) {
-
-        return this.props.gridHeader[index].column;
-
-    }
 
     callPageDatas(page, pageLimit, searchValue) {
         if (this.props.permission.r !== true)
@@ -263,12 +241,6 @@ class GridContainer extends Component {
         this.props.actions.setInlineFrom(false);
     }
 
-    getData(row) {
-        return this.tp_handSonTable.getDataAtRow(row);
-    }
-
-
-
 
 
     internalLink(instance, td, row, col, prop, value, cellProperties) {
@@ -302,9 +274,6 @@ class GridContainer extends Component {
 
         return validationGrid(validateData, value, callback);
     }
-
-
-
 
 
     showAdvenced(){

@@ -11,12 +11,10 @@ import {save, edit, update, getCascadeChild, callMultiItems, deleteItem, afterCh
 import Window from "../components/window/"
 import SubItemsContainer from "./formContainers/SubItemsContainer"
 import { Modal, Button } from 'react-bootstrap';
-import {customDropdownRenderer, gridImage, genrateComboboxvalues} from '../tools/handSonTableHelper'
+import {getData, getColumnIndex, getValueAtCell, getColumnValdation, getColumnTranslate, getColumnType, getColumn,exportEXCEL, afterValidater, setUpHandsonTable, editDeleteRender, afterChange} from '../tools/handSonTableHelper'
 /*for handson table*/
-var tp_handSonTable = null
-var exportPlugin = null
-var tp_dataSchema = {};
-var maxRows = 0;
+
+
 var listData = []
 var save_first_id_column_ = 0
 
@@ -29,7 +27,26 @@ class AddEditContainer extends Component {
             sending: false,
             savedAlertShow: false,
             errorY: 0,
+            tpHeight:320,
+            formGrid:true
         };
+
+        //handson table
+        this.grid = 'multi_items';
+        this.exportEXCEL = exportEXCEL.bind(this);
+        this.getData = getData.bind(this);
+        this.getValueAtCell = getValueAtCell.bind(this);
+        this.getColumnIndex = getColumnIndex.bind(this);
+        this.getColumnTranslate = getColumnTranslate.bind(this);
+        this.getColumnType = getColumnType.bind(this);
+        this.getColumn = getColumn.bind(this);
+        this.afterChange = afterChange.bind(this);
+        this.afterValidater = afterValidater.bind(this);
+        this.setUpHandsonTable = setUpHandsonTable.bind(this);
+        this.editDeleteRender = editDeleteRender.bind(this);
+        this.tp_handSonTable = null;
+        this.exportPlugin = null;
+        this.tp_dataSchema = {};
     }
     getValueByColumn(column){
         let value = null
@@ -191,22 +208,22 @@ class AddEditContainer extends Component {
 
     getDataTpMultiItem(){
         let multiItems = [];
-        let multiItems_pre = tp_handSonTable.getData();
+        let multiItems_pre = this.tp_handSonTable.getData();
 
         for (var i = 0; i < multiItems_pre.length; ++i) {
 
-            if(tp_handSonTable.isEmptyRow(i) === false){
+            if(this.tp_handSonTable.isEmptyRow(i) === false){
                 let row = {}
                 multiItems_pre[i].map((Item_pre, index)=>{
 
 
 
-                    if(index >= this.props.multi_items_form_input_control.length){
+                    if(index >= this.props.gridHeader.length){
                         row['id'] = Item_pre;
                     } else
                     {
 
-                        row[this.props.multi_items_form_input_control[index].column] = Item_pre
+                        row[this.props.gridHeader[index].column] = Item_pre
                     }
 
                 })
@@ -225,7 +242,7 @@ class AddEditContainer extends Component {
 
     saveForm() {
         let multiItems = [];
-        if(this.props.multi_items_form_input_control.length >=1 ){
+        if(this.props.gridHeader.length >=1 ){
             multiItems = this.getDataTpMultiItem()
             if(multiItems.length <= 0){
                 alert('Бүх хэсгийг бүрэн бөглөнө үү')
@@ -300,7 +317,7 @@ class AddEditContainer extends Component {
 
     updateForm() {
         let multiItems = [];
-        if(this.props.multi_items_form_input_control.length >=1 ){
+        if(this.props.gridHeader.length >=1 ){
             multiItems = this.getDataTpMultiItem()
             if(multiItems.length <= 0){
                 alert('Бүх хэсгийг бүрэн бөглөнө үү')
@@ -585,7 +602,7 @@ class AddEditContainer extends Component {
                     }
 
 
-                    if(this.props.multi_items_form_input_control.length >= 1)
+                    if(this.props.gridHeader.length >= 1)
                         this.callMultiItemsDatas(save_first_id_column_)
                 }
 
@@ -625,40 +642,25 @@ class AddEditContainer extends Component {
 
 
 
-        if(listData && tp_handSonTable){
-            tp_handSonTable.destroy();
-            tp_handSonTable = null;
-            listData = [];
+        if(this.tp_handSonTable){
+            this.tp_handSonTable.destroy();
+            this.tp_handSonTable = null;
+
         }
 
   
     }
 
     componentDidMount(){
-        if(this.props.multi_items_form_input_control.length >=1 )
+        if(this.props.gridHeader.length >=1 )
          this.setUpHandsonTable();
 
 
     }
 
     /* muli items form */
-    getColumnIndex(column){
-        //return _.findIndex(this.props.gridHeader, { column: column })
-        return this.props.multi_items_form_input_control.findIndex(x => x.column == column );
-    }
-    getColumnValdation(column){
-        //return _.findIndex(this.props.gridHeader, { column: column })
-        if(this.props.multi_items_form_input_control[column].validate)
-            return this.props.multi_items_form_input_control[column].validate;
-        else
-            return '';
-    }
-    getColumnType(column){
 
 
-        return this.props.multi_items_form_input_control[column].type;
-
-    }
     callMultiItemsDatas(save_first_id_column) {
 
 
@@ -704,817 +706,16 @@ class AddEditContainer extends Component {
 
         }
     }
-    editDeleteRender(instance, td, row, col, prop, value, cellProperties) {
 
-        while (td.firstChild) {
-            td.removeChild(td.firstChild);
-        }
-        var self = this;
 
-        let pre_del =  document.createElement('a');
-        let pre_editBtn =  document.createElement('a');
-        let pre =  document.createElement('span');
 
-        td.appendChild(pre)
 
-        //if(this.props.formType != 'inline'){
-        //    ///EDIT BUTTTON
-        //    pre_editBtn.href = "#edit/"+value;
-        //    pre_editBtn.innerHTML = "<i class=\"material-icons\">&#xE254;</i>&nbsp;";
-        //
-        //    if(this.props.permission.u == true || this.props.ifUpdateDisabledCanEditColumns.length >=1)
-        //        pre.appendChild(pre_editBtn);
-        //}
-        //
-        //
-        //
-
-        let all_null = true;
-        if(tp_handSonTable){
-            if(tp_handSonTable.rootElement){
-                let h_datas = tp_handSonTable.getDataAtRow(row);
-
-
-                h_datas.map((h_data)=>{
-                    if(h_data !== null){
-                        all_null =false;
-                    }
-                });
-            }
-
-        }
-
-        if(all_null === false){
-            // DELETE BUTTON
-            pre_del.addEventListener("click", function(){
-
-                self.handleDeleteItem(value, row)
-
-            });
-
-
-
-            pre_del.innerHTML = "<i class=\"material-icons\">&#xE872;</i> ";
-            if(this.props.permission.d == true)
-                pre.appendChild(pre_del);
-        }
-
-
-        
-
-        return td;
-
-        
-
-
-    }
-
-
-    getData(row){
-        return tp_handSonTable.getDataAtRow(row);
-    }
-    getValueAtCell(row, calculate_column){
-        let colIndex_ = this.getColumnIndex(calculate_column)
-        return tp_handSonTable.getDataAtCell(row, colIndex_);
-    }
-
-    afterChange(changes, source, isValid) {
-
-
-
-        if (changes) {
-
-
-            let colIndex = 0;
-
-            if (changes[0][1] === parseInt(changes[0][1], 10)) {
-                colIndex = changes[0][1]
-            } else
-                colIndex = this.getColumnIndex(changes[0][1]);
-
-
-            let colType = this.props.multi_items_form_input_control[colIndex].type;
-
-
-
-            let row = changes[0][0];
-            let elValue = changes[0][3];
-
-
-
-
-
-
-
-
-
-            ///auto-calculate
-            let calculate_columns = []
-
-            this.props.multi_items_form_input_control.map((fcontrol, findex)=> {
-                if (fcontrol.type == '--auto-calculate') {
-
-
-                    let calculate_type = fcontrol.options.calculate_type;
-                    let calculate_column = fcontrol.column;
-
-                    let columns = [];
-
-                    fcontrol.options.calculate_columns.map((calculate_column, cal_index)=> {
-
-
-
-                        columns.push(
-                            {column: calculate_column, value: this.getValueAtCell(row, calculate_column)}
-                        );
-                    })
-                    if(calculate_type == '--urtug-bodoh'){
-                        let noat_shalgah = fcontrol.options.noat_shalgah;
-                        let irsen_une = fcontrol.options.irsen_une;
-
-
-
-                        calculate_columns.push(
-                            {
-                                column:calculate_column,
-                                type:calculate_type,
-                                columns:columns,
-                                dataIndex:findex,
-                                noat_shalgah: this.getValueAtCell(row, noat_shalgah),
-                                irsen_une: this.getValueAtCell(row, irsen_une)
-                            }
-                        )
-                    } else if(calculate_type == '--noat-bodoh'){
-                        let noat_shalgah = fcontrol.options.noat_shalgah;
-                        let irsen_une = fcontrol.options.irsen_une;
-                        let urtug_une = fcontrol.options.urtug_une;
-
-                        calculate_columns.push(
-                            {
-                                column:calculate_column,
-                                type:calculate_type,
-                                columns:columns,
-                                dataIndex:findex,
-                                noat_shalgah: this.getValueAtCell(row, noat_shalgah),
-                                irsen_une: this.getValueAtCell(row, irsen_une),
-                                urtug_une: this.getValueAtCell(row, urtug_une)
-                            }
-                        )
-                    } else if(calculate_type == '--hudaldal-une-bodoh'){
-                        let borluulaltiin_huvi = fcontrol.options.borluulaltiin_huvi;
-                        let urtug_une = fcontrol.options.urtug_une;
-                        let noattei_zarah = fcontrol.options.noattei_zarah;
-                        let nhattai_zarah = fcontrol.options.nhattai_zarah;
-
-
-
-                        calculate_columns.push(
-                            {
-                                column:calculate_column,
-                                type:calculate_type,
-                                columns:columns,
-                                dataIndex:findex,
-                                borluulaltiin_huvi: this.getValueAtCell(row, borluulaltiin_huvi),
-                                urtug_une: this.getValueAtCell(row, urtug_une),
-                                nhattai_zarah: this.getValueAtCell(row, nhattai_zarah),
-                                noattei_zarah: this.getValueAtCell(row, noattei_zarah)
-                            }
-                        )
-                    } else if(calculate_type == '--noat-zarah'){
-                        let borluulaltiin_huvi = fcontrol.options.borluulaltiin_huvi;
-                        let urtug_une = fcontrol.options.urtug_une;
-                        let noattei_zarah = fcontrol.options.noattei_zarah;
-
-
-                        calculate_columns.push(
-                            {
-                                column:calculate_column,
-                                type:calculate_type,
-                                columns:columns,
-                                dataIndex:findex,
-                                borluulaltiin_huvi: this.getValueAtCell(row, borluulaltiin_huvi),
-                                urtug_une: this.getValueAtCell(row, urtug_une),
-                                noattei_zarah: this.getValueAtCell(row, noattei_zarah)
-                            }
-                        )
-                    } else if(calculate_type == '--nhat-zarah'){
-                        let borluulaltiin_huvi = fcontrol.options.borluulaltiin_huvi;
-                        let urtug_une = fcontrol.options.urtug_une;
-                        let nhattai_zarah = fcontrol.options.nhattai_zarah;
-
-
-                        calculate_columns.push(
-                            {
-                                column:calculate_column,
-                                type:calculate_type,
-                                columns:columns,
-                                dataIndex:findex,
-                                borluulaltiin_huvi: this.getValueAtCell(row, borluulaltiin_huvi),
-                                urtug_une: this.getValueAtCell(row, urtug_une),
-                                nhattai_zarah: this.getValueAtCell(row, nhattai_zarah)
-                            }
-                        )
-                    } else
-                        calculate_columns.push(
-                            {
-                                column:calculate_column,
-                                type:calculate_type,
-                                columns:columns,
-                                dataIndex:findex
-                            }
-                        )
-
-                }
-            })
-
-            calculate_columns.map((calculate_column, index)=> {
-                let checkAllValue = true;
-                calculate_column.columns.map((cal_column)=> {
-                    if (cal_column.value === null)
-                        checkAllValue = false
-                })
-                let calculate_result = null;
-                if (checkAllValue === true) {
-                    if (calculate_column.type == '--multiply') {
-                        calculate_column.columns.map((cal_column, calIndex)=> {
-                            if (calIndex == 0)
-                                calculate_result = cal_column.value;
-                            else
-                                calculate_result = calculate_result * cal_column.value
-                        })
-                    } else if(calculate_column.type == '--urtug-bodoh'){
-
-
-                        if(calculate_column.noat_shalgah == 1 || calculate_column.noat_shalgah == '1'){
-                            calculate_result = Math.ceil((calculate_column.irsen_une/1.1));
-                        } else {
-
-                            calculate_result = calculate_column.irsen_une*1;
-                        }
-
-                    }else if(calculate_column.type == '--noat-bodoh'){
-
-                        if(calculate_column.noat_shalgah == 1 || calculate_column.noat_shalgah == '1'){
-                            calculate_result = (calculate_column.irsen_une*1) - (calculate_column.urtug_une*1);
-                        } else {
-                            calculate_result = 0;
-                        }
-
-                    }else if(calculate_column.type == '--hudaldal-une-bodoh'){
-
-                        let hudaldah_und_bodson = 0;
-
-                        let pluss_vlue = (calculate_column.urtug_une/100)*calculate_column.borluulaltiin_huvi;
-                        hudaldah_und_bodson = (calculate_column.urtug_une*1)+(pluss_vlue);
-
-                        let noat = 0;
-                        let nhat = 0;
-
-                        if(calculate_column.noattei_zarah == 1 || calculate_column.noattei_zarah == '1'){
-                            noat = (hudaldah_und_bodson*0.1);
-
-                        }
-
-                        if(calculate_column.nhattai_zarah == 1 || calculate_column.nhattai_zarah == '1'){
-                            nhat = (hudaldah_und_bodson*0.01);
-
-                        }
-                        hudaldah_und_bodson = hudaldah_und_bodson+nhat+noat;
-                        hudaldah_und_bodson = Math.ceil((hudaldah_und_bodson/10))*10;
-
-                        calculate_result = hudaldah_und_bodson;
-
-                    }else if(calculate_column.type == '--noat-zarah'){
-
-                        let hudaldah_und_bodson = 0;
-
-                        let pluss_vlue = (calculate_column.urtug_une/100)*calculate_column.borluulaltiin_huvi;
-                        hudaldah_und_bodson = (calculate_column.urtug_une*1)+(pluss_vlue);
-
-                        let noat = 0;
-
-
-                        if(calculate_column.noattei_zarah == 1 || calculate_column.noattei_zarah == '1'){
-                            noat = (hudaldah_und_bodson*0.1);
-
-                        }
-
-
-
-                        calculate_result = noat;
-
-                    } else if(calculate_column.type == '--nhat-zarah'){
-
-                        let hudaldah_und_bodson = 0;
-
-                        let pluss_vlue = (calculate_column.urtug_une/100)*calculate_column.borluulaltiin_huvi;
-                        hudaldah_und_bodson = (calculate_column.urtug_une*1)+(pluss_vlue);
-
-                        let nhat = 0;
-
-
-                        if(calculate_column.nhattei_zarah == 1 || calculate_column.nhattei_zarah == '1'){
-                            nhat = (hudaldah_und_bodson*0.01);
-
-                        }
-
-                        console.log(nhat)
-
-                        calculate_result = nhat;
-
-                    } else if ((calculate_column.type == '--sum')) {
-                        calculate_column.columns.map((cal_column, calIndex)=> {
-                            if (calIndex == 0)
-                                calculate_result = cal_column.value;
-                            else
-                                calculate_result = calculate_result + cal_column.value
-                        })
-                    } else if (calculate_column.type == '--average') {
-                        calculate_column.columns.map((cal_column, calIndex)=> {
-                            if (calIndex == 0)
-                                calculate_result = cal_column.value;
-                            else
-                                calculate_result = calculate_result + cal_column.value
-                        })
-                        calculate_result = calculate_result / calculate_column.columns.length;
-                    }
-                    if (calculate_result !== null) {
-
-                        let thisValue = tp_handSonTable.getDataAtCell(row, calculate_column.dataIndex);
-
-                        if(thisValue != calculate_result){
-
-                            tp_handSonTable.setDataAtCell(row, calculate_column.dataIndex, calculate_result);
-                        }
-
-                    }
-                }
-            });
-
-            if(this.props.multi_items_form_input_control[colIndex].after_change_trigger){
-
-
-                afterChangeTrigger([colIndex], elValue, 'multi_items_form').then((data)=>{
-                    let setValues = null;
-
-
-
-                    if(data.status){
-                        if(data.status == 'success'){
-                            setValues = data.new_values;
-
-                            setValues.map(setValue=>{
-                                // console.log(setValue[0][0], 'changeing', setValue[1]);
-
-                                tp_handSonTable.setDataAtCell(row, setValue[0][0], setValue[1]);
-
-
-
-                                // this.changeValues(setValue[0], setValue[1]);
-                            })
-                        } else if(data.status == 'error'){
-                            alert(data.error_message);
-                            window.location.replace('#/');
-                        }
-
-                    } else {
-                        setValues = data;
-
-                        setValues.map(setValue=>{
-                            // console.log(setValue[0][0], 'changeing', setValue[1]);
-
-                            tp_handSonTable.setDataAtCell(row, setValue[0][0], setValue[1]);
-
-                            // this.changeValues(setValue[0], setValue[1]);
-                        })
-                    }
-                })
-
-            }
-
-            if (changes[0][1] != this.props.identity_name) {
-
-
-                let rowDatas = this.getData(changes[0][0]);
-
-
-
-
-                let error_not_found = true;
-
-                let data = {};
-
-                let edit_id = null;
-                rowDatas.map((rowData, index)=> {
-                    if (index <= this.props.multi_items_form_input_control.length - 1) {
-
-                        let col = index;
-
-                        tp_handSonTable.getCellValidator(row, col)(rowData, function (isValid) {
-
-                            if (!isValid)
-                                error_not_found = false
-                        });
-
-                        data[this.props.multi_items_form_input_control[index].column] = rowData;
-                    }
-                    if (index == this.props.multi_items_form_input_control.length) {
-
-                        edit_id = rowData;
-                    }
-                })
-
-
-                if (error_not_found && edit_id === -1) {
-
-                    inlineSave(data).then((data)=> {
-
-
-                        $("#save_info" ).addClass("show-info");
-
-                        this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
-
-                        this.removeInlineForm();
-
-                        setTimeout(function(){ $("#save_info" ).removeClass("show-info"); }, 2500);
-
-
-
-                    }).fail(()=> {
-                        $("#save_info_failed" ).addClass("show-info");
-                        setTimeout(function(){ $("#save_info_failed" ).removeClass("show-info"); }, 2500);
-                    });
-
-                }
-
-
-
-
-
-            }
-
-
-            //tp_handSonTable.getCellValidator(row, col)(newValue, function(isValid) {
-            //    if (!isValid) {
-            //        hot.setDataAtCell(row, col, null);
-            //    }
-            //});
-        }
-
-
-    }
-
-
-
-
-    validationCaller(validateData, value, callback){
+    validationCaller(validateData, value, callback) {
 
         return validationGrid(validateData, value, callback);
     }
-    afterValidater(isValid, value, row, prop, source) {
 
-        let columnIndex = this.getColumnIndex(prop);
-        if(isValid){
-            tp_handSonTable.setCellMeta(row, columnIndex, 'className', '');
-            return true;
-        }
-        else{
 
-            tp_handSonTable.setCellMeta(row, columnIndex, 'className', 'required-field');
-            return false;
-        }
-
-
-    }
-
-
-    setUpHandsonTable(){
-
-        const { multi_items_form_input_control} = this.props;
-
-        const gridHeader = multi_items_form_input_control;
-
-        if(tp_handSonTable !== null){
-            tp_handSonTable.destroy()
-        }
-
-
-        let tp_colHeader = [];
-
-        let tp_columns = [];
-        let fixedColumnsLeft = 0;
-
-        gridHeader.map((header, h_index)=>{
-            if(header.hidden){
-
-            } else {
-                tp_colHeader.push(header.title)
-                let gridColumn = {}
-                switch (header.type) {
-                    case "--text":
-                        gridColumn ={
-                            data: header.column,
-                            editor: 'text',
-                            type: 'text',
-                            validator: this.validationCaller.bind(this, header.validate),
-                            //allowInvalid: false
-                        }
-                        break;
-
-                    case "--checkbox":
-                        gridColumn = {
-                            data: header.column,
-                            type: 'checkbox',
-                            checkedTemplate: '1',
-                            uncheckedTemplate: '0',
-                            validator: this.validationCaller.bind(this, header.validate),
-                            label: {
-                                position: 'before',
-                                value: 'НӨАТ: '
-                            },
-                        }
-                        break;
-                    case "--combobox":
-
-                        const optionsList = genrateComboboxvalues(this.props.formData.toJS()[header.column].data.data, header);
-                        gridColumn = {
-                            data: header.column,
-                            editor: "chosen",
-                            chosenOptions: {
-                                multiple: false,
-                                data: optionsList,
-                                valueField: header.options.valueField,
-                                textField: header.options.textField,
-                            },
-                            validator: this.validationCaller.bind(this, header.validate),
-                            renderer: customDropdownRenderer,
-                        }
-
-                        break;
-                    case "--tag":
-                        const optionsListtag = genrateComboboxvalues(this.props.formData.toJS()[header.column].data.data, header);
-                        gridColumn = {
-                            data: header.column,
-                            editor: "chosen",
-
-                            chosenOptions: {
-                                multiple: true,
-                                data: optionsListtag,
-                                valueField: header.options.valueField,
-                                textField: header.options.textField,
-                            },
-                            validator: this.validationCaller.bind(this, header.validate),
-                            renderer: customDropdownRenderer,
-                        }
-                        break;
-                    case "--date":
-                        gridColumn ={
-                            data: header.column,
-                            type: 'date',
-                            validator: this.validationCaller.bind(this, header.validate),
-                            dateFormat: "YYYY.MM.DD"
-                            //allowInvalid: false
-                        }
-
-                        break;
-                    case "--number":
-                        gridColumn =
-                        {
-                            data: header.column,
-                            type: 'numeric',
-                            editor: 'numeric',
-                            className:'htRight',
-                            validator: this.validationCaller.bind(this, header.validate),
-                        }
-                        break;
-
-                    case "--disabled":
-                        gridColumn =
-                        {
-                            data: header.column,
-                            type: 'text',
-                            editor: false,
-                            validator: this.validationCaller.bind(this, ''),
-                        }
-                        break;
-                    case "--float":
-                        gridColumn =
-                        {
-                            data: header.column,
-                            type: 'numeric',
-                            editor: 'numeric',
-                            format: '0,0.000',
-                            className:'htRight',
-                            validator: this.validationCaller.bind(this, header.validate),
-                        }
-
-                        break;
-                    case "--money":
-                        gridColumn =
-                        {
-                            data: header.column,
-                            type: 'numeric',
-                            format: '0,0.00',
-                            className:'htRight',
-                            validator: this.validationCaller.bind(this, header.validate),
-                        }
-                        break;
-                    case "--auto-calculate":
-                        gridColumn =
-                        {
-                            data: header.column,
-                            type: 'numeric',
-                            format: '0,0.00',
-                            readOnly:true,
-                            validator: this.validationCaller.bind(this, header.validate),
-                        }
-                        break;
-                    default:
-
-                        gridColumn ={
-                            data: header.column,
-                        }
-
-                }
-
-                tp_columns.push(gridColumn);
-
-
-            }
-
-            if(header.fixed)
-                fixedColumnsLeft++;
-
-            tp_dataSchema[header.column] = null;
-        })
-
-        tp_dataSchema['id'] = -1;
-
-        tp_colHeader.push('Засах')
-        tp_columns.push({
-            data: this.props.identity_name,
-            width: 35,
-
-            renderer: this.editDeleteRender.bind(this),
-            editor: false
-        })
-
-
-        let gridData = listData;
-
-        //inline form add
-        let trimRows = null
-        let readOnly = false
-
-        if(this.props.formType == 'inline' && this.props.showInlineForm === false)
-            trimRows =[0]
-
-        maxRows = gridData.length;
-
-        var self = this;
-        var container = document.getElementById('multi_items');
-
-        //add empty 3 items
-        //listData.push(tp_dataSchema);
-
-        let columnSummary = [];
-
-        tp_handSonTable = new Handsontable(container, {
-            stretchH: 'all',
-            data: gridData,
-            rowHeaders: true,
-            //formulas: true,
-            colHeaders: tp_colHeader,
-            columns: tp_columns,
-            manualColumnResize: true,
-            manualRowResize: true,
-            fixedColumnsLeft: fixedColumnsLeft,
-            readOnly: readOnly,
-            columnSorting: true,
-            sortIndicator: true,
-            afterChange:this.afterChange.bind(this),
-
-            height: 320,
-            minSpareRows:1,
-            startRows: 1,
-            afterValidate:this.afterValidater.bind(this),
-            enterMoves:{row: 0, col: 1},
-            autoWrapRow:true,
-            cells: function (row, col, prop) {
-
-
-
-                var cellProperties = {};
-
-                var conIndex = self.getColumnIndex(prop)
-
-
-                let cellClass = ''
-
-                let hasahToo =  columnSummary.length >=1 ? 2 : 1;
-
-                if(row <= gridData.length-hasahToo) {
-                    if (prop != self.props.identity_name && prop != 'id') {
-
-                        let validate = false;
-
-
-                        if (self.props.multi_items_form_input_control[col] && self.props.multi_items_form_input_control[col].validate)
-                            validate = self.props.multi_items_form_input_control[col].validate;
-
-
-                        if (validate && gridData.length >= 1 && gridData[row]) {
-
-                            let isvalid = validationGrid(validate, gridData[row][prop]);
-
-                            if (isvalid) {
-
-                            } else {
-                                cellClass = 'required-field';
-                            }
-
-                        }
-
-
-                        var type_col = self.getColumnType(conIndex)
-
-
-                        if (type_col != '--image' && type_col != '--internal-link' && type_col != '--combobox' && type_col != '--tag') {
-
-                            cellProperties['className'] = cellClass;
-                            return cellProperties;
-
-                        } else {
-                            cellProperties['className'] = cellClass;
-                            return cellProperties;
-                        }
-
-
-
-                    }
-                } else {
-                    cellProperties.renderer = function (instance, td, row, col, prop, value, cellProperties) {
-
-                        Handsontable.cellTypes[cellProperties.type].renderer.apply(this, arguments);
-
-
-                        while (td.firstChild) {
-                            td.removeChild(td.firstChild);
-                        }
-
-                        var textNode = document.createElement('span');
-
-                        columnSummary.map(summary=>{
-
-                            if (prop ==summary.column) {
-
-                                if(summary.type == 'sum'){
-                                    let columnSum = 0;
-                                    for(let q=0; q<=gridData.length-2; q++){
-                                        columnSum = (gridData[q][prop]*1)+columnSum;
-                                    }
-
-                                    columnSum = numeral(columnSum);
-                                    if(summary.format == 'money'){
-                                        columnSum = columnSum.format('0,0.00');
-                                    } else if(summary.format == 'float'){
-                                        columnSum = columnSum.format('0,0.000');
-                                    } else{
-                                        columnSum = columnSum.format('0,0');
-                                    }
-
-
-                                    textNode.innerHTML = "<b>"+columnSum+"</b>";
-                                }
-                            }
-
-                        })
-
-
-
-
-                        td.appendChild(textNode);
-
-
-                    }
-                    cellProperties['readOnly'] = true;
-                    return cellProperties;
-                }
-
-
-            },
-        });
-
-        exportPlugin = tp_handSonTable.getPlugin('exportFile');
-        exportPlugin.exportAsString('csv', {
-            exportHiddenRows: true, // default false
-            exportHiddenColumns: true, // default false
-            columnHeaders: true, // default false
-            rowHeaders: true, // default false
-            columnDelimiter: ';', // default ','
-
-        });
-    }
     _handleKeyPress(e) {
         if (e.key === 'Enter') {
             if(this.props.params.id){
@@ -1524,8 +725,6 @@ class AddEditContainer extends Component {
             }
         }
     }
-  
-
 
     render() {
 
@@ -1534,7 +733,7 @@ class AddEditContainer extends Component {
             setup,
             formControls,
             translateFormControls,
-            formData,
+            formData_Imm,
             focusIndex,
             showAddEditForm,
             showAddModal,
@@ -1566,7 +765,7 @@ class AddEditContainer extends Component {
             <Form
                 translateFormControls={translateFormControls}
                 formControls={formControls}
-                formData={formData}
+                formData={formData_Imm}
                 defaultLocale={defaultLocale}
                 ref="fromRefs"
                 locales={locales}
@@ -1588,7 +787,7 @@ class AddEditContainer extends Component {
             <Loading />
 
         const formSubItmes = subItems.size >= 1 ?
-            <SubItemsContainer formData={formData} subItems={subItems} edit_parent_id={edit_parent_id}
+            <SubItemsContainer formData={formData_Imm} subItems={subItems} edit_parent_id={edit_parent_id}
                                ifUpdateDisabledCanEditColumns={ifUpdateDisabledCanEditColumns}
                                permission={permission}
                           
@@ -1685,20 +884,21 @@ function mapStateToProps(state) {
 
     return {
         setup: Grid.get('setup').toJS(),
+        edit_delete_column_title: Grid.get('edit_delete_column_title'),
         locales: Grid.get('setup').toJS().locales,
         password_change: Grid.get('setup').toJS().password_change,
-        gridHeader: Grid.get('setup').toJS().grid_output_control,
         defaultLocale: Grid.get('defaultLocale'),
         formControls: Form.get('form_input_control'),
         translateFormControls: Form.get('translateFormControls'),
         identity_name: Form.get('identity_name'),
         save_first_id_column: Form.get('save_first_id_column'),
-        multi_items_form_input_control: Form.get('multi_items_form_input_control').toJS(),
+        gridHeader: Form.get('multi_items_form_input_control').toJS(),
         showAddEditForm: Form.get('showAddEditForm'),
         formClassName: Form.get('formClassName'),
         fieldClassName: Form.get('fieldClassName'),
         focusIndex: Form.get('focusIndex'),
-        formData: Form.get('formData'),
+        formData: Form.get('formData').toJS(),
+        formData_Imm: Form.get('formData'),
         subItems: SubItems.get('subItems'),
         button_texts: Grid.get('button_texts'),
         show_saved_alert: Form.get('show_saved_alert'),
@@ -1710,6 +910,8 @@ function mapStateToProps(state) {
         ifUpdateDisabledCanEditColumns: Grid.get('setup').toJS().ifUpdateDisabledCanEditColumns,
         after_save_redirect: Form.get('after_save_redirect'),
         after_save_redirect_url: Form.get('after_save_redirect_url'),
+        columnSummary:[],
+        listData:[]
     }
 }
 // Which action creators does it want to receive by props?
@@ -1719,8 +921,6 @@ function mapDispatchToProps(dispatch) {
         actions: bindActionCreators(DataActions, dispatch)
     };
 }
-
-
 export default connect(
     mapStateToProps,
     mapDispatchToProps
