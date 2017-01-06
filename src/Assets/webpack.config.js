@@ -35,6 +35,7 @@ module.exports = {
         new Webpack.HotModuleReplacementPlugin(),
         new Webpack.NoErrorsPlugin(),
 
+
         //Chunk script
         // new Webpack.optimize.CommonsChunkPlugin('dependencies', 'js/dependencies.js', Infinity),
 
