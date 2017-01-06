@@ -35,6 +35,7 @@ class GridContainer extends Component {
         this.state = {
             tpHeight:window.innerHeight-topH
         };
+        this.handleResize = this.handleResize.bind(this);
     }
 
     /* component life cycle ----------------------------------------- */
@@ -45,12 +46,13 @@ class GridContainer extends Component {
     componentDidMount() {
         this.callPageDatas(this.props.currentPage, this.props.pageLimit, this.props.searchValue)
 
-        window.addEventListener('resize', this.handleResize.bind(this));
+        window.addEventListener('resize', this.handleResize);
 
 
     }
 
     handleResize(e) {
+
         let topH = this.props.showAdvenced ? this.props.gridTopWithAdvenced : this.props.gridTop;
         this.setState({tpHeight: window.innerHeight-topH});
 
@@ -84,7 +86,8 @@ class GridContainer extends Component {
     componentWillUnmount() {
         //tp_handSonTable.destroy()
 
-        window.removeEventListener('resize', this.handleResize.bind(this));
+        window.removeEventListener('resize', this.handleResize);
+
     }
 
 
