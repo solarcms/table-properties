@@ -642,7 +642,7 @@ export function setUpHandsonTable(tpNewHeight) {
         if (header.hidden) {
 
         } else {
-            if(header.readOnly){
+            if(header.readOnly || this.props.formType != 'inline'){
                 colReadOnly = true;
             }
             tp_colHeader.push(header.title)
