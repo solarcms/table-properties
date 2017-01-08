@@ -1,5 +1,5 @@
 import React, { Component, PropTypes }  from 'react';
-import Select from 'react-select';
+import Select from 'react-select/lib/Select';
 
 export default class ComboBoxAddAble extends Component {
     comboChange(value){

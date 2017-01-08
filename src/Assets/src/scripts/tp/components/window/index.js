@@ -5,7 +5,7 @@ import React, { Component, PropTypes }  from 'react';
 
 import Form from "../form/Form"
 
-import { Modal } from 'react-bootstrap';
+import Modal  from 'react-bootstrap/lib/Modal';
 
 export default class Window extends Component {
 

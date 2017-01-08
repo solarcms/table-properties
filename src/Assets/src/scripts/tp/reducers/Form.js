@@ -1,6 +1,6 @@
 import createReducer from '../createStore/createReducer';
 
-import Immutable from 'immutable';
+import Immutable, {fromJS} from 'immutable';
 
 import * as types from '../constants/form';
 
@@ -40,11 +40,11 @@ export default createReducer(initialState, {
             )
 
         });
-        const translateFormControls_im = Immutable.fromJS(translateFormControls);
-        const form_input_control = Immutable.fromJS(setupData.form_input_control);
-        const setUp = Immutable.fromJS(setupData);
+        const translateFormControls_im = fromJS(translateFormControls);
+        const form_input_control = fromJS(setupData.form_input_control);
+        const setUp = fromJS(setupData);
 
-        const multi_items_form_input_control = Immutable.fromJS(setupData.multi_items_form_input_control)
+        const multi_items_form_input_control = fromJS(setupData.multi_items_form_input_control)
 
         state = state.set('multi_items_form_input_control', multi_items_form_input_control);
         state = state.set('translateFormControls', translateFormControls_im);
@@ -118,7 +118,7 @@ export default createReducer(initialState, {
 
     [types.SET_FORM_DATA](state, { data }) {
 
-        const formData = Immutable.fromJS(data);
+        const formData = fromJS(data);
 
         state = state.set('formData', formData);
 
@@ -173,7 +173,7 @@ export default createReducer(initialState, {
         });
 
 
-        const translateFormControls_im = Immutable.fromJS(translateFormControls);
+        const translateFormControls_im = fromJS(translateFormControls);
         state = state.set('translateFormControls', translateFormControls_im);
 
 
@@ -181,7 +181,7 @@ export default createReducer(initialState, {
     },
     [types.CHANGE_FORM_DATA](state, { column, data }) {
 
-        const formData = Immutable.fromJS(data);
+        const formData = fromJS(data);
 
 
         state = state.setIn(['formData', column, 'data', 'data'], formData);

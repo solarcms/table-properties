@@ -13,7 +13,7 @@ import * as DataActionsForm from "../actions/form"
 import {getList, deleteItem, getCascadeChild, edit, changeLanguage} from "../api/"
 import Header from "../components/grid/Header"
 import Pagination from "../components/grid/Paginator"
-import {getData, getColumnIndex, getValueAtCell, getColumnTranslate, getColumnType, getColumn, afterChange, exportEXCEL, afterValidater, setUpHandsonTable, editDeleteRender} from '../tools/handSonTableHelper'
+import {validationCaller, getData, getColumnIndex, getValueAtCell, getColumnTranslate, getColumnType, getColumn, afterChange, exportEXCEL, afterValidater, setUpHandsonTable, editDeleteRender} from '../tools/handsonTable'
 
 import {getDate} from "../tools/date";
 import validationGrid from "../components/grid/validation/"
@@ -34,6 +34,7 @@ class GridContainer extends Component {
         this.grid = 'tp_grid';
         this.exportEXCEL = exportEXCEL.bind(this);
         this.getData = getData.bind(this);
+        this.validationCaller = validationCaller.bind(this);
         this.getValueAtCell = getValueAtCell.bind(this);
         this.getColumnIndex = getColumnIndex.bind(this);
         this.getColumnTranslate = getColumnTranslate.bind(this);
@@ -106,9 +107,6 @@ class GridContainer extends Component {
         })
 
     }
-
-
-
     hideShowColumn(show, columnIndex) {
         this.props.actions.setShowHideColumn(show, columnIndex)
         setTimeout(
@@ -138,7 +136,6 @@ class GridContainer extends Component {
         this.callPageDatas(event, this.props.pageLimit, this.props.searchValue)
     }
 
-
     /* Window form*/
     callWindowEdit(id) {
         if (this.props.permission.u !== true)
@@ -167,11 +164,6 @@ class GridContainer extends Component {
         //$('#windowForm').modal('hide');
         this.props.actions.clearFromValidation();
     }
-
-
-
-
-
 
     callPageDatas(page, pageLimit, searchValue) {
         if (this.props.permission.r !== true)
@@ -270,10 +262,6 @@ class GridContainer extends Component {
     }
 
 
-    validationCaller(validateData, value, callback) {
-
-        return validationGrid(validateData, value, callback);
-    }
 
 
     showAdvenced(){
@@ -285,7 +273,7 @@ class GridContainer extends Component {
         this.setUpHandsonTable();
     }
 
-    /*advedsen search & order */
+    /* advanced search & order */
     beforeColumnSort(columnIndex, order){
         if(columnIndex == -1)
             return false;

@@ -10,8 +10,8 @@ import {save, edit, update, getCascadeChild, callMultiItems, deleteItem, afterCh
 
 // import Window from "../components/window/"
 import SubItemsContainer from "./formContainers/SubItemsContainer"
-import { Modal, Button } from 'react-bootstrap';
-import {getData, getColumnIndex, getValueAtCell, getColumnTranslate, getColumnType, getColumn,exportEXCEL, afterValidater, setUpHandsonTable, editDeleteRender, afterChange} from '../tools/handSonTableHelper'
+import Modal  from 'react-bootstrap/lib/Modal';
+import {validationCaller, getData, getColumnIndex, getValueAtCell, getColumnTranslate, getColumnType, getColumn,exportEXCEL, afterValidater, setUpHandsonTable, editDeleteRender, afterChange} from '../tools/handsonTable'
 /*for handson table*/
 
 
@@ -35,6 +35,7 @@ class AddEditContainer extends Component {
         this.grid = 'multi_items';
         this.exportEXCEL = exportEXCEL.bind(this);
         this.getData = getData.bind(this);
+        this.validationCaller = validationCaller.bind(this);
         this.getValueAtCell = getValueAtCell.bind(this);
         this.getColumnIndex = getColumnIndex.bind(this);
         this.getColumnTranslate = getColumnTranslate.bind(this);
@@ -709,13 +710,6 @@ class AddEditContainer extends Component {
 
 
 
-
-    validationCaller(validateData, value, callback) {
-
-        return validationGrid(validateData, value, callback);
-    }
-
-
     _handleKeyPress(e) {
         if (e.key === 'Enter') {
             if(this.props.params.id){
@@ -852,7 +846,12 @@ class AddEditContainer extends Component {
                         <h5 style={{color:'green'}}>
                             {this.props.save_alert_word}
                         </h5>
-                        <Button onClick={hideSaveModal}>Хаах</Button>
+                        <button type="button" className="btn "
+                                onClick={hideSaveModal}>
+                            Хаах
+
+                        </button>
+
                     </Modal.Body>
 
 

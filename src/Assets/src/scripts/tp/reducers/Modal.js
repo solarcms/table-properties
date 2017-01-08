@@ -1,6 +1,6 @@
 import createReducer from '../createStore/createReducer';
 
-import Immutable from 'immutable';
+import Immutable, {fromJS} from 'immutable';
 
 import * as types from '../constants/modal';
 
@@ -12,7 +12,7 @@ export default createReducer(initialState, {
     [types.ADD_MODAL](state, { column }) {
 
 
-        const modalNew = Immutable.fromJS({
+        const modalNew = fromJS({
             name: column,
             show: false
         });

@@ -4,9 +4,10 @@ import CK from './elements/CK';
 import DragMap from './elements/DragMap';
 import SingleFileUploader from './elements/SingleFileUploader';
 import MultiFileUploader from './elements/MultiFileUploader';
-import Select from 'react-select';
+// import Select from 'react-select';
 
-import { Tabs, Tab } from 'react-bootstrap';
+import Tabs from 'react-bootstrap/lib/Tabs';
+import Tab from 'react-bootstrap/lib/Tab';
 
 import {getDate, getDateTime, getTime} from "../../tools/date";
 import Datetime from 'react-datetime';
@@ -105,7 +106,7 @@ export default class Form extends Component {
 
     getFromField(locale_index, index, title, name, field, thisDisabled, fieldClass, mainValue, formType, formData, gridId, focus, just_info){
 
-
+        mainValue = mainValue === null ? '' : mainValue;
         if(this.props.just_info === true){
             thisDisabled = true;
         }

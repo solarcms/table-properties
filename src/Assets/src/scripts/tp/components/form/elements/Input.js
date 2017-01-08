@@ -101,7 +101,7 @@ export default class Input extends Component {
         switch (type){
             case 'money':
 
-                let moneyValue = null;
+                let moneyValue = '';
                 if(!this.state.focused){
                     if(value !== null && value != ''){
                         var number = numeral(value);
@@ -120,7 +120,6 @@ export default class Input extends Component {
                     data-index={dataIndex}
                     name={name}
                     value={moneyValue}
-                    defaultValue={moneyValue}
                     placeholder={placeholder}
                     onChange={this.changeHandler.bind(this)}
                     onFocus={this.moneyFonuce.bind(this)}
@@ -135,7 +134,6 @@ export default class Input extends Component {
                     data-index={dataIndex}
                     name={name}
                     value={value}
-                    defaultValue={value}
                     placeholder={placeholder}
                     onChange={changeHandler}
                     onFocus={moveCursorToEnd}
@@ -150,7 +148,6 @@ export default class Input extends Component {
                         data-index={dataIndex}
                         name={name}
                         value={value}
-                        defaultValue={value}
                         placeholder={placeholder}
                         onChange={changeHandler}
                         onFocus={focusHandler}
@@ -167,7 +164,6 @@ export default class Input extends Component {
                         data-index={dataIndex}
                         name={name}
                         value={value}
-                        defaultValue={value}
                         placeholder={placeholder}
                         onChange={changeHandler}
                         onFocus={focusHandler}
@@ -183,7 +179,6 @@ export default class Input extends Component {
                     data-index={dataIndex}
                     name={name}
                     value={value}
-                    defaultValue={value}
                     placeholder={placeholder}
                     onChange={changeHandler}
                     onFocus={focusHandler}

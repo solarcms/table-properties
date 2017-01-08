@@ -1,6 +1,6 @@
 import createReducer from '../createStore/createReducer';
 
-import Immutable from 'immutable';
+import Immutable, {fromJS} from 'immutable';
 
 import * as types from '../constants/comboBoxAddAble';
 
@@ -13,7 +13,7 @@ export default createReducer(initialState, {
 
     [types.ADD_COMBO_ADD_ABLE](state, { column, data }) {
 
-        const comboNew = Immutable.fromJS(data);
+        const comboNew = fromJS(data);
 
         const comboBoxs = state.get('comboBoxs').toJS();
         let found = false;

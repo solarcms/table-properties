@@ -1,5 +1,6 @@
 import React, { Component, PropTypes }  from 'react';
-import Select from 'react-select';
+import Select from 'react-select/lib/Select';
+import Async from 'react-select/lib/Async';
 import {postResuest} from '../../../api/ajaxRequest'
 var timer;
 export default class ComboBox extends Component {
@@ -111,7 +112,7 @@ export default class ComboBox extends Component {
 
                 {formData.get(column) ?
                     loadOptions ?
-                        <Select.Async
+                        <Async
                             disabled={disabled}
                             name={name}
                             value={value}

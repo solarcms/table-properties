@@ -1,6 +1,6 @@
 import createReducer from '../createStore/createReducer';
 
-import Immutable from 'immutable';
+import Immutable, {fromJS} from 'immutable/';
 import * as types from '../constants/subItems';
 
 const initialState = {
@@ -15,7 +15,7 @@ export default createReducer(initialState, {
     [types.SET_SUB_ITEMS](state, { data }) {
 
 
-       const subitems = Immutable.fromJS(data);
+       const subitems = fromJS(data);
 
         state = state.set('subItems', subitems);
         state = state.set('subItemsInit', subitems);
@@ -29,7 +29,7 @@ export default createReducer(initialState, {
 
         state = state.updateIn(['subItems'], (subItems) =>{
             return subItems.map((subItem) => {
-                let emptyArray = Immutable.fromJS([]);
+                let emptyArray = fromJS([]);
                 return (subItem.set('items', emptyArray));
             })
 
@@ -93,7 +93,7 @@ export default createReducer(initialState, {
 
 
 
-        const subitem = Immutable.fromJS(item);
+        const subitem = fromJS(item);
 
         state = state.updateIn(['subItems', Sindex, 'items'], (items)=>
                 items.push(subitem)
@@ -104,7 +104,7 @@ export default createReducer(initialState, {
     },
     [types.SUB_ITEMS_EDIT_ITEM](state, {Sindex, formControl, editIndex}){
 
-        const EditformControl = Immutable.fromJS(formControl);
+        const EditformControl = fromJS(formControl);
 
         state = state.setIn(['subItems', Sindex, 'form_input_control'], EditformControl);
         state = state.set('editIndex', editIndex);

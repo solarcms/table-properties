@@ -80,7 +80,7 @@ export default class AdvenvedSearch extends Component {
 
                             return <div key={index} className="form-inline">
 
-                                <div key={index} dataIndex={index} className={`form-group`}>
+                                <div key={index}  className={`form-group`}>
                                     <label className="control-label">{dateRange.label}</label>
                                     <div className="date-range">
                                         <Datetime

@@ -1,6 +1,43 @@
 import { inlineSave, inlineSaveUpdate, afterChangeTrigger} from "../api/";
 import validationGrid from "../components/grid/validation/";
 import numeral from 'numeral';
+var _table_ = document.createElement('table'),
+    _tr_ = document.createElement('tr'),
+    _th_ = document.createElement('th'),
+    _td_ = document.createElement('td');
+
+function buildHtmlTable(arr) {
+    var table = _table_.cloneNode(false),
+        columns = addAllColumnHeaders(arr, table);
+    for (var i=0, maxi=arr.length; i < maxi; ++i) {
+        var tr = _tr_.cloneNode(false);
+        for (var j=0, maxj=columns.length; j < maxj ; ++j) {
+            var td = _td_.cloneNode(false);
+
+            td.appendChild(document.createTextNode(arr[i][columns[j]] || ''));
+            tr.appendChild(td);
+        }
+        table.appendChild(tr);
+    }
+    return table;
+}
+function addAllColumnHeaders(arr, table) {
+    var columnSet = [],
+        tr = _tr_.cloneNode(false);
+    for (var i=0, l=arr.length; i < l; i++) {
+        for (var key in arr[i]) {
+            if (arr[i].hasOwnProperty(key) && columnSet.indexOf(key)===-1) {
+                columnSet.push(key);
+                var th = _th_.cloneNode(false);
+                th.appendChild(document.createTextNode(key));
+                tr.appendChild(th);
+            }
+        }
+    }
+    table.appendChild(tr);
+    return columnSet;
+}
+
 export function customDropdownRenderer(instance, td, row, col, prop, value, cellProperties) {
 
     while (td.firstChild) {
@@ -113,7 +150,7 @@ export function gridColor(instance, td, row, col, prop, value, cellProperties) {
 export function genrateComboboxvalues(data, header) {
 
     let optionsList = [];
-   data.map((lsdata, lsindex) => {
+    data.map((lsdata, lsindex) => {
 
         var valuef = [];
         if (header.options.textField instanceof Array) {
@@ -134,71 +171,22 @@ export function genrateComboboxvalues(data, header) {
     return optionsList;
 }
 
-var _table_ = document.createElement('table'),
-    _tr_ = document.createElement('tr'),
-    _th_ = document.createElement('th'),
-    _td_ = document.createElement('td');
-
-
 export function gridJson(instance, td, row, col, prop, value, cellProperties) {
 
     while (td.firstChild) {
         td.removeChild(td.firstChild);
     }
 
-
     if (value) {
 
-
-
         let jsonTable = JSON.parse(value);
-
-
-
-
-
-
         td.appendChild(buildHtmlTable(jsonTable));
-
-
         return td;
     }
 
 
 }
-function buildHtmlTable(arr) {
-    var table = _table_.cloneNode(false),
-        columns = addAllColumnHeaders(arr, table);
-    for (var i=0, maxi=arr.length; i < maxi; ++i) {
-        var tr = _tr_.cloneNode(false);
-        for (var j=0, maxj=columns.length; j < maxj ; ++j) {
-            var td = _td_.cloneNode(false);
 
-            td.appendChild(document.createTextNode(arr[i][columns[j]] || ''));
-            tr.appendChild(td);
-        }
-        table.appendChild(tr);
-    }
-    return table;
-}
-
-function addAllColumnHeaders(arr, table)
-{
-    var columnSet = [],
-        tr = _tr_.cloneNode(false);
-    for (var i=0, l=arr.length; i < l; i++) {
-        for (var key in arr[i]) {
-            if (arr[i].hasOwnProperty(key) && columnSet.indexOf(key)===-1) {
-                columnSet.push(key);
-                var th = _th_.cloneNode(false);
-                th.appendChild(document.createTextNode(key));
-                tr.appendChild(th);
-            }
-        }
-    }
-    table.appendChild(tr);
-    return columnSet;
-}
 
 export function afterChange(changes, source, isValid) {
 
@@ -565,6 +553,21 @@ export function afterChange(changes, source, isValid) {
 
             }
 
+            if (error_not_found && edit_id >= 1) {
+
+
+                inlineSaveUpdate(edit_id, data).then((data)=> {
+                    $("#save_info" ).addClass("show-info");
+                    this.removeInlineForm()
+                    setTimeout(function(){ $("#save_info" ).removeClass("show-info"); }, 2500);
+                }).fail(()=> {
+                    $("#save_info_failed" ).addClass("show-info");
+                    setTimeout(function(){ $("#save_info_failed" ).removeClass("show-info"); }, 2500);
+
+                });
+
+            }
+
 
 
 
@@ -581,8 +584,6 @@ export function afterChange(changes, source, isValid) {
 
 
 }
-
-
 
 export function exportEXCEL() {
 
@@ -624,7 +625,7 @@ export function afterValidater(isValid, value, row, prop, source) {
 
 
 export function setUpHandsonTable(tpNewHeight) {
-    $('#tp_grid').empty();
+
 
     const {gridHeader, listData} = this.props;
 
@@ -910,145 +911,145 @@ export function setUpHandsonTable(tpNewHeight) {
 
 
 
-        var cellProperties = {};
+            var cellProperties = {};
 
-        var conIndex = self.getColumnIndex(prop)
+            var conIndex = self.getColumnIndex(prop)
             var translate = self.getColumnTranslate(conIndex)
 
-        let cellClass = ''
+            let cellClass = ''
 
-        let hasahToo =  columnSummary.length >=1 ? 2 : 1;
+            let hasahToo =  columnSummary.length >=1 ? 2 : 1;
 
-        if(row <= gridData.length-hasahToo) {
-            if (prop != self.props.identity_name && prop != 'id') {
+            if(row <= gridData.length-hasahToo) {
+                if (prop != self.props.identity_name && prop != 'id') {
 
-                let validate = false;
-
-
-                if (self.props.gridHeader[col] && self.props.gridHeader[col].validate)
-                    validate = self.props.gridHeader[col].validate;
+                    let validate = false;
 
 
-                if (validate && gridData.length >= 1 && gridData[row]) {
-
-                    let isvalid = validationGrid(validate, gridData[row][prop]);
-
-                    if (isvalid) {
-
-                    } else {
-                        cellClass = 'required-field';
-                    }
-
-                }
+                    if (self.props.gridHeader[col] && self.props.gridHeader[col].validate)
+                        validate = self.props.gridHeader[col].validate;
 
 
-                var type_col = self.getColumnType(conIndex)
+                    if (validate && gridData.length >= 1 && gridData[row]) {
 
+                        let isvalid = validationGrid(validate, gridData[row][prop]);
 
-                if (type_col != '--image' && type_col != '--internal-link' && type_col != '--combobox' && type_col != '--tag') {
-
-                    cellProperties.renderer = function (instance, td, row, col, prop, value, cellProperties) {
-
-                        Handsontable.cellTypes[cellProperties.type].renderer.apply(this, arguments);
-                        if (translate === true) {
-                            while (td.firstChild) {
-                                td.removeChild(td.firstChild);
-                            }
-                            let json_translations = JSON.parse(value);
-                            json_translations.map(json_translation => {
-                                if (json_translation.locale == self.props.defaultLocale) {
-                                    var textNode = document.createElement('span');
-                                    textNode.innerHTML = json_translation.value;
-                                    td.appendChild(textNode);
-                                }
-
-                            })
+                        if (isvalid) {
 
                         } else {
-                            /* chnage 0,1 value to string*/
-                            let change_value = self.props.gridHeader[conIndex].change_value;
-                            if (change_value) {
+                            cellClass = 'required-field';
+                        }
+
+                    }
 
 
+                    var type_col = self.getColumnType(conIndex)
+
+
+                    if (type_col != '--image' && type_col != '--internal-link' && type_col != '--combobox' && type_col != '--tag') {
+
+                        cellProperties.renderer = function (instance, td, row, col, prop, value, cellProperties) {
+
+                            Handsontable.cellTypes[cellProperties.type].renderer.apply(this, arguments);
+                            if (translate === true) {
                                 while (td.firstChild) {
                                     td.removeChild(td.firstChild);
                                 }
+                                let json_translations = JSON.parse(value);
+                                json_translations.map(json_translation => {
+                                    if (json_translation.locale == self.props.defaultLocale) {
+                                        var textNode = document.createElement('span');
+                                        textNode.innerHTML = json_translation.value;
+                                        td.appendChild(textNode);
+                                    }
 
-                                var textNode = document.createElement('span');
-
-                                change_value.map(cvalue=> {
-                                    if (value == cvalue.value)
-                                        textNode.innerText = cvalue.text
                                 })
 
-                                td.appendChild(textNode);
+                            } else {
+                                /* chnage 0,1 value to string*/
+                                let change_value = self.props.gridHeader[conIndex].change_value;
+                                if (change_value) {
 
 
+                                    while (td.firstChild) {
+                                        td.removeChild(td.firstChild);
+                                    }
+
+                                    var textNode = document.createElement('span');
+
+                                    change_value.map(cvalue=> {
+                                        if (value == cvalue.value)
+                                            textNode.innerText = cvalue.text
+                                    })
+
+                                    td.appendChild(textNode);
+
+
+                                }
                             }
                         }
+                        cellProperties['className'] = cellClass;
+                        return cellProperties;
+
+                    } else {
+                        cellProperties['className'] = cellClass;
+                        return cellProperties;
                     }
-                    cellProperties['className'] = cellClass;
-                    return cellProperties;
 
-                } else {
-                    cellProperties['className'] = cellClass;
-                    return cellProperties;
+
+
                 }
+            } else {
+                cellProperties.renderer = function (instance, td, row, col, prop, value, cellProperties) {
+
+                    Handsontable.cellTypes[cellProperties.type].renderer.apply(this, arguments);
 
 
+                    while (td.firstChild) {
+                        td.removeChild(td.firstChild);
+                    }
 
-            }
-        } else {
-            cellProperties.renderer = function (instance, td, row, col, prop, value, cellProperties) {
+                    var textNode = document.createElement('span');
 
-                Handsontable.cellTypes[cellProperties.type].renderer.apply(this, arguments);
+                    columnSummary.map(summary=>{
+
+                        if (prop ==summary.column) {
+
+                            if(summary.type == 'sum'){
+                                let columnSum = 0;
+                                for(let q=0; q<=gridData.length-2; q++){
+                                    columnSum = (gridData[q][prop]*1)+columnSum;
+                                }
+
+                                columnSum = numeral(columnSum);
+                                if(summary.format == 'money'){
+                                    columnSum = columnSum.format('0,0.00');
+                                } else if(summary.format == 'float'){
+                                    columnSum = columnSum.format('0,0.000');
+                                } else{
+                                    columnSum = columnSum.format('0,0');
+                                }
 
 
-                while (td.firstChild) {
-                    td.removeChild(td.firstChild);
-                }
-
-                var textNode = document.createElement('span');
-
-                columnSummary.map(summary=>{
-
-                    if (prop ==summary.column) {
-
-                        if(summary.type == 'sum'){
-                            let columnSum = 0;
-                            for(let q=0; q<=gridData.length-2; q++){
-                                columnSum = (gridData[q][prop]*1)+columnSum;
+                                textNode.innerHTML = "<b>"+columnSum+"</b>";
                             }
-
-                            columnSum = numeral(columnSum);
-                            if(summary.format == 'money'){
-                                columnSum = columnSum.format('0,0.00');
-                            } else if(summary.format == 'float'){
-                                columnSum = columnSum.format('0,0.000');
-                            } else{
-                                columnSum = columnSum.format('0,0');
-                            }
-
-
-                            textNode.innerHTML = "<b>"+columnSum+"</b>";
                         }
-                    }
 
-                })
-
+                    })
 
 
 
-                td.appendChild(textNode);
+
+                    td.appendChild(textNode);
 
 
+                }
+                cellProperties['readOnly'] = true;
+                return cellProperties;
             }
-            cellProperties['readOnly'] = true;
-            return cellProperties;
-        }
 
 
-    },
+        },
         filters: true,
         autoWrapRow:true,
         afterValidate:this.afterValidater.bind(this),
@@ -1067,7 +1068,7 @@ export function setUpHandsonTable(tpNewHeight) {
                 sortOrder: this.props.order.sortOrder == 'ASC' ? true : false
             };
 
-    //        sord
+        //        sord
         tp_options.beforeColumnSort = this.beforeColumnSort.bind(this);
     }
 
@@ -1206,4 +1207,11 @@ export function getValueAtCell(row, calculate_column){
 
 export function getData(row) {
     return this.tp_handSonTable.getDataAtRow(row);
+}
+
+export function validationCaller(validateData, value, callback) {
+    if(validateData){
+        return validationGrid(validateData, value, callback);
+    } else callback(true)
+
 }

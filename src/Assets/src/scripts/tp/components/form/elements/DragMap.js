@@ -1,5 +1,7 @@
 import React, { Component, PropTypes }  from 'react';
-import {GoogleMapLoader, GoogleMap, Marker} from "react-google-maps";
+import Marker from "react-google-maps/lib/Marker";
+import GoogleMapLoader from "react-google-maps/lib/GoogleMapLoader";
+import GoogleMap from "react-google-maps/lib/GoogleMap";
 
 
 export default class DragMap extends Component {

@@ -1,6 +1,6 @@
 import createReducer from '../createStore/createReducer';
 
-import Immutable from 'immutable';
+import Immutable, {fromJS} from 'immutable';
 
 import * as types from '../constants/grid';
 
@@ -39,12 +39,12 @@ const initialState = {
 export default createReducer(initialState, {
     [types.SETUP](state, { setupData }) {
 
-        const data = Immutable.fromJS(setupData);
-        const order = Immutable.fromJS(setupData.order);
+        const data = fromJS(setupData);
+        const order = fromJS(setupData.order);
 
-        const advancedSearch = Immutable.fromJS(setupData.advancedSearch);
-        const columnSummary = Immutable.fromJS(setupData.columnSummary);
-        const grid_extra_data = Immutable.fromJS(setupData.grid_extra_data);
+        const advancedSearch = fromJS(setupData.advancedSearch);
+        const columnSummary = fromJS(setupData.columnSummary);
+        const grid_extra_data = fromJS(setupData.grid_extra_data);
 
         state = state.set('setup', data);
         state = state.set('order', order);
@@ -81,7 +81,7 @@ export default createReducer(initialState, {
     },
     [types.SET_LIST](state, { listData }) {
 
-        const data = Immutable.fromJS(listData);
+        const data = fromJS(listData);
 
         state = state.set('listData', data);
         return state;

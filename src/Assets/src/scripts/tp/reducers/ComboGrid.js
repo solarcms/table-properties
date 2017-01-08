@@ -1,5 +1,5 @@
 import createReducer from '../createStore/createReducer';
-import Immutable from 'immutable';
+import Immutable, {fromJS} from 'immutable';
 import * as types from '../constants/comboGrid';
 
 const initialState = {
@@ -31,7 +31,7 @@ export default createReducer(initialState, {
     },
     [types.CHANGE_FORM_DATA](state, { column, data }) {
 
-        const formData = Immutable.fromJS(data);
+        const formData = fromJS(data);
 
         state = state.setIn(['formData', column, 'data'], formData);
 
@@ -85,7 +85,7 @@ export default createReducer(initialState, {
     },
     [types.SET_COMBO_BOX_ADD](state, { column, data }) {
 
-        const formData = Immutable.fromJS(data);
+        const formData = fromJS(data);
 
 
 
