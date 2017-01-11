@@ -13,7 +13,7 @@ import SubItemsContainer from "./formContainers/SubItemsContainer"
 import Modal  from 'react-bootstrap/lib/Modal';
 import {validationCaller, getData, getColumnIndex, getValueAtCell, getColumnTranslate, getColumnType, getColumn,exportEXCEL, afterValidater, setUpHandsonTable, editDeleteRender, afterChange} from '../tools/handsonTable'
 /*for handson table*/
-
+import {calculate} from '../tools/calculate'
 
 var listData = []
 var save_first_id_column_ = 0
@@ -30,6 +30,8 @@ class AddEditContainer extends Component {
             tpHeight:320,
             formGrid:true
         };
+        //auto calculate
+        this.calculate = calculate.bind(this);
 
         //handson table
         this.grid = 'multi_items';

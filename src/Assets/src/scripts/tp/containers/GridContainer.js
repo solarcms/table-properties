@@ -19,6 +19,7 @@ import {getDate} from "../tools/date";
 import validationGrid from "../components/grid/validation/"
 import AdvenvedSearch from "../components/grid/AdvenvedSearch"
 import Loading from '../components/loading/loading'
+import {calculate} from '../tools/calculate'
 
 class GridContainer extends Component {
 
@@ -28,6 +29,8 @@ class GridContainer extends Component {
         this.state = {
             tpHeight:window.innerHeight-topH
         };
+        //auto calculate
+        this.calculate = calculate.bind(this);
         //window resize handler
         this.handleResize = this.handleResize.bind(this);
         //handson table

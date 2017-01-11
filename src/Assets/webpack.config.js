@@ -54,7 +54,7 @@ module.exports = {
         new ExtractTextPlugin('css/[name].css', {
             allChunks: true
         }),
-
+        //
         // new Webpack.optimize.UglifyJsPlugin({
         //     output: {
         //         comments: false

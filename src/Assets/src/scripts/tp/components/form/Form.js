@@ -20,8 +20,17 @@ import Input from './elements/Input'
 import ComboBox from './elements/ComboBox'
 import ComboBoxAddAble from '../../containers/formContainers/ComboBoxAddAbleContainer'
 import numeral from 'numeral';
-
+import {urtugBodoh, noatBodoh, hudaldahUneBodoh, noatZarah, nhatZarah} from '../../tools/calculate';
+import {calculate} from '../../tools/calculate'
 export default class Form extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+
+        };
+        this.calculate = calculate.bind(this);
+    }
 
 
     comboGridSelected(value, text, column) {
@@ -52,7 +61,7 @@ export default class Form extends Component {
 
         this.manualeChangeHandler(locale_index, dIndex, newValue);
     }
-    getValueByColumn(column){
+    getValueAtCell(row, column){
         let value = null
         this.props.formControls.map((fcontrol, findex)=>{
             if(fcontrol.get('column') == column){
@@ -124,7 +133,7 @@ export default class Form extends Component {
                 Object.keys(showChecker).map(checker=>{
                     //console.log(checker, showChecker[checker])
 
-                    let checkerValue = this.getValueByColumn(checker)
+                    let checkerValue = this.getValueAtCell(undefined, checker)
 
 
                     if(checkerValue == showChecker[checker])
@@ -484,7 +493,7 @@ export default class Form extends Component {
 
             case "--date":
                 
-                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClassName}`}  id={`solar-form-group-${index}`}>
+                return <div key={keyIndex} className={`form-group ${fieldClassName}`}  id={`solar-form-group-${index}`}>
                     <label className={`control-label `}>{title}</label>
 
                     <Datetime
@@ -505,7 +514,7 @@ export default class Form extends Component {
                 break;
             case "--datetime":
 
-                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass} `}  id={`solar-form-group-${index}`}>
+                return <div key={keyIndex}  className={`form-group ${fieldClass} `}  id={`solar-form-group-${index}`}>
                     <label>
 
                         {title}
@@ -535,7 +544,7 @@ export default class Form extends Component {
                } else {
                    time_show = new Date(mainValue)
                }
-                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass} ${fieldClassName}`}  id={`solar-form-group-${index}`}>
+                return <div key={keyIndex} className={`form-group ${fieldClass} ${fieldClassName}`}  id={`solar-form-group-${index}`}>
                     <label>
 
                         {title}
@@ -559,7 +568,7 @@ export default class Form extends Component {
                 </div>
                 break;
             case "--combogrid":
-                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass} ${fieldClassName}`}  id={`solar-form-group-${index}`}>
+                return <div key={keyIndex} className={`form-group ${fieldClass} ${fieldClassName}`}  id={`solar-form-group-${index}`}>
                     {formType == 'inline' ? '' : <label className="control-label">{title}</label>}
                     <Combogrid listData={formData[field.get('column')].data.data}
                                disabled={thisDisabled}
@@ -682,7 +691,7 @@ export default class Form extends Component {
                 break;
             case "--radio":
 
-                return <div key={keyIndex} dataIndex={index} className={`form-group ${fieldClass} ${fieldClassName}`}  id={`solar-form-group-${index}`}>
+                return <div key={keyIndex} className={`form-group ${fieldClass} ${fieldClassName}`}  id={`solar-form-group-${index}`}>
                     <div className="radio">
 
                         <label >
@@ -784,266 +793,7 @@ export default class Form extends Component {
     }
 
     componentDidUpdate() {
-        ///auto-calculate
-        let calculate_columns = []
-
-        this.props.formControls.map((fcontrol, findex)=>{
-            if(fcontrol.get('type') == '--auto-calculate'){
-
-
-                let calculate_type = fcontrol.getIn(['options', 'calculate_type']);
-
-                let calculate_column = fcontrol.get('column');
-
-                let columns = [];
-
-                fcontrol.getIn(['options', 'calculate_columns']).map((calculate_column, cal_index)=>{
-
-
-                    columns.push(
-                        {column: calculate_column, value: this.getValueByColumn(calculate_column)}
-                    );
-                });
-
-                if(calculate_type == '--urtug-bodoh'){
-                    let noat_shalgah = fcontrol.getIn(['options', 'noat_shalgah']);
-                    let irsen_une = fcontrol.getIn(['options', 'irsen_une']);
-
-
-
-                    calculate_columns.push(
-                        {
-                            column:calculate_column,
-                            type:calculate_type,
-                            columns:columns,
-                            dataIndex:findex,
-                            noat_shalgah: this.getValueByColumn(noat_shalgah),
-                            irsen_une: this.getValueByColumn(irsen_une)
-                        }
-                    )
-                } else if(calculate_type == '--noat-bodoh'){
-                    let noat_shalgah = fcontrol.getIn(['options', 'noat_shalgah']);
-                    let irsen_une = fcontrol.getIn(['options', 'irsen_une']);
-                    let urtug_une = fcontrol.getIn(['options', 'urtug_une']);
-
-                    calculate_columns.push(
-                        {
-                            column:calculate_column,
-                            type:calculate_type,
-                            columns:columns,
-                            dataIndex:findex,
-                            noat_shalgah: this.getValueByColumn(noat_shalgah),
-                            irsen_une: this.getValueByColumn(irsen_une),
-                            urtug_une: this.getValueByColumn(urtug_une)
-                        }
-                    )
-                }
-
-                else if(calculate_type == '--hudaldal-une-bodoh'){
-                    let borluulaltiin_huvi = fcontrol.getIn(['options', 'borluulaltiin_huvi']);
-                    let urtug_une = fcontrol.getIn(['options', 'urtug_une']);
-                    let nhattai_zarah = fcontrol.getIn(['options', 'nhattai_zarah']);
-                    let noattei_zarah = fcontrol.getIn(['options', 'noattei_zarah']);
-
-                    calculate_columns.push(
-                        {
-                            column:calculate_column,
-                            type:calculate_type,
-                            columns:columns,
-                            dataIndex:findex,
-                            borluulaltiin_huvi: this.getValueByColumn(borluulaltiin_huvi),
-                            urtug_une: this.getValueByColumn(urtug_une),
-                            noattei_zarah: this.getValueByColumn(noattei_zarah),
-                            nhattai_zarah: this.getValueByColumn(nhattai_zarah)
-                        }
-                    )
-                } else if(calculate_type == '--noat-zarah'){
-                    let borluulaltiin_huvi = fcontrol.getIn(['options', 'borluulaltiin_huvi']);
-                    let urtug_une = fcontrol.getIn(['options', 'urtug_une']);
-                    let noattei_zarah = fcontrol.getIn(['options', 'noattei_zarah']);
-
-                    calculate_columns.push(
-                        {
-                            column:calculate_column,
-                            type:calculate_type,
-                            columns:columns,
-                            dataIndex:findex,
-                            borluulaltiin_huvi: this.getValueByColumn(borluulaltiin_huvi),
-                            urtug_une: this.getValueByColumn(urtug_une),
-                            noattei_zarah: this.getValueByColumn(noattei_zarah),
-
-                        }
-                    )
-                }else if(calculate_type == '--nhat-zarah'){
-                    let borluulaltiin_huvi = fcontrol.getIn(['options', 'borluulaltiin_huvi']);
-                    let urtug_une = fcontrol.getIn(['options', 'urtug_une']);
-                    let nhattai_zarah = fcontrol.getIn(['options', 'nhattai_zarah']);
-
-
-                    calculate_columns.push(
-                        {
-                            column:calculate_column,
-                            type:calculate_type,
-                            columns:columns,
-                            dataIndex:findex,
-                            borluulaltiin_huvi: this.getValueByColumn(borluulaltiin_huvi),
-                            urtug_une: this.getValueByColumn(urtug_une),
-                            nhattai_zarah: this.getValueByColumn(nhattai_zarah)
-                        }
-                    )
-                } else
-                    calculate_columns.push(
-                        {
-                            column:calculate_column,
-                            type:calculate_type,
-                            columns:columns,
-                            dataIndex:findex
-                        }
-                    )
-            }
-        })
-
-        calculate_columns.map((calculate_column, index)=>{
-            let checkAllValue = true;
-            calculate_column.columns.map((cal_column)=>{
-                if(cal_column.value === null)
-                    checkAllValue = false
-            })
-            let calculate_result = null;
-            if(checkAllValue === true){
-                if(calculate_column.type == '--multiply') {
-                    calculate_column.columns.map((cal_column, calIndex)=> {
-                        if (calIndex == 0)
-                            calculate_result = cal_column.value;
-                        else
-                            calculate_result = calculate_result * cal_column.value
-                    })
-                } else if(calculate_column.type == '--divide') {
-                    calculate_column.columns.map((cal_column, calIndex)=> {
-                        if (calIndex == 0)
-                            calculate_result = cal_column.value;
-                        else
-                            calculate_result = calculate_result / cal_column.value
-                    })
-                }else if(calculate_column.type == '--add_percent_10'){
-                    calculate_column.columns.map((cal_column, calIndex)=>{
-                        if(calIndex == 0)
-                            calculate_result = cal_column.value;
-                        else{
-                            let pluss_vlue = (calculate_result/100)*cal_column.value;
-
-                            let calculate_10 = Math.ceil((((calculate_result*1)+(pluss_vlue))/10))*10;
-
-                            calculate_result = calculate_10;
-                        }
-
-                    })
-                }else if(calculate_column.type == '--urtug-bodoh'){
-                    if(calculate_column.noat_shalgah == 1 || calculate_column.noat_shalgah == '1'){
-                        calculate_result = Math.ceil((calculate_column.irsen_une/1.1));
-                    } else {
-
-                        calculate_result = calculate_column.irsen_une*1;
-                    }
-
-                }else if(calculate_column.type == '--noat-bodoh'){
-
-                    if(calculate_column.noat_shalgah == 1 || calculate_column.noat_shalgah == '1'){
-                        calculate_result = (calculate_column.irsen_une*1) - (calculate_column.urtug_une*1);
-                    } else {
-                        calculate_result = 0;
-                    }
-
-                }else if(calculate_column.type == '--hudaldal-une-bodoh'){
-
-                    let hudaldah_und_bodson = 0;
-
-                    let pluss_vlue = (calculate_column.urtug_une/100)*calculate_column.borluulaltiin_huvi;
-                    hudaldah_und_bodson = (calculate_column.urtug_une*1)+(pluss_vlue);
-
-                    let noat = 0;
-                    let nhat = 0;
-
-                    if(calculate_column.noattei_zarah == 1 || calculate_column.noattei_zarah == '1'){
-                        noat = hudaldah_und_bodson*0.1;
-                    }
-
-                    if(calculate_column.nhattai_zarah == 1 || calculate_column.nhattai_zarah == '1'){
-                        nhat = hudaldah_und_bodson*0.01;
-                    }
-
-
-                    hudaldah_und_bodson = hudaldah_und_bodson+nhat+noat;
-                    hudaldah_und_bodson = Math.ceil((hudaldah_und_bodson/10))*10;
-
-
-
-
-                    calculate_result = hudaldah_und_bodson;
-
-                }else if(calculate_column.type == '--noat-zarah'){
-
-                    let hudaldah_und_bodson = 0;
-
-                    let pluss_vlue = (calculate_column.urtug_une/100)*calculate_column.borluulaltiin_huvi;
-                    hudaldah_und_bodson = (calculate_column.urtug_une*1)+(pluss_vlue);
-
-                    let noat = 0;
-
-
-                    if(calculate_column.noattei_zarah == 1 || calculate_column.noattei_zarah == '1'){
-                        noat = hudaldah_und_bodson*0.1;
-                    }
-
-
-
-                    calculate_result = noat;
-
-                }else if(calculate_column.type == '--nhat-zarah'){
-
-                    let hudaldah_und_bodson = 0;
-
-                    let pluss_vlue = (calculate_column.urtug_une/100)*calculate_column.borluulaltiin_huvi;
-                    hudaldah_und_bodson = (calculate_column.urtug_une*1)+(pluss_vlue);
-
-                    let noat = 0;
-                    let nhat = 0;
-
-                    if(calculate_column.nhattai_zarah == 1 || calculate_column.nhattai_zarah == '1'){
-                        nhat = hudaldah_und_bodson*0.01;
-                    }
-
-
-                    calculate_result = nhat;
-
-                }else if(calculate_column.type == '--minus'){
-                    calculate_column.columns.map((cal_column, calIndex)=>{
-                        if(calIndex == 0)
-                            calculate_result = cal_column.value;
-                        else
-                            calculate_result = calculate_result - cal_column.value
-                    })
-                }else if((calculate_column.type == '--sum')){
-                    calculate_column.columns.map((cal_column, calIndex)=>{
-                        if(calIndex == 0)
-                            calculate_result = cal_column.value;
-                        else
-                            calculate_result = calculate_result + cal_column.value
-                    })
-                } else if(calculate_column.type == '--average'){
-                    calculate_column.columns.map((cal_column, calIndex)=>{
-                        if(calIndex == 0)
-                            calculate_result = cal_column.value;
-                        else
-                            calculate_result = calculate_result + cal_column.value
-                    })
-                    calculate_result = calculate_result/calculate_column.columns.length;
-                }
-                if(calculate_result !== null){
-                    this.props.changeHandler([calculate_column.dataIndex], calculate_result);
-                }
-            }
-        });
+       this.calculate();
 
     }
 
