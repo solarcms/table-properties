@@ -219,7 +219,7 @@ export function afterChange(changes, source, isValid) {
         this.calculate(row);
 
 
-        if(this.props.gridHeader[colIndex].after_change_trigger){
+        if(this.props.gridHeader[colIndex].after_change_trigger && elValue){
 
 
             afterChangeTrigger([colIndex], elValue, 'multi_items_form').then((data)=>{

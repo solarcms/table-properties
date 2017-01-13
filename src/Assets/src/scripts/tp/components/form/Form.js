@@ -20,7 +20,6 @@ import Input from './elements/Input'
 import ComboBox from './elements/ComboBox'
 import ComboBoxAddAble from '../../containers/formContainers/ComboBoxAddAbleContainer'
 import numeral from 'numeral';
-import {urtugBodoh, noatBodoh, hudaldahUneBodoh, noatZarah, nhatZarah} from '../../tools/calculate';
 import {calculate} from '../../tools/calculate'
 export default class Form extends Component {
 
