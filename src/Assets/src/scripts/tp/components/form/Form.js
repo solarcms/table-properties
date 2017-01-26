@@ -123,16 +123,19 @@ export default class Form extends Component {
 
         const fieldClassName = field.get('className') ? field.get('className') : this.props.fieldClassName;
 
+
+
         if(field.get('show')){
 
             let showCheckers = field.get('show').toJS();
+
             let hideElement = true;
             showCheckers.map((showChecker)=>{
 
                 Object.keys(showChecker).map(checker=>{
                     //console.log(checker, showChecker[checker])
 
-                    let checkerValue = this.getValueAtCell(undefined, checker)
+                    let checkerValue = this.getValueAtCell(undefined, checker);
 
 
                     if(checkerValue == showChecker[checker])
@@ -143,6 +146,8 @@ export default class Form extends Component {
 
 
             })
+
+
             if(hideElement === true){
                 return false
             }

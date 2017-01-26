@@ -55,18 +55,18 @@ module.exports = {
             allChunks: true
         }),
         //
-        // new Webpack.optimize.UglifyJsPlugin({
-        //     output: {
-        //         comments: false
-        //     }
-        // }),
+        new Webpack.optimize.UglifyJsPlugin({
+            output: {
+                comments: false
+            }
+        }),
         new Webpack.IgnorePlugin(/(locale)/, /node_modules.+(momentjs)/),
 
-        // new Webpack.DefinePlugin({
-        //     'process.env': {
-        //         'NODE_ENV': JSON.stringify('production')
-        //     }
-        // }),
+        new Webpack.DefinePlugin({
+            'process.env': {
+                'NODE_ENV': JSON.stringify('production')
+            }
+        }),
 
         new Webpack.BannerPlugin("*************************************\n   Solar Content Management System \n*************************************\n")
     ],

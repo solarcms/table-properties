@@ -153,6 +153,8 @@ class SubItemsContainer extends Component {
     }
     componentWillMount() {
 
+
+
         this.props.subItems.map((subItem, index) => {
             this.props.actions.addModal('sub-items-'+subItem.get('connect_column'));
         })
@@ -175,6 +177,7 @@ class SubItemsContainer extends Component {
 
                                         FD.push({
                                             column: form_i_c.get('column'),
+                                            show: form_i_c.get('show'),
                                             title: form_i_c.get('title'),
                                             type: form_i_c.get('type'),
                                             value: edit_data[form_i_c.get('column')],
@@ -195,6 +198,7 @@ class SubItemsContainer extends Component {
 
 
                                             edit_controls.push({
+                                                show: form_i_c.get('show'),
                                                 column: scontrol.get('column'),
                                                 title: scontrol.get('title'),
                                                 type: scontrol.get('type'),
@@ -261,16 +265,23 @@ class SubItemsContainer extends Component {
             })
 
 
-            const savedItems = subItem.get('items').map((savedItem, savedIndex)=>
-                <span key={savedIndex} className="savedIems">
-                    {savedIndex+1}.
+            const savedItems = subItem.get('items').map((savedItem, savedIndex)=>{
+                let gridText = '';
+                return <div className="col-md-6 savedIems" key={savedIndex} >
+
+                    {subItem.get('grid_columns').map((g_column, col_index)=>{
+                        let dataColumn = savedItem.get('data').filter((data_v)=>data_v.get('column') == g_column);
+                        gridText = gridText + dataColumn.getIn([0, 'value'])+' ';
+                    })}
+
+                    <span dangerouslySetInnerHTML={{__html: gridText}} />
                     <button className="btn btn-success "  onClick={this.editItem.bind(this, index, savedItem.get('data'), subItem.get('connect_column'), savedIndex)}>
                         <i className="material-icons done">&#xE876;</i>
                         <i className="material-icons edit">&#xE254;</i>
                     </button>
-                </span>
 
-            )
+                </div>
+            })
             const showDelete = this.props.permission.d == true ? this.props.editIndex == -1 ? false : true : false
             return <div key={index} className="sub-items">
                         <h5>{subItem.get('page_name')}</h5>

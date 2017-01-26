@@ -2246,9 +2246,9 @@ class Tp
 
                             if (!empty($this->save_from_parent)) {
 
-                                $will_save_parent_value = DB::table($this->table)->select($this->save_from_parent['parent_column'])->where('id', '=', $parentId)->pluck($this->save_from_parent['parent_column']);
-
-                                $insertQuery[$this->save_from_parent['child_column']] = $will_save_parent_value;
+                                $will_save_parent_value = DB::table($this->table)->select($this->save_from_parent['parent_column'])->where($this->save_from_parent['parent_column'], '=', $parentId)->first();
+                                $data_array = (array) $will_save_parent_value;
+                                $insertQuery[$this->save_from_parent['child_column']] = $data_array[$this->save_from_parent['parent_column']];
                             }
 
                             if ($item['id'] == null)
