@@ -17,7 +17,12 @@ export function setShowAddEditForm(value) {
         value: value
     }
 }
-
+export function receiveListData(listData) {
+    return {
+        type: types.SET_LIST,
+        listData
+    }
+}
 export function changeValue(index, value) {
 
     return {

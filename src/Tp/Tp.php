@@ -1204,6 +1204,8 @@ class Tp
                     $insertedId = DB::getPdo()->lastInsertId();
 
 
+
+
                     $firstItem[$this->save_first_id_column] = $insertedId;
 
                     DB::table($this->table)->where($this->identity_name, '=', $insertedId)->update($firstItem);
@@ -1284,6 +1286,9 @@ class Tp
             $saved = DB::table($this->table)->insert($insertQuery);
             $insertedId = DB::getPdo()->lastInsertId();
 
+            if (count($this->subItems) >= 1)
+                $this->saveSubItems($insertedId, $this->subItems, Request::input('subItems'));
+
             if ($saved && $this->after_insert != null) {
                 $save_trigger = $this->afterInsertCaller($this->after_insert, $insertQuery, $insertedId);
 
@@ -1297,8 +1302,7 @@ class Tp
         }
 
 
-        if (count($this->subItems) >= 1)
-            $this->saveSubItems($insertedId, $this->subItems, Request::input('subItems'));
+
 
         if ($this->generateLocaleFile == true) {
             $this->generateLocale();
@@ -1659,8 +1663,7 @@ class Tp
         }
 
 
-        if (count($this->subItems) >= 1)
-            $this->saveSubItems($id, $this->subItems, Request::input('subItems'));
+       
 
         if ($this->generateLocaleFile == true) {
             $this->generateLocale();

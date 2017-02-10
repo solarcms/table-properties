@@ -61,7 +61,6 @@ export function customDropdownRenderer(instance, td, row, col, prop, value, cell
 
     var values = (value + "").split(",");
 
-
     var value = [];
     for (var index = 0; index < optionsList.length; index++) {
 
@@ -295,6 +294,7 @@ export function afterChange(changes, source, isValid) {
 
             if (error_not_found && edit_id === -1) {
 
+
                 inlineSave(data).then((data)=> {
 
 
@@ -315,8 +315,7 @@ export function afterChange(changes, source, isValid) {
 
             }
 
-            if (error_not_found && edit_id >= 1) {
-
+            if (error_not_found && edit_id >= 1 && this.state.formGrid !== true) {
 
                 inlineSaveUpdate(edit_id, data).then((data)=> {
                     $("#save_info" ).addClass("show-info");
@@ -389,7 +388,14 @@ export function afterValidater(isValid, value, row, prop, source) {
 export function setUpHandsonTable(tpNewHeight) {
 
 
-    const {gridHeader, listData} = this.props;
+    const {gridHeader} = this.props;
+    let listData = [];
+    if(this.props.listData){
+        listData = this.props.listData;
+    }
+    if(this.state.formGrid){
+        listData = this.listData;
+    }
 
     if (this.tp_handSonTable !== null) {
         this.tp_handSonTable.destroy()
@@ -407,6 +413,8 @@ export function setUpHandsonTable(tpNewHeight) {
             if(header.readOnly || (this.props.formType != 'inline' && this.state.formGrid !== true)){
                 colReadOnly = true;
             }
+
+
 
          
             tp_colHeader.push(header.title)
@@ -634,7 +642,7 @@ export function setUpHandsonTable(tpNewHeight) {
     //inline form add
     let trimRows = null
     let readOnly = true
-    if (this.props.formType == 'inline') {
+    if (this.props.formType == 'inline' || this.state.formGrid === true) {
         readOnly = false
     }
 
@@ -673,8 +681,6 @@ export function setUpHandsonTable(tpNewHeight) {
         fixedRowsBottom:fixedRowsBottom,
         cells: function(row, col, prop) {
 
-
-
             var cellProperties = {};
 
             var conIndex = self.getColumnIndex(prop)
@@ -683,6 +689,10 @@ export function setUpHandsonTable(tpNewHeight) {
             let cellClass = ''
 
             let hasahToo =  columnSummary.length >=1 ? 2 : 1;
+
+            if(gridData.length == 0){
+                hasahToo = 0;
+            }
 
             if(row <= gridData.length-hasahToo) {
                 if (prop != self.props.identity_name && prop != 'id') {
@@ -764,6 +774,9 @@ export function setUpHandsonTable(tpNewHeight) {
 
                 }
             } else {
+
+
+
                 cellProperties.renderer = function (instance, td, row, col, prop, value, cellProperties) {
 
                     Handsontable.cellTypes[cellProperties.type].renderer.apply(this, arguments);
@@ -808,6 +821,7 @@ export function setUpHandsonTable(tpNewHeight) {
 
 
                 }
+                
                 cellProperties['readOnly'] = true;
                 return cellProperties;
             }
@@ -849,6 +863,7 @@ export function setUpHandsonTable(tpNewHeight) {
         ];
         tp_options.fillHandle = false;
     }
+
 
     this.tp_handSonTable = new Handsontable(container, tp_options);
 

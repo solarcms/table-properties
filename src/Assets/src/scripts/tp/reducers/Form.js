@@ -14,6 +14,7 @@ const initialState = {
     formClassName:null,
     fieldClassName:null,
     formData:{},
+    listData:[],
     showAddEditForm:false,
     showInsertResponse:false,
     after_save_redirect_url:'',
@@ -188,5 +189,11 @@ export default createReducer(initialState, {
 
         return state;
     },
+    [types.SET_LIST](state, { listData }) {
 
+        const data = fromJS(listData);
+
+        state = state.set('listData', data);
+        return state;
+    },
 });

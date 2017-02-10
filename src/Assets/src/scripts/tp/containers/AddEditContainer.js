@@ -15,7 +15,7 @@ import {validationCaller, getData, getColumnIndex, getValueAtCell, getColumnTran
 /*for handson table*/
 import {calculate} from '../tools/calculate'
 
-var listData = []
+
 var save_first_id_column_ = 0
 
 import Loading from '../components/loading/loading'
@@ -50,6 +50,7 @@ class AddEditContainer extends Component {
         this.tp_handSonTable = null;
         this.exportPlugin = null;
         this.tp_dataSchema = {};
+        this.listData = [];
     }
     getValueByColumn(column){
         let value = null
@@ -675,7 +676,7 @@ class AddEditContainer extends Component {
             if(data.length <= 0)
                 window.location.replace('#/');
 
-            listData = data;
+            this.listData = data;
             this.setUpHandsonTable()
         });
     }
@@ -692,7 +693,7 @@ class AddEditContainer extends Component {
             }
             else{
                 if(id === null){
-                    listData.splice(row, 1);
+                    this.listData.splice(row, 1);
                 } else {
                     deleteItem(id).then((data)=> {
 
@@ -912,7 +913,7 @@ function mapStateToProps(state) {
         after_save_redirect: Form.get('after_save_redirect'),
         after_save_redirect_url: Form.get('after_save_redirect_url'),
         columnSummary:[],
-        listData:[]
+        // listData:Form.get('listData').toJS()
     }
 }
 // Which action creators does it want to receive by props?

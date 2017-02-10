@@ -35,9 +35,13 @@ module.exports = {
         new Webpack.HotModuleReplacementPlugin(),
         new Webpack.NoErrorsPlugin(),
 
-
         //Chunk script
-        // new Webpack.optimize.CommonsChunkPlugin('dependencies', 'js/dependencies.js', Infinity),
+        new Webpack.optimize.CommonsChunkPlugin('dependencies', 'js/dependencies.js', Infinity),
+
+        //Chunk css
+        new ExtractTextPlugin('css/[name].css', {
+            allChunks: true
+        }),
 
         //Copy assets
         new CopyPlugin([
@@ -45,22 +49,10 @@ module.exports = {
             //{from: '../../dist/css/tp.css', to: '../../../../../public/shared/table-properties/css/tp.css', toType: 'file'},
             //{from: '../../dist/js/tp.js', to: '../../../../../public/shared/table-properties/js/tp.js', toType: 'file'},
         ]),
-        
+
         // new Webpack.DefinePlugin({
         //     'process.env.NODE_ENV': JSON.stringify('development')
         // }),
-
-        //Chunk css
-        new ExtractTextPlugin('css/[name].css', {
-            allChunks: true
-        }),
-        //
-        new Webpack.optimize.UglifyJsPlugin({
-            output: {
-                comments: false
-            }
-        }),
-        new Webpack.IgnorePlugin(/(locale)/, /node_modules.+(momentjs)/),
 
         new Webpack.DefinePlugin({
             'process.env': {
@@ -72,7 +64,6 @@ module.exports = {
     ],
 
     module: {
-        noParse: [/moment.js/],
         loaders: [
             //SCRIPTS
             {

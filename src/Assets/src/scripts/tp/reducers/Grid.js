@@ -6,7 +6,7 @@ import * as types from '../constants/grid';
 
 const initialState = {
     setup: {},
-    listData:{},
+    listData:[],
     form_input_control:{},
     grid_extra_data:{},
     currentPage:1,

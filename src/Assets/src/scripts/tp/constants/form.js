@@ -4,6 +4,7 @@ export const SET_SHOW_ADD_EDIT_FORM = 'SET_SHOW_ADD_EDIT_FORM';
 export const CHANGE_VALUE = 'CHANGE_VALUE';
 export const CHANGE_STATUS = 'CHANGE_STATUS';
 export const SET_ERROR = 'SET_ERROR';
+export const SET_LIST = 'SET_LIST';
 export const CLEAR_FORM_VALIDATION = 'CLEAR_FORM_VALIDATION';
 export const SET_FORM_DATA = 'SET_FORM_DATA';
 export const CHANGE_FORM_DATA = 'CHANGE_FORM_DATA';
