@@ -50,9 +50,9 @@ module.exports = {
             //{from: '../../dist/js/tp.js', to: '../../../../../public/shared/table-properties/js/tp.js', toType: 'file'},
         ]),
 
-        // new Webpack.DefinePlugin({
-        //     'process.env.NODE_ENV': JSON.stringify('development')
-        // }),
+        new Webpack.DefinePlugin({
+            'process.env.NODE_ENV': JSON.stringify('development')
+        }),
 
         new Webpack.DefinePlugin({
             'process.env': {

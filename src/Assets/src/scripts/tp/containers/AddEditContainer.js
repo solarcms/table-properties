@@ -786,8 +786,7 @@ class AddEditContainer extends Component {
         const formSubItmes = subItems.size >= 1 ?
             <SubItemsContainer formData={formData_Imm} subItems={subItems} edit_parent_id={edit_parent_id}
                                ifUpdateDisabledCanEditColumns={ifUpdateDisabledCanEditColumns}
-                               permission={permission}
-                          
+                               permission={permission}                          
                                showAddEditForm={showAddEditForm}/> : null
 
 

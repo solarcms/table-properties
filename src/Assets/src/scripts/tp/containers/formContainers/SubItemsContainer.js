@@ -18,6 +18,7 @@ class SubItemsContainer extends Component {
         this.props.actions.clearFromValidation(CAIndex);
     }
 
+
     delete(column, CAIndex, deleteItem) {
 
         if(this.props.permission.d !== true)
@@ -151,6 +152,23 @@ class SubItemsContainer extends Component {
 
 
     }
+    setErrorManuale(CAcolumn, CAIndex, dataIndex, error){
+        
+      if(error){
+          let realDataIndex = [];
+
+          dataIndex.map((dIndex, index)=> {
+              if (index == 0) {
+                  realDataIndex.push(dIndex);
+              } else if (index >= 1) {
+                  realDataIndex.push('controls')
+                  realDataIndex.push(dIndex)
+              }
+          })
+          this.props.actions.setError(CAcolumn, CAIndex, realDataIndex, error)
+      }
+
+    }
     componentWillMount() {
 
 
@@ -171,7 +189,6 @@ class SubItemsContainer extends Component {
                             subItem.get('form_input_control').map((form_i_c, edit_index)=>{
 
 
-
                                 if(form_i_c.get('type') !== '--group'){
 
 
@@ -189,7 +206,6 @@ class SubItemsContainer extends Component {
                                         });
 
                                 } else {
-
 
 
                                     let edit_controls = [];
@@ -252,10 +268,7 @@ class SubItemsContainer extends Component {
             button_texts
             } = this.props;
 
-
         const Items = showAddEditForm === true ? subItems.map((subItem, index)=>{
-
-
 
             let shwoModal = false;
 
@@ -282,28 +295,25 @@ class SubItemsContainer extends Component {
 
                 </div>
             })
-            const showDelete = this.props.permission.d == true ? this.props.editIndex == -1 ? false : true : false
+            const showDelete = this.props.permission.d == true ? this.props.editIndex == -1 ? false : true : false;
+
+
+           
             return <div key={index} className="sub-items">
                         <h5>{subItem.get('page_name')}</h5>
-
-
                 {savedItems}
-
-
-
-
                 <button className="btn btn-primary add-btn" onClick={this.showModal.bind(this,subItem.get('connect_column'))}>
                     <i className="material-icons">&#xE145;</i>
                 </button>
-
                 <p >{subItem.get('description')}</p>
-
                 <Window key={index}
                         id={`sub-items-${subItem.get('connect_column')}`}
                         formControls={subItem.get('form_input_control')}
+                        edit_parent_id={subItem.getIn(['items', this.props.editIndex, 'id'])}
                         formData={formData}
                         pageName={subItem.get('page_name')}
                         show={shwoModal}
+                        setErrorManuale={this.setErrorManuale.bind(this, subItem.get('connect_column'), index)}
                         changeHandler={this.changeValues.bind(this, subItem.get('connect_column'), index)}
                         saveForm={this.saveForm.bind(this, subItem.get('connect_column'), index)}
                         hideModal={this.hideModal.bind(this, subItem.get('connect_column'), index)}
@@ -313,8 +323,7 @@ class SubItemsContainer extends Component {
                         showDelete={showDelete}
                         button_texts={button_texts}
                 />
-
-                    </div>
+            </div>
 
         }) : null
 

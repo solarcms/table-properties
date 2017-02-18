@@ -33,7 +33,8 @@ export default class Input extends Component {
 
         if(value !== null && value != '')
             checkUnique(table, table_colummn, value, row_id, row_id_field).then((count)=>{
-                if(count >= 1){
+               
+                if(count == '1'){
 
                     if(errorText !== null)
                         this.props.setErrorManuale(dataIndexs, errorText+' Өгөгдөл давахцаж байна')

@@ -1651,6 +1651,10 @@ class Tp
 
             $saved = DB::table($this->table)->where("$this->identity_name", '=', $id)->update($insertQuery);
 
+
+            if (count($this->subItems) >= 1)
+                $this->saveSubItems($id, $this->subItems, Request::input('subItems'));
+
             if (($saved == true && $this->after_update != null) || ($saved == 'none' && $this->after_update)) {
                 $save_trigger = $this->afterUpdateCaller($this->after_update, $insertQuery, $id);
 
@@ -2433,20 +2437,16 @@ class Tp
         $row_id_field = Request::input('row_id_field');
         $row_id = Request::input('row_id');
 
-        $validation = null;
-        foreach ($this->form_input_control as $formControl) {
-
-            if (isset($formControl["column"]) && $formControl["column"] == $column) {
-
-                $validation = ["$column" => $formControl["validate"]];
-
-            }
-
+        $check = DB::table($table)->select($row_id_field)->where($column, $value);
+        $result = null;
+        if($row_id){
+            $result = $check->where($row_id_field, '!=', $row_id)->first();
+        } else{
+            $result = $check->first();
         }
 
 
-        $validator = Validator::make(["$column" => $value], $validation);
-        if ($validator->fails()) {
+        if ($result) {
             return 1;
         } else {
             return 0;
