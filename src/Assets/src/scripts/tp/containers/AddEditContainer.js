@@ -51,6 +51,9 @@ class AddEditContainer extends Component {
         this.exportPlugin = null;
         this.tp_dataSchema = {};
         this.listData = [];
+
+        //after change trigger
+        this.timeout = null;
     }
     getValueByColumn(column){
         let value = null
@@ -447,37 +450,30 @@ class AddEditContainer extends Component {
              error = validation(value, field.get('validate'));
         }
 
-        if(error === null && field.get('after_change_trigger')){
-            afterChangeTrigger(realDataIndex, value, 'form').then((data)=>{
-                
-                if(data.status){
-                    if(data.status == 'success'){
-                        let setValues = data.new_values;
-
-                        setValues.map(setValue=>{
-                            this.changeValues(setValue[0], setValue[1]);
-
-
-                            if(setValue[2] === false || setValue[2] === true){
-                              
-                                this.props.actions.changeStatus(setValue[0], setValue[2]);
-                            }
-                        })
-                    } else if(data.status == 'error'){
-                        alert(data.error_message);
-                        window.location.replace('#/');
-                    }
-
-                } else {
-                    let setValues = data;
-
-                    setValues.map(setValue=>{
-                        this.changeValues(setValue[0], setValue[1]);
-                    })
-                }
-
-            })
+        if(field.get('after_change_trigger')){
+            if (this.timeout) {
+                clearTimeout(this.timeout);
+            }
         }
+
+        if(error === null && field.get('after_change_trigger')){
+
+            let delay = field.getIn(['after_change_trigger', 'delay']);
+
+            if(delay){
+                
+                this.timeout = setTimeout(()=> {
+                    this.afterChangeCaller(realDataIndex, value);
+                }, delay);
+
+            } else {
+                this.afterChangeCaller(realDataIndex, value);
+            }
+
+
+        }
+
+
 
 
         this.props.actions.setError(realDataIndex, error);
@@ -496,6 +492,37 @@ class AddEditContainer extends Component {
 
 
 
+    }
+    afterChangeCaller(realDataIndex, value){
+        afterChangeTrigger(realDataIndex, value, 'form').then((data)=>{
+
+            if(data.status){
+                if(data.status == 'success'){
+
+                    this.afterChageSetValues(data.new_values);
+
+                } else if(data.status == 'error'){
+                    this.props.actions.setError(realDataIndex, data.error_message);
+
+                    this.afterChageSetValues(data.new_values);
+                }
+
+            } else {
+                this.afterChageSetValues(data);
+            }
+
+        })
+    }
+    afterChageSetValues(setValues){
+        setValues.map(setValue=>{
+            this.changeValues(setValue[0], setValue[1]);
+
+
+            if(setValue[2] === false || setValue[2] === true){
+
+                this.props.actions.changeStatus(setValue[0], setValue[2]);
+            }
+        })
     }
 
     componentWillMount() {
