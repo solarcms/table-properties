@@ -217,45 +217,28 @@ export function afterChange(changes, source, isValid) {
         ///auto-calculate
         this.calculate(row);
 
+        if(this.props.gridHeader[colIndex].after_change_trigger){
+            if (this.timeout) {
+                clearTimeout(this.timeout);
+            }
+        }
+
 
         if(this.props.gridHeader[colIndex].after_change_trigger && elValue){
 
+            let delay = this.props.gridHeader[colIndex].after_change_trigger.delay;
 
-            afterChangeTrigger([colIndex], elValue, 'multi_items_form').then((data)=>{
-                let setValues = null;
+            if(delay){
 
+                this.timeout = setTimeout(()=> {
+                    this.afterChangeCallerH([colIndex], elValue, row);
+                }, delay);
 
-
-                if(data.status){
-                    if(data.status == 'success'){
-                        setValues = data.new_values;
-
-                        setValues.map(setValue=>{
-                            // console.log(setValue[0][0], 'changeing', setValue[1]);
-
-                            this.tp_handSonTable.setDataAtCell(row, setValue[0][0], setValue[1]);
+            } else {
+                this.afterChangeCallerH([colIndex], elValue, row);
+            }
 
 
-
-                            // this.changeValues(setValue[0], setValue[1]);
-                        })
-                    } else if(data.status == 'error'){
-                        alert(data.error_message);
-                        window.location.replace('#/');
-                    }
-
-                } else {
-                    setValues = data;
-
-                    setValues.map(setValue=>{
-                        // console.log(setValue[0][0], 'changeing', setValue[1]);
-
-                        this.tp_handSonTable.setDataAtCell(row, setValue[0][0], setValue[1]);
-
-                        // this.changeValues(setValue[0], setValue[1]);
-                    })
-                }
-            })
 
         }
 
@@ -344,6 +327,43 @@ export function afterChange(changes, source, isValid) {
     }
 
 
+}
+export function afterChangeCallerH(realDataIndex, elValue, row){
+    afterChangeTrigger(realDataIndex, elValue, 'multi_items_form').then((data)=>{
+        let setValues = null;
+
+
+
+        if(data.status){
+            if(data.status == 'success'){
+                setValues = data.new_values;
+
+                setValues.map(setValue=>{
+                    // console.log(setValue[0][0], 'changeing', setValue[1]);
+
+                    this.tp_handSonTable.setDataAtCell(row, setValue[0][0], setValue[1]);
+
+
+
+                    // this.changeValues(setValue[0], setValue[1]);
+                })
+            } else if(data.status == 'error'){
+                alert(data.error_message);
+                window.location.replace('#/');
+            }
+
+        } else {
+            setValues = data;
+
+            setValues.map(setValue=>{
+              
+
+                this.tp_handSonTable.setDataAtCell(row, setValue[0][0], setValue[1]);
+
+                // this.changeValues(setValue[0], setValue[1]);
+            })
+        }
+    })
 }
 
 export function exportEXCEL() {
@@ -540,6 +560,16 @@ export function setUpHandsonTable(tpNewHeight) {
                     }
                     break;
                 case "--disabled":
+                    gridColumn =
+                    {
+                        data: header.column,
+                        type: 'text',
+                        editor: false,
+                        validator: this.validationCaller.bind(this, ''),
+                    }
+                    break;
+                case "--hidden":
+                    
                     gridColumn =
                     {
                         data: header.column,

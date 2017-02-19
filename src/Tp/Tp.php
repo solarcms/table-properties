@@ -922,7 +922,7 @@ class Tp
         $rules = [];
 
         foreach ($form_input_control as $form_control) {
-            if (isset($form_control['show'])) {
+            if (isset($form_control['show']) || isset($form_control['skip'])) {
 
             } else
                 if (isset($form_control['validate'])) {
@@ -1017,44 +1017,50 @@ class Tp
 
         $insertQuery = $this->hidden_values;
         foreach ($this->form_input_control as $formControl) {
-
-            if ($formControl['type'] == '--group') {
-                $rules_pre = $this->getRule($formControl['controls']);
-                $rules = array_merge($rules, $rules_pre);
-                foreach ($formControl['controls'] as $subformControl) {
-                    if ($subformControl['type'] == '--group') {
-
-                    } else {
-                        if ($subformControl['type'] == '--checkbox') {
-                            $checkBoxValue = $formData[$subformControl['column']];
-                            if ($checkBoxValue == 1)
-                                $checkBoxValue = 1;
-                            else
-                                $checkBoxValue = 0;
-                            $insertQuery[$subformControl['column']] = $checkBoxValue;
-
-                        } else
-                            $insertQuery[$subformControl['column']] = $formData[$subformControl['column']];
-                    }
-
-
-                }
+            
+            if(isset($formControl['skip'])){
+                
             } else {
-                if ($formControl['type'] == '--checkbox') {
-                    $checkBoxValue = $formData[$formControl['column']];
-                    if ($checkBoxValue == 1)
-                        $checkBoxValue = 1;
-                    else
-                        $checkBoxValue = 0;
-                    $insertQuery[$formControl['column']] = $checkBoxValue;
+                if ($formControl['type'] == '--group') {
+                    $rules_pre = $this->getRule($formControl['controls']);
+                    $rules = array_merge($rules, $rules_pre);
+                    foreach ($formControl['controls'] as $subformControl) {
+                        if ($subformControl['type'] == '--group') {
 
-                } elseif ($formControl['type'] == '--password') {
-                    $insertQuery[$formControl['column']] = bcrypt($formData[$formControl['column']]);
-                } elseif ($formControl['type'] == '--password-confirm') {
+                        } else {
+                            if ($subformControl['type'] == '--checkbox') {
+                                $checkBoxValue = $formData[$subformControl['column']];
+                                if ($checkBoxValue == 1)
+                                    $checkBoxValue = 1;
+                                else
+                                    $checkBoxValue = 0;
+                                $insertQuery[$subformControl['column']] = $checkBoxValue;
+
+                            } else
+                                $insertQuery[$subformControl['column']] = $formData[$subformControl['column']];
+                        }
+
+
+                    }
+                } else {
+                    if ($formControl['type'] == '--checkbox') {
+                        $checkBoxValue = $formData[$formControl['column']];
+                        if ($checkBoxValue == 1)
+                            $checkBoxValue = 1;
+                        else
+                            $checkBoxValue = 0;
+                        $insertQuery[$formControl['column']] = $checkBoxValue;
+
+                    } elseif ($formControl['type'] == '--password') {
+                        $insertQuery[$formControl['column']] = bcrypt($formData[$formControl['column']]);
+                    } elseif ($formControl['type'] == '--password-confirm') {
 //                          /  $insertQuery[$formControl['column']] = bcrypt($multiItem[$formControl['column']]);
-                } else
-                    $insertQuery[$formControl['column']] = $formData[$formControl['column']];
+                    }  else
+                        $insertQuery[$formControl['column']] = $formData[$formControl['column']];
+                }
             }
+
+            
 
         }
 
@@ -1138,42 +1144,48 @@ class Tp
 
 
                 foreach ($this->multi_items_form_input_control as $formControl) {
-
-                    if ($formControl['type'] == '--group') {
-                        foreach ($formControl['controls'] as $subformControl) {
-                            if ($subformControl['type'] == '--group') {
-
-                            } else {
-                                if ($subformControl['type'] == '--checkbox') {
-                                    $checkBoxValue = $multiItem[$subformControl['column']];
-                                    if ($checkBoxValue == 1)
-                                        $checkBoxValue = 1;
-                                    else
-                                        $checkBoxValue = 0;
-                                    $insertQuery[$subformControl['column']] = $checkBoxValue;
-
-                                } else
-                                    $insertQuery[$subformControl['column']] = $multiItem[$subformControl['column']];
-                            }
-
-
-                        }
+                    
+                    if(isset($formControl['skip'])){
+                        
                     } else {
-                        if ($formControl['type'] == '--checkbox') {
-                            $checkBoxValue = $multiItem[$formControl['column']];
-                            if ($checkBoxValue == 1)
-                                $checkBoxValue = 1;
-                            else
-                                $checkBoxValue = 0;
-                            $insertQuery[$formControl['column']] = $checkBoxValue;
+                        if ($formControl['type'] == '--group') {
+                            foreach ($formControl['controls'] as $subformControl) {
+                                if ($subformControl['type'] == '--group') {
 
-                        } elseif ($formControl['type'] == '--password') {
-                            $insertQuery[$formControl['column']] = bcrypt($multiItem[$formControl['column']]);
-                        } elseif ($formControl['type'] == '--password-confirm') {
+                                } else {
+                                    if ($subformControl['type'] == '--checkbox') {
+                                        $checkBoxValue = $multiItem[$subformControl['column']];
+                                        if ($checkBoxValue == 1)
+                                            $checkBoxValue = 1;
+                                        else
+                                            $checkBoxValue = 0;
+                                        $insertQuery[$subformControl['column']] = $checkBoxValue;
+
+                                    } else
+                                        $insertQuery[$subformControl['column']] = $multiItem[$subformControl['column']];
+                                }
+
+
+                            }
+                        } else {
+                            if ($formControl['type'] == '--checkbox') {
+                                $checkBoxValue = $multiItem[$formControl['column']];
+                                if ($checkBoxValue == 1)
+                                    $checkBoxValue = 1;
+                                else
+                                    $checkBoxValue = 0;
+                                $insertQuery[$formControl['column']] = $checkBoxValue;
+
+                            } elseif ($formControl['type'] == '--password') {
+                                $insertQuery[$formControl['column']] = bcrypt($multiItem[$formControl['column']]);
+                            } elseif ($formControl['type'] == '--password-confirm') {
 //                          /  $insertQuery[$formControl['column']] = bcrypt($multiItem[$formControl['column']]);
-                        } else
-                            $insertQuery[$formControl['column']] = $multiItem[$formControl['column']];
+                            } else
+                                $insertQuery[$formControl['column']] = $multiItem[$formControl['column']];
+                        }
                     }
+
+                 
 
                 }
 
@@ -1346,92 +1358,97 @@ class Tp
 
         $insertQuery = $this->hidden_values;
         foreach ($this->form_input_control as $formControl) {
-            if ($this->permission['u'] != true) {
-                if (count($this->ifUpdateDisabledCanEditColumns) >= 1) {
+            if(isset($formControl['skip'])){
+                
+            } else {
+                if ($this->permission['u'] != true) {
+                    if (count($this->ifUpdateDisabledCanEditColumns) >= 1) {
 
-                    foreach ($this->ifUpdateDisabledCanEditColumns as $ifUpdateDisabledCanEditColumn) {
+                        foreach ($this->ifUpdateDisabledCanEditColumns as $ifUpdateDisabledCanEditColumn) {
 
-                        if ($formControl['type'] == '--group') {
-                            foreach ($formControl['controls'] as $subformControl) {
-                                if ($subformControl['type'] == '--group') {
+                            if ($formControl['type'] == '--group') {
+                                foreach ($formControl['controls'] as $subformControl) {
+                                    if ($subformControl['type'] == '--group') {
 
-                                } else {
-                                    if ($subformControl['type'] == '--checkbox') {
-                                        $checkBoxValue = $formData[$subformControl['column']];
+                                    } else {
+                                        if ($subformControl['type'] == '--checkbox') {
+                                            $checkBoxValue = $formData[$subformControl['column']];
+                                            if ($checkBoxValue == 1)
+                                                $checkBoxValue = 1;
+                                            else
+                                                $checkBoxValue = 0;
+                                            $insertQuery[$subformControl['column']] = $checkBoxValue;
+
+                                        } else
+                                            $insertQuery[$subformControl['column']] = $formData[$subformControl['column']];
+                                    }
+
+                                }
+                            } else {
+                                if ($ifUpdateDisabledCanEditColumn == $formControl['column']) {
+
+                                    if ($formControl['type'] == '--checkbox') {
+                                        $checkBoxValue = $formData[$formControl['column']];
                                         if ($checkBoxValue == 1)
                                             $checkBoxValue = 1;
                                         else
                                             $checkBoxValue = 0;
-                                        $insertQuery[$subformControl['column']] = $checkBoxValue;
+                                        $insertQuery[$formControl['column']] = $checkBoxValue;
 
+                                    } elseif ($formControl['type'] == '--password') {
+                                        $insertQuery[$formControl['column']] = bcrypt($formData[$formControl['column']]);
+                                    } elseif ($formControl['type'] == '--password-confirm') {
+//                          /  $insertQuery[$formControl['column']] = bcrypt($multiItem[$formControl['column']]);
                                     } else
-                                        $insertQuery[$subformControl['column']] = $formData[$subformControl['column']];
+                                        $insertQuery[$formControl['column']] = $formData[$formControl['column']];
                                 }
-
                             }
-                        } else {
-                            if ($ifUpdateDisabledCanEditColumn == $formControl['column']) {
+                        }
+                    }
 
-                                if ($formControl['type'] == '--checkbox') {
-                                    $checkBoxValue = $formData[$formControl['column']];
+                } else {
+                    if ($formControl['type'] == '--group') {
+                        $rules_pre = $this->getRule($formControl['controls'], $id);
+                        $rules = array_merge($rules, $rules_pre);
+                        foreach ($formControl['controls'] as $subformControl) {
+                            if ($subformControl['type'] == '--group') {
+
+                            } else {
+                                if ($subformControl['type'] == '--checkbox') {
+                                    $checkBoxValue = $formData[$subformControl['column']];
                                     if ($checkBoxValue == 1)
                                         $checkBoxValue = 1;
                                     else
                                         $checkBoxValue = 0;
-                                    $insertQuery[$formControl['column']] = $checkBoxValue;
+                                    $insertQuery[$subformControl['column']] = $checkBoxValue;
 
-                                } elseif ($formControl['type'] == '--password') {
-                                    $insertQuery[$formControl['column']] = bcrypt($formData[$formControl['column']]);
-                                } elseif ($formControl['type'] == '--password-confirm') {
-//                          /  $insertQuery[$formControl['column']] = bcrypt($multiItem[$formControl['column']]);
                                 } else
-                                    $insertQuery[$formControl['column']] = $formData[$formControl['column']];
+                                    $insertQuery[$subformControl['column']] = $formData[$subformControl['column']];
                             }
+
                         }
-                    }
-                }
+                    } else {
+                        if ($formControl['type'] == '--checkbox') {
+                            $checkBoxValue = $formData[$formControl['column']];
+                            if ($checkBoxValue == 1)
+                                $checkBoxValue = 1;
+                            else
+                                $checkBoxValue = 0;
+                            $insertQuery[$formControl['column']] = $checkBoxValue;
 
-            } else {
-                if ($formControl['type'] == '--group') {
-                    $rules_pre = $this->getRule($formControl['controls'], $id);
-                    $rules = array_merge($rules, $rules_pre);
-                    foreach ($formControl['controls'] as $subformControl) {
-                        if ($subformControl['type'] == '--group') {
-
-                        } else {
-                            if ($subformControl['type'] == '--checkbox') {
-                                $checkBoxValue = $formData[$subformControl['column']];
-                                if ($checkBoxValue == 1)
-                                    $checkBoxValue = 1;
-                                else
-                                    $checkBoxValue = 0;
-                                $insertQuery[$subformControl['column']] = $checkBoxValue;
-
-                            } else
-                                $insertQuery[$subformControl['column']] = $formData[$subformControl['column']];
-                        }
-
-                    }
-                } else {
-                    if ($formControl['type'] == '--checkbox') {
-                        $checkBoxValue = $formData[$formControl['column']];
-                        if ($checkBoxValue == 1)
-                            $checkBoxValue = 1;
-                        else
-                            $checkBoxValue = 0;
-                        $insertQuery[$formControl['column']] = $checkBoxValue;
-
-                    } elseif ($formControl['type'] == '--password') {
-                        $insertQuery[$formControl['column']] = bcrypt($formData[$formControl['column']]);
-                    } elseif ($formControl['type'] == '--password-confirm') {
+                        } elseif ($formControl['type'] == '--password') {
+                            $insertQuery[$formControl['column']] = bcrypt($formData[$formControl['column']]);
+                        } elseif ($formControl['type'] == '--password-confirm') {
 //                          /  $insertQuery[$formControl['column']] = bcrypt($multiItem[$formControl['column']]);
-                    } else
-                        $insertQuery[$formControl['column']] = $formData[$formControl['column']];
+                        } else
+                            $insertQuery[$formControl['column']] = $formData[$formControl['column']];
+
+                    }
+
 
                 }
-
-
             }
+           
 
         }
         $rules_pre = $this->getRule($this->form_input_control, $id);
@@ -1509,40 +1526,46 @@ class Tp
 
                 foreach ($this->multi_items_form_input_control as $formControl) {
 
-                    if ($formControl['type'] == '--group') {
-                        foreach ($formControl['controls'] as $subformControl) {
-                            if ($subformControl['type'] == '--group') {
-
-                            } else {
-                                if ($subformControl['type'] == '--checkbox') {
-                                    $checkBoxValue = $multiItem[$subformControl['column']];
-                                    if ($checkBoxValue == 1)
-                                        $checkBoxValue = 1;
-                                    else
-                                        $checkBoxValue = 0;
-                                    $insertQuery[$subformControl['column']] = $checkBoxValue;
-
-                                } else
-                                    $insertQuery[$subformControl['column']] = $multiItem[$subformControl['column']];
-                            }
-
-                        }
+                    if(isset($formControl['skip'])){
+                        
                     } else {
-                        if ($formControl['type'] == '--checkbox') {
-                            $checkBoxValue = $multiItem[$formControl['column']];
-                            if ($checkBoxValue == 1)
-                                $checkBoxValue = 1;
-                            else
-                                $checkBoxValue = 0;
-                            $insertQuery[$formControl['column']] = $checkBoxValue;
+                        if ($formControl['type'] == '--group') {
+                            foreach ($formControl['controls'] as $subformControl) {
+                                if ($subformControl['type'] == '--group') {
 
-                        } elseif ($formControl['type'] == '--password') {
-                            $insertQuery[$formControl['column']] = bcrypt($multiItem[$formControl['column']]);
-                        } elseif ($formControl['type'] == '--password-confirm') {
+                                } else {
+                                    if ($subformControl['type'] == '--checkbox') {
+                                        $checkBoxValue = $multiItem[$subformControl['column']];
+                                        if ($checkBoxValue == 1)
+                                            $checkBoxValue = 1;
+                                        else
+                                            $checkBoxValue = 0;
+                                        $insertQuery[$subformControl['column']] = $checkBoxValue;
+
+                                    } else
+                                        $insertQuery[$subformControl['column']] = $multiItem[$subformControl['column']];
+                                }
+
+                            }
+                        } else {
+                            if ($formControl['type'] == '--checkbox') {
+                                $checkBoxValue = $multiItem[$formControl['column']];
+                                if ($checkBoxValue == 1)
+                                    $checkBoxValue = 1;
+                                else
+                                    $checkBoxValue = 0;
+                                $insertQuery[$formControl['column']] = $checkBoxValue;
+
+                            } elseif ($formControl['type'] == '--password') {
+                                $insertQuery[$formControl['column']] = bcrypt($multiItem[$formControl['column']]);
+                            } elseif ($formControl['type'] == '--password-confirm') {
 //                          /  $insertQuery[$formControl['column']] = bcrypt($multiItem[$formControl['column']]);
-                        } else
-                            $insertQuery[$formControl['column']] = $multiItem[$formControl['column']];
+                            } else
+                                $insertQuery[$formControl['column']] = $multiItem[$formControl['column']];
+                        }
                     }
+
+                   
 
                 }
 
@@ -2828,8 +2851,11 @@ class Tp
         $options = null;
         foreach ($this->multi_items_form_input_control as $formControl) {
 
-            if (isset($formControl['column']))
-                $table_data->addSelect("$this->table." . $formControl['column']);
+            if(isset($formControl['skip'])){
+
+            } else {
+                if (isset($formControl['column']))
+                    $table_data->addSelect("$this->table." . $formControl['column']);
 
 //            if($formControl['type'] == '--combogrid' || $formControl['type'] == '--combobox' || $formControl['type'] == '--tag' || $formControl['type'] == '--combobox-addable' || $formControl['type'] == '--combobox-hidden'){
 //
@@ -2840,11 +2866,11 @@ class Tp
 //
 //            }
 
-            if ($formControl['type'] == '--group') {
-                foreach ($formControl['controls'] as $subformControl) {
+                if ($formControl['type'] == '--group') {
+                    foreach ($formControl['controls'] as $subformControl) {
 
-                    if (isset($subformControl['column']))
-                        $table_data->addSelect("$this->table." . $subformControl['column']);
+                        if (isset($subformControl['column']))
+                            $table_data->addSelect("$this->table." . $subformControl['column']);
 
 //                    if($subformControl['type'] == '--combogrid' || $subformControl['type'] == '--combobox' || $subformControl['type'] == '--tag' || $subformControl['type'] == '--combobox-addable' || $subformControl['type'] == '--combobox-hidden'){
 //
@@ -2859,8 +2885,11 @@ class Tp
 //
 //                    }
 
+                    }
                 }
             }
+
+
 
         }
 

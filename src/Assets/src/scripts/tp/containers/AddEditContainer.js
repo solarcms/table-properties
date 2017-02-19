@@ -11,7 +11,7 @@ import {save, edit, update, getCascadeChild, callMultiItems, deleteItem, afterCh
 // import Window from "../components/window/"
 import SubItemsContainer from "./formContainers/SubItemsContainer"
 import Modal  from 'react-bootstrap/lib/Modal';
-import {validationCaller, getData, getColumnIndex, getValueAtCell, getColumnTranslate, getColumnType, getColumn,exportEXCEL, afterValidater, setUpHandsonTable, editDeleteRender, afterChange} from '../tools/handsonTable'
+import {afterChangeCallerH, validationCaller, getData, getColumnIndex, getValueAtCell, getColumnTranslate, getColumnType, getColumn,exportEXCEL, afterValidater, setUpHandsonTable, editDeleteRender, afterChange} from '../tools/handsonTable'
 /*for handson table*/
 import {calculate} from '../tools/calculate'
 
@@ -47,6 +47,7 @@ class AddEditContainer extends Component {
         this.afterValidater = afterValidater.bind(this);
         this.setUpHandsonTable = setUpHandsonTable.bind(this);
         this.editDeleteRender = editDeleteRender.bind(this);
+        this.afterChangeCallerH = afterChangeCallerH.bind(this);
         this.tp_handSonTable = null;
         this.exportPlugin = null;
         this.tp_dataSchema = {};
@@ -494,7 +495,7 @@ class AddEditContainer extends Component {
 
     }
     afterChangeCaller(realDataIndex, value){
-        afterChangeTrigger(realDataIndex, value, 'form').then((data)=>{
+        afterChangeTrigger(realDataIndex, value, 'multi_items_form').then((data)=>{
 
             if(data.status){
                 if(data.status == 'success'){

@@ -13,7 +13,7 @@ import * as DataActionsForm from "../actions/form"
 import {getList, deleteItem, getCascadeChild, edit, changeLanguage} from "../api/"
 import Header from "../components/grid/Header"
 import Pagination from "../components/grid/Paginator"
-import {validationCaller, getData, getColumnIndex, getValueAtCell, getColumnTranslate, getColumnType, getColumn, afterChange, exportEXCEL, afterValidater, setUpHandsonTable, editDeleteRender} from '../tools/handsonTable'
+import {afterChangeCallerH, validationCaller, getData, getColumnIndex, getValueAtCell, getColumnTranslate, getColumnType, getColumn, afterChange, exportEXCEL, afterValidater, setUpHandsonTable, editDeleteRender} from '../tools/handsonTable'
 
 import {getDate} from "../tools/date";
 import validationGrid from "../components/grid/validation/"
@@ -47,9 +47,13 @@ class GridContainer extends Component {
         this.afterValidater = afterValidater.bind(this);
         this.setUpHandsonTable = setUpHandsonTable.bind(this);
         this.editDeleteRender = editDeleteRender.bind(this);
+        this.afterChangeCallerH = afterChangeCallerH.bind(this);
         this.tp_handSonTable = null;
         this.exportPlugin = null;
         this.tp_dataSchema = {};
+
+        //after change trigger
+        this.timeout = null;
     }
 
     /* component life cycle ----------------------------------------- */
