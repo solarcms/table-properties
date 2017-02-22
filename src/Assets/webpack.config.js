@@ -36,7 +36,7 @@ module.exports = {
         new Webpack.NoErrorsPlugin(),
 
         //Chunk script
-        // new Webpack.optimize.CommonsChunkPlugin('dependencies', 'js/dependencies.js', Infinity),
+        new Webpack.optimize.CommonsChunkPlugin('dependencies', 'js/dependencies.js', Infinity),
 
         //Chunk css
         new ExtractTextPlugin('css/[name].css', {
@@ -50,15 +50,15 @@ module.exports = {
             //{from: '../../dist/js/tp.js', to: '../../../../../public/shared/table-properties/js/tp.js', toType: 'file'},
         ]),
 
-        new Webpack.DefinePlugin({
-            'process.env.NODE_ENV': JSON.stringify('development')
-        }),
-
         // new Webpack.DefinePlugin({
-        //     'process.env': {
-        //         'NODE_ENV': JSON.stringify('production')
-        //     }
+        //     'process.env.NODE_ENV': JSON.stringify('development')
         // }),
+
+        new Webpack.DefinePlugin({
+            'process.env': {
+                'NODE_ENV': JSON.stringify('production')
+            }
+        }),
 
         new Webpack.BannerPlugin("*************************************\n   Solar Content Management System \n*************************************\n")
     ],

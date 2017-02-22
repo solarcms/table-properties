@@ -62,6 +62,16 @@ class AddEditContainer extends Component {
             if(fcontrol.get('column') == column){
                 value = fcontrol.get('value')
             }
+
+            if(fcontrol.get('type') == '--group'){
+                fcontrol.get('controls').map((cfcontrol, cfindex)=>{
+                    if(cfcontrol.get('column') == column){
+                        value = cfcontrol.get('value')
+                    }
+
+
+                })
+            }
         })
 
         return value;
@@ -86,17 +96,65 @@ class AddEditContainer extends Component {
                         let hideElement = true;
                         showCheckers.map((showChecker)=>{
 
-                            Object.keys(showChecker).map(checker=>{
-                                //console.log(checker, showChecker[checker])
 
-                                let checkerValue = this.getValueByColumn(checker)
+                            if(showChecker.length >= 2){
 
 
-                                if(checkerValue == showChecker[checker])
-                                    hideElement = false;
+
+                                let checkerValue = this.getValueByColumn(showChecker[0]);
+                                if(checkerValue === null){
+                                    checkerValue = ''
+                                }
+
+                                let checkerCondition = showChecker[1];
+                                let checker = showChecker[2];
+
+                                if(checkerCondition == '=='){
+                                    if(checkerValue == checker)
+                                        hideElement = false;
+                                }
+
+                                if(checkerCondition == '!='){
+                                    if(checkerValue != checker)
+                                        hideElement = false;
+                                }
+
+                                if(checkerCondition == '<='){
+                                    if(checkerValue <= checker)
+                                        hideElement = false;
+                                }
+
+                                if(checkerCondition == '>='){
+                                    if(checkerValue >= checker)
+                                        hideElement = false;
+                                }
+
+                                if(checkerCondition == '>'){
+                                    if(checkerValue > checker)
+                                        hideElement = false;
+                                }
+
+                                if(checkerCondition == '<'){
+                                    if(checkerValue < checker)
+                                        hideElement = false;
+                                }
+
+                            } else {
+
+                                Object.keys(showChecker).map(checker=>{
 
 
-                            })
+                                    let checkerValue = this.getValueByColumn(checker)
+
+
+                                    if(checkerValue == showChecker[checker])
+                                        hideElement = false;
+
+
+                                })
+                            }
+
+
 
 
                         })
@@ -134,17 +192,64 @@ class AddEditContainer extends Component {
                     let hideElement = true;
                     showCheckers.map((showChecker)=>{
 
-                        Object.keys(showChecker).map(checker=>{
-                            //console.log(checker, showChecker[checker])
-
-                            let checkerValue = this.getValueByColumn(checker)
+                        if(showChecker.length >= 2){
 
 
-                            if(checkerValue == showChecker[checker])
-                                hideElement = false;
+
+                            let checkerValue = this.getValueByColumn(showChecker[0]);
+                            if(checkerValue === null){
+                                checkerValue = ''
+                            }
+
+                            let checkerCondition = showChecker[1];
+                            let checker = showChecker[2];
+
+                            if(checkerCondition == '=='){
+                                if(checkerValue == checker)
+                                    hideElement = false;
+                            }
+
+                            if(checkerCondition == '!='){
+                                if(checkerValue != checker)
+                                    hideElement = false;
+                            }
+
+                            if(checkerCondition == '<='){
+                                if(checkerValue <= checker)
+                                    hideElement = false;
+                            }
+
+                            if(checkerCondition == '>='){
+                                if(checkerValue >= checker)
+                                    hideElement = false;
+                            }
+
+                            if(checkerCondition == '>'){
+                                if(checkerValue > checker)
+                                    hideElement = false;
+                            }
+
+                            if(checkerCondition == '<'){
+                                if(checkerValue < checker)
+                                    hideElement = false;
+                            }
+
+                        } else {
+                            Object.keys(showChecker).map(checker=>{
+                                //console.log(checker, showChecker[checker])
+
+                                let checkerValue = this.getValueByColumn(checker)
 
 
-                        })
+                                if(checkerValue == showChecker[checker])
+                                    hideElement = false;
+
+
+                            })
+
+                        }
+
+
 
 
                     })
@@ -431,9 +536,6 @@ class AddEditContainer extends Component {
         })
 
 
-
-
-
         this.props.actions.changeValue(realDataIndex, value);
 
         const field = this.props.formControls.getIn(realDataIndex);
@@ -495,8 +597,7 @@ class AddEditContainer extends Component {
 
     }
     afterChangeCaller(realDataIndex, value){
-        afterChangeTrigger(realDataIndex, value, 'multi_items_form').then((data)=>{
-
+        afterChangeTrigger(realDataIndex, value, 'form').then((data)=>{
             if(data.status){
                 if(data.status == 'success'){
 
