@@ -333,20 +333,27 @@ class Tp
 
 
         //// setup
-
+        $locales = DB::table($this->locales_table)->select('id', 'code')->orderBy('id', 'ASC')->get();
         $subItems = [];
         foreach ($this->subItems as $subItem) {
             $subItem['items'] = [];
+            if (count($subItem['translate_form_input_control']) >= 1) {
+                $subItem['locales'] = $locales;
+            } else {
+                $subItem['locales'] = [];
+            }
+
             $subItems[] = $subItem;
+
         }
         if (count($this->translate_form_input_control) >= 1) {
             if (Session::has('locale')) {
-
+                Session::set('locale', $this->default_locale);
             } else {
                 Session::set('locale', $this->default_locale);
             }
 
-            $locales = DB::table($this->locales_table)->select('id', 'code')->orderBy('id', 'ASC')->get();
+            $locales = $locales;
         } else {
             $locales = [];
             Session::set('locale', $this->default_locale);
@@ -2245,6 +2252,35 @@ class Tp
                             $table = $subItem['table'];
                             $formData = $item;
                             foreach ($subItem['form_input_control'] as $formControl) {
+                                if ($formControl['type'] == '--group') {
+                                    foreach ($formControl['controls'] as $sformControl) {
+                                        if ($sformControl['type'] == '--checkbox') {
+                                            $checkBoxValue = $formData[$sformControl['column']];
+                                            if ($checkBoxValue == 1)
+                                                $checkBoxValue = 1;
+                                            else
+                                                $checkBoxValue = 0;
+                                            $insertQuery[$sformControl['column']] = $checkBoxValue;
+
+                                        } else
+                                            $insertQuery[$sformControl['column']] = $formData[$sformControl['column']];
+                                    }
+                                } else {
+                                    if ($formControl['type'] == '--checkbox') {
+                                        $checkBoxValue = $formData[$formControl['column']];
+                                        if ($checkBoxValue == 1)
+                                            $checkBoxValue = 1;
+                                        else
+                                            $checkBoxValue = 0;
+                                        $insertQuery[$formControl['column']] = $checkBoxValue;
+
+                                    } else
+                                        $insertQuery[$formControl['column']] = $formData[$formControl['column']];
+                                }
+
+
+                            }
+                            foreach ($subItem['translate_form_input_control'] as $formControl) {
                                 if ($formControl['type'] == '--group') {
                                     foreach ($formControl['controls'] as $sformControl) {
                                         if ($sformControl['type'] == '--checkbox') {

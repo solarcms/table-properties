@@ -35,6 +35,28 @@ export function setError(column, CAIndex, index, error) {
         error: error
     }
 }
+export function changeTranslationValue(column, CAIndex, locale_index, index, value) {
+
+    return {
+        type: types.SUB_ITEMS_CHANGE_TRANSLATION_VALUE,
+        column: column,
+        CAIndex: CAIndex,
+        locale_index: locale_index,
+        index: index,
+        value: value
+    }
+}
+export function setTranslationError(column, CAIndex, locale_index, index, error) {
+
+    return {
+        type: types.SUB_ITEMS_SET_TRANSLATION_ERROR,
+        column: column,
+        CAIndex: CAIndex,
+        locale_index: locale_index,
+        index: index,
+        error: error
+    }
+}
 export function clearFromValidation(CAIndex) {
     return {
         type: types.SUB_ITEMS_CLEAR_FORM_VALIDATION,
@@ -50,20 +72,22 @@ export function addSubItem(Sindex, item){
         item: item
     }
 }
-export function editSubItem(Sindex, formControl, editIndex){
+export function editSubItem(Sindex, formControl, editIndex, translateFormControls){
     return {
         type: types.SUB_ITEMS_EDIT_ITEM,
         Sindex: Sindex,
         formControl: formControl,
-        editIndex: editIndex
+        editIndex: editIndex,
+        translateFormControls: translateFormControls,
     }
 }
-export function updateSubItem(Sindex, Iindex, item){
+export function updateSubItem(Sindex, Iindex, item, translateFormControls){
     return {
         type: types.SUB_ITEMS_UPDATE_ITEM,
         Sindex: Sindex,
         Iindex: Iindex,
-        item: item
+        item: item,
+        translateFormControls: translateFormControls,
     }
 }
 export function deleteSubItem(Sindex, Iindex){

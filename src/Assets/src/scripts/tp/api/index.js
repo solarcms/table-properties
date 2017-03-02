@@ -81,6 +81,46 @@ export function save(formData, translateFormControls, subItems, multiItems) {
                     item[data.get('column')] = data.get('value')
                 })
 
+                let SubTranslateData = [];
+                let translateFormControls_exam = [];
+
+                sitem.get('translateFormControls').map((translateFormControl) => {
+
+                    translateFormControls_exam = translateFormControl.get('translate_form_input_control');
+                    let data = {};
+                    translateFormControl.get('translate_form_input_control').map((ftData) => {
+                        if(ftData.get('type') == '--group'){
+                            ftData.get('controls').map((ftDataSub) => {
+                                data[ftDataSub.get('column')] = ftDataSub.get('value');
+                            })
+                        } else
+                            data[ftData.get('column')] = ftData.get('value');
+
+                    })
+                    let FTData = {
+                        locale: translateFormControl.get('locale_code'),
+                        data: data
+                    }
+
+                    SubTranslateData.push(FTData);
+
+                })
+
+                translateFormControls_exam.map((data)=>{
+
+                    let t_value = [];
+
+                    SubTranslateData.map(SubTranslate=>{
+                        t_value.push({
+                            locale:SubTranslate.locale,
+                            value: SubTranslate.data[data.get('column')]
+                        });
+                    })
+
+                    item[data.get('column')] = JSON.stringify(t_value);
+                })
+
+
                 items.push(item);
             })
 
@@ -171,6 +211,46 @@ export function update(formData, translateFormControls, id, subItems, multiItems
                         })
                     } else
                         item[data.get('column')] = data.get('value')
+                });
+
+
+                let SubTranslateData = [];
+                let translateFormControls_exam = [];
+
+                sitem.get('translateFormControls').map((translateFormControl) => {
+
+                    translateFormControls_exam = translateFormControl.get('translate_form_input_control');
+                    let data = {};
+                    translateFormControl.get('translate_form_input_control').map((ftData) => {
+                        if(ftData.get('type') == '--group'){
+                            ftData.get('controls').map((ftDataSub) => {
+                                data[ftDataSub.get('column')] = ftDataSub.get('value');
+                            })
+                        } else
+                            data[ftData.get('column')] = ftData.get('value');
+
+                    })
+                    let FTData = {
+                        locale: translateFormControl.get('locale_code'),
+                        data: data
+                    }
+
+                    SubTranslateData.push(FTData);
+
+                })
+
+                translateFormControls_exam.map((data)=>{
+
+                    let t_value = [];
+
+                    SubTranslateData.map(SubTranslate=>{
+                        t_value.push({
+                            locale:SubTranslate.locale,
+                            value: SubTranslate.data[data.get('column')]
+                        });
+                    })
+
+                    item[data.get('column')] = JSON.stringify(t_value);
                 })
 
                 items.push(item);

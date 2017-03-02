@@ -65,9 +65,9 @@ class SubItemsContainer extends Component {
 
 
         const FD = this.props.subItems.getIn([CAIndex, 'form_input_control']);
+        const translateFormControls = this.props.subItems.getIn([CAIndex, 'translateFormControls']);
 
         let foundError = this.checkValidate(CAcolumn, CAIndex);
-
 
 
             if(foundError === false){
@@ -75,10 +75,10 @@ class SubItemsContainer extends Component {
                 if(this.props.editIndex == -1) {
 
                     // add
-                    this.props.actions.addSubItem(CAIndex, {id:null, data:FD.toJS()})
+                    this.props.actions.addSubItem(CAIndex, {id:null, data:FD.toJS(), translateFormControls: translateFormControls.toJS()})
                 } else {
                     //update
-                    this.props.actions.updateSubItem(CAIndex, this.props.editIndex, FD)
+                    this.props.actions.updateSubItem(CAIndex, this.props.editIndex, FD, translateFormControls)
                 }
 
 
@@ -89,9 +89,10 @@ class SubItemsContainer extends Component {
 
 
     }
-    editItem(CAIndex, FD, connect_column, savedIndex){
+    editItem(CAIndex, FD, connect_column, savedIndex, translateFormControls){
 
-        this.props.actions.editSubItem(CAIndex, FD, savedIndex);
+
+        this.props.actions.editSubItem(CAIndex, FD, savedIndex, translateFormControls);
         this.showModal(connect_column)
     }
     changeChildValue(CAcolumn, CAIndex, realDataIndex){
@@ -109,6 +110,32 @@ class SubItemsContainer extends Component {
         if(childField.getIn(['options', 'child'])){
             this.changeChildValue(CAcolumn, CAIndex, childIndex);
         }
+
+    }
+    translateChangeHandler(CAcolumn, CAIndex, locale_index, dataIndex, value) {
+
+        let realDataIndex = [];
+
+        dataIndex.map((dIndex, index)=> {
+            if (index == 0) {
+                realDataIndex.push(dIndex);
+            } else if (index >= 1) {
+                realDataIndex.push('controls')
+                realDataIndex.push(dIndex)
+            }
+        })
+
+
+        this.props.actions.changeTranslationValue(CAcolumn, CAIndex,locale_index, realDataIndex, value);
+
+
+        const FD = this.props.subItems.getIn([CAIndex, 'translateFormControls', locale_index, 'translate_form_input_control']);
+
+        const field = FD.getIn(realDataIndex);
+        const error = validation(value, field.get('validate'));
+
+        this.props.actions.setTranslationError(CAcolumn, CAIndex, locale_index, realDataIndex, error);
+
 
     }
     changeValues(CAcolumn, CAIndex, dataIndex, value){
@@ -239,9 +266,57 @@ class SubItemsContainer extends Component {
 
 
 
+                            });
+
+                            let TFD = [];
+                            subItem.get('translateFormControls').map((translateFormControl, l_index)=> {
+
+                                let translate_form_input_control = [];
+                                translateFormControl.get('translate_form_input_control').map((formControl, index)=> {
+
+                                    if(data[0][formControl.get('column')] !== null && data[0][formControl.get('column')] != ''){
+                                        let json_translations =  JSON.parse(edit_data[formControl.get('column')]);
+
+                                        json_translations.map((json_translation) =>{
+                                            if(json_translation.locale == translateFormControl.get('locale_code')){
+                                                if (formControl.get('type') !== '--hidden'){
+                                                    translate_form_input_control.push({
+                                                        column: formControl.get('column'),
+                                                        show: formControl.get('show'),
+                                                        title: formControl.get('title'),
+                                                        type: formControl.get('type'),
+                                                        value: json_translation.value,
+                                                        validate: formControl.get('validate'),
+                                                        options:formControl.get('options'),
+                                                        choices: formControl.get('choices'),
+                                                        parent: formControl.get('parent'),
+                                                        child: formControl.get('child'),
+                                                    });
+                                                }
+
+                                            }
+
+                                        })
+                                    }
+
+
+
+
+
+                                })
+
+                                TFD.push({
+                                    locale_id: translateFormControl.get('locale_id'),
+                                    locale_code: translateFormControl.get('locale_code'),
+                                    translate_form_input_control: translate_form_input_control
+                                });
+
+
                             })
 
-                            this.props.actions.addSubItem(index, {id:edit_data.id, data:FD});
+
+
+                            this.props.actions.addSubItem(index, {id:edit_data.id, data:FD, translateFormControls:TFD});
                         })
 
                 });
@@ -256,17 +331,16 @@ class SubItemsContainer extends Component {
     componentWillUnmount(){
 
         this.props.actions.clearSubItems();
-
-
     }
     render() {
-
 
         const {subItems, formData, modals, showAddEditForm,
             ifUpdateDisabledCanEditColumns,
             permission,
+            translateFormControls,
             button_texts
             } = this.props;
+
 
         const Items = showAddEditForm === true ? subItems.map((subItem, index)=>{
 
@@ -276,6 +350,7 @@ class SubItemsContainer extends Component {
                 if(modal.get('name') == "sub-items-"+subItem.get('connect_column'))
                     shwoModal = modal.get('show');
             })
+
 
 
             const savedItems = subItem.get('items').map((savedItem, savedIndex)=>{
@@ -288,7 +363,7 @@ class SubItemsContainer extends Component {
                     })}
 
                     <span dangerouslySetInnerHTML={{__html: gridText}} />
-                    <button className="btn btn-success "  onClick={this.editItem.bind(this, index, savedItem.get('data'), subItem.get('connect_column'), savedIndex)}>
+                    <button className="btn btn-success "  onClick={this.editItem.bind(this, index, savedItem.get('data'), subItem.get('connect_column'), savedIndex, savedItem.get('translateFormControls'))}>
                         <i className="material-icons done">&#xE876;</i>
                         <i className="material-icons edit">&#xE254;</i>
                     </button>
@@ -296,8 +371,6 @@ class SubItemsContainer extends Component {
                 </div>
             })
             const showDelete = this.props.permission.d == true ? this.props.editIndex == -1 ? false : true : false;
-
-
            
             return <div key={index} className="sub-items">
                         <h5>{subItem.get('page_name')}</h5>
@@ -308,6 +381,7 @@ class SubItemsContainer extends Component {
                 <p >{subItem.get('description')}</p>
                 <Window key={index}
                         id={`sub-items-${subItem.get('connect_column')}`}
+                        translateFormControls={subItem.get('translateFormControls')}
                         formControls={subItem.get('form_input_control')}
                         edit_parent_id={subItem.getIn(['items', this.props.editIndex, 'id'])}
                         formData={formData}
@@ -315,6 +389,7 @@ class SubItemsContainer extends Component {
                         show={shwoModal}
                         setErrorManuale={this.setErrorManuale.bind(this, subItem.get('connect_column'), index)}
                         changeHandler={this.changeValues.bind(this, subItem.get('connect_column'), index)}
+                        translateChangeHandler={this.translateChangeHandler.bind(this, subItem.get('connect_column'), index)}
                         saveForm={this.saveForm.bind(this, subItem.get('connect_column'), index)}
                         hideModal={this.hideModal.bind(this, subItem.get('connect_column'), index)}
                         delete={this.delete.bind(this, subItem.get('connect_column'), index, subItem.get('items'))}
@@ -326,7 +401,6 @@ class SubItemsContainer extends Component {
             </div>
 
         }) : null
-
 
         return (
             <div>
@@ -347,6 +421,7 @@ SubItemsContainer.propTypes = {
 
 function mapStateToProps(state) {
     const SubItems = state.SubItems;
+
     const Modal = state.Modal;
     const Grid = state.Grid;
 

@@ -14,11 +14,15 @@ export default class Window extends Component {
 
     }
     render() {
-        const { pageName, edit_parent_id, sub_index, formControls, formData, changeHandler, saveForm, hideModal, id, show, fromFieldClass, permission, ifUpdateDisabledCanEditColumns, button_texts,  } = this.props;
+        const { pageName, edit_parent_id, sub_index, formControls, formData, changeHandler,translateChangeHandler, translateFormControls, saveForm, hideModal, id, show, fromFieldClass, permission, ifUpdateDisabledCanEditColumns, button_texts,  } = this.props;
 
         const deleteButton = this.props.showDelete == true ? <button type="button" className="btn btn-fw btn-danger p-h-lg" onClick={this.props.delete}>
                                                         <i className="material-icons">&#xE872;</i> {button_texts ? button_texts.delete_text : null}
-                                                    </button> : null
+                                                    </button> : null;
+
+
+
+
         
         return (
 
@@ -29,11 +33,12 @@ export default class Window extends Component {
                     </Modal.Header>
                     <Modal.Body>
                         <div className="row solar-form">
-                            <Form gridId={id} formControls={formControls} formData={formData} ref="fromRefs" focusIndex="0"
+                            <Form gridId={id} translateFormControls={translateFormControls} formControls={formControls} formData={formData} ref="fromRefs" focusIndex="0"
                                   permission={permission}
                                   edit_parent_id={edit_parent_id}
                                   ifUpdateDisabledCanEditColumns={ifUpdateDisabledCanEditColumns}
                                   changeHandler={changeHandler}
+                                  translateChangeHandler={translateChangeHandler}
                                   fromFieldClass={fromFieldClass}
                                   setErrorManuale={this.props.setErrorManuale}
                             />

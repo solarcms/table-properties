@@ -25,6 +25,8 @@ export function getSetupData() {
 
     return dispatch => {
 
+
+
         dispatch(receiveSetupData(setup))
         dispatch(setSubItems(setup.subItems))
         dispatch(setUpForm(setup))
