@@ -326,7 +326,27 @@ export function afterChange(changes, source, isValid) {
         //});
     }
 
+    if(this.state.formGrid && this.tp_handSonTable){
 
+       if(this.tp_handSonTable.rootElement){
+           let data = this.tp_handSonTable.getData();
+           if(data.length == 2 && this.props.columnSummary.length>=1){
+               this.tp_handSonTable.alter("insert_row", 1, 1, null);
+
+           }else if(data.length >= 2 && this.props.columnSummary.length>=1){
+
+               if(this.tp_handSonTable.isEmptyRow(data.length - 2) === false){
+                   this.tp_handSonTable.alter("insert_row", data.length - 1, 1, null);
+               }
+           }
+           if(this.props.columnSummary.length <= 0 && this.tp_handSonTable.isEmptyRow(data.length - 1) === false){
+               this.tp_handSonTable.alter("insert_row");
+           }
+       }
+
+
+
+    }
 }
 export function afterChangeCallerH(realDataIndex, elValue, row){
     afterChangeTrigger(realDataIndex, elValue, 'multi_items_form').then((data)=>{
@@ -417,6 +437,10 @@ export function setUpHandsonTable(tpNewHeight) {
         listData = this.listData;
     }
 
+    if(this.props.columnSummary.length >= 1 && listData.length <= 0){
+        // listData.push({})
+    }
+
     if (this.tp_handSonTable !== null) {
         this.tp_handSonTable.destroy()
     }
@@ -431,6 +455,7 @@ export function setUpHandsonTable(tpNewHeight) {
 
         } else {
             if(header.readOnly || (this.props.formType != 'inline' && this.state.formGrid !== true)){
+
                 colReadOnly = true;
             }
 
@@ -655,17 +680,25 @@ export function setUpHandsonTable(tpNewHeight) {
     // if user column summary
     let columnSummary = this.props.columnSummary;
     let fixedRowsBottom = 0;
-    if(columnSummary.length >=1 && gridData.length >=1){
 
-        let preEmpty = gridData[0];
-        let lastRow = {};
-        Object.keys(preEmpty).map(empty =>{
-            lastRow[empty] = null;
-        })
-        lastRow[this.props.identity_name] = 0;
+    let lastRow = {};
+    gridHeader.map((header, h_index)=> {
+        lastRow[header.column] = null;
+    })
+    lastRow[this.props.identity_name] = null;
+
+    if(columnSummary.length >=1){
+
         gridData.push(lastRow);
 
         fixedRowsBottom = 1;
+    }
+
+
+
+    if(this.state.formGrid){
+
+        gridData.push(lastRow);
     }
 
 
@@ -825,7 +858,7 @@ export function setUpHandsonTable(tpNewHeight) {
                             if(summary.type == 'sum'){
                                 let columnSum = 0;
                                 for(let q=0; q<=gridData.length-2; q++){
-                                    columnSum = (gridData[q][prop]*1)+columnSum;
+                                    columnSum = (gridData[q][prop] ? gridData[q][prop] : 0 *1)+columnSum;
                                 }
 
                                 columnSum = numeral(columnSum);
@@ -881,8 +914,8 @@ export function setUpHandsonTable(tpNewHeight) {
     }
 
     if(this.state.formGrid){
-        tp_options.minSpareRows =1;
-        tp_options.startRows =1;
+        // tp_options.minSpareRows =2;
+        // tp_options.startRows =2;
     } else {
         tp_options.dataSchema = this.tp_dataSchema;
         tp_options.dropdownMenu = [
@@ -893,6 +926,8 @@ export function setUpHandsonTable(tpNewHeight) {
         ];
         tp_options.fillHandle = false;
     }
+
+
 
 
     this.tp_handSonTable = new Handsontable(container, tp_options);

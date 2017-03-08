@@ -323,6 +323,10 @@ class AddEditContainer extends Component {
         let multiItems = [];
         let multiItems_pre = this.tp_handSonTable.getData();
 
+        if(this.props.columnSummary.length >= 1){
+            multiItems_pre = multiItems_pre.slice(0, -1);
+        }
+
         for (var i = 0; i < multiItems_pre.length; ++i) {
 
             if(this.tp_handSonTable.isEmptyRow(i) === false){
@@ -1040,7 +1044,7 @@ function mapStateToProps(state) {
         ifUpdateDisabledCanEditColumns: Grid.get('setup').toJS().ifUpdateDisabledCanEditColumns,
         after_save_redirect: Form.get('after_save_redirect'),
         after_save_redirect_url: Form.get('after_save_redirect_url'),
-        columnSummary:[],
+        columnSummary:Form.get('multi_items_columnSummary').toJS(),
         // listData:Form.get('listData').toJS()
     }
 }

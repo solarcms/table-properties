@@ -9,6 +9,7 @@ const initialState = {
     form_input_control:{},
     translateFormControls:{},
     multi_items_form_input_control:{},
+    multi_items_columnSummary:{},
     save_first_id_column:null,
     identity_name:null,
     formClassName:null,
@@ -46,8 +47,10 @@ export default createReducer(initialState, {
         const setUp = fromJS(setupData);
 
         const multi_items_form_input_control = fromJS(setupData.multi_items_form_input_control)
+        const multi_items_columnSummary = fromJS(setupData.multi_items_columnSummary)
 
         state = state.set('multi_items_form_input_control', multi_items_form_input_control);
+        state = state.set('multi_items_columnSummary', multi_items_columnSummary);
         state = state.set('translateFormControls', translateFormControls_im);
         state = state.set('setup', setUp);
         state = state.set('form_input_control', form_input_control);

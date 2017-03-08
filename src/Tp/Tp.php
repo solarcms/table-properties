@@ -113,6 +113,7 @@ class Tp
 
     //multi items
     public $multi_items_form_input_control = [];
+    public $multi_items_columnSummary = [];
     public $save_first_id_column = null;
 
     //public hidden value
@@ -337,7 +338,7 @@ class Tp
         $subItems = [];
         foreach ($this->subItems as $subItem) {
             $subItem['items'] = [];
-            if (count($subItem['translate_form_input_control']) >= 1) {
+            if (isset($subItem['translate_form_input_control']) && count($subItem['translate_form_input_control']) >= 1) {
                 $subItem['locales'] = $locales;
             } else {
                 $subItem['locales'] = [];
@@ -404,6 +405,7 @@ class Tp
             'advancedSearch' => $this->advancedSearch,
             'showAdvancedSearch' => $this->showAdvancedSearch,
             'columnSummary' => $this->columnSummary,
+            'multi_items_columnSummary' => $this->multi_items_columnSummary,
             'fieldClassName' => $this->fieldClassName,
             'after_save_reload_page' => $this->after_save_reload_page,
             'formClassName' => $this->formClassName,
