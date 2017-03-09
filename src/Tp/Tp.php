@@ -2282,35 +2282,38 @@ class Tp
 
 
                             }
-                            foreach ($subItem['translate_form_input_control'] as $formControl) {
-                                if ($formControl['type'] == '--group') {
-                                    foreach ($formControl['controls'] as $sformControl) {
-                                        if ($sformControl['type'] == '--checkbox') {
-                                            $checkBoxValue = $formData[$sformControl['column']];
+                            if(isset($subItem['translate_form_input_control'])){
+                                foreach ($subItem['translate_form_input_control'] as $formControl) {
+                                    if ($formControl['type'] == '--group') {
+                                        foreach ($formControl['controls'] as $sformControl) {
+                                            if ($sformControl['type'] == '--checkbox') {
+                                                $checkBoxValue = $formData[$sformControl['column']];
+                                                if ($checkBoxValue == 1)
+                                                    $checkBoxValue = 1;
+                                                else
+                                                    $checkBoxValue = 0;
+                                                $insertQuery[$sformControl['column']] = $checkBoxValue;
+
+                                            } else
+                                                $insertQuery[$sformControl['column']] = $formData[$sformControl['column']];
+                                        }
+                                    } else {
+                                        if ($formControl['type'] == '--checkbox') {
+                                            $checkBoxValue = $formData[$formControl['column']];
                                             if ($checkBoxValue == 1)
                                                 $checkBoxValue = 1;
                                             else
                                                 $checkBoxValue = 0;
-                                            $insertQuery[$sformControl['column']] = $checkBoxValue;
+                                            $insertQuery[$formControl['column']] = $checkBoxValue;
 
                                         } else
-                                            $insertQuery[$sformControl['column']] = $formData[$sformControl['column']];
+                                            $insertQuery[$formControl['column']] = $formData[$formControl['column']];
                                     }
-                                } else {
-                                    if ($formControl['type'] == '--checkbox') {
-                                        $checkBoxValue = $formData[$formControl['column']];
-                                        if ($checkBoxValue == 1)
-                                            $checkBoxValue = 1;
-                                        else
-                                            $checkBoxValue = 0;
-                                        $insertQuery[$formControl['column']] = $checkBoxValue;
 
-                                    } else
-                                        $insertQuery[$formControl['column']] = $formData[$formControl['column']];
+
                                 }
-
-
                             }
+
 
                             if (!empty($this->save_from_parent)) {
 
