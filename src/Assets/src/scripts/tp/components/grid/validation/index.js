@@ -24,13 +24,11 @@ export function number(value) {
 
 export function required(value) {
 
-        if (value == '' || value === null) {
-            return false;
-        }
-        else {
-            return true;
-        }
-
+    if (isEmpty(value)) {
+        return false;
+    } else {
+        return true;
+    }
 }
 
 export function minLength(min) {
@@ -77,7 +75,6 @@ export function unique(rule, value) {
 
         let unique = rule.split(':');
         let table_colummn = unique[1].split(',');
-
         let return_error = '';
 
         checkUnique(table_colummn[0], table_colummn[1], value).then((count)=>{
@@ -92,6 +89,7 @@ export function unique(rule, value) {
 }
 
 export default function validationGrid(validationData, value, callback){
+
 
 
     let rules = validationData.split('|');

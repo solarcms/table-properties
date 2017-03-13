@@ -574,6 +574,10 @@ export function setUpHandsonTable(tpNewHeight) {
 
                     break;
                 case "--number":
+
+
+
+
                     gridColumn =
                     {
                         data: header.column,
@@ -604,6 +608,9 @@ export function setUpHandsonTable(tpNewHeight) {
                     }
                     break;
                 case "--float":
+
+
+
                     gridColumn =
                     {
                         data: header.column,
@@ -1054,6 +1061,7 @@ export function getData(row) {
 }
 
 export function validationCaller(validateData, value, callback) {
+
     if(validateData){
         return validationGrid(validateData, value, callback);
     } else callback(true)
