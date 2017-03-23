@@ -360,18 +360,22 @@ class Tp
             Session::set('locale', $this->default_locale);
         }
 
-        if (Session::has('order')) {
-            $order = Session::get('order');
+        if($this->grid_default_order_by != ''){
+            if (Session::has('order')) {
+                $order = Session::get('order');
 
-            if ($order['page_name'] != $page_name) {
+                if ($order['page_name'] != $page_name) {
+                    $orderPre = explode(" ", $this->grid_default_order_by);
+                    $order = ['column' => $orderPre[0], 'sortOrder' => $orderPre[1], 'page_name' => $page_name];
+                    Session::set('order', $order);
+                }
+            } else {
                 $orderPre = explode(" ", $this->grid_default_order_by);
                 $order = ['column' => $orderPre[0], 'sortOrder' => $orderPre[1], 'page_name' => $page_name];
                 Session::set('order', $order);
             }
         } else {
-            $orderPre = explode(" ", $this->grid_default_order_by);
-            $order = ['column' => $orderPre[0], 'sortOrder' => $orderPre[1], 'page_name' => $page_name];
-            Session::set('order', $order);
+            $order = ['column' => $this->identity_name, 'sortOrder' => 'ASC', 'page_name' => $page_name];
         }
 
         $setup = [
