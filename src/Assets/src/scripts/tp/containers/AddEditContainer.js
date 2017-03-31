@@ -379,42 +379,47 @@ class AddEditContainer extends Component {
             this.setState({sending: true});
             save(FD, this.props.translateFormControls, this.props.subItems, multiItems).done((data)=> {
 
+                    if(data.status){
+                        if(data.status == 'error'){
+                            alert(data.message);
 
-                    this.setState({sending: false});
-                    if(this.props.showInsertResponse === true){
-                        alert(data);
-                        localStorage.setItem("addEditFromStatus", "ended");
-                        window.location.replace('#/');
-                    }else if(this.props.show_saved_alert === true){
-                        localStorage.setItem("addEditFromStatus", "ended");
-                        this.setState({savedAlertShow: true});
-
+                            this.setState({sending: false});
+                        }
                     } else {
-                        localStorage.setItem("addEditFromStatus", "ended");
-                       
-                        if(this.props.after_save_reload_page === true){
-                            
+                        this.setState({sending: false});
+                        if(this.props.showInsertResponse === true){
+                            alert(data);
+                            localStorage.setItem("addEditFromStatus", "ended");
                             window.location.replace('#/');
-                            window.location.reload();
-                          
+                        }else if(this.props.show_saved_alert === true){
+                            localStorage.setItem("addEditFromStatus", "ended");
+                            this.setState({savedAlertShow: true});
 
-                        } else if(this.props.after_save_redirect === true){
-                            window.location.replace(this.props.after_save_redirect_url);
-                        }else
-                        window.location.replace('#/');
+                        } else {
+                            localStorage.setItem("addEditFromStatus", "ended");
+
+                            if(this.props.after_save_reload_page === true){
+
+                                window.location.replace('#/');
+                                window.location.reload();
 
 
+                            } else if(this.props.after_save_redirect === true){
+                                window.location.replace(this.props.after_save_redirect_url);
+                            }else
+                                window.location.replace('#/');
+
+
+                        }
 
                     }
 
 
 
 
-
-
             }).fail(()=> {
 
-                alert("Уучлаарай алдаа гарлаа дахин оролдоно уу")
+                alert("Уучлаарай алдаа гарлаа дахин оролдоно уу");
                 this.setState({sending: false});
             })
         } else {

@@ -1216,12 +1216,24 @@ class Tp
                         $pre_values = $this->beforeInsertCaller($this->before_insert, $insertQuery);
 
 
-                        if ($pre_values == 'success') {
-                            return Response::json('success', 200);
-                        } elseif ($pre_values == 'fail') {
-                            return Response::json('before insert error', 400);
-                        } else
-                            $insertQuery = array_merge($insertQuery, $pre_values);
+
+                        if (isset($pre_values['status'])){
+
+                            if($pre_values['status'] == 'error')
+                                return [
+                                    'status'=>$pre_values['status'],
+                                    'message'=>$pre_values['message'],
+                                ];
+                        } else {
+                            if ($pre_values == 'success') {
+                                return Response::json('success', 200);
+                            } elseif ($pre_values == 'fail') {
+                                return Response::json('before insert error', 400);
+                            } else
+                                $insertQuery = array_merge($insertQuery, $pre_values);
+                        }
+
+
                     }
 
 
@@ -1259,12 +1271,24 @@ class Tp
                     if ($this->before_insert != null) {
                         $pre_values = $this->beforeInsertCaller($this->before_insert, $insertQuery);
 
-                        if ($pre_values == 'success') {
+
+                        if (isset($pre_values['status'])){
+
+                            if($pre_values['status'] == 'error')
+                                return [
+                                    'status'=>$pre_values['status'],
+                                    'message'=>$pre_values['message'],
+                                ];
+                        } else {
+
+                            if ($pre_values == 'success') {
 //                        return Response::json('success', 200);
-                        } elseif ($pre_values == 'fail') {
-                            return Response::json('before insert error', 400);
-                        } else
-                            $insertQuery = array_merge($insertQuery, $pre_values);
+                            } elseif ($pre_values == 'fail') {
+                                return Response::json('before insert error', 400);
+                            } else
+                                $insertQuery = array_merge($insertQuery, $pre_values);
+
+                        }
                     }
 
                     $saved = DB::table($this->table)->insert($insertQuery);
@@ -1299,12 +1323,22 @@ class Tp
             if ($this->before_insert != null) {
                 $pre_values = $this->beforeInsertCaller($this->before_insert, $insertQuery);
 
-                if ($pre_values == 'success') {
-                    return Response::json('success', 200);
-                } elseif ($pre_values == 'fail') {
-                    return Response::json('before insert error', 400);
-                } else
-                    $insertQuery = array_merge($insertQuery, $pre_values);
+
+                if (isset($pre_values['status'])){
+
+                    if($pre_values['status'] == 'error')
+                        return [
+                            'status'=>$pre_values['status'],
+                            'message'=>$pre_values['message'],
+                        ];
+                } else {
+                    if ($pre_values == 'success') {
+                        return Response::json('success', 200);
+                    } elseif ($pre_values == 'fail') {
+                        return Response::json('before insert error', 400);
+                    } else
+                        $insertQuery = array_merge($insertQuery, $pre_values);
+                }
             }
 
 
