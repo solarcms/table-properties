@@ -332,6 +332,7 @@ class SubItemsContainer extends Component {
 
         this.props.actions.clearSubItems();
     }
+   
     render() {
 
         const {subItems, formData, modals, showAddEditForm,
@@ -354,12 +355,20 @@ class SubItemsContainer extends Component {
 
 
             const savedItems = subItem.get('items').map((savedItem, savedIndex)=>{
+
                 let gridText = '';
                 return <div className="col-md-6 savedIems" key={savedIndex} >
 
                     {subItem.get('grid_columns').map((g_column, col_index)=>{
                         let dataColumn = savedItem.get('data').filter((data_v)=>data_v.get('column') == g_column);
-                        gridText = gridText + dataColumn.getIn([0, 'value'])+' ';
+
+                        if(dataColumn.size >= 1){
+                            gridText = gridText + dataColumn.getIn([0, 'value'])+' ';
+                        } else {
+                            let dataColumn = savedItem.getIn(['translateFormControls',0, 'translate_form_input_control']).filter((data_v)=>data_v.get('column') == g_column);
+                            gridText = gridText + dataColumn.getIn([0, 'value'])+' ';
+                        }
+
                     })}
 
                     <span dangerouslySetInnerHTML={{__html: gridText}} />
@@ -426,6 +435,7 @@ function mapStateToProps(state) {
     const Grid = state.Grid;
 
     return {
+        defaultLocale: Grid.get('defaultLocale'),
         modals: Modal.get('modals'),
         editIndex: SubItems.get('editIndex'),
         permission: Grid.get('setup').toJS().permission,
