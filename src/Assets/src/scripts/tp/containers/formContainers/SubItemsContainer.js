@@ -332,7 +332,7 @@ class SubItemsContainer extends Component {
 
         this.props.actions.clearSubItems();
     }
-   
+
     render() {
 
         const {subItems, formData, modals, showAddEditForm,

@@ -3,7 +3,7 @@ import React, { Component, PropTypes }  from 'react';
 export default class CK extends Component {
 
     componentDidMount() {
-        CKEDITOR.replace('ckeditor-' + this.props.keyIndex, {
+        CKEDITOR.replace('ckeditor-' + this.props.keyIndex+'-'+this.props.gridId, {
             language: 'EN',
             height: '200',
             width: 'auto',
@@ -17,16 +17,16 @@ export default class CK extends Component {
 
         var self = this;
 
-        CKEDITOR.instances['ckeditor-' + this.props.keyIndex].on('change', function () {
+        CKEDITOR.instances['ckeditor-' + this.props.keyIndex+'-'+this.props.gridId].on('change', function () {
 
-            self.props.changeHandler(CKEDITOR.instances['ckeditor-' + self.props.keyIndex].getData());
+            self.props.changeHandler(CKEDITOR.instances['ckeditor-' + self.props.keyIndex+'-'+this.props.gridId].getData());
 
         });
     }
 
     componentWillUnmount() {
 
-        CKEDITOR.instances['ckeditor-' + this.props.keyIndex].destroy(true);
+        CKEDITOR.instances['ckeditor-' + this.props.keyIndex+'-'+this.props.gridId].destroy(true);
     }
 
     changeHandler() {
@@ -41,7 +41,7 @@ export default class CK extends Component {
                 <div className={`form-group ${fieldClass}  ${fieldClassName}`}  id={`solar-form-group-${dataIndex}`}>
                     <label className="control-label">{placeholder}</label>
                 <textarea
-                    id={`ckeditor-${keyIndex}`}
+                    id={`ckeditor-${keyIndex}-${gridId}`}
                     className="form-control ckeditor"
                     name={this.props.name}
                     value={mainValue}
