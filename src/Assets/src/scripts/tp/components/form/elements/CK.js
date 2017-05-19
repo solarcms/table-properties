@@ -19,7 +19,7 @@ export default class CK extends Component {
 
         CKEDITOR.instances['ckeditor-' + this.props.keyIndex+'-'+this.props.gridId].on('change', function () {
 
-            self.props.changeHandler(CKEDITOR.instances['ckeditor-' + self.props.keyIndex+'-'+this.props.gridId].getData());
+            self.props.changeHandler(CKEDITOR.instances['ckeditor-' + self.props.keyIndex+'-'+self.props.gridId].getData());
 
         });
     }
