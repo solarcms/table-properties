@@ -865,7 +865,7 @@ export function setUpHandsonTable(tpNewHeight) {
                             if(summary.type == 'sum'){
                                 let columnSum = 0;
                                 for(let q=0; q<=gridData.length-2; q++){
-                                    columnSum = (gridData[q][prop] ? gridData[q][prop] : 0 *1)+columnSum;
+                                    columnSum = (gridData[q][prop] ? gridData[q][prop]*1 : 0 *1)+columnSum;
                                 }
 
                                 columnSum = numeral(columnSum);

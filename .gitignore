@@ -9,3 +9,6 @@ src/Assets/logs/webpack.timestamp.log
 src/.DS_Store
 src/Assets/.DS_Store
 
+temp_auto_push.bat
+temp_interactive_push.bat
+.gitignore

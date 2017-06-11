@@ -172,6 +172,8 @@ class Tp
     public $gridTop = 83;
     public $gridTopWithAdvenced = 145;
 
+    public $procedure = "";
+
 
     function __construct()
     {
@@ -237,6 +239,9 @@ class Tp
                 return $this->index($this->viewName);
                 break;
             case "grid_list":
+                if($this->procedure)
+                    return $this->callProcedure();
+                else
                 return $this->gridList();
                 break;
             case "get_form_datas":
@@ -446,7 +451,7 @@ class Tp
 
         if ($this->join_tables) {
             foreach ($this->join_tables as $join_table) {
-                $table_data = $table_data->join($join_table[0], $join_table[1], $join_table[2], $join_table[3]);
+                $table_data = $table_data->crossJoin($join_table[0], $join_table[1], $join_table[2], $join_table[3]);
             }
         }
 
@@ -660,19 +665,38 @@ class Tp
 
         if (isset($advancedSearch['dateYearMonth']) && $this->advancedSearch['dateYearMonth']['searchColumn'] != null) {
             if (isset($advancedSearch['dateYearMonth']['defaultYear']) && isset($advancedSearch['dateYearMonth']['defaultMonth']))
+
+
+
                 $searchColumn = $this->advancedSearch['dateYearMonth']['searchColumn'];
             $s_year = $advancedSearch['dateYearMonth']['defaultYear'];
             $s_month = $advancedSearch['dateYearMonth']['defaultMonth'];
             $s_last_day = cal_days_in_month(CAL_GREGORIAN, $s_month, $s_year);
+            if(is_array($searchColumn)){
 
-            if (isset($this->advancedSearch['dateMode']) && $this->advancedSearch['dateMode'] == 'dateTime')
-                $table_data
-                    ->where("$searchColumn", ">=", "$s_year-$s_month-01 00:00:00")
-                    ->where("$searchColumn", "<=", "$s_year-$s_month-$s_last_day 23:59:59");
-            else
-                $table_data
-                    ->where("$searchColumn", ">=", "$s_year-$s_month-01")
-                    ->where("$searchColumn", "<=", "$s_year-$s_month-$s_last_day");
+                foreach ($searchColumn as $sColumn){
+                    if (isset($this->advancedSearch['dateMode']) && $this->advancedSearch['dateMode'] == 'dateTime')
+                        $table_data
+                            ->where("$sColumn", ">=", "$s_year-$s_month-01 00:00:00")
+                            ->where("$sColumn", "<=", "$s_year-$s_month-$s_last_day 23:59:59");
+                    else
+                        $table_data
+                            ->where("$sColumn", ">=", "$s_year-$s_month-01")
+                            ->where("$sColumn", "<=", "$s_year-$s_month-$s_last_day");
+                }
+
+            } else {
+                if (isset($this->advancedSearch['dateMode']) && $this->advancedSearch['dateMode'] == 'dateTime')
+                    $table_data
+                        ->where("$searchColumn", ">=", "$s_year-$s_month-01 00:00:00")
+                        ->where("$searchColumn", "<=", "$s_year-$s_month-$s_last_day 23:59:59");
+                else
+                    $table_data
+                        ->where("$searchColumn", ">=", "$s_year-$s_month-01")
+                        ->where("$searchColumn", "<=", "$s_year-$s_month-$s_last_day");
+            }
+
+
 
         }
 
@@ -681,6 +705,23 @@ class Tp
 
         return $table_data->paginate($pageLimit);
 
+    }
+
+    public function callProcedure(){
+
+        $data = DB::select("call get_tailan($this->delguur_id, '2017-06-01)");
+
+        return [
+            "total"=>0,
+            "per_page"=>"1000000",
+            "current_page"=>1,
+            "last_page"=>0,
+            "next_page_url"=>null,
+            "prev_page_url"=>null,
+            "from"=>null,
+            "to"=>null,
+            "data"=>$data
+        ];
     }
 
     public function gridListByStoredProcedure()

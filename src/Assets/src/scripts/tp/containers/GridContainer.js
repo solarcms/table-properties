@@ -177,14 +177,14 @@ class GridContainer extends Component {
             return false;
 
         this.props.actions.setShowGrid(false);
-        console.log('test test 4')
+
         getList(page, {
             pageLimit: pageLimit,
             searchValue: searchValue,
             order: this.props.order,
             advancedSearch:this.props.advancedSearch
         }).success((data)=> {
-            console.log('data', 'aa', 'kkk');
+
             this.props.actions.receiveListData(data);
             this.props.actions.setShowGrid(true);
             this.setUpHandsonTable();
